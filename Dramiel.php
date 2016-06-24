@@ -33,10 +33,10 @@ use Monolog\Handler\StreamHandler;
 // create a log channel
 $logger = new Logger('log');
 $logger->pushHandler(new StreamHandler(__DIR__.'log/dramielLog.log', Logger::WARNING));
+$logger->addInfo('My logger is now ready');
 
 // Load the library files (Probably a prettier way to do this that i haven't thought up yet)
 foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
     require_once($lib);
-    $logger->addInfo("Initiating library file - {$lib}");
 }
 
