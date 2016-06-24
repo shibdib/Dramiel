@@ -37,6 +37,6 @@ $logger->pushHandler(new StreamHandler(__DIR__.'log/dramielLog.log', Logger::WAR
 // Load the library files (Probably a prettier way to do this that i haven't thought up yet)
 foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
     require_once($lib);
-    $logger->info("Initiating library file - {$lib}");
+    $logger->addInfo("Initiating library file - {$lib}");
 }
 
