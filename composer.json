@@ -1,0 +1,13 @@
+{
+  "name": "shibdib/Dramiel",
+  "description": "EVE Online Discord Bot",
+  "keywords": ["eve", "online", "corporation", "discord", "bot"],
+  "license": "MIT",
+  "type": "project",
+  "require": {
+    "dg/twitter-php": "*",
+    "team-reflex/discord-php": "dev-develop",
+    "monolog/monolog": "1.19.*",
+    "ratchet/pawl": "dev-master"
+  }
+}
