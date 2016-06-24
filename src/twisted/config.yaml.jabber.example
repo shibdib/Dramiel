@@ -1,0 +1,10 @@
+protocol: xmpp
+admins: []
+channels: []
+moduleblacklist: []
+network: jabber_domain
+server: jabber_domain
+username: jabber_name
+nickname: jabber_name
+password: password
+verbosity: 2

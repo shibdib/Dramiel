@@ -1,0 +1,4 @@
+include *.py
+include README
+include COPYING
+include changelog

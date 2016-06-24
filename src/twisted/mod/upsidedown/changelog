@@ -1,0 +1,11 @@
+Release 0.3
+===========
+- support upper case characters and digits
+- extend punctuation marks
+- assert that lossless back transformation is possible
+- reverse lines for CLI
+- switch to setuptools and register executable
+
+Release 0.2
+===========
+- first release as module
