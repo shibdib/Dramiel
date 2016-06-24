@@ -8,6 +8,6 @@
     "dg/twitter-php": "*",
     "team-reflex/discord-php": "dev-develop",
     "monolog/monolog": "1.19.*",
-    "ratchet/pawl": "dev-master"
+    "ratchet/pawl": "*"
   }
 }
