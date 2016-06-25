@@ -87,7 +87,7 @@ foreach ($pluginDirs as $dir) {
         require_once($plugin);
         $fileName = str_replace(".php", "", basename($plugin));
         $p = new $fileName();
-        $p->init($config, $discord, $logger);
+        $p->init($config, $discord, $logger, $message);
         $plugins[] = $p;
     }
 }
@@ -128,15 +128,6 @@ $ws->on(
                     )
                 );
 
-                if ($message->author->id !== $discord->getClient()->id) {
-                    $reply = $message->timestamp->format('d/m/y H:i:s').' - '; // Format the message timestamp.
-                    $reply .= $message->full_channel->guild->name.' - ';
-                    $reply .= $message->channel_name.' - ';
-                    $reply .= $message->author->username.' - '; // Add the message author's username onto the string.
-                    $reply .= $message->content; // Add the message content.
-                    $logger->addInfo($reply.PHP_EOL); // Finally, echo the message with a PHP end of line.
-                }
-
                 if ($message->content == '(╯°□°）╯︵ ┻━┻') {
                     $message->reply('┬─┬﻿ ノ( ゜-゜ノ)');
                 }
@@ -146,7 +137,7 @@ $ws->on(
                     $message->reply('pong!');
                 }
                 // Check for plugins
-                if ($message->content[0] == '%') {
+                if ($message->content[0] == $config["bot"]["trigger"]) {
                     foreach ($plugins as $plugin) {
                         try {
                             $plugin->onMessage($msgData, $message);
