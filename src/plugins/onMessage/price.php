@@ -67,7 +67,7 @@ class price
             $this->solarSystems[strtolower($system["solarSystemName"])] = $system["solarSystemID"];
             $this->triggers[] = "!" . strtolower($system["solarSystemName"]);
         }
-        $this->triggers[] = "!pc";
+        $this->triggers[] = $this->config["bot"]["trigger"]."pc";
             $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
     }
 
@@ -184,7 +184,7 @@ class price
     {
         return array(
             "name" => "pc",
-            "trigger" => $this->config["bot"]["trigger"].$this->triggers,
+            "trigger" => $this->triggers,
             "information" => "Shows price information for items in EVE. To use simply type !pc <item_name> or !<system_name> <item_name>"
         );
     }
