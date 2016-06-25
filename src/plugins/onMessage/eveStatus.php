@@ -75,8 +75,8 @@ class eveStatus
 
             $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
 
-            $tqStatus = isset($crestData["serviceStatus"]["eve"]) ? $crestData["serviceStatus"]["eve"] : "offline";
-            $tqOnline = (int) $crestData["userCounts"]["eve"];
+            $tqStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
+            $tqOnline = (int) $crestData["userCount"];
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
             $this->logger->addInfo("Sending eve status info to {$user}");
