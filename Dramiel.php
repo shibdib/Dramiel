@@ -33,6 +33,9 @@ use Monolog\Handler\StreamHandler;
 // More memory allowance
 ini_set("memory_limit", "1024M");
 
+// Just incase we get launched from somewhere else
+chdir(__DIR__);
+
 // Enable garbage collection
 gc_enable();
 
