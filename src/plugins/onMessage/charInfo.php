@@ -23,6 +23,9 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+
 class charInfo
 {
     /**
@@ -60,12 +63,12 @@ class charInfo
     /**
      * @param $msgData
      */
-    function onMessage($msgData)
+    function onMessage($msgData, $message)
     {
+        $this->message = $message;
+
         $message = $msgData["message"]["message"];
-        $channelName = $msgData["channel"]["name"];
-        $guildName = $msgData["guild"]["name"];
-        $channelID = $msgData["message"]["channelID"];
+        $user = $msgData["message"]["from"];
 
         $data = command($message, $this->information()["trigger"]);
         if (isset($data["trigger"])) {
@@ -86,19 +89,19 @@ class charInfo
                 $characterID = $character->attributes()->characterID;
             }
             if (empty($characterID)) {
-                return $this->discord->api("channel")->messages()->create($channelID, "**Error:** no data available");
+                return $this->message->reply("**Error:** no data available");
             }
             // Get stats
             $statsURL = "https://beta.eve-kill.net/api/charInfo/characterID/" . urlencode($characterID) . "/";
             $stats = json_decode(downloadData($statsURL), true);
 
             if (empty($stats)) {
-                return $this->discord->api("channel")->messages()->create($channelID, "**Error:** no data available");
+                return $this->message->reply("**Error:** no data available");
             }
 
             $characterName = @$stats["characterName"];
             if (empty($characterName)) {
-                return $this->discord->api("channel")->messages()->create($channelID, "**Error:** No Character Found");
+                return $this->message->reply("**Error:** No Character Found");
             }
             $corporationName = @$stats["corporationName"];
             $allianceName = isset($stats["allianceName"]) ? $stats["allianceName"] : "None";
@@ -142,8 +145,8 @@ facepalms: {$facepalms}
 lastUpdated: $lastUpdated```
 For more info, visit: $url";
 
-            $this->logger->info("Sending character info to {$channelName} on {$guildName}");
-            $this->discord->api("channel")->messages()->create($channelID, $msg);
+            $this->logger->addInfo("Sending character info to {$user}");
+            $this->message->reply($msg);
         }
         return null;
     }
@@ -155,7 +158,7 @@ For more info, visit: $url";
     {
         return array(
             "name" => "char",
-            "trigger" => array("!char"),
+            "trigger" => array($this->config["bot"]["trigger"]."char"),
             "information" => "Returns basic EVE Online data about a character from projectRena. To use simply type !char <character_name>"
         );
     }

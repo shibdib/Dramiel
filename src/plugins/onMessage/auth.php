@@ -23,6 +23,9 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+
 /**
  * Class auth
  */
@@ -87,8 +90,9 @@ class auth
      * @param $msgData
      * @return null
      */
-    function onMessage($msgData)
+    function onMessage($msgData, $message)
     {
+        $this->message = $message;
         $userID = $msgData["message"]["fromID"];
         $userName = $msgData["message"]["from"];
         $message = $msgData["message"]["message"];
@@ -97,6 +101,12 @@ class auth
         if (isset($data["trigger"])) {
             $code = $data["messageString"];
             $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
+
+            if (strlen($code) < 12) {
+                $this->message->reply("Invalid Code, check ".$this->config["bot"]["trigger"]."help auth for more info.");
+                return null;
+            }
+
             while ($rows = $result->fetch_assoc()) {
                 $charid = $rows['characterID'];
                 $corpid = $rows['corporationID'];
@@ -104,16 +114,18 @@ class auth
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
                 $xml = makeApiRequest($url);
 
+
+
                 // We have an error, show it it
                 if ($xml->error) {
-                    $this->discord->api("channel")->messages()->create($channelID, "**Failure:** Eve API is down, please try again in a little while.");
+                    $this->message->reply("**Failure:** Eve API is down, please try again in a little while.");
                     return null;
                 }
                 elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
                         if ($character->attributes()->name != $userName) {
-                            $this->discord->api("channel")->messages()->create($channelID, "**Failure:** Your discord name must match your character name.");
-                            $this->logger->info("User was denied due to not having the correct name " . $character->attributes()->name);
+                            $this->message->reply("**Failure:** Your discord name must match your character name.");
+                            $this->logger->addInfo("User was denied due to not having the correct name " . $character->attributes()->name);
                             return null;
 
                         }
@@ -124,15 +136,17 @@ class auth
                 foreach ($xml->result->rowset->row as $character) {
                     $eveName = $character->attributes()->name;
                     if ($corpid == $this->corpID) {
-                        $guildData = $this->discord->api("guild")->show($this->guildID);
-                        foreach ($guildData["roles"] as $role) {
-                            $roleID = $role["id"];
-                            if ($role["name"] == $this->roleName) {
-                                $this->discord->api("guild")->members()->redeploy($this->guildID, $userID, array($roleID));
+                        $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
+                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
+                        foreach ($roles as $role) {
+                            $roleName = $role->name;
+                            if ($roleName == $this->roleName) {
+                                $member->addRole($role);
+                                $member->save();
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                                $this->discord->api("channel")->messages()->create($channelID, "**Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
-                                $this->logger->info("User authed and added to corp group " . $eveName);
+                                $this->message->reply("**Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
+                                $this->logger->addInfo("User authed and added to corp group " . $eveName);
                                 return null;
                             }
                         }
@@ -141,15 +155,17 @@ class auth
                 foreach ($xml->result->rowset->row as $character) {
                     $eveName = $character->attributes()->name;
                     if ($allianceid == $this->allianceID) {
-                        $guildData = $this->discord->api("guild")->show($this->guildID);
-                        foreach ($guildData["roles"] as $role) {
-                            $roleID = $role["id"];
-                            if ($role["name"] == $this->allyroleName) {
-                                $this->discord->api("guild")->members()->redeploy($this->guildID, $userID, array($roleID));
+                        $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
+                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
+                        foreach ($roles as $role) {
+                            $roleName = $role->name;
+                            if ($roleName == $this->roleName) {
+                                $member->addRole($role);
+                                $member->save();
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'ally');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                                $this->discord->api("channel")->messages()->create($channelID, "**Success:** You have now been added to the " . $this->allyroleName . " group. To get more roles, talk to the CEO / Directors");
-                                $this->logger->info("User authed and added to alliance group " . $eveName);
+                                $this->message->reply("**Success:** You have now been added to the " . $this->allyroleName . " group. To get more roles, talk to the CEO / Directors");
+                                $this->logger->addInfo("User authed and added to the alliance group " . $eveName);
                                 return null;
                             }
                         }
@@ -157,8 +173,8 @@ class auth
                 }
 
             }
-            $this->discord->api("channel")->messages()->create($channelID, "**Failure:** No roles available for your corp or alliance.");
-            $this->logger->info("User was denied due to not being in the correct corp or alliance " . $userName);
+            $this->message->reply("**Failure:** There was an issue with your code.");
+            $this->logger->addInfo("User was denied due to not being in the correct corp or alliance " . $userName);
             return null;
         }
         return null;
@@ -170,7 +186,7 @@ class auth
     {
         return array(
             "name" => "auth",
-            "trigger" => array("!auth"),
+            "trigger" => array($this->config["bot"]["trigger"]."auth"),
             "information" => "SSO based auth system. " . $this->ssoUrl . " Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat."
         );
     }

@@ -23,6 +23,9 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+
 /**
  * Class time
  */
@@ -64,12 +67,12 @@ class time
     /**
      * @param $msgData
      */
-    function onMessage($msgData)
+    function onMessage($msgData, $message)
     {
+        $this->message = $message;
+        $user = $msgData["message"]["from"];
+        
         $message = $msgData["message"]["message"];
-        $channelName = $msgData["channel"]["name"];
-        $guildName = $msgData["guild"]["name"];
-        $channelID = $msgData["message"]["channelID"];
 
         $data = command($message, $this->information()["trigger"]);
         if (isset($data["trigger"])) {
@@ -89,8 +92,8 @@ class time
             $aus = $datetime->setTimezone(new DateTimeZone("Australia/Sydney"));
             $aus = $aus->format("H:i:s");
 
-            $this->logger->info("Sending time info to {$channelName} on {$guildName}");
-            $this->discord->api("channel")->messages()->create($channelID, "**EVE Time:** {$utc} / **EVE Date:** {$date} / **PT:** {$pst} / **ET:** {$est} / **CET:** {$cet} / **MSK:** {$msk} / **AEST:** {$aus}");
+            $this->logger->iaddInfo("Sending time info to {$user}");
+            $this->message->reply("**EVE Time:** {$utc} / **EVE Date:** {$date} / **PT:** {$pst} / **ET:** {$est} / **CET:** {$cet} / **MSK:** {$msk} / **AEST:** {$aus}");
         }
     }
 
@@ -101,7 +104,7 @@ class time
     {
         return array(
             "name" => "time",
-            "trigger" => array("!time"),
+            "trigger" => array($this->config["bot"]["trigger"]."time"),
             "information" => "This shows the time for various timezones compared to EVE Time. To use simply type <!time>"
         );
     }

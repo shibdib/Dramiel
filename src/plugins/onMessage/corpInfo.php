@@ -23,6 +23,9 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+
 class corpInfo
 {
     /**
@@ -60,12 +63,12 @@ class corpInfo
     /**
      * @param $msgData
      */
-    function onMessage($msgData)
+    function onMessage($msgData, $message)
     {
+        $this->message = $message;
+        
         $message = $msgData["message"]["message"];
-        $channelName = $msgData["channel"]["name"];
-        $guildName = $msgData["guild"]["name"];
-        $channelID = $msgData["message"]["channelID"];
+        $user = $msgData["message"]["from"];
 
         $data = command($message, $this->information()["trigger"]);
         if (isset($data["trigger"])) {
@@ -75,7 +78,7 @@ class corpInfo
             $data = @json_decode(downloadData($url), true)["corporation"];
 
             if (empty($data)) {
-                            return $this->discord->api("channel")->messages()->create($channelID, "**Error:** no results was returned.");
+                            return $this->message->reply("**Error:** no results was returned.");
             }
 
             if (count($data) > 1) {
@@ -84,7 +87,7 @@ class corpInfo
                                     $results[] = $corp["corporationName"];
                 }
 
-                return $this->discord->api("channel")->messages()->create($channelID, "**Error:** more than one result was returned: " . implode(", ", $results));
+                return $this->message->reply("**Error:** more than one result was returned: " . implode(", ", $results));
             }
 
             // Get stats
@@ -93,7 +96,7 @@ class corpInfo
             $stats = json_decode(downloadData($statsURL), true);
 
             if (empty($stats)) {
-                            return $this->discord->api("channel")->messages()->create($channelID, "**Error:** no data available");
+                            return $this->message->reply("**Error:** no data available");
             }
 
             $corporationName = @$stats["corporationName"];
@@ -128,8 +131,8 @@ ePeenSize: {$ePeenSize}
 ```
 For more info, visit: $url";
 
-            $this->logger->info("Sending character info to {$channelName} on {$guildName}");
-            $this->discord->api("channel")->messages()->create($channelID, $msg);
+            $this->logger->addInfo("Sending character info to {$user}");
+            $this->message->reply($msg);
         }
         return null;
     }
@@ -141,7 +144,7 @@ For more info, visit: $url";
     {
         return array(
             "name" => "corp",
-            "trigger" => array("!corp"),
+            "trigger" => array($this->config["bot"]["trigger"]."corp"),
             "information" => "Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp <corporation_name>"
         );
     }

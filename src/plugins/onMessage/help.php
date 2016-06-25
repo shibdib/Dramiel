@@ -23,6 +23,9 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+
 class help
 {
     /**
@@ -60,10 +63,11 @@ class help
     /**
      * @param $msgData
      */
-    function onMessage($msgData)
+    function onMessage($msgData, $message)
     {
+        $this->message = $message;
+        
         $message = $msgData["message"]["message"];
-        $channelID = $msgData["message"]["channelID"];
 
         $data = command($message, $this->information()["trigger"]);
         if (isset($data["trigger"])) {
@@ -80,11 +84,11 @@ class help
                     }
                 }
 
-                $this->discord->api("channel")->messages()->create($channelID, "Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
+                $this->message->reply("Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
             } else {
                 foreach ($plugins as $plugin) {
                     if ($messageString == $plugin->information()["name"]) {
-                        $this->discord->api("channel")->messages()->create($channelID, $plugin->information()["information"]);
+                        $this->message->reply($plugin->information()["information"]);
                     }
                 }
             }
@@ -98,7 +102,7 @@ class help
     {
         return array(
             "name" => "help",
-            "trigger" => array("!help"),
+            "trigger" => array($this->config["bot"]["trigger"]."help"),
             "information" => "Shows help for a plugin, or all the plugins available. Example: **!help pc**"
         );
     }

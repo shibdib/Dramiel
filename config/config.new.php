@@ -26,7 +26,9 @@
 $config = array();
 
 $config["bot"] = array(
-    "name" => "" // Discord name for your bot
+    "name" => "", // Discord name for your bot
+    "game" => "", // What game is the bot playing
+    "trigger" => "$" // what trigger is used for commands
 );
 
 $config["database"] = array(

@@ -23,6 +23,9 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+
 class eveStatus
 {
     /**
@@ -60,12 +63,12 @@ class eveStatus
     /**
      * @param $msgData
      */
-    function onMessage($msgData)
+    function onMessage($msgData, $message)
     {
+        $this->message = $message;
+
         $message = $msgData["message"]["message"];
-        $channelName = $msgData["channel"]["name"];
-        $guildName = $msgData["guild"]["name"];
-        $channelID = $msgData["message"]["channelID"];
+        $user = $msgData["message"]["from"];
 
         $data = command($message, $this->information()["trigger"]);
         if (isset($data["trigger"])) {
@@ -76,8 +79,8 @@ class eveStatus
             $tqOnline = (int) $crestData["userCounts"]["eve"];
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
-            $this->logger->info("Sending eve status info to {$channelName} on {$guildName}");
-            $this->discord->api("channel")->messages()->create($channelID, $msg);
+            $this->logger->addInfo("Sending eve status info to {$user}");
+            $this->message->reply($msg);
         }
     }
 
@@ -88,7 +91,7 @@ class eveStatus
     {
         return array(
             "name" => "tq",
-            "trigger" => array("!tq", "!status"),
+            "trigger" => array($this->config["bot"]["trigger"]."tq", $this->config["bot"]["trigger"]."status"),
             "information" => "Shows the current status of Tranquility"
         );
     }

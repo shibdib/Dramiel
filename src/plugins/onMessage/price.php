@@ -23,6 +23,9 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+
 /**
  * Class priceChecks
  */
@@ -79,13 +82,13 @@ class price
     /**
      * @param $msgData
      */
-    function onMessage($msgData)
+    function onMessage($msgData, $message)
     {
+        $this->message = $message;
+        $user = $msgData["message"]["from"];
+        
         // Bind a few things to vars for the plugins
         $message = $msgData["message"]["message"];
-        $channelName = $msgData["channel"]["name"];
-        $guildName = $msgData["guild"]["name"];
-        $channelID = $msgData["message"]["channelID"];
 
         // Quick Lookups
         $quickLookUps = array(
@@ -120,7 +123,7 @@ class price
 
             // Check if the channel is restricted    
             if ($channelID == $this->excludeChannel) {
-                            return $this->discord->api("channel")->messages()->create($channelID, "**Price Check not allowed in this channel**");
+                            return $this->message->reply("**Price Check not allowed in this channel**");
             }
 
             // If there are multiple results, and not a single result, it's an error
@@ -131,7 +134,7 @@ class price
                 }
 
                 $items = implode(", ", $items);
-                return $this->discord->api("channel")->messages()->create($channelID, "**Multiple results found:** {$items}");
+                return $this->message->reply("**Multiple results found:** {$items}");
             }
 
             // If there is a single result, we'll get data now!
@@ -155,7 +158,7 @@ class price
                 $avgSell = number_format((float) $data->marketstat->type->sell->avg, 2);
                 $highSell = number_format((float) $data->marketstat->type->sell->max, 2);
 
-                $this->logger->info("Sending pricing info to {$channelName} on {$guildName}");
+                $this->logger->addInfo("Sending pricing info to {$user}");
                 $solarSystemName = $systemName == "pc" ? "Global" : ucfirst($systemName);
                 $messageData = "**System: {$solarSystemName}**
 **Buy:**
@@ -166,9 +169,9 @@ class price
    Low: {$lowSell}
    Avg: {$avgSell}
    High: {$highSell}";
-                $this->discord->api("channel")->messages()->create($channelID, $messageData);
+                $this->message->reply($messageData);
             } else {
-                $this->discord->api("channel")->messages()->create($channelID, "**Error:** ***{$itemName}*** not found");
+                $this->message->reply("**Error:** ***{$itemName}*** not found");
             }
         }
         return null;
@@ -181,7 +184,7 @@ class price
     {
         return array(
             "name" => "pc",
-            "trigger" => $this->triggers,
+            "trigger" => $this->config["bot"]["trigger"].$this->triggers,
             "information" => "Shows price information for items in EVE. To use simply type !pc <item_name> or !<system_name> <item_name>"
         );
     }
