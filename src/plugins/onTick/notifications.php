@@ -418,7 +418,6 @@ class notifications
                     }
                     $this->logger->addInfo("Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
                     $channelID = $this->toDiscordChannel;
-                    /** @var Channel $channel */
                     $channel = Channel::find($channelID);
                     $channel->sendMessage($msg, false);
                     // Find the maxID so we don't output this message again in the future

@@ -170,7 +170,6 @@ class evemails {
 
                 // Send the mails to the channel
                 $channelID = $this->toDiscordChannel;
-                /** @var Channel $channel */
                 $channel = Channel::find($channelID);
                 $channel->sendMessage($msg, false);
                 sleep(1); // Lets sleep for a second, so we don't rage spam
