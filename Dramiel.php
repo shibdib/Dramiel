@@ -116,8 +116,6 @@ $ws->on(
             Event::MESSAGE_CREATE,
             function ($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
 
-                $logger->addInfo($message);
-
                 $msgData = array(
                     "message" => array(
                         "timestamp" => $message->timestamp,
