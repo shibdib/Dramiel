@@ -69,7 +69,7 @@ class help
         
         $message = $msgData["message"]["message"];
 
-        $data = command($message, $this->information()["trigger"]);
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
             global $plugins; // Need to have the plugins that are loaded available, yes it's ugly, whatever, better than shitting up the rest of the code :P
             $messageString = $data["messageString"];

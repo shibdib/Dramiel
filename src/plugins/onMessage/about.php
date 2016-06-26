@@ -83,7 +83,7 @@ class about
         $message = $msgData["message"]["message"];
         $user = $msgData["message"]["from"];
 
-        $data = command($message, $this->information()["trigger"]);
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
             $gitRevision = gitRevision();
             $gitBranch = gitBranch();

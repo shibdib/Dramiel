@@ -70,7 +70,7 @@ class eveStatus
         $message = $msgData["message"]["message"];
         $user = $msgData["message"]["from"];
 
-        $data = command($message, $this->information()["trigger"]);
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
 
             $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);

@@ -97,7 +97,7 @@ class auth
         $userName = $msgData["message"]["from"];
         $message = $msgData["message"]["message"];
         $channelID = $msgData["message"]["channelID"];
-        $data = command($message, $this->information()["trigger"]);
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
             $code = $data["messageString"];
             $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
