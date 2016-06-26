@@ -72,6 +72,7 @@ use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Guild\Guild;
 use Discord\Parts\User\Game;
+use Discord\Parts\User\Member;
 use Discord\Parts\WebSockets\PresenceUpdate;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\WebSocket;
@@ -113,6 +114,7 @@ $ws->on(
         $logger->addInfo('Discord WebSocket is ready!'.PHP_EOL);
         $game = new Game(array('name' => $config["bot"]["game"], 'url' => null, 'type' => null), true);
         $ws->updatePresence($game, false);
+        // $ws->setNickname($config["bot"]["name"]); //not in yet
         $ws->on(
             Event::MESSAGE_CREATE,
             function ($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
