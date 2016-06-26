@@ -28,13 +28,13 @@
  * @param $trigger
  * @return array|bool
  */
-function command($message, $trigger)
+function command($message, $trigger, $symbol)
 {
     foreach ($trigger as $trig) {
         if (substr($message, 0, strlen($trig)) == $trig) {
             $data = explode(" ", $message);
 
-            $trig = str_replace("!", "", $data[0]);
+            $trig = str_replace($symbol, "", $data[0]);
             unset($data[0]);
             $data = array_values($data);
             $messageString = implode(" ", $data);

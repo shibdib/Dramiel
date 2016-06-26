@@ -30,16 +30,16 @@
 function openDB($db = null)
 {
     if($db == null)
-        $db = __DIR__ . "/../database/sluggard.sqlite";
+        $db = __DIR__ . "/../../database/dramiel.sqlite";
     if($db == "ccp")
-        $db = __DIR__ . "/../database/ccpData.sqlite";
+        $db = __DIR__ . "/../../database/ccpData.sqlite";
 
     $dsn = "sqlite:$db";
     try {
         $pdo = new PDO($dsn, "", "", array(
-            PDO::ATTR_PERSISTENT => false,
-            PDO::ATTR_EMULATE_PREPARES => true,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                PDO::ATTR_PERSISTENT => false,
+                PDO::ATTR_EMULATE_PREPARES => true,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             )
         );
     } catch (Exception $e)

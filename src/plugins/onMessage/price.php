@@ -65,10 +65,10 @@ class price
         $systems = dbQuery("SELECT solarSystemName, solarSystemID FROM mapSolarSystems", array(), "ccp");
         foreach ($systems as $system) {
             $this->solarSystems[strtolower($system["solarSystemName"])] = $system["solarSystemID"];
-            $this->triggers[] = "!" . strtolower($system["solarSystemName"]);
+            $this->triggers[] = $this->config["bot"]["trigger"] . strtolower($system["solarSystemName"]);
         }
         $this->triggers[] = $this->config["bot"]["trigger"]."pc";
-            $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
+        $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
     }
 
     /**
@@ -86,7 +86,8 @@ class price
     {
         $this->message = $message;
         $user = $msgData["message"]["from"];
-        
+
+
         // Bind a few things to vars for the plugins
         $message = $msgData["message"]["message"];
 
@@ -102,7 +103,8 @@ class price
             )
         );
 
-        $data = command(strtolower($message), $this->information()["trigger"]);
+        $data = command(strtolower($message), $this->information()["trigger"], $this->config["bot"]["trigger"]);
+
         if (isset($data["trigger"])) {
 
             $systemName = $data["trigger"];
@@ -113,24 +115,24 @@ class price
 
             // Quick lookups
             if (isset($quickLookUps[$itemName])) {
-                            $single = $quickLookUps[$itemName];
+                $single = $quickLookUps[$itemName];
             }
 
             // Sometimes the multiple lookup is returning just one
             if (count($multiple) == 1) {
-                            $single = $multiple[0];
+                $single = $multiple[0];
             }
 
-            // Check if the channel is restricted    
+            // Check if the channel is restricted
             if ($channelID == $this->excludeChannel) {
-                            return $this->message->reply("**Price Check not allowed in this channel**");
+                return $this->message->reply("**Price Check not allowed in this channel**");
             }
 
             // If there are multiple results, and not a single result, it's an error
             if (empty($single) && !empty($multiple)) {
                 $items = array();
                 foreach ($multiple as $item) {
-                                    $items[] = $item["typeName"];
+                    $items[] = $item["typeName"];
                 }
 
                 $items = implode(", ", $items);
@@ -146,9 +148,10 @@ class price
 
                 // Get pricing data
                 if ($solarSystemID == "global") {
-                                    $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?typeid={$typeID}"));
+                    $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?typeid={$typeID}"));
                 } else {
-                                    $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
+                    $this->logger->addInfo("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}");
+                    $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
                 }
 
                 $lowBuy = number_format((float) $data->marketstat->type->buy->min, 2);

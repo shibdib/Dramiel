@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-function updateSluggardDB($logger)
+function updateDramielDB($logger)
 {
     $tables = array("users", "usersSeen", "storage", "shipFits");
 
@@ -80,14 +80,14 @@ function updateSluggardDB($logger)
     );
 
     // Does the file exist?
-    if(!file_exists(__DIR__ . "/../database/sluggard.sqlite"))
-        touch(__DIR__ . "/../database/sluggard.sqlite");
+    if(!file_exists(__DIR__ . "/../../database/dramiel.sqlite"))
+        touch(__DIR__ . "/../../database/dramiel.sqlite");
 
     // Create table if not exists
     foreach($tables as $table) {
         $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", "name", array(":name" => $table));
         if(!$exists) {
-            $logger->warn("Creating {$table} in sluggard.sqlite, since it does not exist");
+            $logger->warn("Creating {$table} in dramiel.sqlite, since it does not exist");
             dbExecute(trim($tableCreateCode[$table]));
         }
     }

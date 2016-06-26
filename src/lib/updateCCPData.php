@@ -26,9 +26,9 @@
 function updateCCPData($logger) {
     $ccpDataURL = "https://mambaonline.org/bot/sqlite-latest.sqlite.bz2";
     $ccpDataMD5URL = "https://mambaonline.org/bot/sqlite-latest.sqlite.bz2.md5";
-    $databaseDir = __DIR__ . "/../database/";
+    $databaseDir = __DIR__ . "/../../database/";
     $md5 = explode(" ", downloadData($ccpDataMD5URL))[0];
-    $lastSeenMD5 = getPermCache("SluggardCCPDataMD5");
+    $lastSeenMD5 = getPermCache("CCPDataMD5");
     if($lastSeenMD5 !== $md5) {
         try {
             $logger->notice("Updating CCP SQLite DB");

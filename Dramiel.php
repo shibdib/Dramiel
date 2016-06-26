@@ -61,6 +61,8 @@ if (file_exists("config/config.php")) {
 foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
     require_once($lib);
 }
+// Update DB
+updateDramielDB($logger)
 
 
 
@@ -90,7 +92,7 @@ foreach ($pluginDirs as $dir) {
         require_once($plugin);
         $fileName = str_replace(".php", "", basename($plugin));
         $p = new $fileName();
-        $p->init($config, $discord, $logger, $message);
+        $p->init($config, $discord, $logger);
         $plugins[] = $p;
     }
 }
