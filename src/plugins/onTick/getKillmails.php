@@ -23,6 +23,10 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
+
 /**
  * Class getKillmails
  */
@@ -109,10 +113,9 @@ class getKillmails
     {
         $lastChecked = getPermCache("killmailCheck{$this->corpID}");
         if ($lastChecked <= time()) {
-            $this->logger->info("Checking for new killmails.");
+            $this->logger->addInfo("Checking for new killmails.");
             $oldID = getPermCache("newestKillmailID");
             $one = '1';
-            /** @noinspection PhpWrongStringConcatenationInspection */
             $updatedID = $oldID + $one;
             setPermCache("newestKillmailID", $updatedID);
             $this->getKM();
@@ -161,19 +164,21 @@ class getKillmails
                 } elseif ($victimName == "") {
                     $msg = "**{$killTime}**\n\n**{$shipName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                 }
-                $this->discord->api("channel")->messages()->create($this->kmChannel, $msg);
+                $channelID = $this->kmChannel;
+                $channel = Channel::find($channelID);
+                $channel->sendMessage($msg, false);
                 setPermCache("newestKillmailID", $killID);
 
                 sleep(2);
                 $i++;
             } else {
                 $updatedID = getPermCache("newestKillmailID");
-                $this->logger->info("Kill posting cap reached, newest kill id is {$updatedID}");
+                $this->logger->addInfo("Kill posting cap reached, newest kill id is {$updatedID}");
                 return null;
             }
         }
         $updatedID = getPermCache("newestKillmailID");
-        $this->logger->info("All kills posted, newest kill id is {$updatedID}");
+        $this->logger->addInfo("All kills posted, newest kill id is {$updatedID}");
         return null;
     }
 
