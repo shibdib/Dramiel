@@ -53,7 +53,7 @@ function updateCCPData($logger) {
             $logger->addInfo("Memory in use after garbage collection: " . memory_get_usage() / 1024 / 1024 . "MB");
             $logger->addInfo("Deleting bz2 file");
             unlink("{$databaseDir}/ccpData.sqlite.bz2");
-            setPermCache("SluggardCCPDataMD5", $md5);
+            setPermCache("CCPDataMD5", $md5);
             // Create the mapCelestialsView
             $logger->addInfo("Creating the mapAllCelestials view");
             dbExecute("CREATE VIEW mapAllCelestials AS SELECT itemID, itemName, typeName, mapDenormalize.typeID, solarSystemName, mapDenormalize.solarSystemID, mapDenormalize.constellationID, mapDenormalize.regionID, mapRegions.regionName, orbitID, mapDenormalize.x, mapDenormalize.y, mapDenormalize.z FROM mapDenormalize JOIN invTypes ON (mapDenormalize.typeID = invTypes.typeID) JOIN mapSolarSystems ON (mapSolarSystems.solarSystemID = mapDenormalize.solarSystemID) JOIN mapRegions ON (mapDenormalize.regionID = mapRegions.regionID) JOIN mapConstellations ON (mapDenormalize.constellationID = mapConstellations.constellationID)", array(), "ccp");
