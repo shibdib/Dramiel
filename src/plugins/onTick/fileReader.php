@@ -23,6 +23,10 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
+
 /**
  * Class fileReaderJabber
  */
@@ -117,8 +121,10 @@ class fileReader
                     $message = "skip";
                 }
                 if ($message != "skip") {
-                    $this->logger->info("Ping sent to channel {$channelID}, Message - {$message}");
-                    $this->discord->api("channel")->messages()->create($channelID, $message);
+                    $this->logger->addInfo("Ping sent to channel {$channelID}, Message - {$message}");
+                    // Send the pings to the channel
+                    $channel = Channel::find($channelID);
+                    $channel->sendMessage($message, false);
                 }
             }
             $h = fopen($this->db, "w+");
