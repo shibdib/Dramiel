@@ -23,6 +23,10 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
+
 /**
  * Class siphons
  */
@@ -78,7 +82,7 @@ class siphons {
         $vCode = $this->vCode;
 
         if ($lastChecked <= time()) {
-            $this->logger->info("Checking API Key {$keyID} for siphons");
+            $this->logger->addInfo("Checking API Key {$keyID} for siphons");
             $this->checkTowers($keyID, $vCode);
         }
     }
@@ -102,8 +106,10 @@ class siphons {
                             $msg .= "**POSSIBLE SIPHON**\n";
                             $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
                             // Send the mails to the channel;
-                            $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
-                            $this->logger->info($msg);
+                            $channelID = $this->toDiscordChannel;
+                            $channel = Channel::find($channelID);
+                            $channel->sendMessage($msg, false);
+                            $this->logger->addInfo($msg);
                             $siphonCount++;
                             sleep(2); // Lets sleep for a second, so we don't rage spam
                         }
@@ -122,8 +128,10 @@ class siphons {
                             $msg .= "**POSSIBLE SIPHON**\n";
                             $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
                             // Send the mails to the channel;
-                            $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
-                            $this->logger->info($msg);
+                            $channelID = $this->toDiscordChannel;
+                            $channel = Channel::find($channelID);
+                            $channel->sendMessage($msg, false);
+                            $this->logger->addInfo($msg);
                             $siphonCount++;
                             sleep(2); // Lets sleep for a second, so we don't rage spam
                         }
@@ -143,9 +151,12 @@ class siphons {
             setPermCache("siphonLastChecked{$keyID}", $cacheClr);
         }
         if ($siphonCount > 0){
-            $this->discord->api("channel")->messages()->create($this->toDiscordChannel, "Next Siphon Check At: {$cacheTimer} EVE Time");
+            $msg = "Next Siphon Check At: {$cacheTimer} EVE Time";
+            $channelID = $this->toDiscordChannel;
+            $channel = Channel::find($channelID);
+            $channel->sendMessage($msg, false);
         }
-        $this->logger->info("Siphon Check Complete Next Check At {$cacheTimer}");
+        $this->logger->addInfo("Siphon Check Complete Next Check At {$cacheTimer}");
         return null;
     }
 
