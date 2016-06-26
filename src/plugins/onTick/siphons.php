@@ -105,7 +105,7 @@ class siphons {
                             $msg = "{$this->prefix}";
                             $msg .= "**POSSIBLE SIPHON**\n";
                             $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
-                            // Send the mails to the channel;
+                            // Send the msg to the channel;
                             $channelID = $this->toDiscordChannel;
                             $channel = Channel::find($channelID);
                             $channel->sendMessage($msg, false);
@@ -127,7 +127,7 @@ class siphons {
                             $msg = "{$this->prefix}";
                             $msg .= "**POSSIBLE SIPHON**\n";
                             $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
-                            // Send the mails to the channel;
+                            // Send the msg to the channel;
                             $channelID = $this->toDiscordChannel;
                             $channel = Channel::find($channelID);
                             $channel->sendMessage($msg, false);

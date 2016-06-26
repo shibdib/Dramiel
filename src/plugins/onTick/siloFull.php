@@ -23,6 +23,10 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
+
 /**
  * Class siloFull
  */
@@ -75,7 +79,7 @@ class siloFull {
         $keyID = $this->keyID;
         $vCode = $this->vCode;
         if ($lastChecked <= time()) {
-            $this->logger->info("Checking API Key {$keyID} for full silos");
+            $this->logger->addInfo("Checking API Key {$keyID} for full silos");
             $this->checkTowers($keyID, $vCode);
         }
     }
@@ -118,9 +122,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -140,9 +146,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -162,9 +170,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -184,9 +194,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -206,9 +218,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -228,9 +242,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -250,9 +266,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -272,9 +290,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -294,9 +314,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -316,9 +338,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -338,9 +362,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -360,9 +386,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -382,9 +410,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -404,9 +434,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -426,9 +458,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -448,9 +482,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -470,9 +506,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -492,9 +530,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -514,9 +554,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -536,9 +578,11 @@ class siloFull {
                                 }
                                 $msg .= "**System: **{$systemName}\n";
                                 $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                $this->logger->info("{$typeName} Silo nearing capacity in {$systemName}");
-                                // Send the mails to the channel
-                                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                                $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
                                 $siloCount++;
                                 sleep(1);
                             }
@@ -560,9 +604,13 @@ class siloFull {
         }
 
         if ($siloCount > 0){
-            $this->discord->api("channel")->messages()->create($this->toDiscordChannel, "Next Silo Check At: {$cacheTimer} EVE Time");
+            $msg = "Next Silo Check At: {$cacheTimer} EVE Time";
+            // Send the msg to the channel;
+            $channelID = $this->toDiscordChannel;
+            $channel = Channel::find($channelID);
+            $channel->sendMessage($msg, false);
         }
-        $this->logger->info("Silo Check Complete Next Check At {$cacheTimer}");
+        $this->logger->addInfo("Silo Check Complete Next Check At {$cacheTimer}");
         return null;
 
 
