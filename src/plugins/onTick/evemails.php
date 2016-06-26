@@ -104,13 +104,11 @@ class evemails {
     function tick()
     {
         $lastChecked = getPermCache("mailLastChecked{$this->keyID}");
-        var_dump("1");
-        var_dump($lastChecked);
         $keyID = $this->keyID;
         $vCode = $this->vCode;
         $characterID = $this->characterID;
 
-        if (2>1) {
+        if ($lastChecked <= time()) {
             $this->logger->addInfo("Checking API Key {$keyID} for new mail..");
             $this->checkMails($keyID, $vCode, $characterID);
         }
@@ -121,8 +119,6 @@ class evemails {
     {
         $updateMaxID = false;
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
-        var_dump("2");
-        var_dump($url);
         $data = json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)), true);
         $data = $data["result"]["rowset"]["row"];
         $xml = makeApiRequest($url);
