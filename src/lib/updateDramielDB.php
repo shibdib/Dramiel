@@ -87,7 +87,7 @@ function updateDramielDB($logger)
     foreach($tables as $table) {
         $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", "name", array(":name" => $table));
         if(!$exists) {
-            $logger->warn("Creating {$table} in dramiel.sqlite, since it does not exist");
+            $logger->addInfo("Creating {$table} in dramiel.sqlite, since it does not exist");
             dbExecute(trim($tableCreateCode[$table]));
         }
     }

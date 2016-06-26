@@ -61,12 +61,11 @@ if (file_exists("config/config.php")) {
 foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
     require_once($lib);
 }
-// Update DB
-updateDramielDB($logger)
+// Update DBs
+updateDramielDB($logger);
+updateCCPData($logger);
 
-
-
-//Init Discord
+// Init Discord
 use Discord\Cache\Cache;
 use Discord\Cache\Drivers\ArrayCacheDriver;
 use Discord\Discord;
