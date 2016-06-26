@@ -23,6 +23,10 @@
  * SOFTWARE.
  */
 
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
+
 /**
  * Class twitterOutput
  */
@@ -123,7 +127,10 @@ class twitterOutput
                 ksort($messages);
 
                 foreach ($messages as $id => $msg) {
-                    $this->discord->api("channel")->messages()->create($this->channelID, $msg);
+                    // Send the tweets to the channel
+                    $channelID = $this->channelID;
+                    $channel = Channel::find($channelID);
+                    $channel->sendMessage($msg, false);
                     sleep(1); // Lets sleep for a second, so we don't rage spam
                 }
             }
