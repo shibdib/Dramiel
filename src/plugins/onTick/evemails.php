@@ -105,7 +105,7 @@ class evemails {
         $characterID = $this->characterID;
 
         if ($lastChecked <= time()) {
-            $this->logger->info("Checking API Key {$keyID} for new mail..");
+            $this->logger->addInfo("Checking API Key {$keyID} for new mail..");
             $this->checkMails($keyID, $vCode, $characterID);
         }
 
@@ -165,10 +165,13 @@ class evemails {
                 $msgLong = htmlspecialchars_decode(trim($messageSplit[1]));
 
                 // Send the mails to the channel
-                $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                $channelID = $this->toDiscordChannel;
+                /** @var Channel $channel */
+                $channel = Channel::find($channelID);
+                $channel->sendMessage($msg, false);
                 sleep(1); // Lets sleep for a second, so we don't rage spam
                 if (strlen($content) > 1850) {
-                    $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msgLong);
+                    $channel->sendMessage($msgLong, false);
                 }
 
                 // Find the maxID so we don't spit this message out ever again
@@ -182,7 +185,7 @@ class evemails {
                 }
             }
         }
-        $this->logger->info("Next Mail Check At: {$cacheTimer} EVE Time");
+        $this->logger->addInfo("Next Mail Check At: {$cacheTimer} EVE Time");
     }
 
     /**

@@ -113,7 +113,7 @@ class notifications
         $characterID = $this->characterID;
 
         if ($lastChecked <= time()) {
-            $this->logger->info("Checking API Key {$keyID} for notifications..");
+            $this->logger->addInfo("Checking API Key {$keyID} for notifications..");
             $this->getNotifications($keyID, $vCode, $characterID);
         }
 
@@ -411,8 +411,11 @@ class notifications
                     }
                     if ($msg == "") {
                     }
-                    $this->logger->info("Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
-                    $this->discord->api("channel")->messages()->create($this->toDiscordChannel, $msg);
+                    $this->logger->addInfo("Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
+                    $channelID = $this->toDiscordChannel;
+                    /** @var Channel $channel */
+                    $channel = Channel::find($channelID);
+                    $channel->sendMessage($msg, false);
                     // Find the maxID so we don't output this message again in the future
                     $this->maxID = max($notificationID, $this->maxID);
                     $this->newestNotificationID = $this->maxID;
@@ -420,10 +423,10 @@ class notifications
                 }
             }
 
-            $this->logger->info("Next Notification Check At: {$cacheTimer} EVE Time");
+            $this->logger->addInfo("Next Notification Check At: {$cacheTimer} EVE Time");
         }
         catch (exception $e) {
-            $this->logger->info("Notification Error: " . $e->getMessage());
+            $this->logger->addInfo("Notification Error: " . $e->getMessage());
         }
     }
     /**
