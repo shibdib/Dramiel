@@ -70,6 +70,7 @@ use Discord\Cache\Cache;
 use Discord\Cache\Drivers\ArrayCacheDriver;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
 use Discord\Parts\Guild\Guild;
 use Discord\Parts\User\Game;
 use Discord\Parts\User\Member;
@@ -80,7 +81,7 @@ use Discord\WebSockets\WebSocket;
 $discord = new Discord('MTc4NjA4Mzk4NDQxNTEyOTYx.Ck5kHA.3mDMVFdFA4tRnHvUTdbggcpY56A');
 
 // Load tick plugins
-$pluginDirs = array("src/plugins/tick/*.php");
+$pluginDirs = array("src/plugins/onTick/*.php");
 $logger->info("Loading background plugins");
 $plugins = array();
 foreach ($pluginDirs as $dir) {
@@ -94,7 +95,7 @@ foreach ($pluginDirs as $dir) {
         $fileName = str_replace(".php", "", basename($plugin));
         $p = new $fileName();
         $p->init($config, $discord, $logger);
-        $plugins[] = $p;
+        $pluginsT[] = $p;
     }
 }
 // Number of plugins loaded
@@ -126,7 +127,7 @@ $ws = new WebSocket($discord);
 
 $ws->on(
     'ready',
-    function ($discord) use ($ws, $logger, $config, $plugins) {
+    function ($discord) use ($ws, $logger, $config, $plugins, $pluginsT) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -137,6 +138,13 @@ $ws->on(
         $game = new Game(array('name' => $config["bot"]["game"], 'url' => null, 'type' => null), true);
         $ws->updatePresence($game, false);
         // $ws->setNickname($config["bot"]["name"]); //not in yet
+
+        // Run the Tick plugins
+        $ws->loop->addPeriodicTimer(1, function () use ($pluginsT) {
+            foreach ($pluginsT as $plugin)
+                $plugin->tick();
+        });
+
         $ws->on(
             Event::MESSAGE_CREATE,
             function ($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
