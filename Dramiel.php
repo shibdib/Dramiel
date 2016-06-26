@@ -79,6 +79,28 @@ use Discord\WebSockets\WebSocket;
 
 $discord = new Discord('MTc4NjA4Mzk4NDQxNTEyOTYx.Ck5kHA.3mDMVFdFA4tRnHvUTdbggcpY56A');
 
+// Load tick plugins
+$pluginDirs = array("src/plugins/tick/*.php");
+$logger->info("Loading background plugins");
+$plugins = array();
+foreach ($pluginDirs as $dir) {
+    foreach (glob($dir) as $plugin) {
+        // Only load the plugins we want to load, according to the config
+        if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"])) {
+            continue;
+        }
+
+        require_once($plugin);
+        $fileName = str_replace(".php", "", basename($plugin));
+        $p = new $fileName();
+        $p->init($config, $discord, $logger);
+        $plugins[] = $p;
+    }
+}
+// Number of plugins loaded
+$logger->info("Loaded: " . count($plugins) . " background plugins");
+
+// Load chat plugins
 $pluginDirs = array("src/plugins/onMessage/*.php");
 $logger->addInfo("Loading in chat plugins");
 $plugins = array();
@@ -97,7 +119,7 @@ foreach ($pluginDirs as $dir) {
     }
 }
 
-// Number of plugins loaded
+// Number of chat plugins loaded
 $logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
 
 $ws = new WebSocket($discord);
