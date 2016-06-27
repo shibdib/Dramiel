@@ -66,7 +66,7 @@ class help
     function onMessage($msgData, $message)
     {
         $this->message = $message;
-        
+
         $message = $msgData["message"]["message"];
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
@@ -79,8 +79,17 @@ class help
                 $commands = array();
                 foreach ($plugins as $plugin) {
                     $info = $plugin->information();
+                    $channelInfo = $this->message->getFullChannelAttribute();
+                    $guildID = $channelInfo[@guild_id];
+                    if (isset($this->config["bot"]["primary"])){
+                        if ($guildID != $this->config["bot"]["primary"]) {
+                            if ($info["name"] == "auth"){
+                                continue;
+                            }
+                        }
+                    }
                     if (!empty($info["name"])) {
-                                            $commands[] = $info["name"];
+                        $commands[] = $info["name"];
                     }
                 }
 

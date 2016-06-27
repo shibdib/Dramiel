@@ -25,6 +25,8 @@
 
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Guild\Guild;
+use Discord\Parts\User\Member;
 
 /**
  * Class auth
@@ -96,9 +98,18 @@ class auth
         $userID = $msgData["message"]["fromID"];
         $userName = $msgData["message"]["from"];
         $message = $msgData["message"]["message"];
-        $channelID = $msgData["message"]["channelID"];
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
+            if (isset($this->config["bot"]["primary"])){
+                $userID = $msgData["message"]["fromID"];
+                $channelInfo = $this->message->getFullChannelAttribute();
+                $guildID = $channelInfo[@guild_id];
+                if ($guildID != $this->config["bot"]["primary"]) {
+                    $this->message->reply("**Failure:** The auth code your attempting to use is for another discord server");
+                    return null;
+                }
+
+            }
             $code = $data["messageString"];
             $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
 

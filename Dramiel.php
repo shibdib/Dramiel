@@ -79,7 +79,7 @@ use Discord\Parts\WebSockets\PresenceUpdate;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\WebSocket;
 
-$discord = new Discord('MTc4NjA4Mzk4NDQxNTEyOTYx.Ck5kHA.3mDMVFdFA4tRnHvUTdbggcpY56A');
+$discord = new Discord($config["bot"]["token"]);
 
 // Load tick plugins
 $pluginDirs = array("src/plugins/onTick/*.php");
