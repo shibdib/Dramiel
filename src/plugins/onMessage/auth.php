@@ -75,8 +75,8 @@ class auth
         $this->corpID = $config["plugins"]["auth"]["corpID"];
         $this->allianceID = $config["plugins"]["auth"]["allianceID"];
         $this->guildID = $config["plugins"]["auth"]["guildID"];
-        $this->roleName = $config["plugins"]["auth"]["corpmemberRole"];
-        $this->allyroleName = $config["plugins"]["auth"]["allymemberRole"];
+        $this->roleName = $config["plugins"]["auth"]["corpMemberRole"];
+        $this->allyroleName = $config["plugins"]["auth"]["allyMemberRole"];
         $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
         $this->ssoUrl = $config["plugins"]["auth"]["url"];
     }
