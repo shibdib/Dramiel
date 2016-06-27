@@ -132,22 +132,21 @@ class authCheck
                     $xml = makeApiRequest($url);
                     if ($xml->result->rowset->row[0]) {
                         foreach ($xml->result->rowset->row as $character) {
-                            if ($character->attributes()->allianceID != $allyID) {
-                                if ($character->attributes()->corpID != $corpID) {
-                                    foreach ($roles as $role) {
-                                        $member->removeRole($role);
-                                    }
-
-                                    // Send the info to the channel
-                                    $msg = $discordName . " roles have been removed via the auth.";
-                                    $channelID = $toDiscordChannel;
-                                    $channel = Channel::find($channelID);
-                                    $channel->sendMessage($msg, false);
-                                    $this->logger->addInfo($discordName . " roles have been removed via the auth.");
-
-                                    $sql4 = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-                                    $result4 = $conn->query($sql4);
+                            if ($character->attributes()->allianceID != $allyID && $character->attributes()->corporationID != $corpID) {
+                                foreach ($roles as $role) {
+                                    $member->removeRole($role);
                                 }
+
+                                // Send the info to the channel
+                                $msg = $discordName . " roles have been removed via the auth.";
+                                $channelID = $toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
+                                $this->logger->addInfo($discordName . " roles ({$role}) have been removed via the auth.");
+
+                                $sql4 = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+                                $result4 = $conn->query($sql4);
+
                             }
                         }
                     }
