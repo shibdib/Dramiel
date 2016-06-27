@@ -29,8 +29,14 @@ function updateCCPData($logger) {
     $databaseDir = __DIR__ . "/../../database/";
     $md5 = explode(" ", downloadData($ccpDataMD5URL))[0];
     $lastSeenMD5 = getPermCache("CCPDataMD5");
-    if($lastSeenMD5 !== $md5) {
+    $lastChecked = getPermCache("CCPDataLastAttempt");
+    if (!isset($lastChecked)){
+        $lastChecked = 1;
+    }
+    if($lastSeenMD5 !== $md5 && time() > $lastChecked) {
         try {
+            $checkNext = time()+79200;
+            setPermCache("CCPDataLastAttempt", $checkNext);
             $logger->addInfo("Updating CCP SQLite DB");
             $logger->addInfo("Downloading bz2 file and writing it to {$databaseDir}ccpData.sqlite.bz2");
             $downloadedData = downloadLargeData($ccpDataURL, "{$databaseDir}ccpData.sqlite.bz2");
@@ -59,6 +65,15 @@ function updateCCPData($logger) {
             dbExecute("CREATE VIEW mapAllCelestials AS SELECT itemID, itemName, typeName, mapDenormalize.typeID, solarSystemName, mapDenormalize.solarSystemID, mapDenormalize.constellationID, mapDenormalize.regionID, mapRegions.regionName, orbitID, mapDenormalize.x, mapDenormalize.y, mapDenormalize.z FROM mapDenormalize JOIN invTypes ON (mapDenormalize.typeID = invTypes.typeID) JOIN mapSolarSystems ON (mapSolarSystems.solarSystemID = mapDenormalize.solarSystemID) JOIN mapRegions ON (mapDenormalize.regionID = mapRegions.regionID) JOIN mapConstellations ON (mapDenormalize.constellationID = mapConstellations.constellationID)", array(), "ccp");
         } catch(\Exception $e) {
             throw new \Exception($e->getMessage());
+        }
+        if($lastSeenMD5 !== $md5 && time() < $lastChecked) {
+            $logger->addInfo("Updating CCP SQLite DB");
+            $logger->addInfo("Downloading bz2 file and writing it to {$databaseDir}ccpData.sqlite");
+            $downloadedData = downloadLargeData($ccpDataURL, "{$databaseDir}ccpData.sqlite");
+            if($downloadedData == false) {
+                $logger->addInfo("**Error:** File not downloaded successfully, check bot command line for more information!");
+            }
+            setPermCache("CCPDataMD5", $md5);
         }
     }
     else
