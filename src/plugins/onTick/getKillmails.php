@@ -84,7 +84,7 @@ class getKillmails
             //Check for a higher set value
             $currentID = getPermCache("newestKillmailID");
             if ($currentID < $this->startMail || $currentID == null) {
-                setPermCache("newestKillmailID", $this->startMail); 
+                setPermCache("newestKillmailID", $this->startMail);
             }
 
             // Schedule it for right now
@@ -129,19 +129,19 @@ class getKillmails
         $this->newestKillmailID = getPermCache("newestKillmailID");
         $lastMail = $this->newestKillmailID;
         if ($this->allianceID == "0" & $this->lossMail == 'true') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}";
+            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
         }
         if ($this->allianceID == "0" & $this->lossMail == 'false') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}";
+            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
         }
         if ($this->allianceID != "0" & $this->lossMail == 'true') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}";
+            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
         }
         if ($this->allianceID != "0" & $this->lossMail == 'false') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}";
+            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
         }
 
-        $xml = simplexml_load_file($url);
+        $xml = simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA);
         $i = 0;
         $limit = $this->spamAmount;
         foreach ($xml->result->rowset->row as $kill) {
