@@ -142,7 +142,7 @@ $ws->on(
 
         // Database check
         $ws->loop->addPeriodicTimer(86400, function () use ($logger) {
-            updateDramielDB($logger);
+            updateDramielDB($logger); 
             updateCCPData($logger);
         });
         
