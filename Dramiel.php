@@ -63,8 +63,8 @@ foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
 }
 
 //Startup DB Check
-updateCCPData($logger);
 updateDramielDB($logger);
+updateCCPData($logger);
 
 // Init Discord
 use Discord\Cache\Cache;
