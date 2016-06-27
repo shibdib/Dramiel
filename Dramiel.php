@@ -61,9 +61,6 @@ if (file_exists("config/config.php")) {
 foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
     require_once($lib);
 }
-// Update DBs
-updateDramielDB($logger);
-updateCCPData($logger);
 
 // Init Discord
 use Discord\Cache\Cache;
@@ -139,10 +136,23 @@ $ws->on(
         $ws->updatePresence($game, false);
         // $ws->setNickname($config["bot"]["name"]); //not in yet
 
+        // Database check
+        $ws->loop->addPeriodicTimer(86400, function () use ($logger) {
+            updateCCPData($logger);
+            updateDramielDB($logger);
+        });
+        
         // Run the Tick plugins
         $ws->loop->addPeriodicTimer(1, function () use ($pluginsT) {
             foreach ($pluginsT as $plugin)
                 $plugin->tick();
+        });
+
+        // Mem cleanup every 30 minutes
+        $ws->loop->addPeriodicTimer(1800, function () use ($logger) {
+            $logger->addInfo("Memory in use: " . memory_get_usage() / 1024 / 1024 . "MB");
+            gc_collect_cycles(); // Collect garbage
+            $logger->addInfo("Memory in use after garbage collection: " . memory_get_usage() / 1024 / 1024 . "MB");
         });
 
         $ws->on(
