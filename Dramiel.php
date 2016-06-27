@@ -62,6 +62,10 @@ foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
     require_once($lib);
 }
 
+//Startup DB Check
+updateCCPData($logger);
+updateDramielDB($logger);
+
 // Init Discord
 use Discord\Cache\Cache;
 use Discord\Cache\Drivers\ArrayCacheDriver;
