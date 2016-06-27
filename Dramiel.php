@@ -201,10 +201,20 @@ $ws->on(
 $ws->on(
     'error',
     function ($error, $ws) {
-        $logger->error($error);
+        $this->log->addError($error);
         exit(1);
     }
 );
+$ws->on(
+    'reconnecting',
+    function () {
+    $this->log->addInfo('Websocket is reconnecting..');
+});
+$ws->on(
+    'reconnected',
+    function () {
+    $this->log->addInfo('Websocket was reconnected..');
+});
 // Now we will run the ReactPHP Event Loop!
 $ws->run();
 
