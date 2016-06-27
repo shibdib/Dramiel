@@ -120,7 +120,7 @@ class authCheck
             $result3 = $conn->query($sql3);
             $num_rows2 = $result3->num_rows;
 
-            if ($num_rows2 >= 1) {
+            if ($num_rows2 >= 2) {
                 while ($rows = $result3->fetch_assoc()) {
                     $charID = $rows['characterID'];
                     $discordID = $rows['discordID'];
