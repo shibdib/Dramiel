@@ -142,8 +142,8 @@ $ws->on(
 
         // Database check
         $ws->loop->addPeriodicTimer(86400, function () use ($logger) {
-            updateCCPData($logger);
             updateDramielDB($logger);
+            updateCCPData($logger);
         });
         
         // Run the Tick plugins
