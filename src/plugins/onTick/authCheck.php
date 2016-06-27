@@ -182,6 +182,9 @@ class authCheck
                     $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
                     return null;
                 }
+                $cacheTimer = gmdate("Y-m-d H:i:s", $nextCheck);
+                $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
+                return null;
             }
             $this->logger->addInfo("No users found in database.");
             return null;
