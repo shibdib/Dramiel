@@ -100,7 +100,7 @@ foreach ($pluginDirs as $dir) {
     }
 }
 // Number of plugins loaded
-$logger->info("Loaded: " . count($plugins) . " background plugins");
+$logger->info("Loaded: " . count($pluginsT) . " background plugins");
 
 // Load chat plugins
 $pluginDirs = array("src/plugins/onMessage/*.php");
