@@ -41,8 +41,8 @@ function updateCCPData($logger) {
             $logger->addInfo("Downloading bz2 file and writing it to {$databaseDir}ccpData.sqlite.bz2");
             $downloadedData = downloadLargeData($ccpDataURL, "{$databaseDir}ccpData.sqlite.bz2");
             if($downloadedData == false) {
-                $logger->addInfo("Error: File not downloaded successfully.");
                 $logger->addInfo("**Error:** File not downloaded successfully, check bot command line for more information!");
+                return null;
             }
             $logger->addInfo("Opening bz2 file");
             $sqliteData = bzopen("{$databaseDir}ccpData.sqlite.bz2", "r");
@@ -68,10 +68,11 @@ function updateCCPData($logger) {
         }
         if($lastSeenMD5 !== $md5 && time() < $lastChecked) {
             $logger->addInfo("Updating CCP SQLite DB");
-            $logger->addInfo("Downloading bz2 file and writing it to {$databaseDir}ccpData.sqlite");
+            $logger->addInfo("Downloading large file and writing it to {$databaseDir}ccpData.sqlite");
             $downloadedData = downloadLargeData($ccpDataURL, "{$databaseDir}ccpData.sqlite");
             if($downloadedData == false) {
                 $logger->addInfo("**Error:** File not downloaded successfully, check bot command line for more information!");
+                return null;
             }
             setPermCache("CCPDataMD5", $md5);
         }
