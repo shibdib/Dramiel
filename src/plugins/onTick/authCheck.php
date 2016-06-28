@@ -125,8 +125,8 @@ class authCheck
                     $discordID = $rows['discordID'];
                     $guild = $this->discord->guilds->first();
                     $member = $guild->members->get("id", $discordID);
-                    $discordName = $member->user->username;
-                    $roles = $member->roles;
+                    if (isset($member->user->username)) { $discordName = $member->user->username; }
+                    if (isset($member->roles)) { $roles = $member->roles; }
                     $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                     $xml = makeApiRequest($url);
                     if ($xml->result->rowset->row[0]) {
