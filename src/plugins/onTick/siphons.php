@@ -95,7 +95,7 @@ class siphons {
         foreach ($xml->result->rowset->row as $structures) {
             //Check silos
             if ($structures->attributes()->typeID == 14343) {
-                foreach ((array) $structures->rowset->row as $silo) {
+                foreach ($structures->rowset->row as $silo) {
                     //Avoid reporting empty silos
                     if ($silo->attributes()->quantity != 0) {
                         //Check for a multiple of 50
@@ -117,7 +117,7 @@ class siphons {
                 }
             }
             if ($structures->attributes()->typeID == 17982) {
-                foreach ((array) $structures->rowset->row as $coupling) {
+                foreach ($structures->rowset->row as $coupling) {
                     //Avoid reporting empty coupling arrays
                     if ($coupling->attributes()->quantity != 0) {
                         //Check for a multiple of 50

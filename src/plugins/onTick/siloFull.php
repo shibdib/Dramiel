@@ -104,7 +104,7 @@ class siloFull {
         foreach ($xml->result->rowset->row as $structures) {
             //Check silos
             if ($structures->attributes()->typeID == 14343) {
-                foreach ((array) $structures->rowset->row as $silo) {
+                foreach ($structures->rowset->row as $silo) {
                     $moonGoo = $silo->attributes()->typeID;
                     switch ($moonGoo) {
                         case 16634:
