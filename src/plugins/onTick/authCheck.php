@@ -105,7 +105,6 @@ class authCheck
     function checkAuth()
     {
         if ($this->config["plugins"]["auth"]["periodicCheck"] == "true") {
-            $this->logger->addInfo("Initiating Auth Check");
             $db = $this->config["database"]["host"];
             $dbUser = $this->config["database"]["user"];
             $dbPass = $this->config["database"]["pass"];
@@ -187,6 +186,10 @@ class authCheck
                 return null;
             }
             $this->logger->addInfo("No users found in database.");
+            $nextCheck = time() + 7200;
+            setPermCache("authLastChecked", $nextCheck);
+            $cacheTimer = gmdate("Y-m-d H:i:s", $nextCheck);
+            $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
             return null;
         }
         return null;
