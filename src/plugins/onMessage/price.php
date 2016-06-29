@@ -153,7 +153,6 @@ class price
                 if ($solarSystemID == "global") {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?typeid={$typeID}"));
                 } else {
-                    $this->logger->addInfo("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}");
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
                 }
 
