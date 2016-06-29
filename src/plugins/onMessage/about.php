@@ -52,7 +52,7 @@ class about
      * @param $config
      * @param $discord
      * @param $logger
-     * @param $message
+     * @internal param $message
      */
     function init($config, $discord, $logger)
     {
@@ -70,6 +70,7 @@ class about
 
     /**
      * @param $msgData
+     * @param $message
      */
     function onMessage($msgData, $message)
     {

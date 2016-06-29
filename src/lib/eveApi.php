@@ -46,7 +46,7 @@ function makeApiRequest($url)
         // Return a new SimpleXMLElement based upon the received data
         return new SimpleXMLElement($data);
     }
-    catch (exception $e) {
+    catch (Exception $e) {
         var_dump("EVE API Error: " . $e->getMessage());
         return null;
     }
@@ -81,7 +81,7 @@ function serverStatus(){
         //If server is up return true
         return $true;
     }
-    catch (exception $e) {
+    catch (Exception $e) {
         var_dump("EVE API Error: " . $e->getMessage());
         return null;
     }

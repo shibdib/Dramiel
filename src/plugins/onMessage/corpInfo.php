@@ -62,6 +62,8 @@ class corpInfo
 
     /**
      * @param $msgData
+     * @param $message
+     * @return null
      */
     function onMessage($msgData, $message)
     {

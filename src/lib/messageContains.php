@@ -26,6 +26,7 @@
 /**
  * @param $message
  * @param $trigger
+ * @param $symbol
  * @return array|bool
  */
 function command($message, $trigger, $symbol)

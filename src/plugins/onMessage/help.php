@@ -62,6 +62,7 @@ class help
 
     /**
      * @param $msgData
+     * @param $message
      */
     function onMessage($msgData, $message)
     {

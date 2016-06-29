@@ -46,7 +46,7 @@ function downloadData($url)
         $result = curl_exec($curl);
         return $result;
     }
-    catch (exception $e) {
+    catch (Exception $e) {
         var_dump("cURL Error: " . $e->getMessage());
         return null;
     }
@@ -71,7 +71,7 @@ function downloadLargeData($url, $downloadPath)
         fclose($writeHandle);
         return true;
     }
-    catch (exception $e) {
+    catch (Exception $e) {
         var_dump("Download Error: " . $e->getMessage());
         return false;
     }

@@ -62,6 +62,7 @@ class eveStatus
 
     /**
      * @param $msgData
+     * @param $message
      */
     function onMessage($msgData, $message)
     {

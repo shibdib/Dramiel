@@ -66,6 +66,7 @@ class time
 
     /**
      * @param $msgData
+     * @param $message
      */
     function onMessage($msgData, $message)
     {
