@@ -66,7 +66,7 @@ class corpInfo
     function onMessage($msgData, $message)
     {
         $this->message = $message;
-        
+
         $message = $msgData["message"]["message"];
         $user = $msgData["message"]["from"];
 
@@ -79,15 +79,23 @@ class corpInfo
             if (empty($data)) {
                 return $this->message->reply("**Error:** no results was returned.");
             }
-            foreach ($xml->result->rowset->row as $character) {
-                $corpID = $character->attributes()->characterID;
+            $corpID = null;
+            if (isset($xml->result->rowset->row)) {
+                foreach ($xml->result->rowset->row as $character) {
+                    $corpID = $character->attributes()->characterID;
+                }
             }
+
+            if (empty($corpID)) {
+                return $this->message->reply("**Error:** no data available");
+            }
+
             // Get stats
             $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($corpID) . "/";
             $stats = json_decode(downloadData($statsURL), true);
 
             if (empty($stats)) {
-                            return $this->message->reply("**Error:** no data available");
+                return $this->message->reply("**Error:** no data available");
             }
 
             $corporationName = @$stats["corporationName"];
@@ -140,11 +148,11 @@ For more info, visit: $url";
         );
     }
 
-        /**
-         * @param $msgData
-         */
-        function onMessageAdmin($msgData)
-        {
-        }
+    /**
+     * @param $msgData
+     */
+    function onMessageAdmin($msgData)
+    {
+    }
 
 }

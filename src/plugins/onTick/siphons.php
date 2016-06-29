@@ -94,45 +94,49 @@ class siphons {
         foreach ($xml->result->rowset->row as $structures) {
             //Check silos
             if ($structures->attributes()->typeID == 14343) {
-                foreach ($structures->rowset->row as $silo) {
-                    //Avoid reporting empty silos
-                    if ($silo->attributes()->quantity != 0) {
-                        //Check for a multiple of 50
-                        if ($silo->attributes()->quantity % 50 != 0) {
-                            $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $silo->attributes()->typeID), "ccp");
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
-                            $msg = "{$this->prefix}";
-                            $msg .= "**POSSIBLE SIPHON**\n";
-                            $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
-                            // Send the msg to the channel;
-                            $channelID = $this->toDiscordChannel;
-                            $channel = Channel::find($channelID);
-                            $channel->sendMessage($msg, false);
-                            $this->logger->addInfo($msg);
-                            $siphonCount++;
-                            sleep(2); // Lets sleep for a second, so we don't rage spam
+                if (isset($structures->rowset->row)) {
+                    foreach ($structures->rowset->row as $silo) {
+                        //Avoid reporting empty silos
+                        if ($silo->attributes()->quantity != 0) {
+                            //Check for a multiple of 50
+                            if ($silo->attributes()->quantity % 50 != 0) {
+                                $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $silo->attributes()->typeID), "ccp");
+                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $msg = "{$this->prefix}";
+                                $msg .= "**POSSIBLE SIPHON**\n";
+                                $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
+                                $this->logger->addInfo($msg);
+                                $siphonCount++;
+                                sleep(2); // Lets sleep for a second, so we don't rage spam
+                            }
                         }
                     }
                 }
             }
             if ($structures->attributes()->typeID == 17982) {
-                foreach ($structures->rowset->row as $coupling) {
-                    //Avoid reporting empty coupling arrays
-                    if ($coupling->attributes()->quantity != 0) {
-                        //Check for a multiple of 50
-                        if ($coupling->attributes()->quantity % 50 != 0) {
-                            $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $coupling->attributes()->typeID), "ccp");
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
-                            $msg = "{$this->prefix}";
-                            $msg .= "**POSSIBLE SIPHON**\n";
-                            $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
-                            // Send the msg to the channel;
-                            $channelID = $this->toDiscordChannel;
-                            $channel = Channel::find($channelID);
-                            $channel->sendMessage($msg, false);
-                            $this->logger->addInfo($msg);
-                            $siphonCount++;
-                            sleep(2); // Lets sleep for a second, so we don't rage spam
+                if (isset($structures->rowset->row)) {
+                    foreach ($structures->rowset->row as $coupling) {
+                        //Avoid reporting empty coupling arrays
+                        if ($coupling->attributes()->quantity != 0) {
+                            //Check for a multiple of 50
+                            if ($coupling->attributes()->quantity % 50 != 0) {
+                                $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $coupling->attributes()->typeID), "ccp");
+                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $msg = "{$this->prefix}";
+                                $msg .= "**POSSIBLE SIPHON**\n";
+                                $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
+                                // Send the msg to the channel;
+                                $channelID = $this->toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
+                                $this->logger->addInfo($msg);
+                                $siphonCount++;
+                                sleep(2); // Lets sleep for a second, so we don't rage spam
+                            }
                         }
                     }
                 }

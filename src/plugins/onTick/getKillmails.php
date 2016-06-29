@@ -144,37 +144,39 @@ class getKillmails
         $xml = simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA);
         $i = 0;
         $limit = $this->spamAmount;
-        foreach ($xml->result->rowset->row as $kill) {
-            if ($i < $limit) {
-                $killID = $kill->attributes()->killID;
-                if ($this->startMail > $killID) {
-                    $killID = $this->startMail;
-                }
-                $solarSystemID = $kill->attributes()->solarSystemID;
-                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $solarSystemID), "ccp");
-                $killTime = $kill->attributes()->killTime;
-                $victimAllianceName = $kill->victim->attributes()->allianceName;
-                $victimName = $kill->victim->attributes()->characterName;
-                $victimCorpName = $kill->victim->attributes()->corporationName;
-                $victimShipID = $kill->victim->attributes()->shipTypeID;
-                $shipName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $victimShipID), "ccp");
-                // Check if it's a structure
-                if ($victimName != "") {
-                    $msg = "**{$killTime}**\n\n**{$shipName}** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                } elseif ($victimName == "") {
-                    $msg = "**{$killTime}**\n\n**{$shipName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                }
-                $channelID = $this->kmChannel;
-                $channel = Channel::find($channelID);
-                $channel->sendMessage($msg, false);
-                setPermCache("newestKillmailID", $killID);
+        if (isset($xml->result->rowset->row)) {
+            foreach ($xml->result->rowset->row as $kill) {
+                if ($i < $limit) {
+                    $killID = $kill->attributes()->killID;
+                    if ($this->startMail > $killID) {
+                        $killID = $this->startMail;
+                    }
+                    $solarSystemID = $kill->attributes()->solarSystemID;
+                    $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $solarSystemID), "ccp");
+                    $killTime = $kill->attributes()->killTime;
+                    $victimAllianceName = $kill->victim->attributes()->allianceName;
+                    $victimName = $kill->victim->attributes()->characterName;
+                    $victimCorpName = $kill->victim->attributes()->corporationName;
+                    $victimShipID = $kill->victim->attributes()->shipTypeID;
+                    $shipName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $victimShipID), "ccp");
+                    // Check if it's a structure
+                    if ($victimName != "") {
+                        $msg = "**{$killTime}**\n\n**{$shipName}** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                    } elseif ($victimName == "") {
+                        $msg = "**{$killTime}**\n\n**{$shipName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                    }
+                    $channelID = $this->kmChannel;
+                    $channel = Channel::find($channelID);
+                    $channel->sendMessage($msg, false);
+                    setPermCache("newestKillmailID", $killID);
 
-                sleep(2);
-                $i++;
-            } else {
-                $updatedID = getPermCache("newestKillmailID");
-                $this->logger->addInfo("Kill posting cap reached, newest kill id is {$updatedID}");
-                return null;
+                    sleep(2);
+                    $i++;
+                } else {
+                    $updatedID = getPermCache("newestKillmailID");
+                    $this->logger->addInfo("Kill posting cap reached, newest kill id is {$updatedID}");
+                    return null;
+                }
             }
         }
         $updatedID = getPermCache("newestKillmailID");

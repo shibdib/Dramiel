@@ -84,9 +84,11 @@ class charInfo
 
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
+            $characterID = null;
 
-            foreach ($xml->result->rowset->row as $character) {
+            if (isset($xml->result->rowset->row)) { foreach ($xml->result->rowset->row as $character) {
                 $characterID = $character->attributes()->characterID;
+            }
             }
             if (empty($characterID)) {
                 return $this->message->reply("**Error:** no data available");
