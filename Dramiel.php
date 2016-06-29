@@ -185,12 +185,14 @@ $ws->on(
                     $message->reply('pong!');
                 }
                 // Check for plugins
-                if ($message->content[0] == $config["bot"]["trigger"]) {
-                    foreach ($plugins as $plugin) {
-                        try {
-                            $plugin->onMessage($msgData, $message);
-                        } catch (Exception $e) {
-                            $logger->error("Error: " . $e->getMessage());
+                if (isset($message->content[0])) {
+                    if ($message->content[0] == $config["bot"]["trigger"]) {
+                        foreach ($plugins as $plugin) {
+                            try {
+                                $plugin->onMessage($msgData, $message);
+                            } catch (Exception $e) {
+                                $logger->addError("Error: " . $e->getMessage());
+                            }
                         }
                     }
                 }
