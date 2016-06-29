@@ -121,9 +121,9 @@ class auth
             }
 
             while ($rows = $result->fetch_assoc()) {
-                $charid = $rows['characterID'];
-                $corpid = $rows['corporationID'];
-                $allianceid = $rows['allianceID'];
+                $charid = (int)$rows['characterID'];
+                $corpid = (int)$rows['corporationID'];
+                $allianceid = (int)$rows['allianceID'];
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
                 $xml = makeApiRequest($url);
 
@@ -144,11 +144,9 @@ class auth
                         }
                     }
                 }
-                $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
-                $xml = makeApiRequest($url);
                 foreach ($xml->result->rowset->row as $character) {
                     $eveName = $character->attributes()->name;
-                    if ($corpid == $this->corpID) {
+                    if ($corpid === $this->corpID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
                         $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
                         foreach ($roles as $role) {
@@ -164,15 +162,13 @@ class auth
                             }
                         }
                     }
-                }
-                foreach ($xml->result->rowset->row as $character) {
-                    $eveName = $character->attributes()->name;
-                    if ($allianceid == $this->allianceID) {
+                    var_dump($this->allianceID);
+                    if ($allianceid === $this->allianceID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
                         $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
-                            if ($roleName == $this->roleName) {
+                            if ($roleName == $this->allyroleName) {
                                 $member->addRole($role);
                                 $member->save();
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'ally');
