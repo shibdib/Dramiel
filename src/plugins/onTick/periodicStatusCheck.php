@@ -85,7 +85,7 @@ class periodicStatusCheck {
     {
         // What was the servers last reported state
         $lastStatus = getPermCache("statusLastState");
-        
+
         //api
         $url = "https://api.eveonline.com/server/ServerStatus.xml.aspx";
         $xml = makeApiRequest($url);
@@ -94,13 +94,13 @@ class periodicStatusCheck {
         $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
         $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
         $tqOnline = (int) $crestData["userCount"];
-        
-        
+
+
         foreach ($xml->result as $info) {
             $apiStatus = $info->serverOpen;
             if ($apiStatus == "True") {$apiStatus = "online";} else {$apiStatus = "offline";}
         }
-        if ($crestStatus != "online") { $crestHolder = "offline";}
+        if ($crestStatus != "online") { $crestHolder = "offline";} else { $crestHolder = "online";}
         if ($crestHolder != $apiStatus) {
             $this->logger->addInfo("TQ Status check canceled, CREST and API different.");
             setPermCache("statusLastChecked", time() + 300);
