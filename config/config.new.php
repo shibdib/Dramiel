@@ -125,11 +125,9 @@ $config["plugins"] = array(
     //SSO Auth
     "auth" => array(
         "corpID" => 0,
-        "allianceID" => 0, // If you'd like to auth base on alliance put the alliance ID here.. also works to set blues.. DOES NOT WORK WITH API AUTH
-        "guildID" => 0, // The serverID for your discord server.
+        "allianceID" => 0, // If you'd like to auth base on alliance put the alliance ID here.. also works to set blues..
         "corpMemberRole" => "", // The name of the role your CORP members will be assigned too if the auth plugin is active.
         "allyMemberRole" => "", // The name of the role your ALLY members will be assigned too if the auth plugin is active.
-        "periodicCheck" => "true", // put "true" or "false", stating you either do or don't want the bot auto removing members who leave corp. If not using auth leave as "false".
         "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
         "nameEnforce" => "false", // put "true" or "false", if you'd like to make sure people's name match character names
         "url" => "http://....." // put a url here if using sso auth for ur sso page.
