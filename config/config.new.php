@@ -63,7 +63,8 @@ $config["enabledPlugins"] = array(
     "authCheck", // checks if users have left corp or alliance
     "charInfo", // eve character info using eve-kill
     "corpInfo", // eve corp info
-    "eveStatus", // tq status
+    "eveStatus", // tq status message command
+    "periodicStatusCheck", //Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
     "help", // bot help program, will list active addons
     "price", // price check tool, works for all items and ships. Can either !pc <itemname> for general, or !<systemname> <item> for more specific
     "time", // global clock with eve time
