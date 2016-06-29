@@ -131,9 +131,15 @@ class auth
 
                 // We have an error, show it it
                 if ($xml->error) {
-                    $this->message->reply("**Failure:** Eve API is down, please try again in a little while.");
+                    $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
                     return null;
                 }
+
+                if (!isset($xml->result->rowset->row)) {
+                    $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
+                    return null;
+                }
+                
                 elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
                         if ($character->attributes()->name != $userName) {
@@ -179,6 +185,9 @@ class auth
                             }
                         }
                     }
+                    $this->message->reply("**Failure:** There are no roles available for your corp/alliance.");
+                    $this->logger->addInfo("User was denied due to not being in the correct corp or alliance " . $eveName);
+                    return null;
                 }
 
             }
