@@ -168,7 +168,6 @@ class auth
                             }
                         }
                     }
-                    var_dump($this->allianceID);
                     if ($allianceid === $this->allianceID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
                         $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);

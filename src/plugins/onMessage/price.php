@@ -145,7 +145,6 @@ class price
             // If there is a single result, we'll get data now!
             if ($single) {
                 $typeID = $single["typeID"];
-                $typeName = $single["typeName"];
 
                 $solarSystemID = $systemName == "pc" ? "global" : $this->solarSystems[$systemName];
 
