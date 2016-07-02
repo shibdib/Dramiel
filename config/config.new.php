@@ -64,7 +64,7 @@ $config["enabledPlugins"] = array(
     "charInfo", // eve character info using eve-kill
     "corpInfo", // eve corp info
     "eveStatus", // tq status message command
-    "periodicStatusCheck", //Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
+    "periodicStatusCheck", // ....YOU MUST SET A CHANNEL IN THE NOTIFICATIONS SECTION NEAR THE BOTTOM OF THIS FILE.... Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
     "help", // bot help program, will list active addons
     "price", // price check tool, works for all items and ships. Can either !pc <itemname> for general, or !<systemname> <item> for more specific
     "time", // global clock with eve time
@@ -110,7 +110,7 @@ $config["plugins"] = array(
             )
         ),
     ),
-    // what channel for eve notifications
+    // what channel for eve notifications/also the channel for tq status alerts
     "notifications" => array(
         "channelID" => 0
     ),
