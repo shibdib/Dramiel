@@ -19,3 +19,7 @@ Have a look at the [Wiki for info](https://github.com/shibdib/Dramiel/wiki)
 
 
 Or jump into the [MAMBA Discord](https://discord.gg/0qsFaq4lpZHWX0pB) and ask around for Mr Twinkie
+
+# Donations
+
+If you feel inclined, ISK donations to Mr Twinkie
