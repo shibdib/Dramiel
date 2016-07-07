@@ -95,6 +95,11 @@ class periodicStatusCheck {
         $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
         $tqOnline = (int) $crestData["userCount"];
 
+        if (!isset($xml->result)){
+            $this->logger->addInfo("TQ Status check canceled, API Error.");
+            setPermCache("statusLastChecked", time() + 300);
+            return null;
+        }
 
         foreach ($xml->result as $info) {
             $apiStatus = $info->serverOpen;
