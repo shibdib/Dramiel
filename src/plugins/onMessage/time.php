@@ -94,7 +94,7 @@ class time
             $aus = $aus->format("H:i:s");
 
             $this->logger->addInfo("Sending time info to {$user}");
-            $this->message->reply("**EVE Time:** {$utc} / **EVE Date:** {$date} / **PST/Los Angeles:** {$pst} / **EST/New York:** {$est} / **CET/Copenhagen:** {$cet} / **MSK/Moscow:** {$msk} / **AEST/Sydney:** {$aus}");
+            $this->message->reply("**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
         }
     }
 
