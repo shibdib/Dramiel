@@ -77,7 +77,7 @@ class time
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
-            $date = date("d-m-Y");
+            $date = date("d-F-Y");
             $fullDate = date("Y-m-d H:i:s");
             $datetime = new DateTime($fullDate);
             $est = $datetime->setTimezone(new DateTimeZone("America/New_York"));
