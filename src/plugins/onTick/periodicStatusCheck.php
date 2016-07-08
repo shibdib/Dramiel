@@ -83,6 +83,11 @@ class periodicStatusCheck {
 
     function checkStatus()
     {
+        if($this->toDiscordChannel == 0){
+            setPermCache("statusLastChecked", time() + 300);
+            $this->logger->addInfo("TQ Status Check Failed - Add a channel ID to the notifications section in the config.");
+            return null;
+        }
         // What was the servers last reported state
         $lastStatus = getPermCache("statusLastState");
 
