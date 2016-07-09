@@ -148,7 +148,7 @@ $config["plugins"] = array(
         "keyID" => "", //corpid for killmails
         "vCode" => "", //allianceid for killmails (Leave as 0 if using it for a corp)
     ),
-    //Reports silos nearing max capacity. Currently only works for towers in sov with the silo bonus
+    //Reports silos nearing max capacity.
     "siloFull" => array(
         "channelID" => 0, //silo alerts post to this channel
         "keyID" => "", //corp api keyID (Must have assets)
