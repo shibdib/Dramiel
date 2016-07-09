@@ -104,7 +104,7 @@ class fleetUpOperations {
             $id = $operation["Id"];
             $link = "https://fleet-up.com/Operation#{$id}\
 			";
-            $timeDifference = $eveTime - $startTimeUnix;
+            $timeDifference = $startTimeUnix - $eveTime;
             if ($currentID < $id) {
                 if ($timeDifference < 1800) {
                     $msg = "@everyone
@@ -125,7 +125,9 @@ Link - {$link}";
             }
         }
         setPermCache("fleetUpPostLastChecked", time() + 120);
-        $this->logger->addInfo("Latest upcoming operation ID - {$id}");
+        if (isset($id) and $id != $currentID) {
+            $this->logger->addInfo("Latest upcoming operation ID - {$id}");
+        }
     }
 
     function checkFleetUp()
@@ -165,7 +167,9 @@ Link - {$link}";
             }
         }
         setPermCache("fleetUpLastChecked", time() + 1800);
-        $this->logger->addInfo("Newest fleetUp operation ID - {$id}");
+        if (isset($id) and $id != $currentID) {
+            $this->logger->addInfo("Newest fleetUp operation ID - {$id}");
+        }
     }
 
     /**
