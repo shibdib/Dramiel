@@ -27,6 +27,9 @@
 require_once __DIR__.'/vendor/autoload.php';
 
 // Setup logger
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 use Discord\Discord;
 use Discord\Parts\Channel\Channel;
 
