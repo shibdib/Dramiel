@@ -85,9 +85,9 @@ class help
                     $info = $plugin->information();
                     $channelInfo = $this->message->getFullChannelAttribute();
                     $guildID = $channelInfo[@guild_id];
-                    if (isset($this->config["bot"]["primary"])){
+                    if (isset($this->config["bot"]["primary"])) {
                         if ($guildID != $this->config["bot"]["primary"]) {
-                            if ($info["name"] == "auth"){
+                            if ($info["name"] == "auth") {
                                 continue;
                             }
                         }
@@ -115,7 +115,7 @@ class help
     {
         return array(
             "name" => "help",
-            "trigger" => array($this->config["bot"]["trigger"]."help"),
+            "trigger" => array($this->config["bot"]["trigger"] . "help"),
             "information" => "Shows help for a plugin, or all the plugins available. Example: **!help pc**"
         );
     }
