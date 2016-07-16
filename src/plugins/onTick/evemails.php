@@ -29,6 +29,9 @@ use Discord\Parts\Channel\Channel;
 
 /**
  * Class corporationmails
+ * @property  keyID
+ * @property  vCode
+ * @property  characterID
  */
 class evemails {
     /**

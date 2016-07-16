@@ -30,6 +30,8 @@ use Discord\Parts\Channel\Channel;
 
 /**
  * Class notifications
+ * @property  keyID
+ * @property  vCode
  */
 class notifications
 {

@@ -29,6 +29,7 @@ use Discord\Parts\Channel\Channel;
 
 /**
  * Class siloFull
+ * @property  towerRace
  */
 class siloFull {
     /**

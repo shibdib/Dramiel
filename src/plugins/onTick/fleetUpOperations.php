@@ -29,6 +29,9 @@ use Discord\Parts\Channel\Channel;
 
 /**
  * Class fleetUpOperations
+ * @property  userID
+ * @property  apiKey
+ * @property  groupID
  */
 class fleetUpOperations {
     /**

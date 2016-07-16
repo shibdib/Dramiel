@@ -31,6 +31,7 @@ use Discord\WebSockets\Event;
 
 /**
  * Class fileAuthCheck
+ * @property int nextCheck
  */
 class authCheck
 {
@@ -114,13 +115,13 @@ class authCheck
             $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
             $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
 
-            $sql3 = "SELECT characterID, discordID FROM authUsers WHERE active='yes'";
+            $sql = "SELECT characterID, discordID FROM authUsers WHERE active='yes'";
 
-            $result3 = $conn->query($sql3);
-            $num_rows2 = $result3->num_rows;
+            $result = $conn->query($sql);
+            $num_rows = $result->num_rows;
 
-            if ($num_rows2 >= 2) {
-                while ($rows = $result3->fetch_assoc()) {
+            if ($num_rows >= 2) {
+                while ($rows = $result->fetch_assoc()) {
                     $charID = $rows['characterID'];
                     $discordID = $rows['discordID'];
                     $guild = $this->discord->guilds->first();
@@ -144,8 +145,8 @@ class authCheck
                                 $channel->sendMessage($msg, false);
                                 $this->logger->addInfo($discordName . " roles ({$role}) have been removed via the auth.");
 
-                                $sql4 = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-                                $result4 = $conn->query($sql4);
+                                $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+                                $conn->query($sql);
 
                             }
                         }
@@ -155,7 +156,7 @@ class authCheck
                 $nextCheck = time() + 7200;
                 setPermCache("authLastChecked", $nextCheck);
                 if ($this->config["plugins"]["auth"]["nameEnforce"] == "true") {
-                    while ($rows = $result3->fetch_assoc()) {
+                    while ($rows = $result->fetch_assoc()) {
                         $discordID = $rows['discordID'];
                         $eveName = $rows['eveName'];
                         $guild = $this->discord->guilds->first();
@@ -173,8 +174,8 @@ class authCheck
                             $channel->sendMessage($msg, false);
                             $this->logger->addInfo($discordName . " roles have been removed because their name no longer matches their ingame name.");
 
-                            $sql4 = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-                            $result4 = $conn->query($sql4);
+                            $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+                            $conn->query($sql);
                         }
                     }
                     $this->logger->addInfo("All users names have been checked.");
