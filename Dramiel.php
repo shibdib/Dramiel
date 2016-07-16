@@ -29,12 +29,6 @@ require_once(__DIR__ . "/vendor/autoload.php");
 // Setup logger
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-<<<<<<< HEAD
-
-use Discord\Discord;
-use Discord\Parts\Channel\Channel;
-=======
->>>>>>> parent of fb6ce12... Merge pull request #8 from shibdib/analysis-Xa6ARV
 
 // More memory allowance
 ini_set("memory_limit", "1024M");
