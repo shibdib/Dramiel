@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,6 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
@@ -30,57 +31,58 @@ use Discord\Parts\Channel\Message;
  */
 class charInfo
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
+    var $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
     }
 
     /**
      * @param $msgData
      * @param $message
-     *
      * @return null
      */
-    public function onMessage($msgData, $message)
+    function onMessage($msgData, $message)
     {
         $this->message = $message;
 
-        $message = $msgData['message']['message'];
-        $user = $msgData['message']['from'];
+        $message = $msgData["message"]["message"];
+        $user = $msgData["message"]["from"];
 
-        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
-        if (isset($data['trigger'])) {
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
+        if (isset($data["trigger"])) {
 
             // Most EVE players on Discord use their ingame name, so lets support @highlights
-            $messageString = stristr($data['messageString'], '@') ? str_replace('<@', '', str_replace('>', '', $data['messageString'])) : $data['messageString'];
+            $messageString = stristr($data["messageString"], "@") ? str_replace("<@", "", str_replace(">", "", $data["messageString"])) : $data["messageString"];
             if (is_numeric($messageString)) {
                 // The person used @highlighting, so now we got a discord id, lets map that to a name
-                $messageString = dbQueryField('SELECT name FROM usersSeen WHERE id = :id', 'name', [':id' => $messageString]);
+                $messageString = dbQueryField("SELECT name FROM usersSeen WHERE id = :id", "name", array(":id" => $messageString));
             }
 
             $cleanString = urlencode($messageString);
@@ -89,45 +91,44 @@ class charInfo
             $xml = makeApiRequest($url);
             $characterID = null;
 
-            if (isset($xml->result->rowset->row)) {
-                foreach ($xml->result->rowset->row as $character) {
-                    $characterID = $character->attributes()->characterID;
-                }
+            if (isset($xml->result->rowset->row)) { foreach ($xml->result->rowset->row as $character) {
+                $characterID = $character->attributes()->characterID;
+            }
             }
             if (empty($characterID)) {
-                return $this->message->reply('**Error:** no data available');
+                return $this->message->reply("**Error:** no data available");
             }
             // Get stats
-            $statsURL = 'https://beta.eve-kill.net/api/charInfo/characterID/'.urlencode($characterID).'/';
+            $statsURL = "https://beta.eve-kill.net/api/charInfo/characterID/" . urlencode($characterID) . "/";
             $stats = json_decode(downloadData($statsURL), true);
 
             if (empty($stats)) {
-                return $this->message->reply('**Error:** no data available');
+                return $this->message->reply("**Error:** no data available");
             }
 
-            $characterName = @$stats['characterName'];
+            $characterName = @$stats["characterName"];
             if (empty($characterName)) {
-                return $this->message->reply('**Error:** No Character Found');
+                return $this->message->reply("**Error:** No Character Found");
             }
-            $corporationName = @$stats['corporationName'];
-            $allianceName = isset($stats['allianceName']) ? $stats['allianceName'] : 'None';
-            $factionName = isset($stats['factionName']) ? $stats['factionName'] : 'None';
-            $securityStatus = @$stats['securityStatus'];
-            $lastSeenSystem = @$stats['lastSeenSystem'];
-            $lastSeenRegion = @$stats['lastSeenRegion'];
-            $lastSeenShip = @$stats['lastSeenShip'];
-            $lastSeenDate = @$stats['lastSeenDate'];
-            $corporationActiveArea = @$stats['corporationActiveArea'];
-            $allianceActiveArea = @$stats['allianceActiveArea'];
-            $soloKills = @$stats['soloKills'];
-            $blobKills = @$stats['blobKills'];
-            $lifeTimeKills = @$stats['lifeTimeKills'];
-            $lifeTimeLosses = @$stats['lifeTimeLosses'];
-            $amountOfSoloPVPer = @$stats['percentageSoloPVPer'];
-            $ePeenSize = @$stats['ePeenSize'];
-            $facepalms = @$stats['facepalms'];
-            $lastUpdated = @$stats['lastUpdatedOnBackend'];
-            $url = 'https://beta.eve-kill.net/character/'.$stats['characterID'].'/';
+            $corporationName = @$stats["corporationName"];
+            $allianceName = isset($stats["allianceName"]) ? $stats["allianceName"] : "None";
+            $factionName = isset($stats["factionName"]) ? $stats["factionName"] : "None";
+            $securityStatus = @$stats["securityStatus"];
+            $lastSeenSystem = @$stats["lastSeenSystem"];
+            $lastSeenRegion = @$stats["lastSeenRegion"];
+            $lastSeenShip = @$stats["lastSeenShip"];
+            $lastSeenDate = @$stats["lastSeenDate"];
+            $corporationActiveArea = @$stats["corporationActiveArea"];
+            $allianceActiveArea = @$stats["allianceActiveArea"];
+            $soloKills = @$stats["soloKills"];
+            $blobKills = @$stats["blobKills"];
+            $lifeTimeKills = @$stats["lifeTimeKills"];
+            $lifeTimeLosses = @$stats["lifeTimeLosses"];
+            $amountOfSoloPVPer = @$stats["percentageSoloPVPer"];
+            $ePeenSize = @$stats["ePeenSize"];
+            $facepalms = @$stats["facepalms"];
+            $lastUpdated = @$stats["lastUpdatedOnBackend"];
+            $url = "https://beta.eve-kill.net/character/" . $stats["characterID"] . "/";
 
 
             $msg = "```characterName: {$characterName}
@@ -154,24 +155,26 @@ For more info, visit: $url";
             $this->logger->addInfo("Sending character info to {$user}");
             $this->message->reply($msg);
         }
+        return null;
     }
 
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => 'char',
-            'trigger'     => [$this->config['bot']['trigger'].'char'],
-            'information' => 'Returns basic EVE Online data about a character from projectRena. To use simply type !char character_name',
-        ];
+        return array(
+            "name" => "char",
+            "trigger" => array($this->config["bot"]["trigger"] . "char"),
+            "information" => "Returns basic EVE Online data about a character from projectRena. To use simply type !char character_name"
+        );
     }
 
     /**
      * @param $msgData
      */
-    public function onMessageAdmin($msgData)
+    function onMessageAdmin($msgData)
     {
     }
+
 }

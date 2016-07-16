@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,70 +22,73 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
-use Discord\Parts\Channel\Channel;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
 
 /**
- * Class twitterOutput.
+ * Class twitterOutput
  */
 class twitterOutput
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
+    var $logger;
 
-    /*
+    /**
      * @var
      */
-    public $twitter;
-    /*
+    var $twitter;
+    /**
      * @var
      */
-    public $lastCheck;
-    /*
+    var $lastCheck;
+    /**
      * @var
      */
-    public $lastID;
-    /*
+    var $lastID;
+    /**
      * @var
      */
-    public $channelID;
-    /*
+    var $channelID;
+    /**
      * @var
      */
-    public $maxID;
+    var $maxID;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->twitter = new Twitter($config['twitter']['consumerKey'], $config['twitter']['consumerSecret'], $config['twitter']['accessToken'], $config['twitter']['accessTokenSecret']);
+        $this->twitter = new Twitter($config["twitter"]["consumerKey"], $config["twitter"]["consumerSecret"], $config["twitter"]["accessToken"], $config["twitter"]["accessTokenSecret"]);
         $this->lastCheck = time();
         $this->maxID = 0;
-        $this->channelID = $config['plugins']['twitterOutput']['channelID']; // outputs to the news channel on the 4M server
+        $this->channelID = $config["plugins"]["twitterOutput"]["channelID"]; // outputs to the news channel on the 4M server
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
         $continue = false;
-        $data = [];
+        $data = array();
         // If last check + 60 seconds is larger or equal to the current time(), we run
         if ($this->lastCheck <= time()) {
             // Fetch the last 25 twitter replies and/or searches
@@ -97,23 +100,23 @@ class twitterOutput
                     $postedBy = (array) $message->user->name;
                     $screenName = (array) $message->user->screen_name;
                     $id = (int) $message->id;
-                    $this->lastID = getPermCache('twitterLatestID'); // get the last posted ID
+                    $this->lastID = getPermCache("twitterLatestID"); // get the last posted ID
 
                     if ($id <= $this->lastID) {
-                        continue;
+                                            continue;
                     }
 
                     $this->maxID = max($id, $this->maxID);
 
-                    $url = 'https://twitter.com/'.$screenName[0].'/status/'.$id;
-                    $message = ['message' => $text[0], 'postedAt' => $createdAt[0], 'postedBy' => $postedBy[0], 'screenName' => $screenName[0], 'url' => $url.$id[0]];
-                    $msg = '**@'.$screenName[0].'** ('.$message['postedBy'].') / '.htmlspecialchars_decode($message['message']);
+                    $url = "https://twitter.com/" . $screenName[0] . "/status/" . $id;
+                    $message = array("message" => $text[0], "postedAt" => $createdAt[0], "postedBy" => $postedBy[0], "screenName" => $screenName[0], "url" => $url . $id[0]);
+                    $msg = "**@" . $screenName[0] . "** (" . $message["postedBy"] . ") / " . htmlspecialchars_decode($message["message"]);
                     $messages[$id] = $msg;
 
                     $continue = true;
 
-                    if (count($data)) {
-                        setPermCache('twitterLatestID', $this->maxID);
+                    if (sizeof($data)) {
+                                            setPermCache("twitterLatestID", $this->maxID);
                     }
                 }
             } catch (Exception $e) {
@@ -137,30 +140,29 @@ class twitterOutput
 
     /**
      * @param $url
-     *
      * @return string
      */
-    public function shortenUrl($url)
+    function shortenUrl($url)
     {
-        return file_get_contents('http://is.gd/api.php?longurl='.$url);
+        return file_get_contents("http://is.gd/api.php?longurl=" . $url);
     }
 
     /**
      * @param $msgData
      */
-    public function onMessage($msgData)
+    function onMessage($msgData)
     {
     }
 
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => '',
-            'trigger'     => [''],
-            'information' => '',
-        ];
+        return array(
+            "name" => "",
+            "trigger" => array(""),
+            "information" => ""
+        );
     }
 }

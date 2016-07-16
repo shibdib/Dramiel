@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,38 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
+use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
 
 /**
- * Class getKillmails.
+ * Class getKillmails
  */
 class getKillmails
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $db;
-    /*
+    var $db;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $channelConfig;
-    /*
+    var $channelConfig;
+    /**
      * @var int
      */
-    public $lastCheck = 0;
-    /*
+    var $lastCheck = 0;
+    /**
      * @var
      */
-    public $logger;
+    var $logger;
     public $newestKillmailID;
     public $kmChannel;
     public $corpID;
@@ -67,22 +69,22 @@ class getKillmails
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->kmChannel = $config['plugins']['getKillmails']['channel'];
-        $this->corpID = $config['plugins']['getKillmails']['corpID'];
-        $this->allianceID = $config['plugins']['getKillmails']['allianceID'];
-        $this->startMail = $config['plugins']['getKillmails']['startMail'];
-        $this->lossMail = $config['plugins']['getKillmails']['lossMails'];
-        $this->spamAmount = $config['plugins']['getKillmails']['spamAmount'];
+        $this->kmChannel = $config["plugins"]["getKillmails"]["channel"];
+        $this->corpID = $config["plugins"]["getKillmails"]["corpID"];
+        $this->allianceID = $config["plugins"]["getKillmails"]["allianceID"];
+        $this->startMail = $config["plugins"]["getKillmails"]["startMail"];
+        $this->lossMail = $config["plugins"]["getKillmails"]["lossMails"];
+        $this->spamAmount = $config["plugins"]["getKillmails"]["spamAmount"];
         if (2 > 1) {
             //Check for a higher set value
-            $currentID = getPermCache('newestKillmailID');
+            $currentID = getPermCache("newestKillmailID");
             if ($currentID < $this->startMail || $currentID == null) {
-                setPermCache('newestKillmailID', $this->startMail);
+                setPermCache("newestKillmailID", $this->startMail);
             }
 
             // Schedule it for right now
@@ -90,51 +92,56 @@ class getKillmails
         }
     }
 
+
+
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => '',
-            'trigger'     => [],
-            'information' => '',
-        ];
+        return array(
+            "name" => "",
+            "trigger" => array(),
+            "information" => ""
+        );
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
         $lastChecked = getPermCache("killmailCheck{$this->corpID}");
         if ($lastChecked <= time()) {
-            $this->logger->addInfo('Checking for new killmails.');
-            $oldID = getPermCache('newestKillmailID');
+            $this->logger->addInfo("Checking for new killmails.");
+            $oldID = getPermCache("newestKillmailID");
             $one = '1';
             $updatedID = $oldID + $one;
-            setPermCache('newestKillmailID', $updatedID);
+            setPermCache("newestKillmailID", $updatedID);
             $this->getKM();
             setPermCache("killmailCheck{$this->corpID}", time() + 900);
         }
+
     }
 
-    public function getKM()
+    function getKM()
     {
-        $this->newestKillmailID = getPermCache('newestKillmailID');
+        $this->newestKillmailID = getPermCache("newestKillmailID");
         $lastMail = $this->newestKillmailID;
-        if ($this->allianceID == '0' & $this->lossMail == 'true') {
+        if ($this->allianceID == "0" & $this->lossMail == 'true') {
             $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
         }
-        if ($this->allianceID == '0' & $this->lossMail == 'false') {
+        if ($this->allianceID == "0" & $this->lossMail == 'false') {
             $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
         }
-        if ($this->allianceID != '0' & $this->lossMail == 'true') {
+        if ($this->allianceID != "0" & $this->lossMail == 'true') {
             $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
         }
-        if ($this->allianceID != '0' & $this->lossMail == 'false') {
+        if ($this->allianceID != "0" & $this->lossMail == 'false') {
             $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
         }
 
-        $xml = simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA);
+        $xml = simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA);
         $i = 0;
         $limit = $this->spamAmount;
         if (isset($xml->result->rowset->row)) {
@@ -145,42 +152,42 @@ class getKillmails
                         $killID = $this->startMail;
                     }
                     $solarSystemID = $kill->attributes()->solarSystemID;
-                    $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $solarSystemID], 'ccp');
+                    $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $solarSystemID), "ccp");
                     $killTime = $kill->attributes()->killTime;
                     $victimAllianceName = $kill->victim->attributes()->allianceName;
                     $victimName = $kill->victim->attributes()->characterName;
                     $victimCorpName = $kill->victim->attributes()->corporationName;
                     $victimShipID = $kill->victim->attributes()->shipTypeID;
-                    $shipName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => $victimShipID], 'ccp');
+                    $shipName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $victimShipID), "ccp");
                     // Check if it's a structure
-                    if ($victimName != '') {
+                    if ($victimName != "") {
                         $msg = "**{$killTime}**\n\n**{$shipName}** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                    } elseif ($victimName == '') {
+                    } elseif ($victimName == "") {
                         $msg = "**{$killTime}**\n\n**{$shipName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
                     $channelID = $this->kmChannel;
                     $channel = Channel::find($channelID);
                     $channel->sendMessage($msg, false);
-                    setPermCache('newestKillmailID', $killID);
+                    setPermCache("newestKillmailID", $killID);
 
                     sleep(2);
                     $i++;
                 } else {
-                    $updatedID = getPermCache('newestKillmailID');
+                    $updatedID = getPermCache("newestKillmailID");
                     $this->logger->addInfo("Kill posting cap reached, newest kill id is {$updatedID}");
-
-                    return;
+                    return null;
                 }
             }
         }
-        $updatedID = getPermCache('newestKillmailID');
+        $updatedID = getPermCache("newestKillmailID");
         $this->logger->addInfo("All kills posted, newest kill id is {$updatedID}");
+        return null;
     }
 
     /**
      * @param $msgData
      */
-    public function onMessage($msgData)
+    function onMessage($msgData)
     {
     }
 }

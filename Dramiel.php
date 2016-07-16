@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016  Robert Sardinia
  *
@@ -24,14 +24,20 @@
  */
 
 // Require the vendor stuff
-require_once __DIR__.'/vendor/autoload.php';
+require_once(__DIR__ . "/vendor/autoload.php");
 
 // Setup logger
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+<<<<<<< HEAD
+
 use Discord\Discord;
 use Discord\Parts\Channel\Channel;
+=======
+>>>>>>> parent of fb6ce12... Merge pull request #8 from shibdib/analysis-Xa6ARV
 
 // More memory allowance
-ini_set('memory_limit', '1024M');
+ini_set("memory_limit", "1024M");
 
 // Just incase we get launched from somewhere else
 chdir(__DIR__);
@@ -44,22 +50,22 @@ $startTime = time();
 
 // create a log channel
 $logger = new Logger('Dramiel');
-$logger->pushHandler(new StreamHandler(__DIR__.'/log/dramielLog.log', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler(__DIR__ . '/log/dramielLog.log', Logger::DEBUG));
 $logger->addInfo('Logger Initiated');
 
-global $logger;
+GLOBAL $logger;
 
 // Require the config
-if (file_exists('config/config.php')) {
-    require_once 'config/config.php';
+if (file_exists("config/config.php")) {
+    require_once("config/config.php");
 } else {
-    $logger->error('config.php not found (you might wanna start by editing and renaming config_new.php)');
+    $logger->error("config.php not found (you might wanna start by editing and renaming config_new.php)");
     die();
 }
 
 // Load the library files (Probably a prettier way to do this that i haven't thought up yet)
-foreach (glob(__DIR__.'/src/lib/*.php') as $lib) {
-    require_once $lib;
+foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
+    require_once($lib);
 }
 
 //Startup DB Check
@@ -67,49 +73,54 @@ updateDramielDB($logger);
 updateCCPData($logger);
 
 // Init Discord
+use Discord\Cache\Cache;
+use Discord\Cache\Drivers\ArrayCacheDriver;
+use Discord\Discord;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Channel\Channel;
+use Discord\Parts\Guild\Guild;
 use Discord\Parts\User\Game;
+use Discord\Parts\User\Member;
+use Discord\Parts\WebSockets\PresenceUpdate;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\WebSocket;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 
-$discord = new Discord(['token' => $config['bot']['token']]);
+$discord = new Discord(["token" => $config["bot"]["token"]]);
 
 // Load tick plugins
-$pluginDirs = ['src/plugins/onTick/*.php'];
-$logger->info('Loading background plugins');
-$plugins = [];
+$pluginDirs = array("src/plugins/onTick/*.php");
+$logger->info("Loading background plugins");
+$plugins = array();
 foreach ($pluginDirs as $dir) {
     foreach (glob($dir) as $plugin) {
         // Only load the plugins we want to load, according to the config
-        if (!in_array(str_replace('.php', '', basename($plugin)), $config['enabledPlugins'])) {
+        if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"])) {
             continue;
         }
 
-        require_once $plugin;
-        $fileName = str_replace('.php', '', basename($plugin));
+        require_once($plugin);
+        $fileName = str_replace(".php", "", basename($plugin));
         $p = new $fileName();
         $p->init($config, $discord, $logger);
         $pluginsT[] = $p;
     }
 }
 // Number of plugins loaded
-$logger->info('Loaded: '.count($pluginsT).' background plugins');
+$logger->info("Loaded: " . count($pluginsT) . " background plugins");
 
 // Load chat plugins
-$pluginDirs = ['src/plugins/onMessage/*.php'];
-$logger->addInfo('Loading in chat plugins');
-$plugins = [];
+$pluginDirs = array("src/plugins/onMessage/*.php");
+$logger->addInfo("Loading in chat plugins");
+$plugins = array();
 foreach ($pluginDirs as $dir) {
     foreach (glob($dir) as $plugin) {
         // Only load the plugins we want to load, according to the config
-        if (!in_array(str_replace('.php', '', basename($plugin)), $config['enabledPlugins'])) {
+        if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"])) {
             continue;
         }
 
-        require_once $plugin;
-        $fileName = str_replace('.php', '', basename($plugin));
+        require_once($plugin);
+        $fileName = str_replace(".php", "", basename($plugin));
         $p = new $fileName();
         $p->init($config, $discord, $logger);
         $plugins[] = $p;
@@ -117,59 +128,59 @@ foreach ($pluginDirs as $dir) {
 }
 
 // Number of chat plugins loaded
-$logger->addInfo('Loaded: '.count($plugins).' chat plugins');
+$logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
 
 $ws = new WebSocket($discord);
 
 $ws->on(
     'ready',
-    function ($discord) use ($ws, $logger, $config, $plugins, $pluginsT) {
+    function($discord) use ($ws, $logger, $config, $plugins, $pluginsT) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
         // find here: https://teamreflex.github.io/DiscordPHP/classes/Discord.WebSockets.Event.html
         //
         // We will echo to the console that the WebSocket is ready.
-        $logger->addInfo('Discord WebSocket is ready!'.PHP_EOL);
-        $game = new Game(['name' => $config['bot']['game'], 'url' => null, 'type' => null], true);
+        $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
+        $game = new Game(array('name' => $config["bot"]["game"], 'url' => null, 'type' => null), true);
         $ws->updatePresence($game, false);
         // $ws->setNickname($config["bot"]["name"]); //not in yet
 
         // Database check
-        $ws->loop->addPeriodicTimer(86400, function () use ($logger) {
-            updateDramielDB($logger);
+        $ws->loop->addPeriodicTimer(86400, function() use ($logger) {
+            updateDramielDB($logger); 
             updateCCPData($logger);
         });
-
+        
         // Run the Tick plugins
-        $ws->loop->addPeriodicTimer(1, function () use ($pluginsT) {
-            foreach ($pluginsT as $plugin) {
+        $ws->loop->addPeriodicTimer(1, function() use ($pluginsT) {
+            foreach ($pluginsT as $plugin)
                 $plugin->tick();
-            }
         });
 
         // Mem cleanup every 30 minutes
-        $ws->loop->addPeriodicTimer(1800, function () use ($logger) {
-            $logger->addInfo('Memory in use: '.memory_get_usage() / 1024 / 1024 .'MB');
+        $ws->loop->addPeriodicTimer(1800, function() use ($logger) {
+            $logger->addInfo("Memory in use: " . memory_get_usage() / 1024 / 1024 . "MB");
             gc_collect_cycles(); // Collect garbage
-            $logger->addInfo('Memory in use after garbage collection: '.memory_get_usage() / 1024 / 1024 .'MB');
+            $logger->addInfo("Memory in use after garbage collection: " . memory_get_usage() / 1024 / 1024 . "MB");
         });
 
         $ws->on(
             Event::MESSAGE_CREATE,
-            function ($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
-                $msgData = [
-                    'message' => [
-                        'timestamp'         => $message->timestamp,
-                        'id'                => $message->id,
-                        'message'           => $message->content,
-                        'channelID'         => $message->channel_id,
-                        'from'              => $message->author->username,
-                        'fromID'            => $message->author->id,
-                        'fromDiscriminator' => $message->author->discriminator,
-                        'fromAvatar'        => $message->author->avatar,
-                    ],
-                ];
+            function($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
+
+                $msgData = array(
+                    "message" => array(
+                        "timestamp" => $message->timestamp,
+                        "id" => $message->id,
+                        "message" => $message->content,
+                        "channelID" => $message->channel_id,
+                        "from" => $message->author->username,
+                        "fromID" => $message->author->id,
+                        "fromDiscriminator" => $message->author->discriminator,
+                        "fromAvatar" => $message->author->avatar
+                    )
+                );
 
                 if ($message->content == '(╯°□°）╯︵ ┻━┻') {
                     $message->reply('┬─┬﻿ ノ( ゜-゜ノ)');
@@ -181,12 +192,12 @@ $ws->on(
                 }
                 // Check for plugins
                 if (isset($message->content[0])) {
-                    if ($message->content[0] == $config['bot']['trigger']) {
+                    if ($message->content[0] == $config["bot"]["trigger"]) {
                         foreach ($plugins as $plugin) {
                             try {
                                 $plugin->onMessage($msgData, $message);
                             } catch (Exception $e) {
-                                $logger->addError('Error: '.$e->getMessage());
+                                $logger->addError("Error: " . $e->getMessage());
                             }
                         }
                     }
@@ -197,20 +208,21 @@ $ws->on(
 );
 $ws->on(
     'error',
-    function ($error, $ws) use ($logger) {
+    function($error, $ws) use ($logger) {
         $logger->addError($error);
         exit(1);
     }
 );
 $ws->on(
     'reconnecting',
-    function () use ($logger) {
+    function() use ($logger) {
         $logger->addInfo('Websocket is reconnecting..');
-    });
+});
 $ws->on(
     'reconnected',
-    function () use ($logger) {
+    function() use ($logger) {
         $logger->addInfo('Websocket was reconnected..');
-    });
+});
 // Now we will run the ReactPHP Event Loop!
 $ws->run();
+

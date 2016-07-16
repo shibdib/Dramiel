@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,74 +22,77 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
 /**
- * Class time.
- *
+ * Class time
  * @property  message
  */
 class time
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
+    var $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
+
     }
 
     /**
      * @param $msgData
      * @param $message
      */
-    public function onMessage($msgData, $message)
+    function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $user = $msgData['message']['from'];
+        $user = $msgData["message"]["from"];
+        
+        $message = $msgData["message"]["message"];
 
-        $message = $msgData['message']['message'];
-
-        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
-        if (isset($data['trigger'])) {
-            $date = date('d-F-Y');
-            $fullDate = date('Y-m-d H:i:s');
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
+        if (isset($data["trigger"])) {
+            $date = date("d-F-Y");
+            $fullDate = date("Y-m-d H:i:s");
             $datetime = new DateTime($fullDate);
-            $est = $datetime->setTimezone(new DateTimeZone('America/New_York'));
-            $est = $est->format('H:i:s');
-            $pst = $datetime->setTimezone(new DateTimeZone('America/Los_Angeles'));
-            $pst = $pst->format('H:i:s');
-            $utc = $datetime->setTimezone(new DateTimeZone('UTC'));
-            $utc = $utc->format('H:i:s');
-            $cet = $datetime->setTimezone(new DateTimeZone('Europe/Copenhagen'));
-            $cet = $cet->format('H:i:s');
-            $msk = $datetime->setTimezone(new DateTimeZone('Europe/Moscow'));
-            $msk = $msk->format('H:i:s');
-            $aus = $datetime->setTimezone(new DateTimeZone('Australia/Sydney'));
-            $aus = $aus->format('H:i:s');
+            $est = $datetime->setTimezone(new DateTimeZone("America/New_York"));
+            $est = $est->format("H:i:s");
+            $pst = $datetime->setTimezone(new DateTimeZone("America/Los_Angeles"));
+            $pst = $pst->format("H:i:s");
+            $utc = $datetime->setTimezone(new DateTimeZone("UTC"));
+            $utc = $utc->format("H:i:s");
+            $cet = $datetime->setTimezone(new DateTimeZone("Europe/Copenhagen"));
+            $cet = $cet->format("H:i:s");
+            $msk = $datetime->setTimezone(new DateTimeZone("Europe/Moscow"));
+            $msk = $msk->format("H:i:s");
+            $aus = $datetime->setTimezone(new DateTimeZone("Australia/Sydney"));
+            $aus = $aus->format("H:i:s");
 
             $this->logger->addInfo("Sending time info to {$user}");
             $this->message->reply("**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
@@ -99,12 +102,12 @@ class time
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => 'time',
-            'trigger'     => [$this->config['bot']['trigger'].'time'],
-            'information' => 'This shows the time for various timezones compared to EVE Time. To use simply type <!time>',
-        ];
+        return array(
+            "name" => "time",
+            "trigger" => array($this->config["bot"]["trigger"] . "time"),
+            "information" => "This shows the time for various timezones compared to EVE Time. To use simply type <!time>"
+        );
     }
 }

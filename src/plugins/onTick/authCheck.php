@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,94 +22,97 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
+use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
 use Discord\Parts\User\User;
 use Discord\WebSockets\Event;
 
 /**
- * Class fileAuthCheck.
- *
+ * Class fileAuthCheck
  * @property int nextCheck
  */
 class authCheck
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $db;
-    /*
+    var $db;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $channelConfig;
-    /*
+    var $channelConfig;
+    /**
      * @var int
      */
-    public $lastCheck = 0;
-    /*
+    var $lastCheck = 0;
+    /**
      * @var
      */
-    public $logger;
+    var $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
         $this->nextCheck = 0;
-        $lastCheck = getPermCache('authLastChecked');
-        if ($lastCheck == null) {
+        $lastCheck = getPermCache("authLastChecked");
+        if ($lastCheck == NULL) {
             // Schedule it for right now if first run
-            setPermCache('authLastChecked', time() - 5);
+            setPermCache("authLastChecked", time() - 5);
         }
     }
 
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => '',
-            'trigger'     => [],
-            'information' => '',
-        ];
+        return array(
+            "name" => "",
+            "trigger" => array(),
+            "information" => ""
+        );
     }
-
-    public function tick()
+    function tick()
     {
-        $lastChecked = getPermCache('authLastChecked');
+        $lastChecked = getPermCache("authLastChecked");
 
         if ($lastChecked <= time()) {
-            $this->logger->addInfo('Checking authed users for changes....');
+            $this->logger->addInfo("Checking authed users for changes....");
             $this->checkAuth();
         }
+
     }
 
-
-    public function checkAuth()
+    /**
+     *
+     */
+    function checkAuth()
     {
-        if ($this->config['plugins']['auth']['periodicCheck'] == 'true') {
-            $db = $this->config['database']['host'];
-            $dbUser = $this->config['database']['user'];
-            $dbPass = $this->config['database']['pass'];
-            $dbName = $this->config['database']['database'];
-            $allyID = $this->config['plugins']['auth']['allianceID'];
-            $corpID = $this->config['plugins']['auth']['corpID'];
-            $toDiscordChannel = $this->config['plugins']['auth']['alertChannel'];
+        if ($this->config["plugins"]["auth"]["periodicCheck"] == "true") {
+            $db = $this->config["database"]["host"];
+            $dbUser = $this->config["database"]["user"];
+            $dbPass = $this->config["database"]["pass"];
+            $dbName = $this->config["database"]["database"];
+            $allyID = $this->config["plugins"]["auth"]["allianceID"];
+            $corpID = $this->config["plugins"]["auth"]["corpID"];
+            $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
             $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
 
             $sql = "SELECT characterID, discordID FROM authUsers WHERE active='yes'";
@@ -122,7 +125,7 @@ class authCheck
                     $charID = $rows['characterID'];
                     $discordID = $rows['discordID'];
                     $guild = $this->discord->guilds->first();
-                    $member = $guild->members->get('id', $discordID);
+                    $member = $guild->members->get("id", $discordID);
                     $discordName = $member->user->username;
                     $roles = $member->roles;
                     $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
@@ -136,27 +139,28 @@ class authCheck
                                 }
 
                                 // Send the info to the channel
-                                $msg = $discordName.' roles have been removed via the auth.';
+                                $msg = $discordName . " roles have been removed via the auth.";
                                 $channelID = $toDiscordChannel;
                                 $channel = Channel::find($channelID);
                                 $channel->sendMessage($msg, false);
-                                $this->logger->addInfo($discordName." roles ({$role}) have been removed via the auth.");
+                                $this->logger->addInfo($discordName . " roles ({$role}) have been removed via the auth.");
 
                                 $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                                 $conn->query($sql);
+
                             }
                         }
                     }
                 }
-                $this->logger->addInfo('All users successfully authed.');
+                $this->logger->addInfo("All users successfully authed.");
                 $nextCheck = time() + 7200;
-                setPermCache('authLastChecked', $nextCheck);
-                if ($this->config['plugins']['auth']['nameEnforce'] == 'true') {
+                setPermCache("authLastChecked", $nextCheck);
+                if ($this->config["plugins"]["auth"]["nameEnforce"] == "true") {
                     while ($rows = $result->fetch_assoc()) {
                         $discordID = $rows['discordID'];
                         $eveName = $rows['eveName'];
                         $guild = $this->discord->guilds->first();
-                        $member = $guild->members->get('id', $discordID);
+                        $member = $guild->members->get("id", $discordID);
                         $discordName = $member->user->username;
                         if ($discordName != $eveName) {
                             foreach ($roles as $role) {
@@ -164,41 +168,39 @@ class authCheck
                             }
 
                             // Send the info to the channel
-                            $msg = $discordName.' roles have been removed because their name no longer matches their ingame name.';
+                            $msg = $discordName . " roles have been removed because their name no longer matches their ingame name.";
                             $channelID = $toDiscordChannel;
                             $channel = Channel::find($channelID);
                             $channel->sendMessage($msg, false);
-                            $this->logger->addInfo($discordName.' roles have been removed because their name no longer matches their ingame name.');
+                            $this->logger->addInfo($discordName . " roles have been removed because their name no longer matches their ingame name.");
 
                             $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                             $conn->query($sql);
                         }
                     }
-                    $this->logger->addInfo('All users names have been checked.');
-                    $cacheTimer = gmdate('Y-m-d H:i:s', $nextCheck);
+                    $this->logger->addInfo("All users names have been checked.");
+                    $cacheTimer = gmdate("Y-m-d H:i:s", $nextCheck);
                     $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
-
-                    return;
+                    return null;
                 }
-                $cacheTimer = gmdate('Y-m-d H:i:s', $nextCheck);
+                $cacheTimer = gmdate("Y-m-d H:i:s", $nextCheck);
                 $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
-
-                return;
+                return null;
             }
-            $this->logger->addInfo('No users found in database.');
+            $this->logger->addInfo("No users found in database.");
             $nextCheck = time() + 7200;
-            setPermCache('authLastChecked', $nextCheck);
-            $cacheTimer = gmdate('Y-m-d H:i:s', $nextCheck);
+            setPermCache("authLastChecked", $nextCheck);
+            $cacheTimer = gmdate("Y-m-d H:i:s", $nextCheck);
             $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
-
-            return;
+            return null;
         }
+        return null;
     }
 
     /**
      * @param $msgData
      */
-    public function onMessage($msgData)
+    function onMessage($msgData)
     {
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,6 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
@@ -30,57 +31,58 @@ use Discord\Parts\Channel\Message;
  */
 class corpInfo
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
+    var $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
     }
 
     /**
      * @param $msgData
      * @param $message
-     *
      * @return null
      */
-    public function onMessage($msgData, $message)
+    function onMessage($msgData, $message)
     {
         $this->message = $message;
 
-        $message = $msgData['message']['message'];
-        $user = $msgData['message']['from'];
+        $message = $msgData["message"]["message"];
+        $user = $msgData["message"]["from"];
 
-        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
-        if (isset($data['trigger'])) {
-            $messageString = $data['messageString'];
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
+        if (isset($data["trigger"])) {
+            $messageString = $data["messageString"];
             $cleanString = urlencode($messageString);
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
             if (empty($data)) {
-                return $this->message->reply('**Error:** no results was returned.');
+                return $this->message->reply("**Error:** no results was returned.");
             }
             $corpID = null;
             if (isset($xml->result->rowset->row)) {
@@ -90,31 +92,31 @@ class corpInfo
             }
 
             if (empty($corpID)) {
-                return $this->message->reply('**Error:** no data available');
+                return $this->message->reply("**Error:** no data available");
             }
 
             // Get stats
-            $statsURL = 'https://beta.eve-kill.net/api/corpInfo/corporationID/'.urlencode($corpID).'/';
+            $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($corpID) . "/";
             $stats = json_decode(downloadData($statsURL), true);
 
             if (empty($stats)) {
-                return $this->message->reply('**Error:** no data available');
+                return $this->message->reply("**Error:** no data available");
             }
 
-            $corporationName = @$stats['corporationName'];
-            $allianceName = isset($stats['allianceName']) ? $stats['allianceName'] : 'None';
-            $factionName = isset($stats['factionName']) ? $stats['factionName'] : 'None';
-            $ceoName = @$stats['ceoName'];
-            $homeStation = @$stats['stationName'];
-            $taxRate = @$stats['taxRate'];
-            $corporationActiveArea = @$stats['corporationActiveArea'];
-            $allianceActiveArea = @$stats['allianceActiveArea'];
-            $lifeTimeKills = @$stats['lifeTimeKills'];
-            $lifeTimeLosses = @$stats['lifeTimeLosses'];
-            $memberCount = @$stats['memberArrayCount'];
-            $superCaps = @count($stats['superCaps']);
-            $ePeenSize = @$stats['ePeenSize'];
-            $url = 'https://beta.eve-kill.net/corporation/'.@$stats['corporationID'].'/';
+            $corporationName = @$stats["corporationName"];
+            $allianceName = isset($stats["allianceName"]) ? $stats["allianceName"] : "None";
+            $factionName = isset($stats["factionName"]) ? $stats["factionName"] : "None";
+            $ceoName = @$stats["ceoName"];
+            $homeStation = @$stats["stationName"];
+            $taxRate = @$stats["taxRate"];
+            $corporationActiveArea = @$stats["corporationActiveArea"];
+            $allianceActiveArea = @$stats["allianceActiveArea"];
+            $lifeTimeKills = @$stats["lifeTimeKills"];
+            $lifeTimeLosses = @$stats["lifeTimeLosses"];
+            $memberCount = @$stats["memberArrayCount"];
+            $superCaps = @count($stats["superCaps"]);
+            $ePeenSize = @$stats["ePeenSize"];
+            $url = "https://beta.eve-kill.net/corporation/" . @$stats["corporationID"] . "/";
 
 
             $msg = "```corporationName: {$corporationName}
@@ -136,24 +138,26 @@ For more info, visit: $url";
             $this->logger->addInfo("Sending character info to {$user}");
             $this->message->reply($msg);
         }
+        return null;
     }
 
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => 'corp',
-            'trigger'     => [$this->config['bot']['trigger'].'corp'],
-            'information' => 'Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name',
-        ];
+        return array(
+            "name" => "corp",
+            "trigger" => array($this->config["bot"]["trigger"] . "corp"),
+            "information" => "Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name"
+        );
     }
 
     /**
      * @param $msgData
      */
-    public function onMessageAdmin($msgData)
+    function onMessageAdmin($msgData)
     {
     }
+
 }

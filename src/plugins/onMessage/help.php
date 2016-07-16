@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,6 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
@@ -30,33 +31,35 @@ use Discord\Parts\Channel\Message;
  */
 class help
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
+    var $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
     }
 
@@ -64,41 +67,41 @@ class help
      * @param $msgData
      * @param $message
      */
-    public function onMessage($msgData, $message)
+    function onMessage($msgData, $message)
     {
         $this->message = $message;
 
-        $message = $msgData['message']['message'];
+        $message = $msgData["message"]["message"];
 
-        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
-        if (isset($data['trigger'])) {
+        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
+        if (isset($data["trigger"])) {
             global $plugins; // Need to have the plugins that are loaded available, yes it's ugly, whatever, better than shitting up the rest of the code :P
-            $messageString = $data['messageString'];
+            $messageString = $data["messageString"];
 
             if (!$messageString) {
                 // Show all modules available
-                $commands = [];
+                $commands = array();
                 foreach ($plugins as $plugin) {
                     $info = $plugin->information();
                     $channelInfo = $this->message->getFullChannelAttribute();
                     $guildID = $channelInfo[@guild_id];
-                    if (isset($this->config['bot']['primary'])) {
-                        if ($guildID != $this->config['bot']['primary']) {
-                            if ($info['name'] == 'auth') {
+                    if (isset($this->config["bot"]["primary"])) {
+                        if ($guildID != $this->config["bot"]["primary"]) {
+                            if ($info["name"] == "auth") {
                                 continue;
                             }
                         }
                     }
-                    if (!empty($info['name'])) {
-                        $commands[] = $info['name'];
+                    if (!empty($info["name"])) {
+                        $commands[] = $info["name"];
                     }
                 }
 
-                $this->message->reply('Here is a list of plugins available: **'.implode('** |  **', $commands)."** If you'd like help with a specific plugin simply use the command !help <PluginName>");
+                $this->message->reply("Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
             } else {
                 foreach ($plugins as $plugin) {
-                    if ($messageString == $plugin->information()['name']) {
-                        $this->message->reply($plugin->information()['information']);
+                    if ($messageString == $plugin->information()["name"]) {
+                        $this->message->reply($plugin->information()["information"]);
                     }
                 }
             }
@@ -108,12 +111,12 @@ class help
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => 'help',
-            'trigger'     => [$this->config['bot']['trigger'].'help'],
-            'information' => 'Shows help for a plugin, or all the plugins available. Example: **!help pc**',
-        ];
+        return array(
+            "name" => "help",
+            "trigger" => array($this->config["bot"]["trigger"] . "help"),
+            "information" => "Shows help for a plugin, or all the plugins available. Example: **!help pc**"
+        );
     }
 }
