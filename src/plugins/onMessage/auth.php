@@ -123,12 +123,8 @@ class auth
 
             while ($rows = $result->fetch_assoc()) {
                 $charid = (int) $rows['characterID'];
-                var_dump($charid);
                 $corpid = (int) $rows['corporationID'];
-                var_dump($corpid);
                 $allianceid = (int) $rows['allianceID'];
-                var_dump($allianceid);
-                var_dump($this->corpID);
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
                 $xml = makeApiRequest($url);
 
