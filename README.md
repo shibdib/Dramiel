@@ -19,8 +19,7 @@ PLEASE USE https://discordapp.com/oauth2/authorize?&client_id=178608326970441728
 
 Have a look at the [Wiki for info](https://github.com/shibdib/Dramiel/wiki)
 
-
-Or jump into the [MAMBA Discord](https://discord.gg/0qsFaq4lpZHWX0pB) and ask around for Mr Twinkie
+If you have issues please use the issues feature in github, I'm currently busy with RL stuff and can't do the one on one chats at this time. 
 
 # Donations
 
