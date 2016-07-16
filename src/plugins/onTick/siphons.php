@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,30 +22,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
+use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
 
 /**
- * Class siphons.
+ * Class siphons
  */
-class siphons
-{
-    /*
+class siphons {
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
-    /*
+    var $logger;
+    /**
      * @var
      */
-    public $toDiscordChannel;
+    var $toDiscordChannel;
     protected $keyID;
     protected $vCode;
     protected $prefix;
@@ -55,23 +56,25 @@ class siphons
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->toDiscordChannel = $config['plugins']['siphons']['channelID'];
-        $this->keyID = $config['plugins']['siphons']['keyID'];
-        $this->vCode = $config['plugins']['siphons']['vCode'];
+        $this->toDiscordChannel = $config["plugins"]["siphons"]["channelID"];
+        $this->keyID = $config["plugins"]["siphons"]["keyID"];
+        $this->vCode = $config["plugins"]["siphons"]["vCode"];
         $lastCheck = getPermCache("siphonLastChecked{$this->keyID}");
-        if ($lastCheck == null) {
+        if ($lastCheck == NULL) {
             // Schedule it for right now if first run
             setPermCache("siphonLastChecked{$this->keyID}", time() - 5);
         }
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
         $lastChecked = getPermCache("siphonLastChecked{$this->keyID}");
         $keyID = $this->keyID;
@@ -83,7 +86,7 @@ class siphons
         }
     }
 
-    public function checkTowers($keyID, $vCode)
+    function checkTowers($keyID, $vCode)
     {
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
         $xml = makeApiRequest($url);
@@ -97,8 +100,8 @@ class siphons
                         if ($silo->attributes()->quantity != 0) {
                             //Check for a multiple of 50
                             if ($silo->attributes()->quantity % 50 != 0) {
-                                $gooType = $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => $silo->attributes()->typeID], 'ccp');
-                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
+                                $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $silo->attributes()->typeID), "ccp");
+                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
                                 $msg = "{$this->prefix}";
                                 $msg .= "**POSSIBLE SIPHON**\n";
                                 $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
@@ -121,8 +124,8 @@ class siphons
                         if ($coupling->attributes()->quantity != 0) {
                             //Check for a multiple of 50
                             if ($coupling->attributes()->quantity % 50 != 0) {
-                                $gooType = $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => $coupling->attributes()->typeID], 'ccp');
-                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
+                                $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $coupling->attributes()->typeID), "ccp");
+                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
                                 $msg = "{$this->prefix}";
                                 $msg .= "**POSSIBLE SIPHON**\n";
                                 $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
@@ -144,10 +147,10 @@ class siphons
         $cacheClr = $baseUnix - 13500;
         if ($cacheClr <= time()) {
             $weirdTime = time() + 21700;
-            $cacheTimer = gmdate('Y-m-d H:i:s', $weirdTime);
+            $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
             setPermCache("siphonLastChecked{$keyID}", $weirdTime);
         } else {
-            $cacheTimer = gmdate('Y-m-d H:i:s', $cacheClr);
+            $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
             setPermCache("siphonLastChecked{$keyID}", $cacheClr);
         }
         if ($siphonCount > 0) {
@@ -157,22 +160,25 @@ class siphons
             $channel->sendMessage($msg, false);
         }
         $this->logger->addInfo("Siphon Check Complete Next Check At {$cacheTimer}");
+        return null;
     }
 
-
-    public function onMessage()
+    /**
+     *
+     */
+    function onMessage()
     {
     }
 
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => '',
-            'trigger'     => [''],
-            'information' => '',
-        ];
+        return array(
+            "name" => "",
+            "trigger" => array(""),
+            "information" => ""
+        );
     }
 }

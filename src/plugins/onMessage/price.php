@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,98 +22,101 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
 /**
- * Class priceChecks.
- *
+ * Class priceChecks
  * @property  excludeChannel
  * @property  message
  */
 class price
 {
-    /*
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
-    /*
+    var $logger;
+    /**
      * @var
      */
-    public $solarSystems;
-    /*
+    var $solarSystems;
+    /**
      * @var array
      */
-    public $triggers = [];
+    var $triggers = array();
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $systems = dbQuery('SELECT solarSystemName, solarSystemID FROM mapSolarSystems', [], 'ccp');
+        $systems = dbQuery("SELECT solarSystemName, solarSystemID FROM mapSolarSystems", array(), "ccp");
         foreach ($systems as $system) {
-            $this->solarSystems[strtolower($system['solarSystemName'])] = $system['solarSystemID'];
-            $this->triggers[] = $this->config['bot']['trigger'].strtolower($system['solarSystemName']);
+            $this->solarSystems[strtolower($system["solarSystemName"])] = $system["solarSystemID"];
+            $this->triggers[] = $this->config["bot"]["trigger"] . strtolower($system["solarSystemName"]);
         }
-        $this->triggers[] = $this->config['bot']['trigger'].'pc';
-        $this->excludeChannel = $config['plugins']['priceChecker']['channelID'];
+        $this->triggers[] = $this->config["bot"]["trigger"] . "pc";
+        $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
+
     }
 
     /**
      * @param $msgData
      * @param $message
-     *
      * @return null
      */
-    public function onMessage($msgData, $message)
+    function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $user = $msgData['message']['from'];
-        $channelID = $msgData['message']['channelID'];
+        $user = $msgData["message"]["from"];
+        $channelID = $msgData["message"]["channelID"];
 
 
         // Bind a few things to vars for the plugins
-        $message = $msgData['message']['message'];
+        $message = $msgData["message"]["message"];
 
         // Quick Lookups
-        $quickLookUps = [
-            'plex' => [
-                'typeID'   => 29668,
-                'typeName' => "30 Day Pilot's License Extension (PLEX)",
-            ],
-            '30 day' => [
-                'typeID'   => 29668,
-                'typeName' => "30 Day Pilot's License Extension (PLEX)",
-            ],
-        ];
+        $quickLookUps = array(
+            "plex" => array(
+                "typeID" => 29668,
+                "typeName" => "30 Day Pilot's License Extension (PLEX)"
+            ),
+            "30 day" => array(
+                "typeID" => 29668,
+                "typeName" => "30 Day Pilot's License Extension (PLEX)"
+            )
+        );
 
-        $data = command(strtolower($message), $this->information()['trigger'], $this->config['bot']['trigger']);
+        $data = command(strtolower($message), $this->information()["trigger"], $this->config["bot"]["trigger"]);
 
-        if (isset($data['trigger'])) {
-            $systemName = $data['trigger'];
-            $itemName = $data['messageString'];
+        if (isset($data["trigger"])) {
 
-            $single = dbQueryRow('SELECT typeID, typeName FROM invTypes WHERE typeName = :item COLLATE NOCASE', [':item' => ucfirst($itemName)], 'ccp');
-            $multiple = dbQuery('SELECT typeID, typeName FROM invTypes WHERE typeName LIKE :item COLLATE NOCASE LIMIT 5', [':item' => '%'.ucfirst($itemName).'%'], 'ccp');
+            $systemName = $data["trigger"];
+            $itemName = $data["messageString"];
+
+            $single = dbQueryRow("SELECT typeID, typeName FROM invTypes WHERE typeName = :item COLLATE NOCASE", array(":item" => ucfirst($itemName)), "ccp");
+            $multiple = dbQuery("SELECT typeID, typeName FROM invTypes WHERE typeName LIKE :item COLLATE NOCASE LIMIT 5", array(":item" => "%" . ucfirst($itemName) . "%"), "ccp");
 
             // Quick lookups
             if (isset($quickLookUps[$itemName])) {
@@ -127,29 +130,28 @@ class price
 
             // Check if the channel is restricted
             if ($channelID == $this->excludeChannel) {
-                return $this->message->reply('**Price Check not allowed in this channel**');
+                return $this->message->reply("**Price Check not allowed in this channel**");
             }
 
             // If there are multiple results, and not a single result, it's an error
             if (empty($single) && !empty($multiple)) {
-                $items = [];
+                $items = array();
                 foreach ($multiple as $item) {
-                    $items[] = $item['typeName'];
+                    $items[] = $item["typeName"];
                 }
 
-                $items = implode(', ', $items);
-
+                $items = implode(", ", $items);
                 return $this->message->reply("**Multiple results found:** {$items}");
             }
 
             // If there is a single result, we'll get data now!
             if ($single) {
-                $typeID = $single['typeID'];
+                $typeID = $single["typeID"];
 
-                $solarSystemID = $systemName == 'pc' ? 'global' : $this->solarSystems[$systemName];
+                $solarSystemID = $systemName == "pc" ? "global" : $this->solarSystems[$systemName];
 
                 // Get pricing data
-                if ($solarSystemID == 'global') {
+                if ($solarSystemID == "global") {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?typeid={$typeID}"));
                 } else {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
@@ -163,7 +165,7 @@ class price
                 $highSell = number_format((float) $data->marketstat->type->sell->max, 2);
 
                 $this->logger->addInfo("Sending pricing info to {$user}");
-                $solarSystemName = $systemName == 'pc' ? 'Global' : ucfirst($systemName);
+                $solarSystemName = $systemName == "pc" ? "Global" : ucfirst($systemName);
                 $messageData = "**System: {$solarSystemName}**
 **Buy:**
    Low: {$lowBuy}
@@ -178,17 +180,18 @@ class price
                 $this->message->reply("**Error:** ***{$itemName}*** not found");
             }
         }
+        return null;
     }
 
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => 'pc',
-            'trigger'     => $this->triggers,
-            'information' => 'Shows price information for items in EVE. To use simply type !pc item_name or !system_name item_name',
-        ];
+        return array(
+            "name" => "pc",
+            "trigger" => $this->triggers,
+            "information" => "Shows price information for items in EVE. To use simply type !pc item_name or !system_name item_name"
+        );
     }
 }

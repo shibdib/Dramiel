@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -21,15 +21,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
  * @param $logger
  */
+
 function updateDramielDB($logger)
 {
-    $tables = ['users', 'usersSeen', 'storage', 'shipFits'];
+    $tables = array("users", "usersSeen", "storage", "shipFits");
 
-    $tableCreateCode = [
-        'users' => '
+    $tableCreateCode = array(
+        "users" => "
             BEGIN;
             CREATE TABLE IF NOT EXISTS `users` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,8 +46,8 @@ function updateDramielDB($logger)
             CREATE INDEX serverID ON users (serverID);
             CREATE INDEX corporationID ON users (corporationID);
             CREATE INDEX allianceID ON users (allianceID);
-            COMMIT;',
-        'usersSeen' => "
+            COMMIT;",
+        "usersSeen" => "
             BEGIN;
             CREATE TABLE IF NOT EXISTS `usersSeen` (
                 `id` INTEGER PRIMARY KEY,
@@ -60,7 +60,7 @@ function updateDramielDB($logger)
             );
             CREATE INDEX name ON usersSeen (name);
             COMMIT;",
-        'storage' => '
+        "storage" => "
             BEGIN;
             CREATE TABLE IF NOT EXISTS `storage` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,8 +68,8 @@ function updateDramielDB($logger)
                 `value` VARCHAR(255) NOT NULL
             );
             CREATE UNIQUE INDEX key ON storage (key);
-            COMMIT;',
-        'shipFits' => '
+            COMMIT;",
+        "shipFits" => "
             BEGIN;
             CREATE TABLE IF NOT EXISTS `shipFits` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,17 +77,17 @@ function updateDramielDB($logger)
                 `fit` VARCHAR(255) NOT NULL,
                 `fitLink` VARCHAR(255) NOT NULL
             );
-            COMMIT;',
-    ];
+            COMMIT;",
+    );
 
     // Does the file exist?
-    if (!file_exists(__DIR__.'/../../database/dramiel.sqlite')) {
-        touch(__DIR__.'/../../database/dramiel.sqlite');
+    if (!file_exists(__DIR__ . "/../../database/dramiel.sqlite")) {
+            touch(__DIR__ . "/../../database/dramiel.sqlite");
     }
 
     // Create table if not exists
     foreach ($tables as $table) {
-        $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", 'name', [':name' => $table]);
+        $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", "name", array(":name" => $table));
         if (!$exists) {
             $logger->addInfo("Creating {$table} in dramiel.sqlite, since it does not exist");
             dbExecute(trim($tableCreateCode[$table]));

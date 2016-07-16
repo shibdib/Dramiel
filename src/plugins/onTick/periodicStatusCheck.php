@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,30 +22,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 use Discord\Discord;
+use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
 
 /**
- * Class periodicStatusCheck.
+ * Class periodicStatusCheck
  */
-class periodicStatusCheck
-{
-    /*
+class periodicStatusCheck {
+    /**
      * @var
      */
-    public $config;
-    /*
+    var $config;
+    /**
      * @var
      */
-    public $discord;
-    /*
+    var $discord;
+    /**
      * @var
      */
-    public $logger;
-    /*
+    var $logger;
+    /**
      * @var
      */
-    public $toDiscordChannel;
+    var $toDiscordChannel;
     protected $keyID;
     protected $vCode;
     protected $prefix;
@@ -55,104 +56,97 @@ class periodicStatusCheck
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->toDiscordChannel = $config['plugins']['notifications']['channelID'];
-        $lastCheck = getPermCache('statusLastChecked');
-        if ($lastCheck == null) {
+        $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
+        $lastCheck = getPermCache("statusLastChecked");
+        if ($lastCheck == NULL) {
             // Schedule it for right now if first run
-            setPermCache('statusLastChecked', time() - 5);
+            setPermCache("statusLastChecked", time() - 5);
         }
     }
 
-
-    public function tick()
+    /**
+     *
+     */
+    function tick()
     {
-        $lastChecked = getPermCache('statusLastChecked');
+        $lastChecked = getPermCache("statusLastChecked");
 
         if ($lastChecked <= time()) {
             $this->checkStatus();
         }
     }
 
-    public function checkStatus()
+    function checkStatus()
     {
         if ($this->toDiscordChannel == 0) {
-            setPermCache('statusLastChecked', time() + 300);
-            $this->logger->addInfo('TQ Status Check Failed - Add a channel ID to the notifications section in the config.');
-
-            return;
+            setPermCache("statusLastChecked", time() + 300);
+            $this->logger->addInfo("TQ Status Check Failed - Add a channel ID to the notifications section in the config.");
+            return null;
         }
         // What was the servers last reported state
-        $lastStatus = getPermCache('statusLastState');
+        $lastStatus = getPermCache("statusLastState");
 
         //api
-        $url = 'https://api.eveonline.com/server/ServerStatus.xml.aspx';
+        $url = "https://api.eveonline.com/server/ServerStatus.xml.aspx";
         $xml = makeApiRequest($url);
 
         //Crest
-        $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
-        $crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
-        $tqOnline = (int) $crestData['userCount'];
+        $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
+        $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
+        $tqOnline = (int) $crestData["userCount"];
 
         if (!isset($xml->result)) {
-            $this->logger->addInfo('TQ Status check canceled, API Error.');
-            setPermCache('statusLastChecked', time() + 300);
-
-            return;
+            $this->logger->addInfo("TQ Status check canceled, API Error.");
+            setPermCache("statusLastChecked", time() + 300);
+            return null;
         }
 
         foreach ($xml->result as $info) {
             $apiStatus = $info->serverOpen;
-            if ($apiStatus == 'True') {
-                $apiStatus = 'online';
-            } else {
-                $apiStatus = 'offline';
-            }
+            if ($apiStatus == "True") {$apiStatus = "online"; } else {$apiStatus = "offline"; }
         }
-        if ($crestStatus != 'online') {
-            $crestHolder = 'offline';
-        } else {
-            $crestHolder = 'online';
-        }
+        if ($crestStatus != "online") { $crestHolder = "offline"; } else { $crestHolder = "online"; }
         if ($crestHolder != $apiStatus) {
-            $this->logger->addInfo('TQ Status check canceled, CREST and API different.');
-            setPermCache('statusLastChecked', time() + 300);
-
-            return;
+            $this->logger->addInfo("TQ Status check canceled, CREST and API different.");
+            setPermCache("statusLastChecked", time() + 300);
+            return null;
         }
         if ($lastStatus == $crestStatus) {
             // No change
-            setPermCache('statusLastChecked', time() + 300);
-
-            return;
+            setPermCache("statusLastChecked", time() + 300);
+            return null;
         }
         $msg = "**TQ Status Change:** {$crestStatus} with {$tqOnline} users online.";
         $channelID = $this->toDiscordChannel;
         $channel = Channel::find($channelID);
         $channel->sendMessage($msg, false);
-        setPermCache('statusLastState', $crestStatus);
-        setPermCache('statusLastChecked', time() + 300);
+        setPermCache("statusLastState", $crestStatus);
+        setPermCache("statusLastChecked", time() + 300);
         $this->logger->addInfo("TQ Status Change Detected. New status - {$crestStatus}");
+        return null;
     }
 
-
-    public function onMessage()
+    /**
+     *
+     */
+    function onMessage()
     {
     }
 
     /**
      * @return array
      */
-    public function information()
+    function information()
     {
-        return [
-            'name'        => '',
-            'trigger'     => [''],
-            'information' => '',
-        ];
+        return array(
+            "name" => "",
+            "trigger" => array(""),
+            "information" => ""
+        );
     }
 }

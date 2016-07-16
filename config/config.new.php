@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT).
+ * The MIT License (MIT)
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,143 +22,144 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-$config = [];
 
-$config['bot'] = [
-    'name'    => 'TWINKIE NUMBA UN', // Discord name for your bot (Not yet implemented)
-    'game'    => 'USA #1', // Shows the bot "playing" this
-    'trigger' => '!', // what trigger is used for commands
-    'token'   => '', //enter the token for your app (https://discordapp.com/developers/applications/me)
-];
+$config = array();
 
-$config['database'] = [
-    'host'     => 'localhost',
-    'user'     => '',
-    'pass'     => '',
-    'database' => 'discord',
-];
+$config["bot"] = array(
+    "name" => "TWINKIE NUMBA UN", // Discord name for your bot (Not yet implemented)
+    "game" => "USA #1", // Shows the bot "playing" this
+    "trigger" => "!", // what trigger is used for commands
+    "token" => "" //enter the token for your app (https://discordapp.com/developers/applications/me)
+);
+
+$config["database"] = array(
+    "host" => "localhost",
+    "user" => "",
+    "pass" => "",
+    "database" => "discord"
+);
 
 // Twitter
-$config['twitter'] = [
-    'consumerKey'       => '',
-    'consumerSecret'    => '',
-    'accessToken'       => '',
-    'accessTokenSecret' => '',
-];
+$config["twitter"] = array(
+    "consumerKey" => "",
+    "consumerSecret" => "",
+    "accessToken" => "",
+    "accessTokenSecret" => ""
+);
 
-$config['eve'] = [
-    'apiKeys' => [
-        'user1' => [
-            'keyID'       => '',
-            'vCode'       => '',
-            'characterID' => 0,
-        ],
-    ],
-];
+$config["eve"] = array(
+    "apiKeys" => array(
+        "user1" => array(
+            "keyID" => "",
+            "vCode" => "",
+            "characterID" => 0
+        ),
+    )
+);
 
-$config['enabledPlugins'] = [ // remove the slashes for the plugins you want
-    'about', //info on the bot
-    'auth', //sso based auth system
-    'authCheck', // checks if users have left corp or alliance
-    'charInfo', // eve character info using eve-kill
-    'corpInfo', // eve corp info
-    'eveStatus', // tq status message command
+$config["enabledPlugins"] = array( // remove the slashes for the plugins you want
+    "about", //info on the bot
+    "auth", //sso based auth system
+    "authCheck", // checks if users have left corp or alliance
+    "charInfo", // eve character info using eve-kill
+    "corpInfo", // eve corp info
+    "eveStatus", // tq status message command
     //"periodicStatusCheck", // ....YOU MUST SET A CHANNEL IN THE NOTIFICATIONS SECTION NEAR THE BOTTOM OF THIS FILE.... Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
-    'help', // bot help program, will list active addons
-    'price', // price check tool, works for all items and ships. Can either !pc <itemname> for general, or !<systemname> <item> for more specific
-    'time', // global clock with eve time
+    "help", // bot help program, will list active addons
+    "price", // price check tool, works for all items and ships. Can either !pc <itemname> for general, or !<systemname> <item> for more specific
+    "time", // global clock with eve time
     //"evemails", // evemail updater, will post corp and alliance mails to a channel.
     //"fileReader", // Read advanced plugin config section of the wiki
     //"notifications", // eve notifications to a channel, good for warning users of an attack
     //"twitterOutput", // twitter input to stay up to date on eve happenings
-    'getKillmails', // show corp killmails in a chat channel
+    "getKillmails", // show corp killmails in a chat channel
     //"siphons", // report possible siphons, see wiki for more info
     //"siloFull", // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
     //"fleetUpOperations", // integrate with fleet up and post any new operations and then ping them when they get close
-];
+);
 
 
-$config['plugins'] = [
+$config["plugins"] = array(
     //uses the provided api's to post evemails to a channel
-    'evemails' => [
-        'fromIDs'   => [0, 0], // fill in with corp/alliance id's you want info from (have to be accessible with the api)
-        'channelID' => 0, // what channel id like these to post too
-    ],
-    'fileReader' => [
-        'db'            => '/tmp/discord.db',
-        'channelConfig' => [
-            'pings' => [
-                'default'           => true,
-                'searchString'      => 'broadcast', // The plugin will search for this string and post any messages that contain it. To have the bot share everything change it to false without any quotes.
-                'textStringPrepend' => '@everyone |', // this prepend will ping all discord users with access to the channel
-                'textStringAppend'  => '', // anything ud like to add to the tail end of the bots message
-                'channelID'         => '', // channel it posts too
-            ],
-            'supers' => [
-                'default'           => false,
-                'searchString'      => '',
-                'textStringPrepend' => '@everyone |',
-                'textStringAppend'  => '',
-                'channelID'         => 0,
-            ],
-            'blackops' => [
-                'default'           => false,
-                'searchString'      => '',
-                'textStringPrepend' => '@everyone |',
-                'textStringAppend'  => '',
-                'channelID'         => 0,
-            ],
-        ],
-    ],
+    "evemails" => array(
+        "fromIDs" => array(0, 0), // fill in with corp/alliance id's you want info from (have to be accessible with the api)
+        "channelID" => 0 // what channel id like these to post too
+    ),
+    "fileReader" => array(
+        "db" => "/tmp/discord.db",
+        "channelConfig" => array(
+            "pings" => array(
+                "default" => true,
+                "searchString" => "broadcast", // The plugin will search for this string and post any messages that contain it. To have the bot share everything change it to false without any quotes.
+                "textStringPrepend" => "@everyone |", // this prepend will ping all discord users with access to the channel
+                "textStringAppend" => "", // anything ud like to add to the tail end of the bots message
+                "channelID" => "" // channel it posts too
+            ),
+            "supers" => array(
+                "default" => false,
+                "searchString" => "",
+                "textStringPrepend" => "@everyone |",
+                "textStringAppend" => "",
+                "channelID" => 0
+            ),
+            "blackops" => array(
+                "default" => false,
+                "searchString" => "",
+                "textStringPrepend" => "@everyone |",
+                "textStringAppend" => "",
+                "channelID" => 0
+            )
+        ),
+    ),
     // what channel for eve notifications/also the channel for tq status alerts
-    'notifications' => [
-        'channelID' => 0,
-    ],
+    "notifications" => array(
+        "channelID" => 0
+    ),
     //Spam twitter messages from people you follow to this channel
-    'twitterOutput' => [
-        'channelID' => 0, // twitter output channel
-    ],
+    "twitterOutput" => array(
+        "channelID" => 0 // twitter output channel
+    ),
     //Pricecheck tool
-    'priceChecker' => [
-        'channelID' => 0, //If you want to restrict price checker from working in a channel, put that channel's ID here.
-    ],
+    "priceChecker" => array(
+        "channelID" => 0 //If you want to restrict price checker from working in a channel, put that channel's ID here.
+    ),
     //SSO Auth
-    'auth' => [
-        'corpID'         => 0,
-        'allianceID'     => 0, // If you'd like to auth base on alliance put the alliance ID here.. also works to set blues..
-        'corpMemberRole' => '', // The name of the role your CORP members will be assigned too if the auth plugin is active.
-        'allyMemberRole' => '', // The name of the role your ALLY members will be assigned too if the auth plugin is active.
-        'alertChannel'   => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
-        'nameEnforce'    => 'false', // put "true" or "false", if you'd like to make sure people's name match character names
-        'url'            => 'http://.....', // put a url here if using sso auth for ur sso page.
-    ],
+    "auth" => array(
+        "corpID" => 0,
+        "allianceID" => 0, // If you'd like to auth base on alliance put the alliance ID here.. also works to set blues..
+        "corpMemberRole" => "", // The name of the role your CORP members will be assigned too if the auth plugin is active.
+        "allyMemberRole" => "", // The name of the role your ALLY members will be assigned too if the auth plugin is active.
+        "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
+        "nameEnforce" => "false", // put "true" or "false", if you'd like to make sure people's name match character names
+        "url" => "http://....." // put a url here if using sso auth for ur sso page.
+    ),
     //Killmail posting
-    'getKillmails' => [
-        'channel'    => 0, //killmails post to this channel
-        'corpID'     => 0, //corpid for killmails
-        'allianceID' => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
-        'lossMails'  => 'true', //set as true to post both kills and losses, false to post only kills.
-        'spamAmount' => 10, //Max amount of kills the bot will post every 10 minutes. Default is 15 and won't get the bot kicked for spamming.
-        'startMail'  => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
-    ],
+    "getKillmails" => array(
+        "channel" => 0, //killmails post to this channel
+        "corpID" => 0, //corpid for killmails
+        "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
+        "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.
+        "spamAmount" => 10, //Max amount of kills the bot will post every 10 minutes. Default is 15 and won't get the bot kicked for spamming.
+        "startMail" => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
+    ),
     //Siphon detection works by looking for multiples of 100 inside standard silos. So if you take out a weird number it will trigger false positives.
-    'siphons' => [
-        'channelID' => 0, //killmails post to this channel
-        'keyID'     => '', //corpid for killmails
-        'vCode'     => '', //allianceid for killmails (Leave as 0 if using it for a corp)
-    ],
+    "siphons" => array(
+        "channelID" => 0, //killmails post to this channel
+        "keyID" => "", //corpid for killmails
+        "vCode" => "", //allianceid for killmails (Leave as 0 if using it for a corp)
+    ),
     //Reports silos nearing max capacity.
-    'siloFull' => [
-        'channelID' => 0, //silo alerts post to this channel
-        'keyID'     => '', //corp api keyID (Must have assets)
-        'vCode'     => '', //corp api vCode
-        'towerRace' => 0, //The race of your moon goo towers (to determine silo bonus.) Amarr/Amarr Faction Variants = 1, Gal/Gal Faction Variants = 2, Everyone else = 0
-    ],
+    "siloFull" => array(
+        "channelID" => 0, //silo alerts post to this channel
+        "keyID" => "", //corp api keyID (Must have assets)
+        "vCode" => "", //corp api vCode
+        "towerRace" => 0, //The race of your moon goo towers (to determine silo bonus.) Amarr/Amarr Faction Variants = 1, Gal/Gal Faction Variants = 2, Everyone else = 0
+    ),
     //Fleet up linking will share operations to a specific channel and then reping them when it gets within 30 minutes of form up
-    'fleetUp' => [
-    'channelID' => 0, //channel id to ping about operations
-    'userID'    => 0, //fleet up user id
-    'groupID'   => 0, //fleet up group id
-    'apiKey'    => 'xxxxx', //fleet up api code, link to application Dramiel Bot
-],
-];
+    "fleetUp" => array(
+    "channelID" => 0, //channel id to ping about operations
+    "userID" => 0, //fleet up user id
+    "groupID" => 0, //fleet up group id
+    "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
+),
+);
