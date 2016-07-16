@@ -92,12 +92,12 @@ class siloFull {
         $towerMulti = 0;
         $towerFull = 20000;
         $cleanFull = number_format($towerFull);
-        if ($this->towerRace == 1){
+        if ($this->towerRace == 1) {
             $towerMulti = 0.50;
             $towerFull = 30000;
             $cleanFull = number_format($towerFull);
         }
-        if ($this->towerRace == 2){
+        if ($this->towerRace == 2) {
             $towerMulti = 1;
             $towerFull = 40000;
             $cleanFull = number_format($towerFull);
@@ -606,7 +606,7 @@ class siloFull {
             setPermCache("siloLastChecked{$keyID}", $cacheClr);
         }
 
-        if ($siloCount > 0){
+        if ($siloCount > 0) {
             $msg = "Next Silo Check At: {$cacheTimer} EVE Time";
             // Send the msg to the channel;
             $channelID = $this->toDiscordChannel;

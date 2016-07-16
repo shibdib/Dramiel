@@ -43,8 +43,7 @@ function seatPost($seat, $post, $token)
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $result = curl_exec($ch);
         return $result;
-    }
-    catch (Exception $e)
+    } catch (Exception $e)
     {
         $this->logger->info("SeAT Error: " . $e->getMessage());
         return null;

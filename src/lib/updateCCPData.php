@@ -51,8 +51,9 @@ function updateCCPData($logger) {
             $sqliteData = bzopen("{$databaseDir}ccpData.sqlite.bz2", "r");
             $logger->addInfo("Reading from bz2 file");
             $data = "";
-            while (!feof($sqliteData))
-                $data .= bzread($sqliteData, 4096);
+            while (!feof($sqliteData)) {
+                            $data .= bzread($sqliteData, 4096);
+            }
             $logger->addInfo("Writing bz2 file contents into .sqlite file");
             file_put_contents("{$databaseDir}/ccpData.sqlite", $data);
             $logger->addInfo("Flushing bz2 data from memory");
