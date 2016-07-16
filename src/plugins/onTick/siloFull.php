@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,59 +22,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Discord\Discord;
-use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
 
 /**
- * Class siloFull
+ * Class siloFull.
+ *
  * @property  towerRace
  */
-class siloFull {
-    /**
+class siloFull
+{
+    /*
      * @var
      */
-    var $config;
-    /**
+    public $config;
+    /*
      * @var
      */
-    var $discord;
-    /**
+    public $discord;
+    /*
      * @var
      */
-    var $logger;
-    /**
+    public $logger;
+    /*
      * @var
      */
-    var $toDiscordChannel;
+    public $toDiscordChannel;
     protected $keyID;
     protected $vCode;
     protected $prefix;
+
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->toDiscordChannel = $config["plugins"]["siloFull"]["channelID"];
-        $this->keyID = $config["plugins"]["siloFull"]["keyID"];
-        $this->vCode = $config["plugins"]["siloFull"]["vCode"];
-        $this->towerRace = $config["plugins"]["siloFull"]["towerRace"];
+        $this->toDiscordChannel = $config['plugins']['siloFull']['channelID'];
+        $this->keyID = $config['plugins']['siloFull']['keyID'];
+        $this->vCode = $config['plugins']['siloFull']['vCode'];
+        $this->towerRace = $config['plugins']['siloFull']['towerRace'];
         $lastCheck = getPermCache("siloLastChecked{$this->keyID}");
-        if ($lastCheck == NULL) {
+        if ($lastCheck == null) {
             // Schedule it for right now if first run
             setPermCache("siloLastChecked{$this->keyID}", time() - 5);
         }
     }
-    /**
-     *
-     */
-    function tick()
+
+
+    public function tick()
     {
         $lastChecked = getPermCache("siloLastChecked{$this->keyID}");
         $keyID = $this->keyID;
@@ -84,7 +84,8 @@ class siloFull {
             $this->checkTowers($keyID, $vCode);
         }
     }
-    function checkTowers($keyID, $vCode)
+
+    public function checkTowers($keyID, $vCode)
     {
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
         $xml = makeApiRequest($url);
@@ -110,8 +111,8 @@ class siloFull {
                         $moonGoo = $silo->attributes()->typeID;
                         switch ($moonGoo) {
                             case 16634:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16634), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16634], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -134,8 +135,8 @@ class siloFull {
                                 }
                                 break;
                             case 16643:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16643), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16643], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -158,8 +159,8 @@ class siloFull {
                                 }
                                 break;
                             case 16647:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16647), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16647], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -182,8 +183,8 @@ class siloFull {
                                 }
                                 break;
                             case 16641:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16641), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16641], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 30000 + (30000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -206,8 +207,8 @@ class siloFull {
                                 }
                                 break;
                             case 16640:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16640), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16640], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -230,8 +231,8 @@ class siloFull {
                                 }
                                 break;
                             case 16635:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16635), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16635], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -254,8 +255,8 @@ class siloFull {
                                 }
                                 break;
                             case 16648:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16648), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16648], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -278,8 +279,8 @@ class siloFull {
                                 }
                                 break;
                             case 16633:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16633), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16633], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -302,8 +303,8 @@ class siloFull {
                                 }
                                 break;
                             case 16646:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16646), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16646], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -326,8 +327,8 @@ class siloFull {
                                 }
                                 break;
                             case 16651:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16651), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16651], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -350,8 +351,8 @@ class siloFull {
                                 }
                                 break;
                             case 16650:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16650), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16650], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -374,8 +375,8 @@ class siloFull {
                                 }
                                 break;
                             case 16644:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16644), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16644], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -398,8 +399,8 @@ class siloFull {
                                 }
                                 break;
                             case 16652:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16652), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16652], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -422,8 +423,8 @@ class siloFull {
                                 }
                                 break;
                             case 16639:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16639), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16639], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -446,8 +447,8 @@ class siloFull {
                                 }
                                 break;
                             case 16636:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16636), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16636], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -470,8 +471,8 @@ class siloFull {
                                 }
                                 break;
                             case 16649:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16649), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16649], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -494,8 +495,8 @@ class siloFull {
                                 }
                                 break;
                             case 16653:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16653), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16653], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -518,8 +519,8 @@ class siloFull {
                                 }
                                 break;
                             case 16638:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16638), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16638], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -542,8 +543,8 @@ class siloFull {
                                 }
                                 break;
                             case 16637:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16637), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16637], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -566,8 +567,8 @@ class siloFull {
                                 }
                                 break;
                             case 16642:
-                                $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => 16642), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $typeName = dbQueryField('SELECT typeName FROM invTypes WHERE typeID = :id', 'typeName', [':id' => 16642], 'ccp');
+                                $systemName = dbQueryField('SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id', 'solarSystemName', [':id' => $structures->attributes()->locationID], 'ccp');
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $gooAmount = $silo->attributes()->quantity;
@@ -599,10 +600,10 @@ class siloFull {
         $cacheClr = $baseUnix - 13500;
         if ($cacheClr <= time()) {
             $weirdTime = time() + 21700;
-            $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
+            $cacheTimer = gmdate('Y-m-d H:i:s', $weirdTime);
             setPermCache("siloLastChecked{$keyID}", $weirdTime);
         } else {
-            $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
+            $cacheTimer = gmdate('Y-m-d H:i:s', $cacheClr);
             setPermCache("siloLastChecked{$keyID}", $cacheClr);
         }
 
@@ -614,25 +615,24 @@ class siloFull {
             $channel->sendMessage($msg, false);
         }
         $this->logger->addInfo("Silo Check Complete Next Check At {$cacheTimer}");
-        return null;
+
+        return;
 
 
-        /**
-         *
-         */
         function onMessage()
         {
         }
+
         /**
          * @return array
          */
         function information()
         {
-            return array(
-                "name" => "",
-                "trigger" => array(""),
-                "information" => ""
-            );
+            return [
+                'name'        => '',
+                'trigger'     => [''],
+                'information' => '',
+            ];
         }
     }
 }

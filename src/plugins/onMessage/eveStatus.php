@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,7 +22,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
@@ -31,35 +30,33 @@ use Discord\Parts\Channel\Message;
  */
 class eveStatus
 {
-    /**
+    /*
      * @var
      */
-    var $config;
-    /**
+    public $config;
+    /*
      * @var
      */
-    var $discord;
-    /**
+    public $discord;
+    /*
      * @var
      */
-    var $logger;
+    public $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
     }
 
-    /**
-     *
-     */
-    function tick()
+
+    public function tick()
     {
     }
 
@@ -67,20 +64,19 @@ class eveStatus
      * @param $msgData
      * @param $message
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
+        $message = $msgData['message']['message'];
+        $user = $msgData['message']['from'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
+            $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
 
-            $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
-
-            $tqStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
-            $tqOnline = (int) $crestData["userCount"];
+            $tqStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
+            $tqOnline = (int) $crestData['userCount'];
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
             $this->logger->addInfo("Sending eve status info to {$user}");
@@ -91,20 +87,19 @@ class eveStatus
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
-        return array(
-            "name" => "tq",
-            "trigger" => array($this->config["bot"]["trigger"] . "tq", $this->config["bot"]["trigger"] . "status"),
-            "information" => "Shows the current status of Tranquility"
-        );
+        return [
+            'name'        => 'tq',
+            'trigger'     => [$this->config['bot']['trigger'].'tq', $this->config['bot']['trigger'].'status'],
+            'information' => 'Shows the current status of Tranquility',
+        ];
     }
 
     /**
      * @param $msgData
      */
-    function onMessageAdmin($msgData)
+    public function onMessageAdmin($msgData)
     {
     }
-
 }

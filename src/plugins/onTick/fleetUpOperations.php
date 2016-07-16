@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,34 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Discord\Discord;
-use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
 
 /**
- * Class fleetUpOperations
+ * Class fleetUpOperations.
+ *
  * @property  userID
  * @property  apiKey
  * @property  groupID
  */
-class fleetUpOperations {
-    /**
+class fleetUpOperations
+{
+    /*
      * @var
      */
-    var $config;
-    /**
+    public $config;
+    /*
      * @var
      */
-    var $discord;
-    /**
+    public $discord;
+    /*
      * @var
      */
-    var $logger;
-    /**
+    public $logger;
+    /*
      * @var
      */
-    var $toDiscordChannel;
+    public $toDiscordChannel;
     protected $keyID;
     protected $vCode;
     protected $prefix;
@@ -59,28 +59,26 @@ class fleetUpOperations {
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->toDiscordChannel = $config["plugins"]["fleetUp"]["channelID"];
-        $this->userID = $config["plugins"]["fleetUp"]["userID"];
-        $this->groupID = $config["plugins"]["fleetUp"]["groupID"];
-        $this->apiKey = $config["plugins"]["fleetUp"]["apiKey"];
-        $lastCheck = getPermCache("fleetUpPostLastChecked");
-        if ($lastCheck == NULL) {
+        $this->toDiscordChannel = $config['plugins']['fleetUp']['channelID'];
+        $this->userID = $config['plugins']['fleetUp']['userID'];
+        $this->groupID = $config['plugins']['fleetUp']['groupID'];
+        $this->apiKey = $config['plugins']['fleetUp']['apiKey'];
+        $lastCheck = getPermCache('fleetUpPostLastChecked');
+        if ($lastCheck == null) {
             // Schedule it for right now if first run
-            setPermCache("fleetUpPostLastChecked", time() - 5);
+            setPermCache('fleetUpPostLastChecked', time() - 5);
         }
     }
 
-    /**
-     *
-     */
-    function tick()
+
+    public function tick()
     {
-        $lastChecked = getPermCache("fleetUpPostLastChecked");
+        $lastChecked = getPermCache('fleetUpPostLastChecked');
 
         if ($lastChecked <= time()) {
             $this->postFleetUp();
@@ -88,23 +86,22 @@ class fleetUpOperations {
         }
     }
 
-    function postFleetUp()
+    public function postFleetUp()
     {
-
-        date_default_timezone_set("UTC");
+        date_default_timezone_set('UTC');
         $eveTime = time();
         //fleetUp post upcoming operations
-        $currentID = getPermCache("fleetUpLastPostedOperation");
+        $currentID = getPermCache('fleetUpLastPostedOperation');
         $fleetUpOperations = json_decode(downloadData("http://api.fleet-up.com/Api.svc/tlYgBRjmuXj2Yl1lEOyMhlDId/{$this->userID}/{$this->apiKey}/Operations/{$this->groupID}"), true);
-        foreach ($fleetUpOperations["Data"] as $operation) {
-            $name = $operation["Subject"];
-            $startTime = $operation["StartString"];
-            preg_match_all('!\d+!', $operation["Start"], $epochStart);
+        foreach ($fleetUpOperations['Data'] as $operation) {
+            $name = $operation['Subject'];
+            $startTime = $operation['StartString'];
+            preg_match_all('!\d+!', $operation['Start'], $epochStart);
             $startTimeUnix = substr($epochStart[0][0], 0, -3);
-            $desto = $operation["Location"];
-            $formUp = $operation["LocationInfo"];
-            $info = $operation["Details"];
-            $id = $operation["Id"];
+            $desto = $operation['Location'];
+            $formUp = $operation['LocationInfo'];
+            $info = $operation['Details'];
+            $id = $operation['Id'];
             $link = "https://fleet-up.com/Operation#{$id}\
 			";
             $timeDifference = $startTimeUnix - $eveTime;
@@ -122,35 +119,34 @@ Link - {$link}";
                     $channelID = $this->toDiscordChannel;
                     $channel = Channel::find($channelID);
                     $channel->sendMessage($msg, false);
-                    setPermCache("fleetUpLastPostedOperation", $id);
-
+                    setPermCache('fleetUpLastPostedOperation', $id);
                 }
             }
         }
-        setPermCache("fleetUpPostLastChecked", time() + 120);
+        setPermCache('fleetUpPostLastChecked', time() + 120);
         if (isset($id) and $id != $currentID) {
             $this->logger->addInfo("Latest upcoming operation ID - {$id}");
         }
     }
 
-    function checkFleetUp()
+    public function checkFleetUp()
     {
-        $lastChecked = getPermCache("fleetUpLastChecked");
+        $lastChecked = getPermCache('fleetUpLastChecked');
 
         if ($lastChecked >= time()) {
-            return null;
+            return;
         }
 
         //fleetUp check for new operations
-        $currentID = getPermCache("fleetUpLastOperation");
+        $currentID = getPermCache('fleetUpLastOperation');
         $fleetUpOperations = json_decode(downloadData("http://api.fleet-up.com/Api.svc/tlYgBRjmuXj2Yl1lEOyMhlDId/{$this->userID}/{$this->apiKey}/Operations/{$this->groupID}"), true);
-        foreach ($fleetUpOperations["Data"] as $operation) {
-            $name = $operation["Subject"];
-            $startTime = $operation["StartString"];
-            $desto = $operation["Location"];
-            $formUp = $operation["LocationInfo"];
-            $info = $operation["Details"];
-            $id = $operation["Id"];
+        foreach ($fleetUpOperations['Data'] as $operation) {
+            $name = $operation['Subject'];
+            $startTime = $operation['StartString'];
+            $desto = $operation['Location'];
+            $formUp = $operation['LocationInfo'];
+            $info = $operation['Details'];
+            $id = $operation['Id'];
             $link = "https://fleet-up.com/Operation#{$id}\
 			";
             if ($currentID < $id) {
@@ -166,31 +162,29 @@ Link - {$link}";
                 $channelID = $this->toDiscordChannel;
                 $channel = Channel::find($channelID);
                 $channel->sendMessage($msg, false);
-                setPermCache("fleetUpLastOperation", $id);
+                setPermCache('fleetUpLastOperation', $id);
             }
         }
-        setPermCache("fleetUpLastChecked", time() + 1800);
+        setPermCache('fleetUpLastChecked', time() + 1800);
         if (isset($id) and $id != $currentID) {
             $this->logger->addInfo("Newest fleetUp operation ID - {$id}");
         }
     }
 
-    /**
-     *
-     */
-    function onMessage()
+
+    public function onMessage()
     {
     }
 
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
-        return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
-        );
+        return [
+            'name'        => '',
+            'trigger'     => [''],
+            'information' => '',
+        ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,52 +22,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
 /**
- * Class about
+ * Class about.
+ *
  * @property  info
  * @property  info
  * @property  info
  */
 class about
 {
-    /**
+    /*
      * @var
      */
-    var $config;
-    /**
+    public $config;
+    /*
      * @var
      */
-    var $discord;
-    /**
+    public $discord;
+    /*
      * @var
      */
-    var $logger;
-    /**
+    public $logger;
+    /*
      * @var
      */
-    var $message;
+    public $message;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
+     *
      * @internal param $message
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
     }
 
-    /**
-     *
-     */
-    function tick()
+
+    public function tick()
     {
     }
 
@@ -75,7 +74,7 @@ class about
      * @param $msgData
      * @param $message
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
         $this->info['guilds'] = 0;
@@ -86,28 +85,28 @@ class about
         }
 
         global $startTime; // Get the starttime of the bot
-        $time1 = new DateTime(date("Y-m-d H:i:s", $startTime));
-        $time2 = new DateTime(date("Y-m-d H:i:s"));
+        $time1 = new DateTime(date('Y-m-d H:i:s', $startTime));
+        $time2 = new DateTime(date('Y-m-d H:i:s'));
         $interval = $time1->diff($time2);
 
-        $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
+        $message = $msgData['message']['message'];
+        $user = $msgData['message']['from'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
             $gitRevision = gitRevision();
             $gitBranch = gitBranch();
-            $msg = "```
+            $msg = '```
 Developer: Shibdib (In-game Name: Mr Twinkie)
 
-Current Version: " . $gitRevision["short"] . "
-Current Branch: " . $gitBranch . "
+Current Version: '.$gitRevision['short'].'
+Current Branch: '.$gitBranch."
 Github Repo: https://github.com/shibdib/Dramiel
 
 Statistics:
 Currently on {$this->info['guilds']} different discord servers.
-Up-time: " . $interval->y . " Year(s), " . $interval->m . " Month(s), " . $interval->d . " Days, " . $interval->h . " Hours, " . $interval->i . " Minutes, " . $interval->s . " seconds.
-Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
+Up-time: ".$interval->y.' Year(s), '.$interval->m.' Month(s), '.$interval->d.' Days, '.$interval->h.' Hours, '.$interval->i.' Minutes, '.$interval->s.' seconds.
+Memory Usage: ~'.round(memory_get_usage() / 1024 / 1024, 3).'MB```';
             $this->logger->addInfo("Sending about info to {$user}");
             $this->message->reply($msg);
         }
@@ -116,12 +115,12 @@ Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
-        return array(
-            "name" => "about",
-            "trigger" => array($this->config["bot"]["trigger"] . "about"),
-            "information" => "Shows information on the bot, who created it, what library it's using, revision, and other stats. Example: !about"
-        );
+        return [
+            'name'        => 'about',
+            'trigger'     => [$this->config['bot']['trigger'].'about'],
+            'information' => "Shows information on the bot, who created it, what library it's using, revision, and other stats. Example: !about",
+        ];
     }
 }

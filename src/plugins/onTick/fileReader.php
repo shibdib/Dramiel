@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,86 +22,83 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Discord\Discord;
-use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
+use Discord\Parts\Channel\Message;
 
 /**
- * Class fileReaderJabber
+ * Class fileReaderJabber.
  */
 class fileReader
 {
-    /**
+    /*
      * @var
      */
-    var $config;
-    /**
+    public $config;
+    /*
      * @var
      */
-    var $db;
-    /**
+    public $db;
+    /*
      * @var
      */
-    var $discord;
-    /**
+    public $discord;
+    /*
      * @var
      */
-    var $channelConfig;
-    /**
+    public $channelConfig;
+    /*
      * @var int
      */
-    var $lastCheck = 0;
-    /**
+    public $lastCheck = 0;
+    /*
      * @var
      */
-    var $logger;
+    public $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->channelConfig = $config["plugins"]["fileReader"]["channelConfig"];
-        $this->db = $config["plugins"]["fileReader"]["db"];
+        $this->channelConfig = $config['plugins']['fileReader']['channelConfig'];
+        $this->db = $config['plugins']['fileReader']['db'];
         if (!is_file($this->db)) {
-                    touch($this->db);
+            touch($this->db);
         }
     }
 
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
-        return array(
-            "name" => "",
-            "trigger" => array(),
-            "information" => ""
-        );
+        return [
+            'name'        => '',
+            'trigger'     => [],
+            'information' => '',
+        ];
     }
 
-    /**
-     *
-     */
-    function tick()
+
+    public function tick()
     {
         if (filemtime($this->db) >= $this->lastCheck) {
             $data = file($this->db);
             if ($data) {
-                $message = "";
+                $message = '';
                 foreach ($data as $row) {
-                    $row = str_replace("\n", "", str_replace("\r", "", str_replace("^@", "", $row)));
-                    if ($row == "" || $row == " ") {
-                                            continue;
+                    $row = str_replace("\n", '', str_replace("\r", '', str_replace('^@', '', $row)));
+                    if ($row == '' || $row == ' ') {
+                        continue;
                     }
 
-                    $message .= $row . " | ";
+                    $message .= $row.' | ';
                     usleep(300000);
                 }
 
@@ -109,25 +106,25 @@ class fileReader
                 $message = trim(substr($message, 0, -2));
 
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
-                    if ($chanConfig["searchString"] == false) { // If no match was found, and searchString is false, just use that
-                        $message = $chanConfig["textStringPrepend"] . " " . $message . " " . $chanConfig["textStringAppend"];
-                        $channelID = $chanConfig["channelID"];
-                    } elseif (stristr($message, $chanConfig["searchString"])) {
-                        $message = $chanConfig["textStringPrepend"] . " " . $message . " " . $chanConfig["textStringAppend"];
-                        $channelID = $chanConfig["channelID"];
+                    if ($chanConfig['searchString'] == false) { // If no match was found, and searchString is false, just use that
+                        $message = $chanConfig['textStringPrepend'].' '.$message.' '.$chanConfig['textStringAppend'];
+                        $channelID = $chanConfig['channelID'];
+                    } elseif (stristr($message, $chanConfig['searchString'])) {
+                        $message = $chanConfig['textStringPrepend'].' '.$message.' '.$chanConfig['textStringAppend'];
+                        $channelID = $chanConfig['channelID'];
                     }
                 }
-                if ($channelID == "" || $channelID == null) {
-                    $message = "skip";
+                if ($channelID == '' || $channelID == null) {
+                    $message = 'skip';
                 }
-                if ($message != "skip") {
+                if ($message != 'skip') {
                     $this->logger->addInfo("Ping sent to channel {$channelID}, Message - {$message}");
                     // Send the pings to the channel
                     $channel = Channel::find($channelID);
                     $channel->sendMessage($message, false);
                 }
             }
-            $h = fopen($this->db, "w+");
+            $h = fopen($this->db, 'w+');
             fclose($h);
             chmod($this->db, 0777);
             $data = null;
@@ -140,7 +137,7 @@ class fileReader
     /**
      * @param $msgData
      */
-    function onMessage($msgData)
+    public function onMessage($msgData)
     {
     }
 }

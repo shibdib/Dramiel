@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,89 +22,88 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Discord\Discord;
-use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
+use Discord\Parts\Channel\Message;
 
 /**
- * Class corporationmails
+ * Class corporationmails.
+ *
  * @property  keyID
  * @property  vCode
  * @property  characterID
  */
-class evemails {
-    /**
+class evemails
+{
+    /*
      * @var
      */
-    var $config;
-    /**
+    public $config;
+    /*
      * @var
      */
-    var $discord;
-    /**
+    public $discord;
+    /*
      * @var
      */
-    var $logger;
-    /**
+    public $logger;
+    /*
      * @var
      */
-    var $nextCheck;
-    /**
+    public $nextCheck;
+    /*
      * @var
      */
-    var $toIDs;
-    /**
+    public $toIDs;
+    /*
      * @var
      */
-    var $toDiscordChannel;
+    public $toDiscordChannel;
 
-    /**
+    /*
      * @var
      */
-    var $newestMailID;
-    /**
+    public $newestMailID;
+    /*
      * @var
      */
-    var $maxID;
-    /**
+    public $maxID;
+    /*
      * @var
      */
-    var $keyCount;
-    /**
+    public $keyCount;
+    /*
      * @var
      */
-    var $keys;
+    public $keys;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->toIDs = $config["plugins"]["evemails"]["fromIDs"];
-        $this->toDiscordChannel = $config["plugins"]["evemails"]["channelID"];
-        $this->newestMailID = getPermCache("newestCorpMailID");
+        $this->toIDs = $config['plugins']['evemails']['fromIDs'];
+        $this->toDiscordChannel = $config['plugins']['evemails']['channelID'];
+        $this->newestMailID = getPermCache('newestCorpMailID');
         $this->maxID = 0;
-        $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
-        $this->vCode = $config["eve"]["apiKeys"]["user1"]["vCode"];
-        $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
+        $this->keyID = $config['eve']['apiKeys']['user1']['keyID'];
+        $this->vCode = $config['eve']['apiKeys']['user1']['vCode'];
+        $this->characterID = $config['eve']['apiKeys']['user1']['characterID'];
         $this->nextCheck = 0;
         $lastCheck = getPermCache("mailLastChecked{$this->keyID}");
-        if ($lastCheck == NULL) {
+        if ($lastCheck == null) {
             // Schedule it for right now if first run
             setPermCache("mailLastChecked{$this->keyID}", time() - 5);
         }
     }
 
-    /**
-     *
-     */
-    function tick()
+
+    public function tick()
     {
         $lastChecked = getPermCache("mailLastChecked{$this->keyID}");
         $keyID = $this->keyID;
@@ -115,50 +114,51 @@ class evemails {
             $this->logger->addInfo("Checking API Key {$keyID} for new mail..");
             $this->checkMails($keyID, $vCode, $characterID);
         }
-
     }
 
-    function checkMails($keyID, $vCode, $characterID)
+    public function checkMails($keyID, $vCode, $characterID)
     {
         $updateMaxID = false;
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
-        $data = json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)), true);
-        $data = $data["result"]["rowset"]["row"];
+        $data = json_decode(json_encode(simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        $data = $data['result']['rowset']['row'];
         $xml = makeApiRequest($url);
         $cached = $xml->cachedUntil[0];
         $baseUnix = strtotime($cached);
         $cacheClr = $baseUnix - 13500;
         if ($cacheClr <= time()) {
             $weirdTime = time() + 1830;
-            $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
+            $cacheTimer = gmdate('Y-m-d H:i:s', $weirdTime);
             setPermCache("mailLastChecked{$keyID}", $weirdTime);
         } else {
-            $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
+            $cacheTimer = gmdate('Y-m-d H:i:s', $cacheClr);
             setPermCache("mailLastChecked{$keyID}", $cacheClr);
         }
 
-        $mails = array();
-        if (isset($data["@attributes"])) { $mails[] = $data["@attributes"]; }
+        $mails = [];
+        if (isset($data['@attributes'])) {
+            $mails[] = $data['@attributes'];
+        }
         // Sometimes there is only ONE notification, so.. yeah..
         if (count($data) > 1) {
             foreach ($data as $multiMail) {
-                $mails[] = $multiMail["@attributes"];
+                $mails[] = $multiMail['@attributes'];
             }
         }
 
-        usort($mails, array($this, "sortByDate"));
+        usort($mails, [$this, 'sortByDate']);
 
         foreach ($mails as $mail) {
-            if (in_array($mail["toCorpOrAllianceID"], $this->toIDs) && $mail["messageID"] > $this->newestMailID) {
-                $sentBy = $mail["senderName"];
-                $title = $mail["title"];
-                $sentDate = $mail["sentDate"];
-                $url = "https://api.eveonline.com/char/MailBodies.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}&ids=" . $mail["messageID"];
-                $content = strip_tags(str_replace("<br>", "\n", json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)))->result->rowset->row));
+            if (in_array($mail['toCorpOrAllianceID'], $this->toIDs) && $mail['messageID'] > $this->newestMailID) {
+                $sentBy = $mail['senderName'];
+                $title = $mail['title'];
+                $sentDate = $mail['sentDate'];
+                $url = "https://api.eveonline.com/char/MailBodies.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}&ids=".$mail['messageID'];
+                $content = strip_tags(str_replace('<br>', "\n", json_decode(json_encode(simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA)))->result->rowset->row));
 
                 // Blank Content Check
-                if ($content == "") {
-                    return null;
+                if ($content == '') {
+                    return;
                 }
 
                 $messageSplit = str_split($content, 1850);
@@ -181,13 +181,13 @@ class evemails {
                 }
 
                 // Find the maxID so we don't spit this message out ever again
-                $this->maxID = max($mail["messageID"], $this->maxID);
+                $this->maxID = max($mail['messageID'], $this->maxID);
                 $this->newestMailID = $this->maxID; //$mail["messageID"];
                 $updateMaxID = true;
 
                 // set the maxID
                 if ($updateMaxID) {
-                    setPermCache("newestCorpMailID", $this->maxID);
+                    setPermCache('newestCorpMailID', $this->maxID);
                 }
             }
         }
@@ -197,29 +197,28 @@ class evemails {
     /**
      * @param $alpha
      * @param $bravo
+     *
      * @return int
      */
-    function sortByDate($alpha, $bravo)
+    public function sortByDate($alpha, $bravo)
     {
-        return strcmp($alpha["sentDate"], $bravo["sentDate"]);
+        return strcmp($alpha['sentDate'], $bravo['sentDate']);
     }
 
-    /**
-     *
-     */
-    function onMessage()
+
+    public function onMessage()
     {
     }
 
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
-        return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
-        );
+        return [
+            'name'        => '',
+            'trigger'     => [''],
+            'information' => '',
+        ];
     }
 }

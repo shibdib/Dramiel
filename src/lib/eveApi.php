@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -25,6 +25,7 @@
 
 /**
  * @param $url
+ *
  * @return SimpleXMLElement|null
  */
 function makeApiRequest($url)
@@ -33,12 +34,12 @@ function makeApiRequest($url)
         // Initialize a new request for this URL
         $ch = curl_init($url);
         // Set the options for this request
-        curl_setopt_array($ch, array(
+        curl_setopt_array($ch, [
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
             CURLOPT_SSL_VERIFYPEER => false, // Do not verify the SSL certificate
-            CURLOPT_TIMEOUT => 15,
-        ));
+            CURLOPT_TIMEOUT        => 15,
+        ]);
         // Fetch the data from the URL
         $data = curl_exec($ch);
         // Close the connection
@@ -46,40 +47,42 @@ function makeApiRequest($url)
         // Return a new SimpleXMLElement based upon the received data
         return new SimpleXMLElement($data);
     } catch (Exception $e) {
-        var_dump("EVE API Error: " . $e->getMessage());
-        return null;
+        var_dump('EVE API Error: '.$e->getMessage());
+
+        return;
     }
 }
 
 /**
  * @return mixed|null
  */
-
-function serverStatus() {
+function serverStatus()
+{
     try {
         // Initialize a new request for this URL
-        $ch = curl_init("https://api.eveonline.com/server/ServerStatus.xml.aspx");
+        $ch = curl_init('https://api.eveonline.com/server/ServerStatus.xml.aspx');
         // Set the options for this request
-        curl_setopt_array($ch, array(
+        curl_setopt_array($ch, [
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
+            CURLOPT_TIMEOUT        => 8,
             CURLOPT_SSL_VERIFYPEER => false, // Do not verify the SSL certificate
-        ));
+        ]);
         // Fetch the data from the URL
         $data = curl_exec($ch);
         // Close the connection
         curl_close($ch);
 
-        $true = "true";
+        $true = 'true';
         //If server is down return false
-        if ($data->serverOpen != "True") {
-            return FALSE;
+        if ($data->serverOpen != 'True') {
+            return false;
         }
         //If server is up return true
         return $true;
     } catch (Exception $e) {
-        var_dump("EVE API Error: " . $e->getMessage());
-        return null;
+        var_dump('EVE API Error: '.$e->getMessage());
+
+        return;
     }
 }
