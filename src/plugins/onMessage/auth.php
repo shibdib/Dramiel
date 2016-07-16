@@ -153,7 +153,6 @@ class auth
                     $eveName = $character->attributes()->name;
                     if ($corpid === $this->corpID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
-                        var_dump($roles);
                         $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
