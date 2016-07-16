@@ -23,9 +23,6 @@
  * SOFTWARE.
  */
 
-use Discord\Discord;
-use Discord\Parts\Channel\Message;
-
 /**
  * Class about
  * @property  info

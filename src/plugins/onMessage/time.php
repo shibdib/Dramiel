@@ -23,9 +23,6 @@
  * SOFTWARE.
  */
 
-use Discord\Discord;
-use Discord\Parts\Channel\Message;
-
 /**
  * Class time
  * @property  message

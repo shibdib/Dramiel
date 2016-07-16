@@ -23,11 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Discord;
-use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Channel;
-use Discord\Parts\User\User;
-use Discord\WebSockets\Event;
 
 /**
  * Class fileAuthCheck
