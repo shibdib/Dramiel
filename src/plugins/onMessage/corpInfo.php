@@ -26,6 +26,9 @@
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
+/**
+ * @property  message
+ */
 class corpInfo
 {
     /**
@@ -146,7 +149,7 @@ For more info, visit: $url";
         return array(
             "name" => "corp",
             "trigger" => array($this->config["bot"]["trigger"]."corp"),
-            "information" => "Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp <corporation_name>"
+            "information" => "Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name"
         );
     }
 

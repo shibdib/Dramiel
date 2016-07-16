@@ -28,6 +28,7 @@ use Discord\Parts\Channel\Message;
 
 /**
  * Class time
+ * @property  message
  */
 class time
 {

@@ -30,6 +30,7 @@ use Discord\Parts\User\Member;
 
 /**
  * Class auth
+ * @property  message
  */
 class auth
 {

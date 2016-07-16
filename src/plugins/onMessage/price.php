@@ -28,6 +28,8 @@ use Discord\Parts\Channel\Message;
 
 /**
  * Class priceChecks
+ * @property  excludeChannel
+ * @property  message
  */
 class price
 {
@@ -189,7 +191,7 @@ class price
         return array(
             "name" => "pc",
             "trigger" => $this->triggers,
-            "information" => "Shows price information for items in EVE. To use simply type !pc <item_name> or !<system_name> <item_name>"
+            "information" => "Shows price information for items in EVE. To use simply type !pc item_name or !system_name item_name"
         );
     }
 }

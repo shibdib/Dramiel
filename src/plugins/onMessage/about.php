@@ -28,6 +28,9 @@ use Discord\Parts\Channel\Message;
 
 /**
  * Class about
+ * @property  info
+ * @property  info
+ * @property  info
  */
 class about
 {
