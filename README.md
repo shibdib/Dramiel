@@ -1,5 +1,6 @@
 # Dramiel
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/shibdib/Dramiel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/shibdib/Dramiel/?branch=master)
+
 EVE Discord Bot
 
 Features (Basic)
