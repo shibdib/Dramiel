@@ -25,7 +25,7 @@
 
 /**
  * @param $url
- * @return mixed|null
+ * @return string
  */
 function downloadData($url)
 {
@@ -45,14 +45,13 @@ function downloadData($url)
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($curl);
         return $result;
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         var_dump("cURL Error: " . $e->getMessage());
         return null;
     }
 }
 /**
- * @param $url
+ * @param string $url
  * @param $downloadPath
  * @return bool
  */
@@ -61,17 +60,18 @@ function downloadLargeData($url, $downloadPath)
     try {
         $readHandle = fopen($url, "rb");
         $writeHandle = fopen($downloadPath, "w+b");
-        if (!$readHandle || !$writeHandle)
-            return false;
+        if (!$readHandle || !$writeHandle) {
+                    return false;
+        }
         while (!feof($readHandle)) {
-            if (fwrite($writeHandle, fread($readHandle, 4096)) == false)
-                return false;
+            if (fwrite($writeHandle, fread($readHandle, 4096)) == false) {
+                            return false;
+            }
         }
         fclose($readHandle);
         fclose($writeHandle);
         return true;
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         var_dump("Download Error: " . $e->getMessage());
         return false;
     }

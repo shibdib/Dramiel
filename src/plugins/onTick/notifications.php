@@ -430,8 +430,7 @@ class notifications
             }
 
             $this->logger->addInfo("Next Notification Check At: {$cacheTimer} EVE Time");
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->logger->addInfo("Notification Error: " . $e->getMessage());
         }
     }

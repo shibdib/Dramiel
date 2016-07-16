@@ -120,7 +120,7 @@ Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
     {
         return array(
             "name" => "about",
-            "trigger" => array($this->config["bot"]["trigger"]."about"),
+            "trigger" => array($this->config["bot"]["trigger"] . "about"),
             "information" => "Shows information on the bot, who created it, what library it's using, revision, and other stats. Example: !about"
         );
     }

@@ -69,7 +69,7 @@ class price
             $this->solarSystems[strtolower($system["solarSystemName"])] = $system["solarSystemID"];
             $this->triggers[] = $this->config["bot"]["trigger"] . strtolower($system["solarSystemName"]);
         }
-        $this->triggers[] = $this->config["bot"]["trigger"]."pc";
+        $this->triggers[] = $this->config["bot"]["trigger"] . "pc";
         $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
     }
 

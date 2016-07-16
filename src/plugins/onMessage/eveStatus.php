@@ -95,7 +95,7 @@ class eveStatus
     {
         return array(
             "name" => "tq",
-            "trigger" => array($this->config["bot"]["trigger"]."tq", $this->config["bot"]["trigger"]."status"),
+            "trigger" => array($this->config["bot"]["trigger"] . "tq", $this->config["bot"]["trigger"] . "status"),
             "information" => "Shows the current status of Tranquility"
         );
     }

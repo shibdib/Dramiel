@@ -25,7 +25,7 @@
 
 /**
  * @param $url
- * @return mixed|null
+ * @return SimpleXMLElement|null
  */
 function makeApiRequest($url)
 {
@@ -45,8 +45,7 @@ function makeApiRequest($url)
         curl_close($ch);
         // Return a new SimpleXMLElement based upon the received data
         return new SimpleXMLElement($data);
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         var_dump("EVE API Error: " . $e->getMessage());
         return null;
     }
@@ -54,10 +53,9 @@ function makeApiRequest($url)
 
 /**
  * @return mixed|null
- 
  */
 
-function serverStatus(){
+function serverStatus() {
     try {
         // Initialize a new request for this URL
         $ch = curl_init("https://api.eveonline.com/server/ServerStatus.xml.aspx");
@@ -80,8 +78,7 @@ function serverStatus(){
         }
         //If server is up return true
         return $true;
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         var_dump("EVE API Error: " . $e->getMessage());
         return null;
     }
