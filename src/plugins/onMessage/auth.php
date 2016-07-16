@@ -75,8 +75,8 @@ class auth
         $this->dbUser = $config["database"]["user"];
         $this->dbPass = $config["database"]["pass"];
         $this->dbName = $config["database"]["database"];
-        $this->corpID = $config["plugins"]["auth"]["corpID"];
-        $this->allianceID = $config["plugins"]["auth"]["allianceID"];
+        $this->corpID = (int)$config["plugins"]["auth"]["corpID"];
+        $this->allianceID = (int)$config["plugins"]["auth"]["allianceID"];
         $this->guildID = $config["plugins"]["auth"]["guildID"];
         $this->roleName = $config["plugins"]["auth"]["corpMemberRole"];
         $this->allyroleName = $config["plugins"]["auth"]["allyMemberRole"];
@@ -123,8 +123,12 @@ class auth
 
             while ($rows = $result->fetch_assoc()) {
                 $charid = (int)$rows['characterID'];
+                var_dump ($charid);
                 $corpid = (int)$rows['corporationID'];
+                var_dump ($corpid);
                 $allianceid = (int)$rows['allianceID'];
+                var_dump ($allianceid);
+                var_dump ($this->corpID);
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
                 $xml = makeApiRequest($url);
 
@@ -140,7 +144,7 @@ class auth
                     $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
                     return null;
                 }
-                
+
                 elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
                         if ($character->attributes()->name != $userName) {
@@ -155,6 +159,7 @@ class auth
                     $eveName = $character->attributes()->name;
                     if ($corpid === $this->corpID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
+                        var_dump ($roles);
                         $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
