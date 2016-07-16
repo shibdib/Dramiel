@@ -67,15 +67,8 @@ updateDramielDB($logger);
 updateCCPData($logger);
 
 // Init Discord
-use Discord\Cache\Cache;
-use Discord\Cache\Drivers\ArrayCacheDriver;
 use Discord\Discord;
-use Discord\Parts\Channel\Message;
-use Discord\Parts\Channel\Channel;
-use Discord\Parts\Guild\Guild;
 use Discord\Parts\User\Game;
-use Discord\Parts\User\Member;
-use Discord\Parts\WebSockets\PresenceUpdate;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\WebSocket;
 
