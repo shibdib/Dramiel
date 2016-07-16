@@ -75,8 +75,8 @@ class auth
         $this->dbUser = $config["database"]["user"];
         $this->dbPass = $config["database"]["pass"];
         $this->dbName = $config["database"]["database"];
-        $this->corpID = (int)$config["plugins"]["auth"]["corpID"];
-        $this->allianceID = (int)$config["plugins"]["auth"]["allianceID"];
+        $this->corpID = (int) $config["plugins"]["auth"]["corpID"];
+        $this->allianceID = (int) $config["plugins"]["auth"]["allianceID"];
         $this->guildID = $config["plugins"]["auth"]["guildID"];
         $this->roleName = $config["plugins"]["auth"]["corpMemberRole"];
         $this->allyroleName = $config["plugins"]["auth"]["allyMemberRole"];
@@ -103,7 +103,7 @@ class auth
         $message = $msgData["message"]["message"];
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
-            if (isset($this->config["bot"]["primary"])){
+            if (isset($this->config["bot"]["primary"])) {
                 $userID = $msgData["message"]["fromID"];
                 $channelInfo = $this->message->getFullChannelAttribute();
                 $guildID = $channelInfo[@guild_id];
@@ -117,18 +117,18 @@ class auth
             $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
 
             if (strlen($code) < 12) {
-                $this->message->reply("Invalid Code, check ".$this->config["bot"]["trigger"]."help auth for more info.");
+                $this->message->reply("Invalid Code, check " . $this->config["bot"]["trigger"] . "help auth for more info.");
                 return null;
             }
 
             while ($rows = $result->fetch_assoc()) {
-                $charid = (int)$rows['characterID'];
-                var_dump ($charid);
-                $corpid = (int)$rows['corporationID'];
-                var_dump ($corpid);
-                $allianceid = (int)$rows['allianceID'];
-                var_dump ($allianceid);
-                var_dump ($this->corpID);
+                $charid = (int) $rows['characterID'];
+                var_dump($charid);
+                $corpid = (int) $rows['corporationID'];
+                var_dump($corpid);
+                $allianceid = (int) $rows['allianceID'];
+                var_dump($allianceid);
+                var_dump($this->corpID);
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
                 $xml = makeApiRequest($url);
 
@@ -143,9 +143,7 @@ class auth
                 if (!isset($xml->result->rowset->row)) {
                     $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
                     return null;
-                }
-
-                elseif ($this->nameEnforce == 'true') {
+                } elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
                         if ($character->attributes()->name != $userName) {
                             $this->message->reply("**Failure:** Your discord name must match your character name.");
@@ -159,7 +157,7 @@ class auth
                     $eveName = $character->attributes()->name;
                     if ($corpid === $this->corpID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
-                        var_dump ($roles);
+                        var_dump($roles);
                         $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
@@ -209,7 +207,7 @@ class auth
     {
         return array(
             "name" => "auth",
-            "trigger" => array($this->config["bot"]["trigger"]."auth"),
+            "trigger" => array($this->config["bot"]["trigger"] . "auth"),
             "information" => "SSO based auth system. " . $this->ssoUrl . " Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat."
         );
     }

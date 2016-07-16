@@ -44,7 +44,7 @@ function seatPost($seat, $post, $token)
         $result = curl_exec($ch);
         return $result;
     }
-    catch(Exception $e)
+    catch (Exception $e)
     {
         $this->logger->info("SeAT Error: " . $e->getMessage());
         return null;

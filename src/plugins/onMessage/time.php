@@ -106,7 +106,7 @@ class time
     {
         return array(
             "name" => "time",
-            "trigger" => array($this->config["bot"]["trigger"]."time"),
+            "trigger" => array($this->config["bot"]["trigger"] . "time"),
             "information" => "This shows the time for various timezones compared to EVE Time. To use simply type <!time>"
         );
     }

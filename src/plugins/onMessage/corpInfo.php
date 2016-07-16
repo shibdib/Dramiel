@@ -148,7 +148,7 @@ For more info, visit: $url";
     {
         return array(
             "name" => "corp",
-            "trigger" => array($this->config["bot"]["trigger"]."corp"),
+            "trigger" => array($this->config["bot"]["trigger"] . "corp"),
             "information" => "Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name"
         );
     }

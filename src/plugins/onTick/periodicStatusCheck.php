@@ -83,7 +83,7 @@ class periodicStatusCheck {
 
     function checkStatus()
     {
-        if($this->toDiscordChannel == 0){
+        if ($this->toDiscordChannel == 0) {
             setPermCache("statusLastChecked", time() + 300);
             $this->logger->addInfo("TQ Status Check Failed - Add a channel ID to the notifications section in the config.");
             return null;
@@ -100,7 +100,7 @@ class periodicStatusCheck {
         $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
         $tqOnline = (int) $crestData["userCount"];
 
-        if (!isset($xml->result)){
+        if (!isset($xml->result)) {
             $this->logger->addInfo("TQ Status check canceled, API Error.");
             setPermCache("statusLastChecked", time() + 300);
             return null;
@@ -108,9 +108,9 @@ class periodicStatusCheck {
 
         foreach ($xml->result as $info) {
             $apiStatus = $info->serverOpen;
-            if ($apiStatus == "True") {$apiStatus = "online";} else {$apiStatus = "offline";}
+            if ($apiStatus == "True") {$apiStatus = "online"; } else {$apiStatus = "offline"; }
         }
-        if ($crestStatus != "online") { $crestHolder = "offline";} else { $crestHolder = "online";}
+        if ($crestStatus != "online") { $crestHolder = "offline"; } else { $crestHolder = "online"; }
         if ($crestHolder != $apiStatus) {
             $this->logger->addInfo("TQ Status check canceled, CREST and API different.");
             setPermCache("statusLastChecked", time() + 300);

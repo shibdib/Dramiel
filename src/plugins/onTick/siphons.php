@@ -153,7 +153,7 @@ class siphons {
             $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
             setPermCache("siphonLastChecked{$keyID}", $cacheClr);
         }
-        if ($siphonCount > 0){
+        if ($siphonCount > 0) {
             $msg = "Next Siphon Check At: {$cacheTimer} EVE Time";
             $channelID = $this->toDiscordChannel;
             $channel = Channel::find($channelID);

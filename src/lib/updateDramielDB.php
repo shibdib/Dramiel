@@ -81,13 +81,13 @@ function updateDramielDB($logger)
     );
 
     // Does the file exist?
-    if(!file_exists(__DIR__ . "/../../database/dramiel.sqlite"))
+    if (!file_exists(__DIR__ . "/../../database/dramiel.sqlite"))
         touch(__DIR__ . "/../../database/dramiel.sqlite");
 
     // Create table if not exists
-    foreach($tables as $table) {
+    foreach ($tables as $table) {
         $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", "name", array(":name" => $table));
-        if(!$exists) {
+        if (!$exists) {
             $logger->addInfo("Creating {$table} in dramiel.sqlite, since it does not exist");
             dbExecute(trim($tableCreateCode[$table]));
         }
