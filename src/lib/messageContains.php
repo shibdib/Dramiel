@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -27,21 +27,23 @@
  * @param $message
  * @param $trigger
  * @param $symbol
+ *
  * @return array|bool
  */
 function command($message, $trigger, $symbol)
 {
     foreach ($trigger as $trig) {
         if (substr($message, 0, strlen($trig)) == $trig) {
-            $data = explode(" ", $message);
+            $data = explode(' ', $message);
 
-            $trig = str_replace($symbol, "", $data[0]);
+            $trig = str_replace($symbol, '', $data[0]);
             unset($data[0]);
             $data = array_values($data);
-            $messageString = implode(" ", $data);
+            $messageString = implode(' ', $data);
 
-            return array("trigger" => $trig, "messageArray" => $data, "messageString" => $messageString);
+            return ['trigger' => $trig, 'messageArray' => $data, 'messageString' => $messageString];
         }
     }
+
     return false;
 }

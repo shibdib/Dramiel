@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -25,54 +25,60 @@
 
 /**
  * @param $url
+ *
  * @return string
  */
 function downloadData($url)
 {
     try {
-        $userAgent = "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6";
+        $userAgent = 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6';
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($curl, CURLOPT_TIMEOUT, 12);
         curl_setopt($curl, CURLOPT_POST, false);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
-        curl_setopt($curl, CURLOPT_ENCODING, "");
-        $headers = array();
-        $headers[] = "Connection: keep-alive";
-        $headers[] = "Keep-Alive: timeout=12, max=1000";
+        curl_setopt($curl, CURLOPT_ENCODING, '');
+        $headers = [];
+        $headers[] = 'Connection: keep-alive';
+        $headers[] = 'Keep-Alive: timeout=12, max=1000';
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($curl);
+
         return $result;
     } catch (Exception $e) {
-        var_dump("cURL Error: " . $e->getMessage());
-        return null;
+        var_dump('cURL Error: '.$e->getMessage());
+
+        return;
     }
 }
 /**
  * @param string $url
  * @param $downloadPath
+ *
  * @return bool
  */
 function downloadLargeData($url, $downloadPath)
 {
     try {
-        $readHandle = fopen($url, "rb");
-        $writeHandle = fopen($downloadPath, "w+b");
+        $readHandle = fopen($url, 'rb');
+        $writeHandle = fopen($downloadPath, 'w+b');
         if (!$readHandle || !$writeHandle) {
-                    return false;
+            return false;
         }
         while (!feof($readHandle)) {
             if (fwrite($writeHandle, fread($readHandle, 4096)) == false) {
-                            return false;
+                return false;
             }
         }
         fclose($readHandle);
         fclose($writeHandle);
+
         return true;
     } catch (Exception $e) {
-        var_dump("Download Error: " . $e->getMessage());
+        var_dump('Download Error: '.$e->getMessage());
+
         return false;
     }
 }

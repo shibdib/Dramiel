@@ -1,6 +1,6 @@
 <?php
 /**
- * The MIT License (MIT)
+ * The MIT License (MIT).
  *
  * Copyright (c) 2016 Robert Sardinia
  *
@@ -22,32 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
-use Discord\Parts\Guild\Guild;
-use Discord\Parts\User\Member;
 
 /**
- * Class auth
+ * Class auth.
+ *
  * @property  message
  */
 class auth
 {
-    /**
+    /*
      * @var
      */
-    var $config;
-    /**
+    public $config;
+    /*
      * @var
      */
-    var $discord;
-    /**
+    public $discord;
+    /*
      * @var
      */
-    var $logger;
-    var $solarSystems;
-    var $triggers = array();
+    public $logger;
+    public $solarSystems;
+    public $triggers = [];
     public $guildID;
     public $roleName;
     public $corpID;
@@ -66,59 +64,60 @@ class auth
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->db = $config["database"]["host"];
-        $this->dbUser = $config["database"]["user"];
-        $this->dbPass = $config["database"]["pass"];
-        $this->dbName = $config["database"]["database"];
-        $this->corpID = (int) $config["plugins"]["auth"]["corpID"];
-        $this->allianceID = (int) $config["plugins"]["auth"]["allianceID"];
-        $this->guildID = $config["plugins"]["auth"]["guildID"];
-        $this->roleName = $config["plugins"]["auth"]["corpMemberRole"];
-        $this->allyroleName = $config["plugins"]["auth"]["allyMemberRole"];
-        $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
-        $this->ssoUrl = $config["plugins"]["auth"]["url"];
+        $this->db = $config['database']['host'];
+        $this->dbUser = $config['database']['user'];
+        $this->dbPass = $config['database']['pass'];
+        $this->dbName = $config['database']['database'];
+        $this->corpID = (int) $config['plugins']['auth']['corpID'];
+        $this->allianceID = (int) $config['plugins']['auth']['allianceID'];
+        $this->guildID = $config['plugins']['auth']['guildID'];
+        $this->roleName = $config['plugins']['auth']['corpMemberRole'];
+        $this->allyroleName = $config['plugins']['auth']['allyMemberRole'];
+        $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
+        $this->ssoUrl = $config['plugins']['auth']['url'];
     }
-    /**
-     *
-     */
-    function tick()
+
+
+    public function tick()
     {
     }
 
     /**
      * @param $msgData
      * @param $message
+     *
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $userID = $msgData["message"]["fromID"];
-        $userName = $msgData["message"]["from"];
-        $message = $msgData["message"]["message"];
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
-            if (isset($this->config["bot"]["primary"])) {
-                $userID = $msgData["message"]["fromID"];
+        $userID = $msgData['message']['fromID'];
+        $userName = $msgData['message']['from'];
+        $message = $msgData['message']['message'];
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
+            if (isset($this->config['bot']['primary'])) {
+                $userID = $msgData['message']['fromID'];
                 $channelInfo = $this->message->getFullChannelAttribute();
                 $guildID = $channelInfo[@guild_id];
-                if ($guildID != $this->config["bot"]["primary"]) {
-                    $this->message->reply("**Failure:** The auth code your attempting to use is for another discord server");
-                    return null;
-                }
+                if ($guildID != $this->config['bot']['primary']) {
+                    $this->message->reply('**Failure:** The auth code your attempting to use is for another discord server');
 
+                    return;
+                }
             }
-            $code = $data["messageString"];
+            $code = $data['messageString'];
             $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
 
             if (strlen($code) < 12) {
-                $this->message->reply("Invalid Code, check " . $this->config["bot"]["trigger"] . "help auth for more info.");
-                return null;
+                $this->message->reply('Invalid Code, check '.$this->config['bot']['trigger'].'help auth for more info.');
+
+                return;
             }
 
             while ($rows = $result->fetch_assoc()) {
@@ -132,20 +131,22 @@ class auth
 
                 // We have an error, show it it
                 if ($xml->error) {
-                    $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
-                    return null;
+                    $this->message->reply('**Failure:** Eve API error, please try again in a little while.');
+
+                    return;
                 }
 
                 if (!isset($xml->result->rowset->row)) {
-                    $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
-                    return null;
+                    $this->message->reply('**Failure:** Eve API error, please try again in a little while.');
+
+                    return;
                 } elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
                         if ($character->attributes()->name != $userName) {
-                            $this->message->reply("**Failure:** Your discord name must match your character name.");
-                            $this->logger->addInfo("User was denied due to not having the correct name " . $character->attributes()->name);
-                            return null;
+                            $this->message->reply('**Failure:** Your discord name must match your character name.');
+                            $this->logger->addInfo('User was denied due to not having the correct name '.$character->attributes()->name);
 
+                            return;
                         }
                     }
                 }
@@ -153,7 +154,7 @@ class auth
                     $eveName = $character->attributes()->name;
                     if ($corpid === $this->corpID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
-                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
+                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get('id', $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
                             if ($roleName == $this->roleName) {
@@ -161,15 +162,16 @@ class auth
                                 $member->save();
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                                $this->message->reply("**Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
-                                $this->logger->addInfo("User authed and added to corp group " . $eveName);
-                                return null;
+                                $this->message->reply('**Success:** You have now been added to the '.$this->roleName.' group. To get more roles, talk to the CEO / Directors');
+                                $this->logger->addInfo('User authed and added to corp group '.$eveName);
+
+                                return;
                             }
                         }
                     }
                     if ($allianceid === $this->allianceID) {
                         $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
-                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
+                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get('id', $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
                             if ($roleName == $this->allyroleName) {
@@ -177,39 +179,42 @@ class auth
                                 $member->save();
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'ally');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                                $this->message->reply("**Success:** You have now been added to the " . $this->allyroleName . " group. To get more roles, talk to the CEO / Directors");
-                                $this->logger->addInfo("User authed and added to the alliance group " . $eveName);
-                                return null;
+                                $this->message->reply('**Success:** You have now been added to the '.$this->allyroleName.' group. To get more roles, talk to the CEO / Directors');
+                                $this->logger->addInfo('User authed and added to the alliance group '.$eveName);
+
+                                return;
                             }
                         }
                     }
-                    $this->message->reply("**Failure:** There are no roles available for your corp/alliance.");
-                    $this->logger->addInfo("User was denied due to not being in the correct corp or alliance " . $eveName);
-                    return null;
-                }
+                    $this->message->reply('**Failure:** There are no roles available for your corp/alliance.');
+                    $this->logger->addInfo('User was denied due to not being in the correct corp or alliance '.$eveName);
 
+                    return;
+                }
             }
-            $this->message->reply("**Failure:** There was an issue with your code.");
-            $this->logger->addInfo("User was denied due to not being in the correct corp or alliance " . $userName);
-            return null;
+            $this->message->reply('**Failure:** There was an issue with your code.');
+            $this->logger->addInfo('User was denied due to not being in the correct corp or alliance '.$userName);
+
+            return;
         }
-        return null;
     }
+
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
-        return array(
-            "name" => "auth",
-            "trigger" => array($this->config["bot"]["trigger"] . "auth"),
-            "information" => "SSO based auth system. " . $this->ssoUrl . " Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat."
-        );
+        return [
+            'name'        => 'auth',
+            'trigger'     => [$this->config['bot']['trigger'].'auth'],
+            'information' => 'SSO based auth system. '.$this->ssoUrl.' Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat.',
+        ];
     }
+
     /**
      * @param $msgData
      */
-    function onMessageAdmin($msgData)
+    public function onMessageAdmin($msgData)
     {
     }
 }
