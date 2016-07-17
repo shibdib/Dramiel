@@ -158,11 +158,9 @@ function dbExecute($query, $params = array(), $db = null)
             $stmt->execute($params);
         }
         $stmt->closeCursor();
-        $pdo = null;
     } else {
         $stmt = $pdo->prepare($query);
         $stmt->execute($params);
         $stmt->closeCursor();
-        $pdo = null;
     }
 }
