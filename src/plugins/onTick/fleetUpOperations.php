@@ -121,14 +121,12 @@ Link - {$link}";
                     $channel = Channel::find($channelID);
                     $channel->sendMessage($msg, false);
                     setPermCache("fleetUpLastPostedOperation", $id);
+                    $this->logger->addInfo("Latest upcoming operation ID - {$id}");
 
                 }
             }
         }
         setPermCache("fleetUpPostLastChecked", time() + 120);
-        if (isset($id) and $id != $currentID) {
-            $this->logger->addInfo("Latest upcoming operation ID - {$id}");
-        }
     }
 
     function checkFleetUp()
