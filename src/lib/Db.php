@@ -152,6 +152,7 @@ function dbExecute($query, $params = array(), $db = null)
     // This is ugly, but, yeah..
     if (stristr($query, ";")) {
         $explodedQuery = explode(";", $query);
+        $stmt = null;
         foreach ($explodedQuery as $newQry) {
             $stmt = $pdo->prepare($newQry);
             $stmt->execute($params);

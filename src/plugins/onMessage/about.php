@@ -75,11 +75,11 @@ class about
     function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $this->info['guilds'] = 0;
+        $info['guilds'] = 0;
 
         //Get number of guilds for bot
         foreach ($this->discord->getClient()->getGuildsAttribute()->all() as $guild) {
-            $this->info['guilds']++;
+            $info['guilds']++;
         }
 
         global $startTime; // Get the starttime of the bot
@@ -102,7 +102,7 @@ Current Branch: " . $gitBranch . "
 Github Repo: https://github.com/shibdib/Dramiel
 
 Statistics:
-Currently on {$this->info['guilds']} different discord servers.
+Currently on {$info['guilds']} different discord servers.
 Up-time: " . $interval->y . " Year(s), " . $interval->m . " Month(s), " . $interval->d . " Days, " . $interval->h . " Hours, " . $interval->i . " Minutes, " . $interval->s . " seconds.
 Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
             $this->logger->addInfo("Sending about info to {$user}");
