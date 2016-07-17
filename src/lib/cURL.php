@@ -71,7 +71,7 @@ function downloadLargeData($url, $downloadPath)
                     return false;
         }
         while (!feof($readHandle)) {
-            if (fwrite($writeHandle, fread($readHandle, 4096)) == false) {
+            if (fwrite($writeHandle, fread($readHandle, 4096)) === false) {
                             return false;
             }
         }
