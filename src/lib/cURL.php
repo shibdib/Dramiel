@@ -23,12 +23,16 @@
  * SOFTWARE.
  */
 
+use Monolog\Logger;
+
 /**
  * @param $url
  * @return string
  */
 function downloadData($url)
 {
+    $logger = new Logger('cURL');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     try {
         $userAgent = "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6";
         $curl = curl_init();
@@ -46,7 +50,7 @@ function downloadData($url)
         $result = curl_exec($curl);
         return $result;
     } catch (Exception $e) {
-        var_dump("cURL Error: " . $e->getMessage());
+        $logger->error("cURL Error: " . $e->getMessage());
         return null;
     }
 }
@@ -57,6 +61,8 @@ function downloadData($url)
  */
 function downloadLargeData($url, $downloadPath)
 {
+    $logger = new Logger('cURL');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     try {
         $readHandle = fopen($url, "rb");
         $writeHandle = fopen($downloadPath, "w+b");
@@ -72,7 +78,7 @@ function downloadLargeData($url, $downloadPath)
         fclose($writeHandle);
         return true;
     } catch (Exception $e) {
-        var_dump("Download Error: " . $e->getMessage());
+        $logger->error("Download Error: " . $e->getMessage());
         return false;
     }
 }

@@ -23,12 +23,16 @@
  * SOFTWARE.
  */
 
+use Monolog\Logger;
+
 /**
  * @param string|null $db
  * @return null|PDO
  */
 function openDB($db = null)
 {
+    $logger = new Logger('Db');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     if ($db === null) {
             $db = __DIR__ . "/../../database/dramiel.sqlite";
     }
@@ -46,7 +50,7 @@ function openDB($db = null)
         );
     } catch (Exception $e)
     {
-        var_dump($e->getMessage());
+        $logger->error($e->getMessage());
         $pdo = null;
         return $pdo;
     }

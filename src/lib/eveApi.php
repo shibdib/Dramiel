@@ -23,12 +23,16 @@
  * SOFTWARE.
  */
 
+use Monolog\Logger;
+
 /**
  * @param $url
  * @return SimpleXMLElement|null
  */
 function makeApiRequest($url)
 {
+    $logger = new Logger('eveApi');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init($url);
@@ -46,7 +50,7 @@ function makeApiRequest($url)
         // Return a new SimpleXMLElement based upon the received data
         return new SimpleXMLElement($data);
     } catch (Exception $e) {
-        var_dump("EVE API Error: " . $e->getMessage());
+        $logger->error("EVE API Error: " . $e->getMessage());
         return null;
     }
 }
@@ -55,7 +59,10 @@ function makeApiRequest($url)
  * @return mixed|null
  */
 
-function serverStatus() {
+function serverStatus()
+{
+    $logger = new Logger('eveApi');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init("https://api.eveonline.com/server/ServerStatus.xml.aspx");
@@ -79,7 +86,7 @@ function serverStatus() {
         //If server is up return true
         return $true;
     } catch (Exception $e) {
-        var_dump("EVE API Error: " . $e->getMessage());
+        $logger->error("EVE API Error: " . $e->getMessage());
         return null;
     }
 }
