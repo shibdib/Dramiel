@@ -24,7 +24,6 @@
  */
 
 use Discord\Discord;
-use Discord\Parts\Channel\Message;
 
 /**
  * @property  message

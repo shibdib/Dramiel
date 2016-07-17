@@ -24,15 +24,17 @@
  */
 
 /**
- * @param null $db
+ * @param string|null $db
  * @return null|PDO
  */
 function openDB($db = null)
 {
-    if ($db === null)
-        $db = __DIR__ . "/../../database/dramiel.sqlite";
-    if ($db == "ccp")
-        $db = __DIR__ . "/../../database/ccpData.sqlite";
+    if ($db == null) {
+            $db = __DIR__ . "/../../database/dramiel.sqlite";
+    }
+    if ($db == "ccp") {
+            $db = __DIR__ . "/../../database/ccpData.sqlite";
+    }
 
     $dsn = "sqlite:$db";
     try {
@@ -62,8 +64,9 @@ function openDB($db = null)
 function dbQueryField($query, $field, $params = array(), $db = null)
 {
     $pdo = openDB($db);
-    if ($pdo == NULL)
-        return null;
+    if ($pdo == NULL) {
+            return null;
+    }
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
@@ -72,7 +75,9 @@ function dbQueryField($query, $field, $params = array(), $db = null)
     $stmt->closeCursor();
     $pdo = null;
 
-    if (sizeof($result) == 0) return null;
+    if (sizeof($result) == 0) {
+        return null;
+    }
 
     $resultRow = $result[0];
     return $resultRow[$field];
@@ -87,8 +92,9 @@ function dbQueryField($query, $field, $params = array(), $db = null)
 function dbQueryRow($query, $params = array(), $db = null)
 {
     $pdo = openDB($db);
-    if ($pdo == NULL)
-        return null;
+    if ($pdo == NULL) {
+            return null;
+    }
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
@@ -97,7 +103,9 @@ function dbQueryRow($query, $params = array(), $db = null)
     $stmt->closeCursor();
     $pdo = null;
 
-    if (sizeof($result) >= 1) return $result[0];
+    if (sizeof($result) >= 1) {
+        return $result[0];
+    }
     return null;
 }
 
@@ -110,8 +118,9 @@ function dbQueryRow($query, $params = array(), $db = null)
 function dbQuery($query, $params = array(), $db = null)
 {
     $pdo = openDB($db);
-    if ($pdo == NULL)
-        return null;
+    if ($pdo == NULL) {
+            return null;
+    }
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
@@ -131,8 +140,9 @@ function dbQuery($query, $params = array(), $db = null)
 function dbExecute($query, $params = array(), $db = null)
 {
     $pdo = openDB($db);
-    if ($pdo == NULL)
-        return;
+    if ($pdo == NULL) {
+            return;
+    }
 
     // This is ugly, but, yeah..
     if (stristr($query, ";")) {
