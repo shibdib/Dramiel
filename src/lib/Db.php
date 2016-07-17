@@ -29,7 +29,7 @@
  */
 function openDB($db = null)
 {
-    if ($db == null)
+    if ($db === null)
         $db = __DIR__ . "/../../database/dramiel.sqlite";
     if ($db == "ccp")
         $db = __DIR__ . "/../../database/ccpData.sqlite";
