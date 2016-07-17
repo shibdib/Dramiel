@@ -24,6 +24,7 @@
  */
 
 use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 /**
  * @param $url
