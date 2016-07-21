@@ -190,6 +190,9 @@ class notifications
                         case 10: // Bill issued
                             $msg = "skip";
                             break;
+                        case 13: // Bill issued
+                            $msg = "skip";
+                            break;
                         case 14: // Bounty payment
                             $msg = "skip";
                             break;
@@ -312,6 +315,9 @@ class notifications
                             $msg = "skip";
                             break;
                         case 128: // Corp App
+                            $msg = "skip";
+                            break;
+                        case 129: // App denied
                             $msg = "skip";
                             break;
                         case 130: // Corp app withdrawn?
