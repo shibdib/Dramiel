@@ -148,6 +148,10 @@ $config["plugins"] = array(
         "keyID" => "", //corpid for killmails
         "vCode" => "", //allianceid for killmails (Leave as 0 if using it for a corp)
     ),
+    //If you'd like low fuel warnings to go to a different channel set this here. Otherwise leave it as null
+    "fuel" => array(
+        "channelID" => null, //fuel alerts post to this channel
+    ),
     //Reports silos nearing max capacity.
     "siloFull" => array(
         "channelID" => 0, //silo alerts post to this channel
@@ -157,9 +161,9 @@ $config["plugins"] = array(
     ),
     //Fleet up linking will share operations to a specific channel and then reping them when it gets within 30 minutes of form up
     "fleetUp" => array(
-    "channelID" => 0, //channel id to ping about operations
-    "userID" => 0, //fleet up user id
-    "groupID" => 0, //fleet up group id
-    "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
-),
+        "channelID" => 0, //channel id to ping about operations
+        "userID" => 0, //fleet up user id
+        "groupID" => 0, //fleet up group id
+        "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
+    ),
 );
