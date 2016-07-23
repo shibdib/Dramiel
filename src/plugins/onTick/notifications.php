@@ -93,6 +93,7 @@ class notifications
         $this->discord = $discord;
         $this->logger = $logger;
         $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
+        $this->fuelChannel = $config["plugins"]["fuel"]["channelID"];
         $this->newestNotificationID = getPermCache("newestNotificationID");
         $this->maxID = 0;
         $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
@@ -140,6 +141,9 @@ class notifications
             $cached = $xml->cachedUntil[0];
             $baseUnix = strtotime($cached);
             $cacheClr = $baseUnix - 13500;
+            if (!isset($this->fuelChannel)){
+                $this->fuelChannel = $this->toDiscordChannel;
+            }
             if ($cacheClr <= time()) {
                 $weirdTime = time() + 1830;
                 $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
@@ -167,6 +171,7 @@ class notifications
                 $notificationID = $notification["notificationID"];
                 $typeID = $notification["typeID"];
                 $sentDate = $notification["sentDate"];
+                $channelID = $this->toDiscordChannel;
                 if ($notificationID > $this->newestNotificationID) {
                     $notificationString = explode("\n", $this->getNotificationText($keyID, $vCode, $characterID,
                         $notificationID));
@@ -267,6 +272,7 @@ class notifications
                                 "solarSystemName", array(":id" => $solarSystemID), "ccp");
                             $blocksRemaining = trim(explode(": ", $notificationString[6])[1]);
                             $typeID = trim(explode(": ", $notificationString[7])[1]);
+                            $channelID = $this->fuelChannel;
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
                             $msg = "POS in {$systemName} - {$moonName} needs fuel. Only {$blocksRemaining} {$typeName}'s remaining.";
@@ -424,7 +430,6 @@ class notifications
                     if ($msg == "") {
                     }
                     $this->logger->addInfo("Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
-                    $channelID = $this->toDiscordChannel;
                     $channel = Channel::find($channelID);
                     $channel->sendMessage($msg, false);
                     // Find the maxID so we don't output this message again in the future
