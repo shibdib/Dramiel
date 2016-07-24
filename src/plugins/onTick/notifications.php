@@ -314,6 +314,9 @@ class notifications
                         case 95: // IHub Transfer
                             $msg = "skip";
                             break;
+                        case 102: // War support offer? I think?
+                            $msg = "skip";
+                            break;
                         case 103: // War support offer? I think?
                             $msg = "skip";
                             break;
