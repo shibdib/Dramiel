@@ -119,15 +119,10 @@ class charInfo
             $lastSeenDate = @$stats["lastSeenDate"];
             $corporationActiveArea = @$stats["corporationActiveArea"];
             $allianceActiveArea = @$stats["allianceActiveArea"];
-            $soloKills = @$stats["soloKills"];
-            $blobKills = @$stats["blobKills"];
-            $lifeTimeKills = @$stats["lifeTimeKills"];
-            $lifeTimeLosses = @$stats["lifeTimeLosses"];
-            $amountOfSoloPVPer = @$stats["percentageSoloPVPer"];
             $ePeenSize = @$stats["ePeenSize"];
             $facepalms = @$stats["facepalms"];
             $lastUpdated = @$stats["lastUpdatedOnBackend"];
-            $url = "https://beta.eve-kill.net/character/" . $stats["characterID"] . "/";
+            $url = "https://zkillboard.com/character/" . $stats["characterID"] . "/";
 
 
             $msg = "```characterName: {$characterName}
@@ -141,11 +136,6 @@ lastSeenShip: {$lastSeenShip}
 lastSeenDate: {$lastSeenDate}
 corporationActiveArea: {$corporationActiveArea}
 allianceActiveArea: {$allianceActiveArea}
-soloKills: {$soloKills}
-blobKills: {$blobKills}
-lifeTimeKills: {$lifeTimeKills}
-lifeTimeLosses: {$lifeTimeLosses}
-percentageSoloPVPer: {$amountOfSoloPVPer}
 ePeenSize: {$ePeenSize}
 facepalms: {$facepalms}
 lastUpdated: $lastUpdated```
