@@ -122,7 +122,7 @@ class authCheck
                     $discordID = $rows['discordID'];
                     $guild = $this->discord->guilds->first();
                     $member = $guild->members->get("id", $discordID);
-                    $discordName = $member->user->username;
+                    $eveName = $rows['eveName'];
                     $roles = $member->roles;
                     $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                     $xml = makeApiRequest($url);
@@ -135,11 +135,11 @@ class authCheck
                                 }
 
                                 // Send the info to the channel
-                                $msg = $discordName . " roles have been removed via the auth.";
+                                $msg = $eveName . " roles have been removed via the auth.";
                                 $channelID = $toDiscordChannel;
                                 $channel = Channel::find($channelID);
                                 $channel->sendMessage($msg, false);
-                                $this->logger->addInfo($discordName . " roles ({$role}) have been removed via the auth.");
+                                $this->logger->addInfo($eveName . " roles ({$role}) have been removed via the auth.");
 
                                 $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                                 $conn->query($sql);
