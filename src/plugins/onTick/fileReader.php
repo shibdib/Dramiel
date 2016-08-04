@@ -93,19 +93,19 @@ class fileReader
         if (filemtime($this->db) >= $this->lastCheck) {
             $data = file($this->db);
             if ($data) {
-                $message = "";
+                $ping = "";
                 foreach ($data as $row) {
                     $row = str_replace("\n", "", str_replace("\r", "", str_replace("^@", "", $row)));
                     if ($row == "" || $row == " ") {
                                             continue;
                     }
 
-                    $message .= $row . " | ";
+                    $ping .= $row . " | ";
                     usleep(300000);
                 }
 
                 // Remove |  from the line or whatever else is at the last two characters in the string
-                $message = trim(substr($message, 0, -2));
+                $message = trim(substr($ping, 0, -2));
 
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
                     if ($chanConfig["searchString"] == false) { // If no match was found, and searchString is false, just use that
@@ -115,6 +115,9 @@ class fileReader
                         $message = $chanConfig["textStringPrepend"] . " " . $message . " " . $chanConfig["textStringAppend"];
                         $channelID = $chanConfig["channelID"];
                     }
+                }
+                if ($ping[0] = "#") {
+                    $message = "skip";
                 }
                 if ($channelID == "" || $channelID == null) {
                     $message = "skip";
