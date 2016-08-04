@@ -341,7 +341,7 @@ class notifications
                         case 141: // Kill report
                             $msg = "skip";
                             break;
-                        case 147: // Entosis has stated
+                        case 147: // Entosis has started
                             $systemID = trim(explode(": ", $notificationString[0])[1]);
                             $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
                                 "solarSystemName", array(":id" => $systemID), "ccp");
@@ -423,7 +423,7 @@ class notifications
                             break;
                         default: // Unknown typeID
                             $string = implode(" ", $notificationString);
-                            $msg = "typeID {$typeID} is an unmapped notification, send Mr Twinkie this whole message via evemail or github issue. {$string}";
+                            $msg = "typeID {$typeID} is an unmapped notification, send Mr Twinkie this whole message github issue. {$string}";
                             break;
                     }
 

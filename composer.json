@@ -6,7 +6,7 @@
   "type": "project",
   "require": {
     "dg/twitter-php": "*",
-    "team-reflex/discord-php": "dev-master",
+    "team-reflex/discord-php": "3.2.4",
     "monolog/monolog": "1.19.*",
     "ratchet/pawl": "*"
   }
