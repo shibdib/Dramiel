@@ -69,7 +69,7 @@ class fileReader
         $this->channelConfig = $config["plugins"]["fileReader"]["channelConfig"];
         $this->db = $config["plugins"]["fileReader"]["db"];
         if (!is_file($this->db)) {
-                    touch($this->db);
+            touch($this->db);
         }
     }
 
@@ -97,7 +97,7 @@ class fileReader
                 foreach ($data as $row) {
                     $row = str_replace("\n", "", str_replace("\r", "", str_replace("^@", "", $row)));
                     if ($row == "" || $row == " ") {
-                                            continue;
+                        continue;
                     }
 
                     $ping .= $row . " | ";
@@ -116,7 +116,8 @@ class fileReader
                         $channelID = $chanConfig["channelID"];
                     }
                 }
-                if ($ping[0] = "#") {
+                $begin = mb_substr($message, 0, 15);
+                if (stristr($begin, "#")) {
                     $message = "skip";
                 }
                 if ($channelID == "" || $channelID == null) {
