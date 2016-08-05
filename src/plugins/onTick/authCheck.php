@@ -111,7 +111,7 @@ class authCheck
             $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
             $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
 
-            $sql = "SELECT characterID, discordID FROM authUsers WHERE active='yes'";
+            $sql = "SELECT characterID, discordID, eveName FROM authUsers WHERE active='yes'";
 
             $result = $conn->query($sql);
             $num_rows = $result->num_rows;
