@@ -99,10 +99,6 @@ class notifications
         $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
         $this->vCode = $config["eve"]["apiKeys"]["user1"]["vCode"];
         $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
-        // Rena APIs
-        $this->charApi = "http://rena.karbowiak.dk/api/character/information/";
-        $this->corpApi = "http://rena.karbowiak.dk/api/corporation/information/";
-        $this->alliApi = "http://rena.karbowiak.dk/api/alliance/information/";
         $lastCheck = getPermCache("notificationsLastChecked{$this->keyID}");
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run
