@@ -95,12 +95,12 @@ class fileReader
             if ($data) {
                 $ping = "";
                 foreach ($data as $row) {
-                    $row = str_replace("\n", "", str_replace("\r", "", str_replace("^@", "", $row)));
+                    $row = str_replace("^@", "", $row);
                     if ($row == "" || $row == " ") {
                         continue;
                     }
 
-                    $ping .= $row . " | ";
+                    $ping .= $row . "  ";
                     usleep(300000);
                 }
 
@@ -109,10 +109,10 @@ class fileReader
 
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
                     if ($chanConfig["searchString"] == false) { // If no match was found, and searchString is false, just use that
-                        $message = $chanConfig["textStringPrepend"] . " " . $message . " " . $chanConfig["textStringAppend"];
+                        $message = $chanConfig["textStringPrepend"] . " \n `` " . $message . " `` " . $chanConfig["textStringAppend"];
                         $channelID = $chanConfig["channelID"];
                     } elseif (stristr($message, $chanConfig["searchString"])) {
-                        $message = $chanConfig["textStringPrepend"] . " " . $message . " " . $chanConfig["textStringAppend"];
+                        $message = $chanConfig["textStringPrepend"] . " \n `` " . $message . " `` " . $chanConfig["textStringAppend"];
                         $channelID = $chanConfig["channelID"];
                     }
                 }
