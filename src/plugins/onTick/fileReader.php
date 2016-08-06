@@ -109,10 +109,10 @@ class fileReader
 
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
                     if ($chanConfig["searchString"] == false) { // If no match was found, and searchString is false, just use that
-                        $message = $chanConfig["textStringPrepend"] . " \n `` " . $message . " `` " . $chanConfig["textStringAppend"];
+                        $message = $chanConfig["textStringPrepend"] . " \n " . $message . "  " . $chanConfig["textStringAppend"];
                         $channelID = $chanConfig["channelID"];
                     } elseif (stristr($message, $chanConfig["searchString"])) {
-                        $message = $chanConfig["textStringPrepend"] . " \n `` " . $message . " `` " . $chanConfig["textStringAppend"];
+                        $message = $chanConfig["textStringPrepend"] . " \n " . $message . "  " . $chanConfig["textStringAppend"];
                         $channelID = $chanConfig["channelID"];
                     }
                 }
