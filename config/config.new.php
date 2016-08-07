@@ -151,6 +151,7 @@ $config["plugins"] = array(
     //If you'd like low fuel warnings to go to a different channel set this here. Otherwise leave it as null
     "fuel" => array(
         "channelID" => null, //fuel alerts post to this channel
+        "skip" => "false", //if you want fuel notifications to be skipped change this to true
     ),
     //Reports silos nearing max capacity.
     "siloFull" => array(

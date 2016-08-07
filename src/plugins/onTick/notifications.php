@@ -94,6 +94,7 @@ class notifications
         $this->logger = $logger;
         $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
         $this->fuelChannel = $config["plugins"]["fuel"]["channelID"];
+        $this->fuelSkip = $config["plugins"]["fuel"]["skip"];
         $this->newestNotificationID = getPermCache("newestNotificationID");
         $this->maxID = 0;
         $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
@@ -272,6 +273,10 @@ class notifications
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
                             $msg = "POS in {$systemName} - {$moonName} needs fuel. Only {$blocksRemaining} {$typeName}'s remaining.";
+                            if($this->fuelSkip != "false"){
+                                $msg = "skip";
+                            }
+
                             break;
                         case 88: // IHUB is being attacked
                             $aggAllianceID = trim(explode(": ", $notificationString[0])[1]);
