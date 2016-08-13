@@ -380,6 +380,12 @@ class notifications
                                 "solarSystemName", array(":id" => $systemID), "ccp");
                             $msg = "Command nodes decloaking for **{$systemName}**";
                             break;
+                        case 162: //  TCU Destroyed
+                            $systemID = trim(explode(": ", $notificationString[0])[1]);
+                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
+                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $msg = "Entosis successful, TCU in **{$systemName}** has been destroyed.";
+                            break;
                         case 163: //  Outpost freeport
                             $systemID = trim(explode(": ", $notificationString[1])[1]);
                             $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
