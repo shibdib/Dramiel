@@ -138,7 +138,7 @@ class notifications
             $cached = $xml->cachedUntil[0];
             $baseUnix = strtotime($cached);
             $cacheClr = $baseUnix - 13500;
-            if (!isset($this->fuelChannel)){
+            if (!isset($this->fuelChannel)) {
                 $this->fuelChannel = $this->toDiscordChannel;
             }
             if ($cacheClr <= time()) {
@@ -273,7 +273,7 @@ class notifications
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
                             $msg = "POS in {$systemName} - {$moonName} needs fuel. Only {$blocksRemaining} {$typeName}'s remaining.";
-                            if($this->fuelSkip != "false"){
+                            if ($this->fuelSkip != "false") {
                                 $msg = "skip";
                             }
 
@@ -379,6 +379,12 @@ class notifications
                             $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
                                 "solarSystemName", array(":id" => $systemID), "ccp");
                             $msg = "Command nodes decloaking for **{$systemName}**";
+                            break;
+                        case 162: //  TCU Destroyed
+                            $systemID = trim(explode(": ", $notificationString[0])[1]);
+                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
+                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $msg = "Entosis successful, TCU in **{$systemName}** has been destroyed.";
                             break;
                         case 163: //  Outpost freeport
                             $systemID = trim(explode(": ", $notificationString[1])[1]);
