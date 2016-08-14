@@ -106,10 +106,39 @@ class authCheck
             $dbUser = $this->config["database"]["user"];
             $dbPass = $this->config["database"]["pass"];
             $dbName = $this->config["database"]["database"];
+            $id = $this->config["bot"]["guild"];
             $allyID = $this->config["plugins"]["auth"]["allianceID"];
             $corpID = $this->config["plugins"]["auth"]["corpID"];
             $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
             $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
+
+
+            //Remove members who have roles but never authed
+            $guild = $this->discord->guilds->get('id', $id);
+            foreach($guild->members as $member) {
+                $notifier = null;
+                $id = $member->id;
+                $username = $member->username;
+                $roles = $member->roles;
+
+                $sql = "SELECT * FROM authUsers WHERE discordID='$id' AND active='yes'";
+
+                $result = $conn->query($sql);
+                if($result->num_rows == 0) {
+                    foreach ($roles as $role) {
+                        if(!isset($role->name)){
+                            $member->removeRole($role);
+                            $member->save();
+                            // Send the info to the channel
+                            $msg = "{$username} has been removed from the {$role->name} role as they never authed (Someone manually assigned them roles).";
+                            $channelID = $toDiscordChannel;
+                            $channel = Channel::find($channelID);
+                            $channel->sendMessage($msg, false);
+                            $this->logger->addInfo("{$username} has been removed from the {$role->name} role as they never authed.");;
+                        }
+                    }
+                }
+            }
 
             $sql = "SELECT characterID, discordID, eveName FROM authUsers WHERE active='yes'";
 
