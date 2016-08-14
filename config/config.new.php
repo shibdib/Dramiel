@@ -29,7 +29,7 @@ $config["bot"] = array(
     "name" => "TWINKIE NUMBA UN", // Discord name for your bot (Not yet implemented)
     "game" => "USA #1", // Shows the bot "playing" this
     "trigger" => "!", // what trigger is used for commands
-    "guild" => 152677265635803136, // guildID
+    "guild" => 152677265635803136, // guildID 
     "token" => "" //enter the token for your app (https://discordapp.com/developers/applications/me)
 );
 
