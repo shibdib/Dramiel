@@ -127,16 +127,16 @@ $discord->on(
         //
         // We will echo to the console that the WebSocket is ready.
         $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
-        $game = new Game(array('name' => $config["bot"]["game"], 'url' => null, 'type' => null), true);
-        $discord->updatePresence($game, false);
+        //$game = new Game(array('name' => $config["bot"]["game"], 'url' => null, 'type' => null), true);
+        //$discord->updatePresence($game, false);
         // $ws->setNickname($config["bot"]["name"]); //not in yet
 
         // Database check
         $discord->loop->addPeriodicTimer(86400, function() use ($logger) {
-            updateDramielDB($logger); 
+            updateDramielDB($logger);
             updateCCPData($logger);
         });
-        
+
         // Run the Tick plugins
         $discord->loop->addPeriodicTimer(1, function() use ($pluginsT) {
             foreach ($pluginsT as $plugin)
@@ -202,12 +202,12 @@ $discord->on(
     'reconnecting',
     function() use ($logger) {
         $logger->addInfo('Websocket is reconnecting..');
-});
+    });
 $discord->on(
     'reconnected',
     function() use ($logger) {
         $logger->addInfo('Websocket was reconnected..');
-});
+    });
 // Now we will run the ReactPHP Event Loop!
 $discord->run();
 

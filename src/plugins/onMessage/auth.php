@@ -99,7 +99,7 @@ class auth
         if (isset($data["trigger"])) {
             if (isset($this->config["bot"]["primary"])) {
                 $userID = $msgData["message"]["fromID"];
-                $channelInfo = $this->message->getFullChannelAttribute();
+                $channelInfo = $this->message->channel;
                 $guildID = $channelInfo[@guild_id];
                 if ($guildID != $this->config["bot"]["primary"]) {
                     $this->message->reply("**Failure:** The auth code your attempting to use is for another discord server");
@@ -146,13 +146,13 @@ class auth
                 foreach ($xml->result->rowset->row as $character) {
                     $eveName = $character->attributes()->name;
                     if ($corpid === $this->corpID) {
-                        $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
-                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
+                        $roles = $this->message->channel->guild->roles;
+                        $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
                             if ($roleName == $this->roleName) {
                                 $member->addRole($role);
-                                $member->save();
+                                $guildID->members->save($member);
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                                 $this->message->reply("**Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
@@ -162,8 +162,8 @@ class auth
                         }
                     }
                     if ($allianceid === $this->allianceID) {
-                        $roles = $this->message->getFullChannelAttribute()->getGuildAttribute()->getRolesAttribute();
-                        $member = $this->message->getFullChannelAttribute()->getGuildAttribute()->getMembersAttribute()->get("id", $userID);
+                        $roles = $this->message->channel->guild->roles;
+                        $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {
                             $roleName = $role->name;
                             if ($roleName == $this->allyroleName) {
