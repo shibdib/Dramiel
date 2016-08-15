@@ -24,6 +24,7 @@
  */
 
 use Discord\Parts\Channel\Channel;
+use Discord\Parts\User\Client;
 
 /**
  * Class fileAuthCheck
@@ -106,6 +107,7 @@ class authCheck
             $dbUser = $this->config["database"]["user"];
             $dbPass = $this->config["database"]["pass"];
             $dbName = $this->config["database"]["database"];
+            $clientId = $this->config["bot"]["clientID"];
             $id = $this->config["bot"]["guild"];
             $allyID = $this->config["plugins"]["auth"]["allianceID"];
             $corpID = $this->config["plugins"]["auth"]["corpID"];
@@ -127,14 +129,16 @@ class authCheck
                 if($result->num_rows == 0) {
                     foreach ($roles as $role) {
                         if(!isset($role->name)){
-                            $member->removeRole($role);
-                            $member->save();
-                            // Send the info to the channel
-                            $msg = "{$username} has been removed from the {$role->name} role as they never authed (Someone manually assigned them roles).";
-                            $channelID = $toDiscordChannel;
-                            $channel = Channel::find($channelID);
-                            $channel->sendMessage($msg, false);
-                            $this->logger->addInfo("{$username} has been removed from the {$role->name} role as they never authed.");;
+                            if($id != $clientId){
+                                $member->removeRole($role);
+                                $member->save();
+                                // Send the info to the channel
+                                $msg = "{$username} has been removed from the {$role->name} role as they never authed (Someone manually assigned them roles).";
+                                $channelID = $toDiscordChannel;
+                                $channel = Channel::find($channelID);
+                                $channel->sendMessage($msg, false);
+                                $this->logger->addInfo("{$username} has been removed from the {$role->name} role as they never authed.");
+                            }
                         }
                     }
                 }
