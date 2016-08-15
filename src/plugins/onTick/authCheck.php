@@ -114,6 +114,8 @@ class authCheck
             $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
             $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
 
+            //get bot ID so we don't remove out own roles
+            $botID = $this->discord->id;
 
             //Remove members who have roles but never authed
             $guild = $this->discord->guilds->get('id', $id);
@@ -129,7 +131,7 @@ class authCheck
                 if($result->num_rows == 0) {
                     foreach ($roles as $role) {
                         if(!isset($role->name)){
-                            if($id != $clientId){
+                            if($id != $botID){
                                 $member->removeRole($role);
                                 $member->save();
                                 // Send the info to the channel
