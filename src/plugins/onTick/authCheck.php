@@ -173,7 +173,7 @@ class authCheck
                                 $stats = json_decode(downloadData($statsURL), true);
 
                                 if (empty($stats)) {
-                                    return $this->message->reply("**Error:** no data available");
+                                    $stats["corporationName"] = "Unknown";
                                 }
 
                                 $corporationName = @$stats["corporationName"];
