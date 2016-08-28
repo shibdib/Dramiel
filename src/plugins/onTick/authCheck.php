@@ -169,7 +169,7 @@ class authCheck
                                     $member->save();
                                 }
 
-                                $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($corpID) . "/";
+                                $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($character->attributes()->corporationID) . "/";
                                 $stats = json_decode(downloadData($statsURL), true);
 
                                 if (empty($stats)) {
