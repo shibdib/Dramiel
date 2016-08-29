@@ -78,14 +78,16 @@ class about
         $info['guilds'] = 0;
 
         //Get number of guilds for bot
-        foreach ($this->discord->getClient()->getGuildsAttribute()->all() as $guild) {
-            $info['guilds']++;
-        }
+        //foreach ($this->discord->getClient()->getGuildsAttribute()->all() as $guild) {
+        //   $info['guilds']++;
+        //}
 
         global $startTime; // Get the starttime of the bot
         $time1 = new DateTime(date("Y-m-d H:i:s", $startTime));
         $time2 = new DateTime(date("Y-m-d H:i:s"));
         $interval = $time1->diff($time2);
+
+        $botid = $this->discord->id;
 
         $message = $msgData["message"]["message"];
         $user = $msgData["message"]["from"];
@@ -96,6 +98,8 @@ class about
             $gitBranch = gitBranch();
             $msg = "```
 Developer: Shibdib (In-game Name: Mr Twinkie)
+
+Bot ID: " . $botid . "
 
 Current Version: " . $gitRevision["short"] . "
 Current Branch: " . $gitBranch . "
