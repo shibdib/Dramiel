@@ -132,7 +132,8 @@ $config["plugins"] = array(
         "allyMemberRole" => "", // The name of the role your ALLY members will be assigned too if the auth plugin is active.
         "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
         "nameEnforce" => "false", // put "true" or "false", if you'd like to make sure people's name match character names
-        "url" => "http://....." // put a url here if using sso auth for ur sso page.
+        "url" => "http://.....", // put a url here if using sso auth for ur sso page.
+        "exempt" => array("","") // role names that are exempt from auth checks (wont be removed by the bot)
     ),
     //Killmail posting
     "getKillmails" => array(

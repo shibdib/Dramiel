@@ -102,15 +102,15 @@ class authCheck
      */
     function checkAuth()
     {
-        if ($this->config["plugins"]["auth"]["periodicCheck"] == "true") {
+        if (2 > 1) {
             $db = $this->config["database"]["host"];
             $dbUser = $this->config["database"]["user"];
             $dbPass = $this->config["database"]["pass"];
             $dbName = $this->config["database"]["database"];
-            $clientId = $this->config["bot"]["clientID"];
             $id = $this->config["bot"]["guild"];
             $allyID = $this->config["plugins"]["auth"]["allianceID"];
             $corpID = $this->config["plugins"]["auth"]["corpID"];
+            $exempt = $this->config["plugins"]["auth"]["exempt"];
             $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
             $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
 
@@ -131,7 +131,7 @@ class authCheck
                 if($result->num_rows == 0) {
                     foreach ($roles as $role) {
                         if(!isset($role->name)){
-                            if($id != $botID){
+                            if($id != $botID && !in_array($role->name, $exempt, true)){
                                 $member->removeRole($role);
                                 $member->save();
                                 // Send the info to the channel
