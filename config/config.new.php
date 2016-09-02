@@ -148,6 +148,7 @@ $config["plugins"] = array(
         "channelID" => 0, //killmails post to this channel
         "keyID" => "", //corpid for killmails
         "vCode" => "", //allianceid for killmails (Leave as 0 if using it for a corp)
+        "prefix" => "", //put @everyone if you'd like everyone to be pinged when a siphon is detected
     ),
     //If you'd like low fuel warnings to go to a different channel set this here. Otherwise leave it as null
     "fuel" => array(
