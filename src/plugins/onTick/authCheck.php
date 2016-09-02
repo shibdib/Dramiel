@@ -169,12 +169,21 @@ class authCheck
                                     $member->save();
                                 }
 
+                                $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($character->attributes()->corporationID) . "/";
+                                $stats = json_decode(downloadData($statsURL), true);
+
+                                if (empty($stats)) {
+                                    $stats["corporationName"] = "Unknown";
+                                }
+
+                                $corporationName = @$stats["corporationName"];
+
                                 // Send the info to the channel
-                                $msg = "{$eveName} roles have been removed via the auth.";
+                                $msg = "{$eveName} roles have been removed, user is now a member of **{$corporationName}**.";
                                 $channelID = $toDiscordChannel;
                                 $channel = Channel::find($channelID);
                                 $channel->sendMessage($msg, false);
-                                $this->logger->addInfo("{$eveName} roles ({$role}) have been removed via the auth.");
+                                $this->logger->addInfo("{$eveName} roles ({$role}) have been removed, user is now a member of **{$corporationName}**.");
 
                                 $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                                 $conn->query($sql);
