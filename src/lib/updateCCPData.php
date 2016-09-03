@@ -33,10 +33,11 @@ function updateCCPData($logger) {
     $md5 = explode(" ", downloadData($ccpDataMD5URL))[0];
     $lastSeenMD5 = getPermCache("CCPDataMD5");
     $lastChecked = getPermCache("CCPDataLastAttempt");
+    $completed = getPermCache("CCPDataCompleted");
     if (!isset($lastChecked)) {
         $lastChecked = 1;
     }
-    if ($lastSeenMD5 !== $md5 && time() > $lastChecked) {
+    if ($lastSeenMD5 !== $md5 && time() > $lastChecked || $completed !== "1") {
         try {
             $checkNext = time() + 79200;
             setPermCache("CCPDataLastAttempt", $checkNext);
@@ -52,7 +53,7 @@ function updateCCPData($logger) {
             $logger->addInfo("Reading from bz2 file");
             $data = "";
             while (!feof($sqliteData)) {
-                            $data .= bzread($sqliteData, 4096);
+                $data .= bzread($sqliteData, 4096);
             }
             $logger->addInfo("Writing bz2 file contents into .sqlite file");
             file_put_contents("{$databaseDir}/ccpData.sqlite", $data);
@@ -66,7 +67,9 @@ function updateCCPData($logger) {
             setPermCache("CCPDataMD5", $md5);
             // Create the mapCelestialsView
             $logger->addInfo("Creating the mapAllCelestials view");
+            dbExecute("DROP VIEW IF EXISTS mapAllCelestials", array(), "ccp");
             dbExecute("CREATE VIEW mapAllCelestials AS SELECT itemID, itemName, typeName, mapDenormalize.typeID, solarSystemName, mapDenormalize.solarSystemID, mapDenormalize.constellationID, mapDenormalize.regionID, mapRegions.regionName, orbitID, mapDenormalize.x, mapDenormalize.y, mapDenormalize.z FROM mapDenormalize JOIN invTypes ON (mapDenormalize.typeID = invTypes.typeID) JOIN mapSolarSystems ON (mapSolarSystems.solarSystemID = mapDenormalize.solarSystemID) JOIN mapRegions ON (mapDenormalize.regionID = mapRegions.regionID) JOIN mapConstellations ON (mapDenormalize.constellationID = mapConstellations.constellationID)", array(), "ccp");
+            setPermCache("CCPDataCompleted", "1");
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -81,6 +84,6 @@ function updateCCPData($logger) {
             setPermCache("CCPDataMD5", $md5);
         }
     } else {
-            $logger->addInfo("CCP Database already up to date");
+        $logger->addInfo("CCP Database already up to date");
     }
-    }
+}

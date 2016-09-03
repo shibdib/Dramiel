@@ -62,6 +62,7 @@ class siphons {
         $this->toDiscordChannel = $config["plugins"]["siphons"]["channelID"];
         $this->keyID = $config["plugins"]["siphons"]["keyID"];
         $this->vCode = $config["plugins"]["siphons"]["vCode"];
+        $this->prefix = $config["plugins"]["siphons"]["prefix"];
         $lastCheck = getPermCache("siphonLastChecked{$this->keyID}");
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run

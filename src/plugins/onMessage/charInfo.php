@@ -155,7 +155,7 @@ For more info, visit: $url";
         return array(
             "name" => "char",
             "trigger" => array($this->config["bot"]["trigger"] . "char"),
-            "information" => "Returns basic EVE Online data about a character from projectRena. To use simply type !char character_name"
+            "information" => "Returns basic EVE Online data about a character. To use simply type !char character_name"
         );
     }
 

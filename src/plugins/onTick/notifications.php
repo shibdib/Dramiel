@@ -187,7 +187,7 @@ class notifications
                         case 8: // Alliance war invalidated by CONCORD
                             $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
                             $aggAllianceName = $this->apiData($aggAllianceID);
-                            $msg = "War declared by {$aggAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
+                            $msg = "War with {$aggAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
                             break;
                         case 10: // Bill issued
                             $msg = "skip";
@@ -321,7 +321,7 @@ class notifications
                         case 103: // War support offer? I think?
                             $msg = "skip";
                             break;
-                        case 111: // Bounty 
+                        case 111: // Bounty
                             $msg = "skip";
                             break;
                         case 128: // Corp App
@@ -430,7 +430,7 @@ class notifications
                             break;
                         default: // Unknown typeID
                             $string = implode(" ", $notificationString);
-                            $msg = "typeID {$typeID} is an unmapped notification, send Mr Twinkie this whole message github issue. {$string}";
+                            $msg = "typeID {$typeID} is an unmapped notification, please create a Github issue with this entire message and please include what the in-game notification is. {$string}";
                             break;
                     }
 
