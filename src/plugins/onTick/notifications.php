@@ -321,7 +321,7 @@ class notifications
                         case 103: // War support offer? I think?
                             $msg = "skip";
                             break;
-                        case 111: // Bounty 
+                        case 111: // Bounty
                             $msg = "skip";
                             break;
                         case 128: // Corp App
