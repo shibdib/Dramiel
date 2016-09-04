@@ -1,6 +1,8 @@
 # Dramiel
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/shibdib/Dramiel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/shibdib/Dramiel/?branch=master)
 
+# 4Sept changes require you to run "composer update" after doing a pull.
+
 EVE Discord Bot
 
 Features (Basic)
