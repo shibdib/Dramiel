@@ -171,14 +171,11 @@ class authCheck
                                     $guild->members->save($member);
                                 }
 
-                                $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($character->attributes()->corporationID) . "/";
-                                $stats = json_decode(downloadData($statsURL), true);
-
-                                if (empty($stats)) {
-                                    $stats["corporationName"] = "Unknown";
+                                $statsURL = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=" . urlencode($character->attributes()->corporationID) . "/";
+                                $stats = makeApiRequest($statsURL);
+                                foreach ($stats->result->rowset->row as $corporation) {
+                                    $corporationName = $corporation->attributes()->name;
                                 }
-
-                                $corporationName = @$stats["corporationName"];
 
                                 // Send the info to the channel
                                 $msg = "{$eveName} roles have been removed, user is now a member of **{$corporationName}**.";
