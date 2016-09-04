@@ -75,12 +75,7 @@ class about
     function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $info['guilds'] = 0;
-
-        //Get number of guilds for bot
-        //foreach ($this->discord->getClient()->getGuildsAttribute()->all() as $guild) {
-        //   $info['guilds']++;
-        //}
+        $info['guilds'] = $this->discord->guilds->count();
 
         global $startTime; // Get the starttime of the bot
         $time1 = new DateTime(date("Y-m-d H:i:s", $startTime));
