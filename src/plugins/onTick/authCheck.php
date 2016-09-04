@@ -163,6 +163,10 @@ class authCheck
                     $roles = $member->roles;
                     $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                     $xml = makeApiRequest($url);
+                    // Stop the process if the api is throwing an error
+                    if (is_null($xml)){
+                        return null;
+                    }
                     if ($xml->result->rowset->row[0]) {
                         foreach ($xml->result->rowset->row as $character) {
                             if ($character->attributes()->allianceID != $allyID && $character->attributes()->corporationID != $corpID) {
