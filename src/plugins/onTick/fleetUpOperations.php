@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class fleetUpOperations
@@ -66,6 +66,7 @@ class fleetUpOperations {
         $this->userID = $config["plugins"]["fleetUp"]["userID"];
         $this->groupID = $config["plugins"]["fleetUp"]["groupID"];
         $this->apiKey = $config["plugins"]["fleetUp"]["apiKey"];
+        $this->guild = $config["bot"]["guild"];
         $lastCheck = getPermCache("fleetUpPostLastChecked");
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run
@@ -88,6 +89,7 @@ class fleetUpOperations {
 
     function postFleetUp()
     {
+        $discord = $this->discord;
 
         date_default_timezone_set("UTC");
         $eveTime = time();
@@ -118,7 +120,8 @@ Details - {$info}
 
 Link - {$link}";
                     $channelID = $this->toDiscordChannel;
-                    $channel = Channel::find($channelID);
+                    $guild = $discord->guilds->get('id', $this->guild);
+                    $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
                     setPermCache("fleetUpLastPostedOperation", $id);
                     $this->logger->addInfo("Latest upcoming operation ID - {$id}");
@@ -131,6 +134,8 @@ Link - {$link}";
 
     function checkFleetUp()
     {
+        $discord = $this->discord;
+
         $lastChecked = getPermCache("fleetUpLastChecked");
 
         if ($lastChecked >= time()) {
@@ -160,7 +165,8 @@ Details - {$info}
 
 Link - {$link}";
                 $channelID = $this->toDiscordChannel;
-                $channel = Channel::find($channelID);
+                $guild = $discord->guilds->get('id', $this->guild);
+                $channel = $guild->channels->get('id', $channelID);
                 $channel->sendMessage($msg, false);
                 setPermCache("fleetUpLastOperation", $id);
             }
