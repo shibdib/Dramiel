@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class corporationmails
@@ -90,6 +90,7 @@ class evemails {
         $this->maxID = 0;
         $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
         $this->vCode = $config["eve"]["apiKeys"]["user1"]["vCode"];
+        $this->guild = $config["bot"]["guild"];
         $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
         $this->nextCheck = 0;
         $lastCheck = getPermCache("mailLastChecked{$this->keyID}");
@@ -108,15 +109,16 @@ class evemails {
         $keyID = $this->keyID;
         $vCode = $this->vCode;
         $characterID = $this->characterID;
+        $discord = $this->discord;
 
         if ($lastChecked <= time()) {
             $this->logger->addInfo("Checking API Key {$keyID} for new mail..");
-            $this->checkMails($keyID, $vCode, $characterID);
+            $this->checkMails($keyID, $vCode, $characterID, $discord);
         }
 
     }
 
-    function checkMails($keyID, $vCode, $characterID)
+    function checkMails($keyID, $vCode, $characterID, $discord)
     {
         $updateMaxID = false;
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
@@ -171,7 +173,8 @@ class evemails {
 
                 // Send the mails to the channel
                 $channelID = $this->toDiscordChannel;
-                $channel = Channel::find($channelID);
+                $guild = $discord->guilds->get('id', $this->guild);
+                $channel = $guild->channels->get('id', $channelID);
                 $channel->sendMessage($msg, false);
                 sleep(1); // Lets sleep for a second, so we don't rage spam
                 if (strlen($content) > 1850) {
