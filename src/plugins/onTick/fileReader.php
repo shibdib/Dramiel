@@ -23,8 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Message;
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class fileReaderJabber
@@ -66,6 +65,7 @@ class fileReader
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->guild = $config["bot"]["guild"];
         $this->channelConfig = $config["plugins"]["fileReader"]["channelConfig"];
         $this->db = $config["plugins"]["fileReader"]["db"];
         if (!is_file($this->db)) {
@@ -90,6 +90,8 @@ class fileReader
      */
     function tick()
     {
+        $discord = $this->discord;
+
         if (filemtime($this->db) >= $this->lastCheck) {
             $data = file($this->db);
             if ($data) {
@@ -106,7 +108,6 @@ class fileReader
 
                 // Remove |  from the line or whatever else is at the last two characters in the string
                 $message = trim(substr($ping, 0, -2));
-
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
                     if ($chanConfig["searchString"] == false) { // If no match was found, and searchString is false, just use that
                         $message = $chanConfig["textStringPrepend"] . " \n " . $message . "  " . $chanConfig["textStringAppend"];
@@ -126,7 +127,8 @@ class fileReader
                 if ($message != "skip") {
                     $this->logger->addInfo("Ping sent to channel {$channelID}, Message - {$message}");
                     // Send the pings to the channel
-                    $channel = Channel::find($channelID);
+                    $guild = $discord->guilds->get('id', $this->guild);
+                    $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($message, false);
                 }
             }
