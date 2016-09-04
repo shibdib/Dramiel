@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class twitterOutput
@@ -74,6 +74,7 @@ class twitterOutput
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->guild = $config["bot"]["guild"];
         $this->twitter = new Twitter($config["twitter"]["consumerKey"], $config["twitter"]["consumerSecret"], $config["twitter"]["accessToken"], $config["twitter"]["accessTokenSecret"]);
         $this->lastCheck = time();
         $this->maxID = 0;
@@ -85,6 +86,8 @@ class twitterOutput
      */
     function tick()
     {
+        $discord = $this->discord;
+
         $continue = false;
         $data = array();
         // If last check + 60 seconds is larger or equal to the current time(), we run
@@ -101,7 +104,7 @@ class twitterOutput
                     $this->lastID = getPermCache("twitterLatestID"); // get the last posted ID
 
                     if ($id <= $this->lastID) {
-                                            continue;
+                        continue;
                     }
 
                     $this->maxID = max($id, $this->maxID);
@@ -114,7 +117,7 @@ class twitterOutput
                     $continue = true;
 
                     if (sizeof($data)) {
-                                            setPermCache("twitterLatestID", $this->maxID);
+                        setPermCache("twitterLatestID", $this->maxID);
                     }
                 }
             } catch (Exception $e) {
@@ -127,7 +130,8 @@ class twitterOutput
                 foreach ($messages as $id => $msg) {
                     // Send the tweets to the channel
                     $channelID = $this->channelID;
-                    $channel = Channel::find($channelID);
+                    $guild = $discord->guilds->get('id', $this->guild);
+                    $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
                     sleep(1); // Lets sleep for a second, so we don't rage spam
                 }
