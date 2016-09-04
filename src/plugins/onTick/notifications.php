@@ -213,6 +213,11 @@ class notifications
                         case 21: // member left corp
                             $msg = "skip";
                             break;
+                        case 31: // Alliance war invalidated by CONCORD
+                            $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
+                            $aggAllianceName = $this->apiData($aggAllianceID);
+                            $msg = "War with {$aggAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
+                            break;
                         case 35: // Insurance payment
                             $msg = "skip";
                             break;
