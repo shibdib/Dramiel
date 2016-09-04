@@ -23,8 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
-use Discord\Parts\User\Client;
+use discord\discord;
 
 /**
  * Class fileAuthCheck
@@ -89,10 +88,11 @@ class authCheck
     function tick()
     {
         $lastChecked = getPermCache("authLastChecked");
+        $discord = $this->discord;
 
         if ($lastChecked <= time()) {
             $this->logger->addInfo("Checking authed users for changes....");
-            $this->checkAuth();
+            $this->checkAuth($discord);
         }
 
     }
@@ -100,7 +100,7 @@ class authCheck
     /**
      *
      */
-    function checkAuth()
+    function checkAuth($discord)
     {
         if (2 > 1) {
             $db = $this->config["database"]["host"];
@@ -118,7 +118,7 @@ class authCheck
             $botID = $this->discord->id;
 
             //Remove members who have roles but never authed
-            $guild = $this->discord->guilds->get('id', $id);
+            $guild = $discord->guilds->get('id', $id);
             foreach($guild->members as $member) {
                 $notifier = null;
                 $id = $member->id;
@@ -133,11 +133,11 @@ class authCheck
                         if(!isset($role->name)){
                             if($id != $botID && !in_array($role->name, $exempt, true)){
                                 $member->removeRole($role);
-                                $member->save();
+                                $guild->members->save($member);
                                 // Send the info to the channel
                                 $msg = "{$username} has been removed from the {$role->name} role as they never authed (Someone manually assigned them roles).";
                                 $channelID = $toDiscordChannel;
-                                $channel = Channel::find($channelID);
+                                $channel = $guild->channels->get('id', $channelID);
                                 $channel->sendMessage($msg, false);
                                 $this->logger->addInfo("{$username} has been removed from the {$role->name} role as they never authed.");
                             }
@@ -155,7 +155,6 @@ class authCheck
                 while ($rows = $result->fetch_assoc()) {
                     $charID = $rows['characterID'];
                     $discordID = $rows['discordID'];
-                    $guild = $this->discord->guilds->first();
                     $member = $guild->members->get("id", $discordID);
                     $eveName = $rows['eveName'];
                     $roles = $member->roles;
@@ -166,7 +165,7 @@ class authCheck
                             if ($character->attributes()->allianceID != $allyID && $character->attributes()->corporationID != $corpID) {
                                 foreach ($roles as $role) {
                                     $member->removeRole($role);
-                                    $member->save();
+                                    $guild->members->save($member);
                                 }
 
                                 $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($character->attributes()->corporationID) . "/";
@@ -181,7 +180,7 @@ class authCheck
                                 // Send the info to the channel
                                 $msg = "{$eveName} roles have been removed, user is now a member of **{$corporationName}**.";
                                 $channelID = $toDiscordChannel;
-                                $channel = Channel::find($channelID);
+                                $channel = $guild->channels->get('id', $channelID);
                                 $channel->sendMessage($msg, false);
                                 $this->logger->addInfo("{$eveName} roles ({$role}) have been removed, user is now a member of **{$corporationName}**.");
 
@@ -199,7 +198,6 @@ class authCheck
                     while ($rows = $result->fetch_assoc()) {
                         $discordID = $rows['discordID'];
                         $eveName = $rows['eveName'];
-                        $guild = $this->discord->guilds->first();
                         $member = $guild->members->get("id", $discordID);
                         $discordName = $member->user->username;
                         if ($discordName != $eveName) {
@@ -210,7 +208,7 @@ class authCheck
                             // Send the info to the channel
                             $msg = $discordName . " roles have been removed because their name no longer matches their ingame name.";
                             $channelID = $toDiscordChannel;
-                            $channel = Channel::find($channelID);
+                            $channel = $guild->channels->get('id', $channelID);
                             $channel->sendMessage($msg, false);
                             $this->logger->addInfo($discordName . " roles have been removed because their name no longer matches their ingame name.");
 
