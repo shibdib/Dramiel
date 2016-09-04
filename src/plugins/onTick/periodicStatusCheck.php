@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class periodicStatusCheck
