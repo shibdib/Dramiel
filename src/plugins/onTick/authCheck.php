@@ -111,6 +111,9 @@ class authCheck
             $allyID = $this->config["plugins"]["auth"]["allianceID"];
             $corpID = $this->config["plugins"]["auth"]["corpID"];
             $exempt = $this->config["plugins"]["auth"]["exempt"];
+            if(is_null($exempt)){
+                $exempt = "0";
+            }
             $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
             $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
 
