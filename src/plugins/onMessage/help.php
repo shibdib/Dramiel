@@ -69,6 +69,7 @@ class help
         $this->message = $message;
 
         $message = $msgData["message"]["message"];
+        $user = $msgData["message"]["from"];
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
@@ -80,7 +81,7 @@ class help
                 $commands = array();
                 foreach ($plugins as $plugin) {
                     $info = $plugin->information();
-                    $channelInfo = $this->message->getFullChannelAttribute();
+                    $channelInfo = $this->message->channel;
                     $guildID = $channelInfo[@guild_id];
                     if (isset($this->config["bot"]["primary"])) {
                         if ($guildID != $this->config["bot"]["primary"]) {
@@ -95,6 +96,7 @@ class help
                 }
 
                 $this->message->reply("Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
+                $this->logger->addInfo("Sending help info to {$user}");
             } else {
                 foreach ($plugins as $plugin) {
                     if ($messageString == $plugin->information()["name"]) {
