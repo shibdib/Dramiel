@@ -165,6 +165,7 @@ class authCheck
                     $xml = makeApiRequest($url);
                     // Stop the process if the api is throwing an error
                     if (is_null($xml)){
+                        $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
                         return null;
                     }
                     if ($xml->result->rowset->row[0]) {
