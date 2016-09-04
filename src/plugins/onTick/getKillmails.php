@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class getKillmails
@@ -78,6 +78,7 @@ class getKillmails
         $this->startMail = $config["plugins"]["getKillmails"]["startMail"];
         $this->lossMail = $config["plugins"]["getKillmails"]["lossMails"];
         $this->spamAmount = $config["plugins"]["getKillmails"]["spamAmount"];
+        $this->guild = $config["bot"]["guild"];
         if (2 > 1) {
             //Check for a higher set value
             $currentID = getPermCache("newestKillmailID");
@@ -124,6 +125,7 @@ class getKillmails
 
     function getKM()
     {
+        $discord = $this->discord;
         $this->newestKillmailID = getPermCache("newestKillmailID");
         $lastMail = $this->newestKillmailID;
         if ($this->allianceID == "0" & $this->lossMail == 'true') {
@@ -164,7 +166,8 @@ class getKillmails
                         $msg = "**{$killTime}**\n\n**{$shipName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
                     $channelID = $this->kmChannel;
-                    $channel = Channel::find($channelID);
+                    $guild = $discord->guilds->get('id', $this->guild);
+                    $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
                     setPermCache("newestKillmailID", $killID);
 

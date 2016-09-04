@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class siloFull
@@ -59,6 +59,7 @@ class siloFull {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->guild = $config["bot"]["guild"];
         $this->toDiscordChannel = $config["plugins"]["siloFull"]["channelID"];
         $this->keyID = $config["plugins"]["siloFull"]["keyID"];
         $this->vCode = $config["plugins"]["siloFull"]["vCode"];
@@ -84,6 +85,8 @@ class siloFull {
     }
     function checkTowers($keyID, $vCode)
     {
+        $discord = $this->discord;
+
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
         $xml = makeApiRequest($url);
         $siloCount = 0;
@@ -125,7 +128,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -149,7 +153,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -173,7 +178,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -197,7 +203,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -221,7 +228,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -245,7 +253,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -269,7 +278,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -293,7 +303,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -317,7 +328,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -341,7 +353,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -365,7 +378,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -389,7 +403,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -413,7 +428,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -437,7 +453,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -461,7 +478,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -485,7 +503,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -509,7 +528,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -533,7 +553,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -557,7 +578,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -581,7 +603,8 @@ class siloFull {
                                     $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
-                                    $channel = Channel::find($channelID);
+                                    $guild = $discord->guilds->get('id', $this->guild);
+                                    $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
                                     sleep(1);
@@ -608,7 +631,8 @@ class siloFull {
             $msg = "Next Silo Check At: {$cacheTimer} EVE Time";
             // Send the msg to the channel;
             $channelID = $this->toDiscordChannel;
-            $channel = Channel::find($channelID);
+            $guild = $discord->guilds->get('id', $this->guild);
+            $channel = $guild->channels->get('id', $channelID);
             $channel->sendMessage($msg, false);
         }
         $this->logger->addInfo("Silo Check Complete Next Check At {$cacheTimer}");

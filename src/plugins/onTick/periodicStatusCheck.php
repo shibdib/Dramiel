@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class periodicStatusCheck
@@ -59,6 +59,7 @@ class periodicStatusCheck {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->guild = $config["bot"]["guild"];
         $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
         $lastCheck = getPermCache("statusLastChecked");
         if ($lastCheck == NULL) {
@@ -81,6 +82,8 @@ class periodicStatusCheck {
 
     function checkStatus()
     {
+        $discord = $this->discord;
+
         if ($this->toDiscordChannel == 0) {
             setPermCache("statusLastChecked", time() + 300);
             $this->logger->addInfo("TQ Status Check Failed - Add a channel ID to the notifications section in the config.");
@@ -121,7 +124,8 @@ class periodicStatusCheck {
         }
         $msg = "**TQ Status Change:** {$crestStatus} with {$tqOnline} users online.";
         $channelID = $this->toDiscordChannel;
-        $channel = Channel::find($channelID);
+        $guild = $discord->guilds->get('id', $this->guild);
+        $channel = $guild->channels->get('id', $channelID);
         $channel->sendMessage($msg, false);
         setPermCache("statusLastState", $crestStatus);
         setPermCache("statusLastChecked", time() + 300);
