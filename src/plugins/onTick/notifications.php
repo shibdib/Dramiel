@@ -24,8 +24,7 @@
  */
 
 
-use Discord\Parts\Channel\Message;
-use Discord\Parts\Channel\Channel;
+use discord\discord;
 
 /**
  * Class notifications
@@ -100,6 +99,7 @@ class notifications
         $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
         $this->vCode = $config["eve"]["apiKeys"]["user1"]["vCode"];
         $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
+        $this->guild = $config["bot"]["guild"];
         $lastCheck = getPermCache("notificationsLastChecked{$this->keyID}");
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run
@@ -131,6 +131,8 @@ class notifications
      */
     function getNotifications($keyID, $vCode, $characterID)
     {
+        $discord = $this->discord;
+
         try {
             $url = "https://api.eveonline.com/char/Notifications.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
             $xml = makeApiRequest($url);
@@ -440,7 +442,8 @@ class notifications
                     if ($msg == "") {
                     }
                     $this->logger->addInfo("Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
-                    $channel = Channel::find($channelID);
+                    $guild = $discord->guilds->get('id', $this->guild);
+                    $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
                     // Find the maxID so we don't output this message again in the future
                     $this->maxID = max($notificationID, $this->maxID);
