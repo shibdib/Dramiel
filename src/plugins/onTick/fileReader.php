@@ -132,7 +132,6 @@ class fileReader
                     $channel->sendMessage($message, false);
                 }
             }
-            sleep(5);
             $h = fopen($this->db, "w+");
             fclose($h);
             chmod($this->db, 0777);
