@@ -35,7 +35,7 @@ function downloadData($url)
     $logger = new Logger('cURL');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     try {
-        $userAgent = "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6";
+        $userAgent = "Mozilla/5.0 (en-us;)";
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($curl, CURLOPT_TIMEOUT, 12);
@@ -64,15 +64,23 @@ function downloadLargeData($url, $downloadPath)
 {
     $logger = new Logger('cURL');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
+    $userAgent = "Mozilla/5.0 (en-us;)";
     try {
-        $readHandle = fopen($url, "rb");
+        $opts = array (
+            'http' => array (
+                'method' => "GET",
+                'user_agent' => $userAgent,
+            )
+        );
+        $context = stream_context_create($opts);
+        $readHandle = fopen($url, "rb", false, $context);
         $writeHandle = fopen($downloadPath, "w+b");
         if (!$readHandle || !$writeHandle) {
-                    return false;
+            return false;
         }
         while (!feof($readHandle)) {
             if (fwrite($writeHandle, fread($readHandle, 4096)) === false) {
-                            return false;
+                return false;
             }
         }
         fclose($readHandle);
