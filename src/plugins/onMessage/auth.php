@@ -92,6 +92,7 @@ class auth
     function onMessage($msgData, $message, $discord)
     {
         $this->message = $message;
+        $guild = $discord->guilds->get('id', $id);
         $userID = $msgData["message"]["fromID"];
         $userName = $msgData["message"]["from"];
         $message = $msgData["message"]["message"];
@@ -135,10 +136,9 @@ class auth
                 } elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
                         if ($character->attributes()->name != $userName) {
-                            $this->message->reply("**Failure:** Your discord name must match your character name.");
-                            $this->logger->addInfo("User was denied due to not having the correct name " . $character->attributes()->name);
-                            return null;
-
+                            $member = $guild->members->get("id", $userID);
+                            $nick = $character->attributes()->name;
+                            $member->setNickname($nick);
                         }
                     }
                 }
