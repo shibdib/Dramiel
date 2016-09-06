@@ -92,7 +92,8 @@ class auth
     function onMessage($msgData, $message, $discord)
     {
         $this->message = $message;
-        $guild = $discord->guilds->get('id', $id);
+        $id = $this->config["bot"]["guild"];
+        $guild = $this->discord->guilds->get('id', $id);
         $userID = $msgData["message"]["fromID"];
         $userName = $msgData["message"]["from"];
         $message = $msgData["message"]["message"];
