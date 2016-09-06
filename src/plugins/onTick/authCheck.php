@@ -162,7 +162,7 @@ class authCheck
                 $eveName = $rows['eveName'];
                 $roles = $member->roles;
 
-                if ($this->config["plugins"]["auth"]["nameEnforce"] == "true") {
+                if ($this->config["plugins"]["auth"]["nameEnforce"] == "true" && !is_null($member)) {
                     $nick = $eveName;
                     $member->setNickname($nick);
                 }

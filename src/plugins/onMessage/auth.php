@@ -89,7 +89,7 @@ class auth
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message, $discord)
+    function onMessage($msgData, $message)
     {
         $this->message = $message;
         $id = $this->config["bot"]["guild"];
@@ -136,11 +136,10 @@ class auth
                     return null;
                 } elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
-                        if ($character->attributes()->name != $userName) {
-                            $member = $guild->members->get("id", $userID);
-                            $nick = $character->attributes()->name;
-                            $member->setNickname($nick);
-                        }
+                        $member = $guild->members->get("id", $userID);
+                        $inGameName = $character->attributes()->name;
+                        $nick = (string)$inGameName;
+                        $member->setNickname($nick);
                     }
                 }
                 foreach ($xml->result->rowset->row as $character) {
