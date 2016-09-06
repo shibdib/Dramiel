@@ -152,7 +152,7 @@ class auth
                             $roleName = $role->name;
                             if ($roleName == $this->roleName) {
                                 $member->addRole($role);
-                                $guild = $discord->guilds->get('id', $guildID);
+                                $guild = $this->discord->guilds->get('id', $guildID);
                                 $guild->members->save($member);
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
@@ -169,7 +169,7 @@ class auth
                             $roleName = $role->name;
                             if ($roleName == $this->allyroleName) {
                                 $member->addRole($role);
-                                $guild = $discord->guilds->get('id', $guildID);
+                                $guild = $this->discord->guilds->get('id', $guildID);
                                 $guild->members->save($member);
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'ally');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
