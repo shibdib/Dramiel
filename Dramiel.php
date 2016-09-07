@@ -155,7 +155,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
+            function($message) use ($logger, $config, $plugins) {
 
                 $msgData = array(
                     "message" => array(
