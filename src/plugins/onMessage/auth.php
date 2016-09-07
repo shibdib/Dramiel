@@ -137,7 +137,7 @@ class auth
                     foreach ($xml->result->rowset->row as $character) {
                         $member = $guild->members->get("id", $userID);
                         $inGameName = $character->attributes()->name;
-                        $nick = (string)$inGameName;
+                        $nick = (string) $inGameName;
                         $member->setNickname($nick);
                     }
                 }

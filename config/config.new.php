@@ -31,7 +31,7 @@ $config["bot"] = array(
     "trigger" => "!", // what trigger is used for commands
     "guild" => 152677265635803136, // guildID 
     "token" => "", //enter the token for your app (https://discordapp.com/developers/applications/me)
-	"adminRoles" => array("Admin",""),//enter the roles that you'd like to have access to admin commands
+    "adminRoles" => array("Admin",""),//enter the roles that you'd like to have access to admin commands
     "silentMode" => "false"//set this to true if you want to disable all the chat commands
 );
 
@@ -135,7 +135,7 @@ $config["plugins"] = array(
         "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
         "nameEnforce" => "false", // if "true" bot will automatically change nicknames so that they match player names.
         "url" => "http://.....", // put a url here if using sso auth for ur sso page.
-        "exempt" => array("","") // role names that are exempt from auth checks (wont be removed by the bot)
+        "exempt" => array("", "") // role names that are exempt from auth checks (wont be removed by the bot)
     ),
     //Killmail posting
     "getKillmails" => array(
