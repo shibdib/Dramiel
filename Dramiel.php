@@ -97,7 +97,7 @@ $logger->info("Loaded: " . count($pluginsT) . " background plugins");
 
 // Load chat plugins
 $pluginDirs = array("src/plugins/onMessage/*.php", "src/plugins/admin/*.php");
-$adminPlugins = array("setNickname","updateBot");
+$adminPlugins = array("setNickname","updateBot","holder");
 $logger->addInfo("Loading in chat plugins");
 $plugins = array();
 foreach ($pluginDirs as $dir) {
@@ -141,7 +141,7 @@ $discord->on(
         });
 
         // Run the Tick plugins
-        $discord->loop->addPeriodicTimer(1, function() use ($pluginsT) {
+        $discord->loop->addPeriodicTimer(5, function() use ($pluginsT) {
             foreach ($pluginsT as $plugin)
                 $plugin->tick();
         });
@@ -155,7 +155,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function($message, $discord, $newdiscord) use ($logger, $config, $plugins, $adminPlugins) {
+            function($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
 
                 $msgData = array(
                     "message" => array(

@@ -26,7 +26,7 @@
 /**
  * @property  message
  */
-class setNickname
+class updateBot
 {
     /**
      * @var
@@ -92,13 +92,14 @@ class setNickname
                     }
                 }
 
-            $member = $guild->members->get("id", $botID);
-            $nick = (string)$data["messageString"];
-            $member->setNickname($nick);
-
-            $msg = "Bot nickname changed to **{$nick}** by {$msgData["message"]["from"]}";
-            $this->logger->addInfo("Bot nickname changed to {$nick} by {$msgData["message"]["from"]}");
-            $this->message->reply($msg);
+            $update = updateBot($this->logger);
+			if ($update = "1"){
+				$msg = "Bot succesfully updated, restarting.";
+				$this->logger->addInfo("Bot succesfully updated, restarting.");
+				$this->message->reply($msg);
+				sleep(5);
+				die();
+			}
         }
     }
 
@@ -108,9 +109,9 @@ class setNickname
     function information()
     {
         return array(
-            "name" => "nickname",
-            "trigger" => array($this->config["bot"]["trigger"] . "nickname"),
-            "information" => "Changes the bots nickname (Admin Role)"
+            "name" => "update",
+            "trigger" => array($this->config["bot"]["trigger"] . "update"),
+            "information" => "Updates the bot to the latest version (Admin Role)"
         );
     }
 
