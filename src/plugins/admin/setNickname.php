@@ -63,6 +63,7 @@ class setNickname
     /**
      * @param $msgData
      * @param $message
+     * @return null
      */
     function onMessage($msgData, $message)
     {
@@ -113,6 +114,7 @@ class setNickname
 
     /**
      * @param $msgData
+     * @param $message
      */
     function onMessageAdmin($msgData, $message)
     {

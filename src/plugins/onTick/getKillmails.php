@@ -114,9 +114,7 @@ class getKillmails
         if ($lastChecked <= time()) {
             $this->logger->addInfo("Checking for new killmails.");
             $oldID = getPermCache("newestKillmailID");
-            $one = '1';
-            $updatedID = $oldID + $one;
-            setPermCache("newestKillmailID", $updatedID);
+            setPermCache("newestKillmailID", $oldID++);
             $this->getKM();
             setPermCache("killmailCheck{$this->corpID}", time() + 900);
         }

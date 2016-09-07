@@ -63,19 +63,18 @@ class updateBot
     /**
      * @param $msgData
      * @param $message
+     * @return null
      */
     function onMessage($msgData, $message)
     {
         $this->message = $message;
 
         $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
 
             //Admin Check
-            $botID = $this->discord->id;
             $userID = $msgData["message"]["fromID"];
             $adminRoles = $this->config["bot"]["adminRoles"];
             $id = $this->config["bot"]["guild"];
@@ -119,6 +118,7 @@ class updateBot
 
     /**
      * @param $msgData
+     * @param $message
      */
     function onMessageAdmin($msgData, $message)
     {

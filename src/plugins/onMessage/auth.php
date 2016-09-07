@@ -25,7 +25,6 @@
 use discord\discord;
 /**
  * Class auth
- * @property  message
  */
 class auth
 {

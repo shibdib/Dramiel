@@ -25,9 +25,6 @@
 
 /**
  * Class about
- * @property  info
- * @property  info
- * @property  info
  */
 class about
 {

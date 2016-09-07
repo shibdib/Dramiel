@@ -108,8 +108,6 @@ class corpInfo
             $taxRate = @$stats["taxRate"];
             $corporationActiveArea = @$stats["corporationActiveArea"];
             $allianceActiveArea = @$stats["allianceActiveArea"];
-            $lifeTimeKills = @$stats["lifeTimeKills"];
-            $lifeTimeLosses = @$stats["lifeTimeLosses"];
             $memberCount = @$stats["memberArrayCount"];
             $superCaps = @count($stats["superCaps"]);
             $ePeenSize = @$stats["ePeenSize"];
