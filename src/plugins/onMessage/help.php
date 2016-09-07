@@ -84,11 +84,14 @@ class help
                     $channelInfo = $this->message->channel;
                     $guildID = $channelInfo[@guild_id];
                     if (isset($this->config["bot"]["primary"])) {
-                        if ($guildID != $this->config["bot"]["primary"]) {
+                        if ($guildID != $this->config["bot"]["guild"]) {
                             if ($info["name"] == "auth") {
                                 continue;
                             }
                         }
+                    }
+                    if ($info["name"] == "update" || $info["name"] == "nickname") {
+                        continue;
                     }
                     if (!empty($info["name"])) {
                         $commands[] = $info["name"];
