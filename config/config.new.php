@@ -31,7 +31,8 @@ $config["bot"] = array(
     "trigger" => "!", // what trigger is used for commands
     "guild" => 152677265635803136, // guildID 
     "token" => "", //enter the token for your app (https://discordapp.com/developers/applications/me)
-	"adminRoles" => array("Admin","")//enter the roles that you'd like to have access to admin commands
+	"adminRoles" => array("Admin",""),//enter the roles that you'd like to have access to admin commands
+    "silentMode" => "false"//set this to true if you want to disable all the chat commands
 );
 
 $config["database"] = array(

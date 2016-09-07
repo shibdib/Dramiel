@@ -95,30 +95,32 @@ foreach ($pluginDirs as $dir) {
 // Number of plugins loaded
 $logger->info("Loaded: " . count($pluginsT) . " background plugins");
 
+if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode"])) {
 // Load chat plugins
-$pluginDirs = array("src/plugins/onMessage/*.php", "src/plugins/admin/*.php");
-$adminPlugins = array("setNickname","updateBot","holder");
-$logger->addInfo("Loading in chat plugins");
-$plugins = array();
-foreach ($pluginDirs as $dir) {
-    foreach (glob($dir) as $plugin) {
-		var_dump($plugin);
-		var_dump($adminPlugins);
-        // Only load the plugins we want to load, according to the config
-        if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"]) && !in_array(str_replace(".php", "", basename($plugin)), $adminPlugins)) {
-            continue;
-        }
+    $pluginDirs = array("src/plugins/onMessage/*.php", "src/plugins/admin/*.php");
+    $adminPlugins = array("setNickname", "updateBot", "holder");
+    $logger->addInfo("Loading in chat plugins");
+    $plugins = array();
+    foreach ($pluginDirs as $dir) {
+        foreach (glob($dir) as $plugin) {
+            var_dump($plugin);
+            var_dump($adminPlugins);
+            // Only load the plugins we want to load, according to the config
+            if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"]) && !in_array(str_replace(".php", "", basename($plugin)), $adminPlugins)) {
+                continue;
+            }
 
-        require_once($plugin);
-        $fileName = str_replace(".php", "", basename($plugin));
-        $p = new $fileName();
-        $p->init($config, $discord, $logger);
-        $plugins[] = $p;
+            require_once($plugin);
+            $fileName = str_replace(".php", "", basename($plugin));
+            $p = new $fileName();
+            $p->init($config, $discord, $logger);
+            $plugins[] = $p;
+        }
     }
-}
 
 // Number of chat plugins loaded
-$logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
+    $logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
+}
 
 $discord->on(
     'ready',
