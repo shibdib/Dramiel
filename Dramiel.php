@@ -96,13 +96,16 @@ foreach ($pluginDirs as $dir) {
 $logger->info("Loaded: " . count($pluginsT) . " background plugins");
 
 // Load chat plugins
-$pluginDirs = array("src/plugins/onMessage/*.php");
+$pluginDirs = array("src/plugins/onMessage/*.php", "src/plugins/admin/*.php");
+$adminPlugins = array("setNickname","updateBot");
 $logger->addInfo("Loading in chat plugins");
 $plugins = array();
 foreach ($pluginDirs as $dir) {
     foreach (glob($dir) as $plugin) {
+		var_dump($plugin);
+		var_dump($adminPlugins);
         // Only load the plugins we want to load, according to the config
-        if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"])) {
+        if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"]) && in_array(str_replace(".php", "", basename($plugin), $adminPlugins))) {
             continue;
         }
 
@@ -152,7 +155,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function($message, $discord, $newdiscord) use ($logger, $config, $plugins) {
+            function($message, $discord, $newdiscord) use ($logger, $config, $plugins, $adminPlugins) {
 
                 $msgData = array(
                     "message" => array(
