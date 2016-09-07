@@ -34,10 +34,11 @@ function updateCCPData($logger) {
     $lastSeenMD5 = getPermCache("CCPDataMD5");
     $lastChecked = getPermCache("CCPDataLastAttempt");
     $completed = getPermCache("CCPDataCompleted");
+    $dbSize = filesize("{$databaseDir}ccpData.sqlite");
     if (!isset($lastChecked)) {
         $lastChecked = 1;
     }
-    if ($lastSeenMD5 !== $md5 && time() > $lastChecked || $completed !== "1") {
+    if ($lastSeenMD5 !== $md5 && time() > $lastChecked || $completed !== "1" || $dbSize < 10000) {
         try {
             $checkNext = time() + 79200;
             setPermCache("CCPDataLastAttempt", $checkNext);
