@@ -111,7 +111,7 @@ class authCheck
         $allyID = $this->config["plugins"]["auth"]["allianceID"];
         $corpID = $this->config["plugins"]["auth"]["corpID"];
         $exempt = $this->config["plugins"]["auth"]["exempt"];
-        if(is_null($exempt)){
+        if (is_null($exempt)) {
             $exempt = "0";
         }
         $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
@@ -130,10 +130,10 @@ class authCheck
             $sql = "SELECT * FROM authUsers WHERE discordID='$id' AND active='yes'";
 
             $result = $conn->query($sql);
-            if($result->num_rows == 0) {
+            if ($result->num_rows == 0) {
                 foreach ($roles as $role) {
-                    if(!isset($role->name)){
-                        if($id != $botID && !in_array($role->name, $exempt, true)){
+                    if (!isset($role->name)) {
+                        if ($id != $botID && !in_array($role->name, $exempt, true)) {
                             $member->removeRole($role);
                             $guild->members->save($member);
                             // Send the info to the channel
@@ -169,7 +169,7 @@ class authCheck
                 $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                 $xml = makeApiRequest($url);
                 // Stop the process if the api is throwing an error
-                if (is_null($xml)){
+                if (is_null($xml)) {
                     $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
                     return null;
                 }

@@ -66,8 +66,8 @@ function downloadLargeData($url, $downloadPath)
     $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     $userAgent = "Mozilla/5.0 (en-us;)";
     try {
-        $opts = array (
-            'http' => array (
+        $opts = array(
+            'http' => array(
                 'method' => "GET",
                 'user_agent' => $userAgent,
             )
