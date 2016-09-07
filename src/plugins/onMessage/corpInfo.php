@@ -79,7 +79,7 @@ class corpInfo
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
             if (empty($data)) {
-                return $this->message->reply("**Error:** no results was returned.");
+                return $this->message->reply("**Error:** Unable to find any group matching that name.");
             }
             $corpID = null;
             if (isset($xml->result->rowset->row)) {
@@ -89,15 +89,15 @@ class corpInfo
             }
 
             if (empty($corpID)) {
-                return $this->message->reply("**Error:** no data available");
+                return $this->message->reply("**Error:** Unable to find any group matching that name.");
             }
 
             // Get stats
             $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($corpID) . "/";
             $stats = json_decode(downloadData($statsURL), true);
 
-            if (empty($stats)) {
-                return $this->message->reply("**Error:** no data available");
+            if (is_null(@$stats["corporationActiveArea"])) {
+                return $this->message->reply("**Error:** No data available for that group.");
             }
 
             $corporationName = @$stats["corporationName"];
@@ -113,22 +113,20 @@ class corpInfo
             $memberCount = @$stats["memberArrayCount"];
             $superCaps = @count($stats["superCaps"]);
             $ePeenSize = @$stats["ePeenSize"];
-            $url = "https://beta.eve-kill.net/corporation/" . @$stats["corporationID"] . "/";
+            $url = "https://zkillboard.com/corporation/" . @$stats["corporationID"] . "/";
 
 
-            $msg = "```corporationName: {$corporationName}
-allianceName: {$allianceName}
-factionName: {$factionName}
-ceoName: {$ceoName}
-homeStation: {$homeStation}
-taxRate: {$taxRate}
-corporationActiveArea: {$corporationActiveArea}
-allianceActiveArea: {$allianceActiveArea}
-lifeTimeKills: {$lifeTimeKills}
-lifeTimeLosses: {$lifeTimeLosses}
-memberCount: {$memberCount}
-superCaps: {$superCaps}
-ePeenSize: {$ePeenSize}
+            $msg = "```Corp Name: {$corporationName}
+Alliance Name: {$allianceName}
+Faction: {$factionName}
+CEO: {$ceoName}
+Home Station: {$homeStation}
+Tax Rate: {$taxRate}
+Corp Active Region: {$corporationActiveArea}
+Alliance Active Region: {$allianceActiveArea}
+Member Count: {$memberCount}
+Known Super Caps: {$superCaps}
+ePeen Size: {$ePeenSize}
 ```
 For more info, visit: $url";
 
