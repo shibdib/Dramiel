@@ -121,7 +121,7 @@ Alliance Name: {$allianceName}
 Faction: {$factionName}
 CEO: {$ceoName}
 Home Station: {$homeStation}
-Tax Rate: {$taxRate}
+Tax Rate: {$taxRate}%
 Corp Active Region: {$corporationActiveArea}
 Alliance Active Region: {$allianceActiveArea}
 Member Count: {$memberCount}
