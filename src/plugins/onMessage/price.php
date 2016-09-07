@@ -50,6 +50,8 @@ class price
      * @var array
      */
     var $triggers = array();
+    public $excludeChannel;
+    public $message;
 
     /**
      * @param $config

@@ -45,6 +45,7 @@ class siphons {
      * @var
      */
     var $toDiscordChannel;
+    public $guild;
     protected $keyID;
     protected $vCode;
     protected $prefix;
@@ -102,7 +103,7 @@ class siphons {
                         if ($silo->attributes()->quantity != 0) {
                             //Check for a multiple of 50
                             if ($silo->attributes()->quantity % 50 != 0) {
-                                $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $silo->attributes()->typeID), "ccp");
+                                $gooType = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $silo->attributes()->typeID), "ccp");
                                 $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
                                 $msg = "{$this->prefix}";
                                 $msg .= "**POSSIBLE SIPHON**\n";
@@ -127,7 +128,7 @@ class siphons {
                         if ($coupling->attributes()->quantity != 0) {
                             //Check for a multiple of 50
                             if ($coupling->attributes()->quantity % 50 != 0) {
-                                $gooType = $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $coupling->attributes()->typeID), "ccp");
+                                $gooType = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $coupling->attributes()->typeID), "ccp");
                                 $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
                                 $msg = "{$this->prefix}";
                                 $msg .= "**POSSIBLE SIPHON**\n";

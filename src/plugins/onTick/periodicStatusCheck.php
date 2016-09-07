@@ -45,6 +45,7 @@ class periodicStatusCheck {
      * @var
      */
     var $toDiscordChannel;
+    public $guild;
     protected $keyID;
     protected $vCode;
     protected $prefix;
@@ -111,6 +112,11 @@ class periodicStatusCheck {
             $apiStatus = $info->serverOpen;
             if ($apiStatus == "True") {$apiStatus = "online"; } else {$apiStatus = "offline"; }
         }
+
+        if (!isset($apiStatus)) { // Make sure it's always set.
+            $apiStatus = "offline";
+        }
+
         if ($crestStatus != "online") { $crestHolder = "offline"; } else { $crestHolder = "online"; }
         if ($crestHolder != $apiStatus) {
             $this->logger->addInfo("TQ Status check canceled, CREST and API different.");

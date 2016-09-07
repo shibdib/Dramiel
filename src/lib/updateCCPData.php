@@ -59,7 +59,6 @@ function updateCCPData($logger) {
             $logger->addInfo("Writing bz2 file contents into .sqlite file");
             file_put_contents("{$databaseDir}/ccpData.sqlite", $data);
             $logger->addInfo("Flushing bz2 data from memory");
-            $data = null;
             $logger->addInfo("Memory in use: " . memory_get_usage() / 1024 / 1024 . "MB");
             gc_collect_cycles(); // Collect garbage
             $logger->addInfo("Memory in use after garbage collection: " . memory_get_usage() / 1024 / 1024 . "MB");

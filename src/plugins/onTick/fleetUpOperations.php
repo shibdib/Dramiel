@@ -48,6 +48,10 @@ class fleetUpOperations {
      * @var
      */
     var $toDiscordChannel;
+    public $userID;
+    public $groupID;
+    public $apiKey;
+    public $guild;
     protected $keyID;
     protected $vCode;
     protected $prefix;

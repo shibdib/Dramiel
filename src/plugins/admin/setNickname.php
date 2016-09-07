@@ -23,6 +23,8 @@
  * SOFTWARE.
  */
 
+namespace Nickname;
+
 /**
  * @property  message
  */
@@ -40,6 +42,8 @@ class setNickname
      * @var
      */
     var $logger;
+
+    public $message;
 
     /**
      * @param $config
@@ -98,6 +102,7 @@ class setNickname
             $this->message->reply($msg);
             return null;
         }
+        return null;
     }
 
     /**
@@ -116,7 +121,7 @@ class setNickname
      * @param $msgData
      * @param $message
      */
-    function onMessageAdmin($msgData, $message)
+    function onMessageAdmin()
     {
     }
 

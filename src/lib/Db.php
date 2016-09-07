@@ -78,7 +78,6 @@ function dbQueryField($query, $field, $params = array(), $db = null)
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
-    $pdo = null;
 
     if (sizeof($result) == 0) {
         return null;
@@ -106,7 +105,6 @@ function dbQueryRow($query, $params = array(), $db = null)
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
-    $pdo = null;
 
     if (sizeof($result) >= 1) {
         return $result[0];
@@ -132,7 +130,6 @@ function dbQuery($query, $params = array(), $db = null)
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
-    $pdo = null;
 
     return $result;
 }

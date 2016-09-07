@@ -40,6 +40,7 @@ class updateBot
      * @var
      */
     var $logger;
+    public $message;
 
     /**
      * @param $config
@@ -86,8 +87,8 @@ class updateBot
                     $update = updateBot($this->logger);
                     if ($update == "1"){
                         $msg = "Bot successfully updated, restarting.";
-                        $this->logger->addInfo("Bot successfully updated, restarting.");
                         $this->message->reply($msg);
+                        $this->logger->addInfo("Bot successfully updated, restarting.");
                         sleep(5);
                         die();
                     }
@@ -102,6 +103,7 @@ class updateBot
 
 
         }
+        return null;
     }
 
     /**
@@ -120,7 +122,7 @@ class updateBot
      * @param $msgData
      * @param $message
      */
-    function onMessageAdmin($msgData, $message)
+    function onMessageAdmin()
     {
     }
 

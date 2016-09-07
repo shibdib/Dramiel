@@ -40,6 +40,7 @@ class eveStatus
      * @var
      */
     var $logger;
+    public $message;
 
     /**
      * @param $config
@@ -97,10 +98,7 @@ class eveStatus
         );
     }
 
-    /**
-     * @param $msgData
-     */
-    function onMessageAdmin($msgData)
+    function onMessageAdmin()
     {
     }
 

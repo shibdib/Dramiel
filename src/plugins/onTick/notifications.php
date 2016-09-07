@@ -81,6 +81,13 @@ class notifications
      * @var
      */
     var $alliApi;
+    public $fuelChannel;
+    public $fuelSkip;
+    public $keyID;
+    public $vCode;
+    public $characterID;
+    public $guild;
+
     /**
      * @param $config
      * @param $discord
@@ -444,8 +451,6 @@ class notifications
                     if ($msg == "skip") {
                         return null;
                     }
-                    if ($msg == "") {
-                    }
                     $this->logger->addInfo("Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
                     $guild = $discord->guilds->get('id', $this->guild);
                     $channel = $guild->channels->get('id', $channelID);
@@ -496,6 +501,11 @@ class notifications
         foreach ($xml->result->rowset->row as $entity) {
             $name = $entity->attributes()->name;
         }
+
+        if (!isset($name)) { // Make sure it's always set.
+            $name = "Unknown";
+        }
+
         return $name;
     }
 

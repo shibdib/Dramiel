@@ -61,6 +61,7 @@ class getKillmails
     public $allianceID;
     public $lossMail;
     public $spamAmount;
+    public $guild;
 
     /**
      * @param $config
@@ -139,6 +140,11 @@ class getKillmails
             $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
         }
 
+        if (!isset($url)) { // Make sure it's always set.
+            $this->logger->addInfo("ERROR - Ensure your config file is setup correctly for killmails.");
+            return null;
+        }
+
         $xml = simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA);
         $i = 0;
         $limit = $this->spamAmount;
@@ -163,6 +169,11 @@ class getKillmails
                     } elseif ($victimName == "") {
                         $msg = "**{$killTime}**\n\n**{$shipName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
+
+                    if (!isset($msg)) { // Make sure it's always set.
+                        return null;
+                    }
+
                     $channelID = $this->kmChannel;
                     $guild = $discord->guilds->get('id', $this->guild);
                     $channel = $guild->channels->get('id', $channelID);
@@ -183,9 +194,6 @@ class getKillmails
         return null;
     }
 
-    /**
-     * @param $msgData
-     */
     function onMessage($msgData)
     {
     }

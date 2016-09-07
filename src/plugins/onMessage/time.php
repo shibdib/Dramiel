@@ -41,6 +41,7 @@ class time
      * @var
      */
     var $logger;
+    public $message;
 
     /**
      * @param $config

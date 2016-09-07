@@ -42,6 +42,7 @@ class charInfo
      * @var
      */
     var $logger;
+    public $message;
 
     /**
      * @param $config
@@ -159,10 +160,7 @@ For more info, visit: $url";
         );
     }
 
-    /**
-     * @param $msgData
-     */
-    function onMessageAdmin($msgData)
+    function onMessageAdmin()
     {
     }
 

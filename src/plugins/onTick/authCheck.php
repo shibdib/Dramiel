@@ -123,7 +123,6 @@ class authCheck
         //Remove members who have roles but never authed
         $guild = $discord->guilds->get('id', $id);
         foreach($guild->members as $member) {
-            $notifier = null;
             $id = $member->id;
             $username = $member->username;
             $roles = $member->roles;
@@ -189,6 +188,14 @@ class authCheck
                                 $corporationName = $corporation->attributes()->name;
                             }
 
+                            if (!isset($corporationName)) { // Make sure it's always set.
+                                $corporationName = "Unknown";
+                            }
+
+                            if (!isset($role)) { // Make sure it's always set.
+                                $role = "Unknown";
+                            }
+
                             // Send the info to the channel
                             $msg = "{$eveName} roles have been removed, user is now a member of **{$corporationName}**.";
                             $channelID = $toDiscordChannel;
@@ -218,10 +225,7 @@ class authCheck
         return null;
     }
 
-    /**
-     * @param $msgData
-     */
-    function onMessage($msgData)
+    function onMessage()
     {
     }
 }

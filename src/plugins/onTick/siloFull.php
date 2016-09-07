@@ -46,6 +46,8 @@ class siloFull {
      * @var
      */
     var $toDiscordChannel;
+    public $guild;
+    public $towerRace;
     protected $keyID;
     protected $vCode;
     protected $prefix;
@@ -638,13 +640,6 @@ class siloFull {
         $this->logger->addInfo("Silo Check Complete Next Check At {$cacheTimer}");
         return null;
 
-
-        /**
-         *
-         */
-        function onMessage()
-        {
-        }
         /**
          * @return array
          */

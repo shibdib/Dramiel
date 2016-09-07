@@ -73,6 +73,10 @@ class evemails {
      * @var
      */
     var $keys;
+    public $keyID;
+    public $vCode;
+    public $guild;
+    public $characterID;
 
     /**
      * @param $config
@@ -120,7 +124,6 @@ class evemails {
 
     function checkMails($keyID, $vCode, $characterID, $discord)
     {
-        $updateMaxID = false;
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
         $data = json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)), true);
         $data = $data["result"]["rowset"]["row"];

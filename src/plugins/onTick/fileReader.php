@@ -54,6 +54,7 @@ class fileReader
      * @var
      */
     var $logger;
+    public $guild;
 
     /**
      * @param $config
@@ -117,6 +118,10 @@ class fileReader
                         $channelID = $chanConfig["channelID"];
                     }
                 }
+
+                if (!isset($channelID)) { // Make sure it's always set.
+                    $channelID = null;
+                }
                 $begin = mb_substr($message, 0, 15);
                 if (stristr($begin, "#")) {
                     $message = "skip";
@@ -135,17 +140,12 @@ class fileReader
             $h = fopen($this->db, "w+");
             fclose($h);
             chmod($this->db, 0777);
-            $data = null;
-            $h = null;
         }
         clearstatcache();
         $this->lastCheck = time();
     }
 
-    /**
-     * @param $msgData
-     */
-    function onMessage($msgData)
+    function onMessage()
     {
     }
 }

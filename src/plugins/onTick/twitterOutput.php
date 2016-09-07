@@ -63,6 +63,7 @@ class twitterOutput
      * @var
      */
     var $maxID;
+    public $guild;
 
     /**
      * @param $config
@@ -148,11 +149,8 @@ class twitterOutput
     {
         return file_get_contents("http://is.gd/api.php?longurl=" . $url);
     }
-
-    /**
-     * @param $msgData
-     */
-    function onMessage($msgData)
+    
+    function onMessage()
     {
     }
 

@@ -40,6 +40,7 @@ class help
      * @var
      */
     var $logger;
+    public $message;
 
     /**
      * @param $config
