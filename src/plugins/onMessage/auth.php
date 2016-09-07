@@ -155,7 +155,7 @@ class auth
                                 $guild->members->save($member);
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                                $this->message->reply("**Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
+                                $this->message->reply(":white_check_mark: **Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
                                 $this->logger->addInfo("User authed and added to corp group " . $eveName);
                                 return null;
                             }
