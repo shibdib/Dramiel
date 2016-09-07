@@ -461,6 +461,7 @@ class notifications
         } catch (Exception $e) {
             $this->logger->addInfo("Notification Error: " . $e->getMessage());
         }
+        return null;
     }
     /**
      * @param $keyID
