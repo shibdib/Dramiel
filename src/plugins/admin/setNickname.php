@@ -23,8 +23,6 @@
  * SOFTWARE.
  */
 
-namespace Nickname;
-
 /**
  * @property  message
  */

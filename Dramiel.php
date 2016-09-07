@@ -132,9 +132,6 @@ $discord->on(
         //
         // We will echo to the console that the WebSocket is ready.
         $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
-        //$game = new Game(array('name' => $config["bot"]["game"], 'url' => null, 'type' => null), true);
-        //$discord->updatePresence($game, false);
-        // $ws->setNickname($config["bot"]["name"]); //not in yet
 
         // Database check
         $discord->loop->addPeriodicTimer(86400, function() use ($logger) {

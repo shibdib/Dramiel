@@ -149,7 +149,7 @@ class twitterOutput
     {
         return file_get_contents("http://is.gd/api.php?longurl=" . $url);
     }
-    
+
     function onMessage()
     {
     }
