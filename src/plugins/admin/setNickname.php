@@ -69,36 +69,33 @@ class setNickname
         $this->message = $message;
 
         $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
-			
-			//Admin Check
-			$botID = $this->discord->id;
-		$userID = $msgData["message"]["fromID"];
-        $adminRoles = $this->config["bot"]["adminRoles"];
-        $id = $this->config["bot"]["guild"];
-        $guild = $this->discord->guilds->get('id', $id);
-		$member = $guild->members->get("id", $userID);
-		$roles = $member->roles;
-		foreach ($roles as $role) {
-                    if(!isset($role->name)){
-                        if(!in_array($role->name, $adminRoles, true)){
-                            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
-							$this->message->reply($msg);
-							return null;
-                        }
-                    }
+
+            //Admin Check
+            $botID = $this->discord->id;
+            $userID = $msgData["message"]["fromID"];
+            $adminRoles = $this->config["bot"]["adminRoles"];
+            $id = $this->config["bot"]["guild"];
+            $guild = $this->discord->guilds->get('id', $id);
+            $member = $guild->members->get("id", $userID);
+            $roles = $member->roles;
+            foreach ($roles as $role) {
+                if(in_array($role->name, $adminRoles, true)){
+                    $member = $guild->members->get("id", $botID);
+                    $nick = (string)$data["messageString"];
+                    $member->setNickname($nick);
+
+                    $msg = "Bot nickname changed to **{$nick}** by {$msgData["message"]["from"]}";
+                    $this->logger->addInfo("Bot nickname changed to {$nick} by {$msgData["message"]["from"]}");
+                    $this->message->reply($msg);
+                    return null;
                 }
-
-            $member = $guild->members->get("id", $botID);
-            $nick = (string)$data["messageString"];
-            $member->setNickname($nick);
-
-            $msg = "Bot nickname changed to **{$nick}** by {$msgData["message"]["from"]}";
-            $this->logger->addInfo("Bot nickname changed to {$nick} by {$msgData["message"]["from"]}");
+            }
+            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
             $this->message->reply($msg);
+            return null;
         }
     }
 

@@ -73,33 +73,32 @@ class updateBot
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
-			
-			//Admin Check
-			$botID = $this->discord->id;
-		$userID = $msgData["message"]["fromID"];
-        $adminRoles = $this->config["bot"]["adminRoles"];
-        $id = $this->config["bot"]["guild"];
-        $guild = $this->discord->guilds->get('id', $id);
-		$member = $guild->members->get("id", $userID);
-		$roles = $member->roles;
-		foreach ($roles as $role) {
-                    if(!isset($role->name)){
-                        if(!in_array($role->name, $adminRoles, true)){
-                            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
-							$this->message->reply($msg);
-							return null;
-                        }
+
+            //Admin Check
+            $botID = $this->discord->id;
+            $userID = $msgData["message"]["fromID"];
+            $adminRoles = $this->config["bot"]["adminRoles"];
+            $id = $this->config["bot"]["guild"];
+            $guild = $this->discord->guilds->get('id', $id);
+            $member = $guild->members->get("id", $userID);
+            $roles = $member->roles;
+            foreach ($roles as $role) {
+                if(in_array($role->name, $adminRoles, true)){
+                    $update = updateBot($this->logger);
+                    if ($update == "1"){
+                        $msg = "Bot succesfully updated, restarting.";
+                        $this->logger->addInfo("Bot succesfully updated, restarting.");
+                        $this->message->reply($msg);
+                        sleep(5);
+                        die();
                     }
                 }
+            }
+            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
+            $this->message->reply($msg);
+            return null;
 
-            $update = updateBot($this->logger);
-			if ($update = "1"){
-				$msg = "Bot succesfully updated, restarting.";
-				$this->logger->addInfo("Bot succesfully updated, restarting.");
-				$this->message->reply($msg);
-				sleep(5);
-				die();
-			}
+
         }
     }
 
