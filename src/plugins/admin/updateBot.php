@@ -86,12 +86,15 @@ class updateBot
                 if(in_array($role->name, $adminRoles, true)){
                     $update = updateBot($this->logger);
                     if ($update == "1"){
-                        $msg = "Bot succesfully updated, restarting.";
-                        $this->logger->addInfo("Bot succesfully updated, restarting.");
+                        $msg = "Bot successfully updated, restarting.";
+                        $this->logger->addInfo("Bot successfully updated, restarting.");
                         $this->message->reply($msg);
                         sleep(5);
                         die();
                     }
+                    $msg = "Bot update failed, check logs for details.";
+                    $this->logger->addInfo("Bot update failed, check logs for details.");
+                    $this->message->reply($msg);
                 }
             }
             $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";

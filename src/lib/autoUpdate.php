@@ -32,9 +32,9 @@ function updateBot($logger)
 	$logger->addInfo("Updating Bot");
 	putenv("COMPOSER_HOME=/usr/local/bin/composer");
     $output = shell_exec('sh ' . dirname(__FILE__) . '/update.sh');
-	if ($output = "1"){
+	if ($output == "1"){
 		$logger->addInfo("Update Complete");
 		return "1";
 	}
-	
+	return "0";
 }
