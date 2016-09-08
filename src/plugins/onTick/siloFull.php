@@ -63,8 +63,8 @@ class siloFull {
         $this->logger = $logger;
         $this->guild = $config["bot"]["guild"];
         $this->toDiscordChannel = $config["plugins"]["siloFull"]["channelID"];
-        $this->keyID = $config["eve"]["apiKeys"]["corp1"]["keyID"];
-        $this->vCode = $config["eve"]["apiKeys"]["corp1"]["vCode"];
+        $this->keyID = $config["plugins"]["siloFull"]["keyID"];
+        $this->vCode = $config["plugins"]["siloFull"]["vCode"];
         $this->towerRace = $config["plugins"]["siloFull"]["towerRace"];
         $lastCheck = getPermCache("siloLastChecked{$this->keyID}");
         if ($lastCheck == NULL) {
