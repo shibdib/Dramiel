@@ -35,24 +35,21 @@ $config["bot"] = array(
     "silentMode" => "false"//set this to true if you want to disable all the chat commands
 );
 
-$config["database"] = array(
+$config["database"] = array( // Only required for AUTH
     "host" => "localhost",
     "user" => "",
     "pass" => "",
     "database" => "discord"
 );
 
-// Twitter
-$config["twitter"] = array(
-    "consumerKey" => "",
-    "consumerSecret" => "",
-    "accessToken" => "",
-    "accessTokenSecret" => ""
-);
-
 $config["eve"] = array(
     "apiKeys" => array(
-        "user1" => array(
+        "user1" => array( // Put a character API here if you plan on retrieving mails or notifications
+            "keyID" => "",
+            "vCode" => "",
+            "characterID" => 0
+        ),
+        "corp1" => array( // Put a corp API here if you plan on getting silo information or using siphon detection
             "keyID" => "",
             "vCode" => "",
             "characterID" => 0
@@ -116,10 +113,18 @@ $config["plugins"] = array(
     ),
     // what channel for eve notifications/also the channel for tq status alerts
     "notifications" => array(
-        "channelID" => 0
+        "channelID" => 0,
+        "fuel" => array( // Settings specific to tower fuel notifications
+            "channelID" => null, //fuel alerts post to this channel
+            "skip" => "false", //if you want fuel notifications to be skipped change this to true
+        )
     ),
     //Spam twitter messages from people you follow to this channel
     "twitterOutput" => array(
+        "consumerKey" => "",
+        "consumerSecret" => "",
+        "accessToken" => "",
+        "accessTokenSecret" => "",
         "channelID" => 0 // twitter output channel
     ),
     //Pricecheck tool
@@ -140,29 +145,20 @@ $config["plugins"] = array(
     //Killmail posting
     "getKillmails" => array(
         "channel" => 0, //killmails post to this channel
-        "corpID" => 0, //corpid for killmails
+        "corpID" => 0, //corpid for killmails (Leave as 0 if using it for a alliance)
         "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
         "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.
-        "spamAmount" => 10, //Max amount of kills the bot will post every 10 minutes. Default is 15 and won't get the bot kicked for spamming.
+        "spamAmount" => 10, //Max amount of kills the bot will post every 10 minutes.
         "startMail" => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
     ),
     //Siphon detection works by looking for multiples of 100 inside standard silos. So if you take out a weird number it will trigger false positives.
     "siphons" => array(
         "channelID" => 0, //killmails post to this channel
-        "keyID" => "", //corpid for killmails
-        "vCode" => "", //allianceid for killmails (Leave as 0 if using it for a corp)
         "prefix" => "", //put @everyone if you'd like everyone to be pinged when a siphon is detected
-    ),
-    //If you'd like low fuel warnings to go to a different channel set this here. Otherwise leave it as null
-    "fuel" => array(
-        "channelID" => null, //fuel alerts post to this channel
-        "skip" => "false", //if you want fuel notifications to be skipped change this to true
     ),
     //Reports silos nearing max capacity.
     "siloFull" => array(
         "channelID" => 0, //silo alerts post to this channel
-        "keyID" => "", //corp api keyID (Must have assets)
-        "vCode" => "", //corp api vCode
         "towerRace" => 0, //The race of your moon goo towers (to determine silo bonus.) Amarr/Amarr Faction Variants = 1, Gal/Gal Faction Variants = 2, Everyone else = 0
     ),
     //Fleet up linking will share operations to a specific channel and then reping them when it gets within 30 minutes of form up
@@ -172,4 +168,13 @@ $config["plugins"] = array(
         "groupID" => 0, //fleet up group id
         "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
     ),
+
+
+
+
+    // DO NOT EDIT ANYTHING BELOW
+    $config["dramiel"] = array(
+        "version" => "1.0",
+        "config" => "1.0",
+    )
 );

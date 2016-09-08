@@ -76,7 +76,7 @@ class twitterOutput
         $this->discord = $discord;
         $this->logger = $logger;
         $this->guild = $config["bot"]["guild"];
-        $this->twitter = new Twitter($config["twitter"]["consumerKey"], $config["twitter"]["consumerSecret"], $config["twitter"]["accessToken"], $config["twitter"]["accessTokenSecret"]);
+        $this->twitter = new Twitter($config["plugins"]["twitterOutput"]["consumerKey"], $config["plugins"]["twitterOutput"]["consumerSecret"], $config["plugins"]["twitterOutput"]["accessToken"], $config["plugins"]["twitterOutput"]["accessTokenSecret"]);
         $this->lastCheck = time();
         $this->maxID = 0;
         $this->channelID = $config["plugins"]["twitterOutput"]["channelID"]; // outputs to the news channel on the 4M server

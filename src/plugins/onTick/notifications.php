@@ -99,8 +99,8 @@ class notifications
         $this->discord = $discord;
         $this->logger = $logger;
         $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
-        $this->fuelChannel = $config["plugins"]["fuel"]["channelID"];
-        $this->fuelSkip = $config["plugins"]["fuel"]["skip"];
+        $this->fuelChannel = $config["plugins"]["notifications"]["fuel"]["channelID"];
+        $this->fuelSkip = $config["plugins"]["notifications"]["fuel"]["skip"];
         $this->newestNotificationID = getPermCache("newestNotificationID");
         $this->maxID = 0;
         $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];

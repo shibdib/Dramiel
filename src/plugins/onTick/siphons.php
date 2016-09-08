@@ -62,9 +62,9 @@ class siphons {
         $this->logger = $logger;
         $this->guild = $config["bot"]["guild"];
         $this->toDiscordChannel = $config["plugins"]["siphons"]["channelID"];
-        $this->keyID = $config["plugins"]["siphons"]["keyID"];
-        $this->vCode = $config["plugins"]["siphons"]["vCode"];
-        $this->prefix = $config["plugins"]["siphons"]["prefix"];
+        $this->keyID = $config["eve"]["apiKeys"]["corp1"]["keyID"];
+        $this->vCode = $config["eve"]["apiKeys"]["corp1"]["vCode"];
+        $this->prefix = $config["eve"]["apiKeys"]["corp1"]["prefix"];
         $lastCheck = getPermCache("siphonLastChecked{$this->keyID}");
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run
