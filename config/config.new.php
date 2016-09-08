@@ -161,6 +161,13 @@ $config["plugins"] = array(
         "channelID" => 0, //silo alerts post to this channel
         "towerRace" => 0, //The race of your moon goo towers (to determine silo bonus.) Amarr/Amarr Faction Variants = 1, Gal/Gal Faction Variants = 2, Everyone else = 0
     ),
+    //Fleet up linking will share operations to a specific channel and then reping them when it gets within 30 minutes of form up
+    "fleetUp" => array(
+        "channelID" => 0, //channel id to ping about operations
+        "userID" => 0, //fleet up user id
+        "groupID" => 0, //fleet up group id
+        "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
+    ),
 
 
 
