@@ -23,7 +23,6 @@
  * SOFTWARE.
  */
 
-use discord\discord;
 
 /**
  * Class fileAuthCheck
@@ -120,8 +119,18 @@ class authCheck
         //get bot ID so we don't remove out own roles
         $botID = $this->discord->id;
 
-        //Remove members who have roles but never authed
+        //Get guild object
         $guild = $discord->guilds->get('id', $id);
+
+        //Check to make sure guildID is set correctly
+        if (is_null($guild)){
+            $this->logger->addError("Config Error: Ensure the guild entry in the config is the guildID (aka serverID) for the main server that the bot is in.");
+            $nextCheck = time() + 7200;
+            setPermCache("authLastChecked", $nextCheck);
+            return null;
+        }
+
+        //Remove members who have roles but never authed
         foreach($guild->members as $member) {
             $id = $member->id;
             $username = $member->username;
@@ -182,7 +191,7 @@ class authCheck
                                 $guild->members->save($member);
                             }
 
-                            $statsURL = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=" . urlencode($character->attributes()->corporationID) . "/";
+                            $statsURL = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=" . urlencode($character->attributes()->corporationID);
                             $stats = makeApiRequest($statsURL);
                             foreach ($stats->result->rowset->row as $corporation) {
                                 $corporationName = $corporation->attributes()->name;
@@ -197,7 +206,7 @@ class authCheck
                             }
 
                             // Send the info to the channel
-                            $msg = "{$eveName} roles have been removed, user is now a member of **{$corporationName}**.";
+                            $msg = "{$eveName}'s roles have been removed, user is now a member of **{$corporationName}**.";
                             $channelID = $toDiscordChannel;
                             $channel = $guild->channels->get('id', $channelID);
                             $channel->sendMessage($msg, false);
