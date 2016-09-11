@@ -185,8 +185,7 @@ class notifications
                         case 5: // War Declared
                             $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
                             $aggAllianceName = $this->apiData($aggAllianceID);
-                            $delayHours = trim(explode(": ", $notificationString[3])[1]);
-                            $msg = "@everyone | War declared by {$aggAllianceName}. Fighting begins in roughly {$delayHours} hours.";
+                            $msg = "@everyone | War declared by {$aggAllianceName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 7: // War Declared corp
                             $aggCorpID = trim(explode(": ", $notificationString[2])[1]);
@@ -363,7 +362,7 @@ class notifications
                             $typeID = trim(explode(": ", $notificationString[1])[1]);
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
-                            $msg = "@everyone | Entosis has started in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
+                            $msg = "Entosis has started in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 148: // Entosis enabled a module ??????
                             $systemID = trim(explode(": ", $notificationString[0])[1]);
