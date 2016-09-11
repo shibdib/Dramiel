@@ -103,8 +103,6 @@ if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode
     $plugins = array();
     foreach ($pluginDirs as $dir) {
         foreach (glob($dir) as $plugin) {
-            var_dump($plugin);
-            var_dump($adminPlugins);
             // Only load the plugins we want to load, according to the config
             if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"]) && !in_array(str_replace(".php", "", basename($plugin)), $adminPlugins)) {
                 continue;
