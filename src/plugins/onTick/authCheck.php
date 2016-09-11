@@ -182,7 +182,7 @@ class authCheck
                                 $guild->members->save($member);
                             }
 
-                            $statsURL = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=" . urlencode($character->attributes()->corporationID) . "/";
+                            $statsURL = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=" . urlencode($character->attributes()->corporationID);
                             $stats = makeApiRequest($statsURL);
                             foreach ($stats->result->rowset->row as $corporation) {
                                 $corporationName = $corporation->attributes()->name;
@@ -197,7 +197,7 @@ class authCheck
                             }
 
                             // Send the info to the channel
-                            $msg = "{$eveName} roles have been removed, user is now a member of **{$corporationName}**.";
+                            $msg = "{$eveName}'s roles have been removed, user is now a member of **{$corporationName}**.";
                             $channelID = $toDiscordChannel;
                             $channel = $guild->channels->get('id', $channelID);
                             $channel->sendMessage($msg, false);
