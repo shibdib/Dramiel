@@ -246,6 +246,9 @@ class notifications
                         case 52: // clone revoked
                             $msg = "skip";
                             break;
+                        case 54: // insurance
+                            $msg = "skip";
+                            break;
                         case 57: // jump clone destruction
                             $msg = "skip";
                             break;
