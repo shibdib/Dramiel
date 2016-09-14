@@ -262,19 +262,16 @@ class notifications
                             $aggCorpName = $this->apiData($aggCorpID);
                             $aggID = trim(explode(": ", $notificationString[2])[1]);
                             $aggCharacterName = $this->apiData($aggID);
-                            $armorValue = trim(explode(": ", $notificationString[3])[1]);
-                            $hullValue = trim(explode(": ", $notificationString[4])[1]);
                             $moonID = trim(explode(": ", $notificationString[5])[1]);
                             $moonName = dbQueryField("SELECT itemName FROM mapAllCelestials WHERE itemID = :id",
                                 "itemName", array(":id" => $moonID), "ccp");
-                            $shieldValue = trim(explode(": ", $notificationString[6])[1]);
                             $solarSystemID = trim(explode(": ", $notificationString[7])[1]);
                             $typeID = trim(explode(": ", $notificationString[8])[1]);
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
                             $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
                                 "solarSystemName", array(":id" => $solarSystemID), "ccp");
-                            $msg = "{$typeName} under attack in **{$systemName} - {$moonName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Status: Hull: {$hullValue}, Armor: {$armorValue}, Shield: {$shieldValue}";
+                            $msg = "**{$typeName}** under attack in **{$systemName} - {$moonName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}).";
                             break;
                         case 76: // Tower resource alert
                             $moonID = trim(explode(": ", $notificationString[2])[1]);
