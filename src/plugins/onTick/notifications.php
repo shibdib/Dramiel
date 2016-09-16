@@ -228,17 +228,15 @@ class notifications
                             $msg = "skip";
                             break;
                         case 41: // System lost
-                            $systemID = trim(explode(": ", $notificationString[2])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[2])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $allianceID = trim(explode(": ", $notificationString[0])[1]);
                             $allianceName = $this->apiData($allianceID);
                             $msg = "{$allianceName} has lost control of **{$systemName}**";
                             break;
                         case 43: // System captured
-                            $systemID = trim(explode(": ", $notificationString[2])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[2])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $allianceID = trim(explode(": ", $notificationString[0])[1]);
                             $allianceName = $this->apiData($allianceID);
                             $msg = "{$allianceName} now controls **{$systemName}**";
@@ -263,23 +261,19 @@ class notifications
                             $aggID = trim(explode(": ", $notificationString[2])[1]);
                             $aggCharacterName = $this->apiData($aggID);
                             $moonID = trim(explode(": ", $notificationString[5])[1]);
-                            $moonName = dbQueryField("SELECT itemName FROM mapAllCelestials WHERE itemID = :id",
-                                "itemName", array(":id" => $moonID), "ccp");
+                            $moonName = $this->apiData($moonID);
                             $solarSystemID = trim(explode(": ", $notificationString[7])[1]);
                             $typeID = trim(explode(": ", $notificationString[8])[1]);
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $solarSystemID), "ccp");
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "**{$typeName}** under attack in **{$systemName} - {$moonName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}).";
                             break;
                         case 76: // Tower resource alert
                             $moonID = trim(explode(": ", $notificationString[2])[1]);
-                            $moonName = dbQueryField("SELECT itemName FROM mapAllCelestials WHERE itemID = :id",
-                                "itemName", array(":id" => $moonID), "ccp");
+                            $moonName = $this->apiData($moonID);
                             $solarSystemID = trim(explode(": ", $notificationString[3])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $solarSystemID), "ccp");
+                            $systemName = $this->apiData($solarSystemID);
                             $blocksRemaining = trim(explode(": ", $notificationString[6])[1]);
                             $typeID = trim(explode(": ", $notificationString[7])[1]);
                             $channelID = $this->fuelChannel;
@@ -302,8 +296,7 @@ class notifications
                             $hullValue = trim(explode(": ", $notificationString[4])[1]);
                             $shieldValue = trim(explode(": ", $notificationString[5])[1]);
                             $solarSystemID = trim(explode(": ", $notificationString[6])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $solarSystemID), "ccp");
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "IHUB under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Status: Hull: {$hullValue}, Armor: {$armorValue}, Shield: {$shieldValue}";
                             break;
                         case 93: // Customs office is being attacked
@@ -313,14 +306,10 @@ class notifications
                             $aggCorpName = $this->apiData($aggCorpID);
                             $aggID = trim(explode(": ", $notificationString[2])[1]);
                             $aggCharacterName = $this->apiData($aggID);
-                            $planetID = trim(explode(": ", $notificationString[3])[1]);
-                            $planetName = dbQueryField("SELECT itemName FROM mapAllCelestials WHERE itemID = :id",
-                                "itemName", array(":id" => $planetID), "ccp");
                             $shieldValue = trim(explode(": ", $notificationString[5])[1]);
                             $solarSystemID = trim(explode(": ", $notificationString[6])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $solarSystemID), "ccp");
-                            $msg = "Customs Office under attack in **{$systemName}** ($planetName) by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Shield Status: {$shieldValue}";
+                            $systemName = $this->apiData($solarSystemID);
+                            $msg = "Customs Office under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Shield Status: {$shieldValue}";
                             break;
                         case 94: // POCO Reinforced
                             $msg = "Customs Office reinforced.";
@@ -356,60 +345,53 @@ class notifications
                             $msg = "skip";
                             break;
                         case 147: // Entosis has started
-                            $systemID = trim(explode(": ", $notificationString[0])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[0])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $typeID = trim(explode(": ", $notificationString[1])[1]);
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
                             $msg = "Entosis has started in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 148: // Entosis enabled a module ??????
-                            $systemID = trim(explode(": ", $notificationString[0])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[0])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $typeID = trim(explode(": ", $notificationString[1])[1]);
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
                             $msg = "Entosis has enabled a module in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 149: // Entosis disabled a module
-                            $systemID = trim(explode(": ", $notificationString[0])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[0])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $typeID = trim(explode(": ", $notificationString[1])[1]);
                             $typeName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id",
                                 "typeName", array(":id" => $typeID), "ccp");
                             $msg = "Entosis has disabled a module in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 160: // Entosis successful
-                            $systemID = trim(explode(": ", $notificationString[2])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[2])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "Hostile entosis successful. A structure in **{$systemName}** has entered reinforced mode.";
                             break;
                         case 161: //  Command Nodes Decloaking
-                            $systemID = trim(explode(": ", $notificationString[2])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[2])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "Command nodes decloaking for **{$systemName}**";
                             break;
                         case 162: //  TCU Destroyed
-                            $systemID = trim(explode(": ", $notificationString[0])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[0])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "Entosis successful, TCU in **{$systemName}** has been destroyed.";
                             break;
                         case 163: //  Outpost freeport
-                            $systemID = trim(explode(": ", $notificationString[1])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $systemID), "ccp");
+                            $solarSystemID = trim(explode(": ", $notificationString[1])[1]);
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "Station in **{$systemName}** has now entered freeport mode.";
                             break;
                         case 182: //  Citadel being anchored
                             $corpName = trim(explode(": ", $notificationString[1])[1]);
                             $solarSystemID = trim(explode(": ", $notificationString[2])[1]);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $solarSystemID), "ccp");
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "Citadel owned by **{$corpName}** is being anchored in **{$systemName}**.";
                             break;
                         case 184: //  Citadel under attack
@@ -420,8 +402,7 @@ class notifications
                             $aggAllianceName = $this->apiData($aggAllianceID);
                             $aggCorpID = trim(explode("- ", $notificationString[11])[1]);
                             $aggCorpName = $this->apiData($aggCorpID);
-                            $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id",
-                                "solarSystemName", array(":id" => $solarSystemID), "ccp");
+                            $systemName = $this->apiData($solarSystemID);
                             $msg = "@everyone | Citadel under attack in **{$systemName}** by **{$aggCharacterName}** ({$aggCorpName} / {$aggAllianceName}).";
                             break;
                         case 185: //  Citadel online
