@@ -30,15 +30,23 @@ function updateCCPData($logger) {
     $ccpDataURL = "https://www.fuzzwork.co.uk/dump/sqlite-latest.sqlite.bz2";
     $ccpDataMD5URL = "https://www.fuzzwork.co.uk/dump/sqlite-latest.sqlite.bz2.md5";
     $databaseDir = __DIR__ . "/../../database/";
-    $md5 = explode(" ", downloadData($ccpDataMD5URL))[0];
     $lastSeenMD5 = getPermCache("CCPDataMD5");
     $lastChecked = getPermCache("CCPDataLastAttempt");
     $completed = getPermCache("CCPDataCompleted");
     $dbSize = filesize("{$databaseDir}ccpData.sqlite");
+    if ($lastChecked == 1) {
+        $checkNext = time() + 79200;
+        setPermCache("CCPDataLastAttempt", $checkNext);
+        return null;
+    }
     if (!isset($lastChecked)) {
         $lastChecked = 1;
     }
-    if ($lastSeenMD5 !== $md5 && time() > $lastChecked || $completed !== "1" || $dbSize < 10000) {
+    if (time() < $lastChecked){
+        return null;
+    }
+    $md5 = explode(" ", downloadData($ccpDataMD5URL))[0];
+    if ($lastSeenMD5 !== $md5 || $completed !== "1" || $dbSize < 10000) {
         try {
             $checkNext = time() + 79200;
             setPermCache("CCPDataLastAttempt", $checkNext);
