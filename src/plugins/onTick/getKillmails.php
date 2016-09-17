@@ -156,13 +156,13 @@ class getKillmails
                         $killID = $this->startMail;
                     }
                     $solarSystemID = $kill->attributes()->solarSystemID;
-                    $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $solarSystemID), "ccp");
+                    $systemName = apiCharacterName($solarSystemID);
                     $killTime = $kill->attributes()->killTime;
                     $victimAllianceName = $kill->victim->attributes()->allianceName;
                     $victimName = $kill->victim->attributes()->characterName;
                     $victimCorpName = $kill->victim->attributes()->corporationName;
                     $victimShipID = $kill->victim->attributes()->shipTypeID;
-                    $shipName = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $victimShipID), "ccp");
+                    $shipName = apiTypeName($victimShipID);
                     // Check if it's a structure
                     if ($victimName != "") {
                         $msg = "**{$killTime}**\n\n**{$shipName}** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";

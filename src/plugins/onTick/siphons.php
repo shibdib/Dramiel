@@ -103,8 +103,8 @@ class siphons {
                         if ($silo->attributes()->quantity != 0) {
                             //Check for a multiple of 50
                             if ($silo->attributes()->quantity % 50 != 0) {
-                                $gooType = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $silo->attributes()->typeID), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $gooType = apiTypeName($silo->attributes()->typeID);
+                                $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $msg = "{$this->prefix}";
                                 $msg .= "**POSSIBLE SIPHON**\n";
                                 $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
@@ -128,8 +128,8 @@ class siphons {
                         if ($coupling->attributes()->quantity != 0) {
                             //Check for a multiple of 50
                             if ($coupling->attributes()->quantity % 50 != 0) {
-                                $gooType = dbQueryField("SELECT typeName FROM invTypes WHERE typeID = :id", "typeName", array(":id" => $coupling->attributes()->typeID), "ccp");
-                                $systemName = dbQueryField("SELECT solarSystemName FROM mapSolarSystems WHERE solarSystemID = :id", "solarSystemName", array(":id" => $structures->attributes()->locationID), "ccp");
+                                $gooType = apiTypeName($silo->attributes()->typeID);
+                                $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $msg = "{$this->prefix}";
                                 $msg .= "**POSSIBLE SIPHON**\n";
                                 $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";

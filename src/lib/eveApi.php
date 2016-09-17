@@ -91,3 +91,79 @@ function serverStatus()
         return null;
     }
 }
+
+/**
+ * @param string $typeID
+ * @return mixed
+ */
+function apiCharacterName($typeID)
+{
+    $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?IDs={$typeID}";
+    $xml = makeApiRequest($url);
+    foreach ($xml->result->rowset->row as $entity) {
+        $name = $entity->attributes()->name;
+    }
+
+    if (!isset($name)) { // Make sure it's always set.
+        $name = "Unknown";
+    }
+
+    return $name;
+}
+
+/**
+ * @param string $typeName
+ * @return mixed
+ */
+function apiCharacterID($typeName)
+{
+    $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$typeName}";
+    $xml = makeApiRequest($url);
+    foreach ($xml->result->rowset->row as $entity) {
+        $ID = $entity->attributes()->characterID;
+    }
+
+    if (!isset($ID)) { // Make sure it's always set.
+        $ID = "Unknown";
+    }
+
+    return $ID;
+}
+
+/**
+ * @param string $typeID
+ * @return mixed
+ */
+function apiTypeName($typeID)
+{
+    $url = "https://api.eveonline.com/eve/TypeName.xml.aspx?IDs={$typeID}";
+    $xml = makeApiRequest($url);
+    foreach ($xml->result->rowset->row as $entity) {
+        $name = $entity->attributes()->typeName;
+    }
+
+    if (!isset($name)) { // Make sure it's always set.
+        $name = "Unknown";
+    }
+
+    return $name;
+}
+
+/**
+ * @param string $typeName
+ * @return mixed
+ */
+function apiTypeID($typeName)
+{
+    $url = "https://www.fuzzwork.co.uk/api/typeid.php?typename={$typeName}&format=xml";
+    $xml = makeApiRequest($url);
+    foreach ($xml->result->rowset->row as $entity) {
+        $ID = $entity->attributes()->typeID;
+    }
+
+    if (!isset($ID)) { // Make sure it's always set.
+        $ID = "Unknown";
+    }
+
+    return $ID;
+}
