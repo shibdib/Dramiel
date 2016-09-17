@@ -42,6 +42,7 @@ function makeApiRequest($url)
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
             CURLOPT_SSL_VERIFYPEER => false, // Do not verify the SSL certificate
+            CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
             CURLOPT_TIMEOUT => 15,
         ));
         // Fetch the data from the URL
@@ -96,6 +97,7 @@ function serverStatus()
  * @param string $typeID
  * @return mixed
  */
+////Char/Object ID to name via CCP
 function apiCharacterName($typeID)
 {
     $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?IDs={$typeID}";
@@ -115,6 +117,7 @@ function apiCharacterName($typeID)
  * @param string $typeName
  * @return mixed
  */
+////Char/object name to ID via CCP
 function apiCharacterID($typeName)
 {
     $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$typeName}";
@@ -134,6 +137,7 @@ function apiCharacterID($typeName)
  * @param string $typeID
  * @return mixed
  */
+////TypeID to TypeName via CCP
 function apiTypeName($typeID)
 {
     $url = "https://api.eveonline.com/eve/TypeName.xml.aspx?IDs={$typeID}";
@@ -153,6 +157,7 @@ function apiTypeName($typeID)
  * @param string $typeName
  * @return mixed
  */
+////TypeID to TypeName via fuzz
 function apiTypeID($typeName)
 {
     $url = "https://www.fuzzwork.co.uk/api/typeid.php?typename={$typeName}&format=xml";
