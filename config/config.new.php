@@ -116,7 +116,8 @@ $config["plugins"] = array(
     ),
     // what channel for eve notifications/also the channel for tq status alerts
     "notifications" => array(
-        "channelID" => 0
+        "channelID" => 0,
+        "allianceOnly" => "false" //change this to true if you'd like to filter out the corp specific notifications (tower spam, etc..)
     ),
     //Spam twitter messages from people you follow to this channel
     "twitterOutput" => array(

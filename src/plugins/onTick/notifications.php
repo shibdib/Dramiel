@@ -30,6 +30,7 @@ use discord\discord;
  * Class notifications
  * @property  keyID
  * @property  vCode
+ * @property string allianceOnly
  */
 class notifications
 {
@@ -99,6 +100,7 @@ class notifications
         $this->discord = $discord;
         $this->logger = $logger;
         $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
+        $this->allianceOnly = strtolower($config["plugins"]["notifications"]["allianceOnly"]);
         $this->fuelChannel = $config["plugins"]["fuel"]["channelID"];
         $this->fuelSkip = $config["plugins"]["fuel"]["skip"];
         $this->newestNotificationID = getPermCache("newestNotificationID");
@@ -111,6 +113,9 @@ class notifications
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run
             setPermCache("notificationsLastChecked{$this->keyID}", time() - 5);
+        }
+        if (is_null($this->allianceOnly)){
+            $this->allianceOnly = "false";
         }
     }
     /**
@@ -215,6 +220,9 @@ class notifications
                             $oldTax = trim(explode(": ", $notificationString[2])[1]);
                             $newTax = trim(explode(": ", $notificationString[1])[1]);
                             $msg = "{$corpName} tax changed from {$oldTax}% to {$newTax}%";
+                            if ($this->allianceOnly == "true") {
+                                $msg = "skip";
+                            }
                             break;
                         case 21: // member left corp
                             $msg = "skip";
@@ -267,6 +275,9 @@ class notifications
                             $typeName = apiTypeName($typeID);
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "**{$typeName}** under attack in **{$systemName} - {$moonName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}).";
+                            if ($this->allianceOnly == "true") {
+                                $msg = "skip";
+                            }
                             break;
                         case 76: // Tower resource alert
                             $moonID = trim(explode(": ", $notificationString[2])[1]);
@@ -278,7 +289,7 @@ class notifications
                             $channelID = $this->fuelChannel;
                             $typeName = apiTypeName($typeID);
                             $msg = "POS in {$systemName} - {$moonName} needs fuel. Only {$blocksRemaining} {$typeName}'s remaining.";
-                            if ($this->fuelSkip != "false") {
+                            if ($this->fuelSkip == "true" || $this->allianceOnly == "true") {
                                 $msg = "skip";
                             }
 
@@ -308,6 +319,9 @@ class notifications
                             $solarSystemID = trim(explode(": ", $notificationString[6])[1]);
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "Customs Office under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Shield Status: {$shieldValue}";
+                            if ($this->allianceOnly == "true") {
+                                $msg = "skip";
+                            }
                             break;
                         case 94: // POCO Reinforced
                             $msg = "Customs Office reinforced.";
