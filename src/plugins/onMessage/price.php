@@ -64,6 +64,10 @@ class price
         $this->discord = $discord;
         $this->logger = $logger;
         $this->triggers[] = $this->config["bot"]["trigger"] . "pc";
+        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Jita");
+        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Amarr");
+        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Rens");
+        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Dodixie");
         $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
     }
 
@@ -108,7 +112,7 @@ class price
 
             $systemName = $data["trigger"];
             $itemName = $data["messageString"];
-
+            var_dump($itemName);
             $single = apiTypeID(urlencode($itemName));
 
             // Quick lookups
@@ -125,11 +129,18 @@ class price
             if ($single) {
                 $typeID = $single["typeID"];
 
+                if (is_null($typeID)){
+                    $typeID = $single;
+                }
+
                 if ($systemName == "pc"){
                     $solarSystemID = "global";
                 } else {
                     $solarSystemID = apiCharacterID(urlencode($systemName));
                 }
+                var_dump($single[0]);
+                var_dump($typeID);
+                var_dump($solarSystemID);
 
                 // Get pricing data
                 if ($solarSystemID == "global") {
@@ -172,7 +183,7 @@ class price
         return array(
             "name" => "pc",
             "trigger" => $this->triggers,
-            "information" => "Shows price information for items in EVE. To use simply type !pc item_name or !system_name item_name"
+            "information" => "Shows price information for items in EVE. To use simply type **!pc item_name** for global stats or **!jita/amarr/rens_or_dodixie item_name** for hub specific info."
         );
     }
 }
