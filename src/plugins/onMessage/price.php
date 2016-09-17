@@ -128,11 +128,11 @@ class price
             if ($single) {
                 $typeID = $single["typeID"];
 
-                if (is_null($typeID)){
+                if (is_null($typeID)) {
                     $typeID = $single;
                 }
 
-                if ($systemName == "pc"){
+                if ($systemName == "pc") {
                     $solarSystemID = "global";
                 } else {
                     $solarSystemID = apiCharacterID(urlencode($systemName));
