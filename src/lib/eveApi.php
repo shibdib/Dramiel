@@ -42,6 +42,7 @@ function makeApiRequest($url)
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
             CURLOPT_SSL_VERIFYPEER => false, // Do not verify the SSL certificate
+            CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
             CURLOPT_TIMEOUT => 15,
         ));
         // Fetch the data from the URL
