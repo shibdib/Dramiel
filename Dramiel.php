@@ -137,8 +137,9 @@ $discord->on(
 
         // Run the Tick plugins
         $discord->loop->addPeriodicTimer(5, function() use ($pluginsT) {
-            foreach ($pluginsT as $plugin)
+            foreach ($pluginsT as $plugin){
                 $plugin->tick();
+            }
         });
 
         // Mem cleanup every 30 minutes
