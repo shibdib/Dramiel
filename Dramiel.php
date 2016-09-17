@@ -64,7 +64,6 @@ foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
 
 //Startup DB Check
 updateDramielDB($logger);
-updateCCPData($logger);
 
 // Init Discord
 use Discord\Discord;
@@ -134,7 +133,6 @@ $discord->on(
         // Database check
         $discord->loop->addPeriodicTimer(86400, function() use ($logger) {
             updateDramielDB($logger);
-            updateCCPData($logger);
         });
 
         // Run the Tick plugins
