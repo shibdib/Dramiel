@@ -123,7 +123,7 @@ class authCheck
         $guild = $discord->guilds->get('id', $id);
 
         //Check to make sure guildID is set correctly
-        if (is_null($guild)){
+        if (is_null($guild)) {
             $this->logger->addError("Config Error: Ensure the guild entry in the config is the guildID (aka serverID) for the main server that the bot is in.");
             $nextCheck = time() + 7200;
             setPermCache("authLastChecked", $nextCheck);
@@ -131,7 +131,7 @@ class authCheck
         }
 
         //Remove members who have roles but never authed
-        foreach($guild->members as $member) {
+        foreach ($guild->members as $member) {
             $id = $member->id;
             $username = $member->username;
             $roles = $member->roles;
@@ -238,4 +238,4 @@ class authCheck
     {
     }
 }
- 
+    
