@@ -128,7 +128,7 @@ class price
                 if ($systemName == "pc"){
                     $solarSystemID = "global";
                 } else {
-                    $solarSystemID = apiCharacterID($systemName);
+                    $solarSystemID = apiCharacterID(urlencode($systemName));
                 }
 
                 // Get pricing data
