@@ -193,8 +193,4 @@ class getKillmails
         $this->logger->addInfo("All kills posted, newest kill id is {$updatedID}");
         return null;
     }
-
-    function onMessage($msgData)
-    {
-    }
 }
