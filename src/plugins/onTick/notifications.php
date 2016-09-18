@@ -114,7 +114,7 @@ class notifications
             // Schedule it for right now if first run
             setPermCache("notificationsLastChecked{$this->keyID}", time() - 5);
         }
-        if (is_null($this->allianceOnly)){
+        if (is_null($this->allianceOnly)) {
             $this->allianceOnly = "false";
         }
     }
