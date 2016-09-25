@@ -94,13 +94,14 @@ class siphons {
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
         $xml = makeApiRequest($url);
         $siphonCount = 0;
+        $rawGoo = array(16634, 16643, 16647, 16641, 16640, 16635, 16648, 16633, 16646, 16651, 16650, 16644, 16652, 16639, 16636, 16649, 16653, 16638, 16637, 16642);
         foreach ($xml->result->rowset->row as $structures) {
             //Check silos
             if ($structures->attributes()->typeID == 14343) {
                 if (isset($structures->rowset->row)) {
                     foreach ($structures->rowset->row as $silo) {
                         //Avoid reporting empty silos
-                        if ($silo->attributes()->quantity != 0) {
+                        if ($silo->attributes()->quantity != 0 && in_array($silo->attributes()->typeID, $rawGoo)) {
                             //Check for a multiple of 50
                             if ($silo->attributes()->quantity % 50 != 0) {
                                 $gooType = apiTypeName($silo->attributes()->typeID);
