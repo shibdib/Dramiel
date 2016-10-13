@@ -50,15 +50,15 @@ $config["twitter"] = array(
     "accessTokenSecret" => ""
 );
 
-$config["eve"] = array(
-    "apiKeys" => array(
-        "user1" => array(
-            "keyID" => "",
-            "vCode" => "",
-            "characterID" => 0
-        ),
-    )
-);
+//$config["eve"] = array(
+//    "apiKeys" => array(
+//        "user1" => array(
+//            "keyID" => "",
+//            "vCode" => "",
+//            "characterID" => 0
+//        ),
+//    )
+//);
 
 $config["enabledPlugins"] = array( // remove the slashes for the plugins you want
     "about", //info on the bot
@@ -85,8 +85,21 @@ $config["enabledPlugins"] = array( // remove the slashes for the plugins you wan
 $config["plugins"] = array(
     //uses the provided api's to post evemails to a channel
     "evemails" => array(
-        "fromIDs" => array(0, 0), // fill in with corp/alliance id's you want info from (have to be accessible with the api)
-        "channelID" => 0 // what channel id like these to post too
+		array(
+			"fromID" => array(0), // fill corp or alliance id you want info from (have to be accessible with the api)
+			"channelID" => 0, // what channel id like these to post too
+			"keyID" => 0, // key from apikey from member crop\alliance
+			"vCode" => "", // vCode from apikey from member crop\alliance
+			"characterID" => 0 // example, go to zkillboard to obtain member characterID
+		),
+		array(
+			"fromID" => array(0),
+			"channelID" => 0,
+			"keyID" => 0,
+			"vCode" => "",
+			"characterID" => 0
+		)
+		// If you need more ids - just add another
     ),
     "fileReader" => array(
         "db" => "/tmp/discord.db",
