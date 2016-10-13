@@ -49,6 +49,8 @@ $logger->addInfo('Logger Initiated');
 
 GLOBAL $logger;
 
+define(DEBUG, false);
+
 // Require the config
 if (file_exists("config/config.php")) {
     require_once("config/config.php");
