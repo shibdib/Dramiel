@@ -11,8 +11,9 @@ Features (Basic)
 - Char/Corp lookup
 
 Features (Advanced)
-- Auth
+- EVE SSO Auth
 - Killmail posting
+- Posting mail sent to Corporations and Alliances in differet discord channels.
 - Siphon detection
 
 ### IF YOU ONLY WANT THE BASIC BOT 
