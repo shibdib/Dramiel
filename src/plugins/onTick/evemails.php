@@ -77,6 +77,10 @@ class evemails {
 	* @var
 	**/
 	var $evemailsConf;
+	/**
+	* @var
+	**/
+	var $checkInterval;
 
 	public $keyID;
 	public $vCode;
@@ -118,6 +122,8 @@ class evemails {
 						break;
 					case "characterID":
 						break;
+					case "checkInterval":
+						break;
 				}
 			}
 		}
@@ -128,8 +134,9 @@ class evemails {
 	**/
 	function tick()
 	{
-		// Fetching data for each fromID-channelID
+		// Select API Key and run checkMails
 		foreach ($this->evemailsConf as $selected) {
+			// Fetching data for selected API Key
 			foreach ( $selected as $key => $value) {
 				switch ($key) {
 					case "fromID":
@@ -147,9 +154,12 @@ class evemails {
 					case "characterID":
 						$this->characterID = $value;
 						break;
+					case "checkInterval":
+						$this->checkInterval = $value;
+						break;
 				}
 			}
-			// And check last checked time each keyID for fromID-channelID
+			// And check last checked for selected API Key
 			$lastChecked = getPermCache("mailLastChecked{$this->keyID}");
 			$this->newestMailID = getPermCache("newestCorpMailID{$this->keyID}");
 			$keyID = $this->keyID;
@@ -180,8 +190,8 @@ class evemails {
 		if (DEBUG) {$this->logger->addInfo("Debug MSG:005 fCheckMails_for{$keyID}-check_time: {$cached}, {$cacheClr}");}
 		if ($cacheClr <= time()) {
 			//$weirdTime = time() + 1830;
-			$weirdTime = time() + 130;
-			if (DEBUG) {$this->logger->addInfo("Debug MSG:006 fCheckMails_for{$keyID}-weirdTime: {$weirdTime}, {$cacheClr}");}
+			$weirdTime = time() + $this->checkInterval + 30;
+			if (DEBUG) {$this->logger->addInfo("Debug MSG:006 fCheckMails_for{$keyID}-weirdTime: {$weirdTime}, {$cacheClr}, {$this->checkInterval}");}
 			$cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
 			setPermCache("mailLastChecked{$keyID}", $weirdTime);
 		} else {
@@ -202,6 +212,7 @@ class evemails {
 
 		foreach ($mails as $mail) {
 			if (in_array($mail["toCorpOrAllianceID"], $this->toIDs) && $mail["messageID"] > $this->newestMailID) {
+				$nomessage = 0;
 				$sentBy = $mail["senderName"];
 				$title = $mail["title"];
 				$sentDate = $mail["sentDate"];
@@ -250,6 +261,12 @@ class evemails {
 					setPermCache("newestCorpMailID{$this->keyID}", $this->maxID);
 				}
 			}
+			else {
+				$nomessage = 1;
+			}
+		}
+		if ($nomessage == 1) {
+			$this->logger->addInfo("No new messages for API Key {$keyID}..");
 		}
 		$this->logger->addInfo("Next Mail Check At: {$cacheTimer} EVE Time");
 		if (DEBUG) {$this->logger->addInfo("Debug MSG:011 fCheckMails_for{$keyID}: Check for {$keyID} finished..");}
