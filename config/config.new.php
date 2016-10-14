@@ -82,14 +82,16 @@ $config["plugins"] = array(
 			"channelID" => 0, // what channel id like these to post too
 			"keyID" => 0, // key from apikey from member crop\alliance
 			"vCode" => "", // vCode from apikey from member crop\alliance
-			"characterID" => 0 // example, go to zkillboard to obtain member characterID
+			"characterID" => 0, // example, go to zkillboard to obtain member characterID
+			"checkInterval" => 300
 		),
 		array(
 			"fromID" => array(0),
 			"channelID" => 0,
 			"keyID" => 0,
 			"vCode" => "",
-			"characterID" => 0
+			"characterID" => 0,
+			"checkInterval" => 300
 		)
 	),
 	"fileReader" => array(
