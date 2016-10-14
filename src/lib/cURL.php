@@ -38,6 +38,9 @@ function downloadData($url)
         $userAgent = "Mozilla/5.0 (en-us;)";
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+		curl_setopt($curl, CURLOPT_AUTOREFERER, true); 
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_TIMEOUT, 12);
         curl_setopt($curl, CURLOPT_POST, false);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
@@ -48,6 +51,8 @@ function downloadData($url)
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($curl, CURLOPT_VERBOSE, false); //enable this to see debug output of cURL
         $result = curl_exec($curl);
         return $result;
     } catch (Exception $e) {
