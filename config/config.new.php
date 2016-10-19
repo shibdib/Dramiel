@@ -79,6 +79,7 @@ $config["enabledPlugins"] = array( // remove the slashes for the plugins you wan
     //"siphons", // report possible siphons, see wiki for more info
     //"siloFull", // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
     //"fleetUpOperations", // integrate with fleet up and post any new operations and then ping them when they get close
+    //"rssReader", //Post news to rss feeds
 );
 
 
