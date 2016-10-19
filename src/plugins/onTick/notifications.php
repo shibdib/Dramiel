@@ -232,6 +232,9 @@ class notifications
                             $aggAllianceName = apiCharacterName($aggAllianceID);
                             $msg = "War with {$aggAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
                             break;
+                        case 34: // Noob ship
+                            $msg = "skip";
+                            break;
                         case 35: // Insurance payment
                             $msg = "skip";
                             break;
@@ -345,6 +348,9 @@ class notifications
                             $msg = "skip";
                             break;
                         case 130: // Corp app withdrawn?
+                            $msg = "skip";
+                            break;
+                        case 135: // ESS
                             $msg = "skip";
                             break;
                         case 138: // Clone activation
