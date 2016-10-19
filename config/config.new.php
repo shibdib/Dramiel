@@ -173,4 +173,15 @@ $config["plugins"] = array(
         "groupID" => 0, //fleet up group id
         "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
     ),
+    //Post well formatted rss feed links to a channel
+    "rssReader" => array(
+        "channelID" => 0, //channel id to post rss links
+        "rssFeeds" => array( //feel free to add more url's if needed
+            "url1" => "",
+            "url2" => "",
+            "url3" => "",
+            "url4" => "",
+            "url5" => "",
+        )
+    ),
 );
