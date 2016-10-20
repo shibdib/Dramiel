@@ -28,12 +28,16 @@ use Monolog\Handler\StreamHandler;
 
 /**
  * @param $url
- * @return SimpleXMLElement|null
+ * @return SimpleXMLElement|null|string
  */
 function makeApiRequest($url)
 {
     $logger = new Logger('eveApi');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
+    if (getPermCache("statusLastState") != "online") {
+        $logger->error("EVE API Error: API Server is currently offline");
+        return null;
+    }
     try {
         // Initialize a new request for this URL
         $ch = curl_init($url);
