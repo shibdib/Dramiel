@@ -146,8 +146,10 @@ class rssReader
                 $channel = $guild->channels->get('id', $channelID);
                 $channel->sendMessage($msg, false);
                 $this->logger->addInfo("RSS Reader Item Posted: {$itemTitle}");
+                if($itemDate > getPermCache("rssFeed{$feedLink}")){
+                    setPermCache("rssFeed{$feedLink}", $itemDate);
+                }
             }
-            setPermCache("rssFeed{$feedLink}", $itemDate);
         }
     }
 }
