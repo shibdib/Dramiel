@@ -109,11 +109,10 @@ class fleetUpOperations {
             $formUp = $operation["LocationInfo"];
             $info = $operation["Details"];
             $id = $operation["Id"];
-            $link = "https://fleet-up.com/Operation#{$id}\
-			";
+            $link = "https://fleet-up.com/Operation#{$id}";
             $timeDifference = $startTimeUnix - $eveTime;
-            if ($currentID < $id) {
-                if ($timeDifference < 1800) {
+            if ($currentID != $id) {
+                if ($timeDifference < 555) {
                     $msg = "@everyone
 **Upcoming Operation** 
 Title - {$name} 
@@ -128,12 +127,11 @@ Link - {$link}";
                     $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
                     setPermCache("fleetUpLastPostedOperation", $id);
-                    $this->logger->addInfo("Latest upcoming operation ID - {$id}");
-
+                    $this->logger->addInfo("FleetUp: Upcoming Operation - {$name}");
                 }
             }
         }
-        setPermCache("fleetUpPostLastChecked", time() + 120);
+        setPermCache("fleetUpPostLastChecked", time() + 300);
     }
 
     function checkFleetUp()
@@ -154,8 +152,7 @@ Link - {$link}";
                 $formUp = $operation["LocationInfo"];
                 $info = $operation["Details"];
                 $id = $operation["Id"];
-                $link = "https://fleet-up.com/Operation#{$id}\
-			";
+                $link = "https://fleet-up.com/Operation#{$id}";
                 var_dump($currentID);
                 var_dump($id);
                 if ($currentID < $id) {
@@ -175,7 +172,7 @@ Link - {$link}";
                 }
                 if ($id > $currentID) {
                     setPermCache("fleetUpLastOperation", $id);
-                    $this->logger->addInfo("Newest fleetUp operation ID - {$id}");
+                    $this->logger->addInfo("FleetUp: Newest FleetUp operation - {$name}");
                 }
             }
             setPermCache("fleetUpLastChecked", time() + 300);
