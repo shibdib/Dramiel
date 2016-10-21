@@ -112,7 +112,7 @@ class fleetUpOperations {
             $link = "https://fleet-up.com/Operation#{$id}";
             $timeDifference = $startTimeUnix - $eveTime;
             if ($currentID != $id) {
-                if ($timeDifference < 555 && $timeDifference > 1) {
+                if ($timeDifference < 900 && $timeDifference > 1) {
                     $msg = "@everyone
 **Upcoming Operation** 
 Title - {$name} 
@@ -131,7 +131,7 @@ Link - {$link}";
                 }
             }
         }
-        setPermCache("fleetUpPostLastChecked", time() + 300);
+        setPermCache("fleetUpPostLastChecked", time() + 910);
     }
 
     function checkFleetUp()
