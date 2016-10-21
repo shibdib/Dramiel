@@ -88,7 +88,7 @@ class price
     {
         $this->message = $message;
         $user = $msgData["message"]["from"];
-        $channelID = $msgData["message"]["channelID"];
+        $channelID = (int) $msgData["message"]["channelID"];
 
 
         // Bind a few things to vars for the plugins
