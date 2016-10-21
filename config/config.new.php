@@ -126,7 +126,7 @@ $config["plugins"] = array(
     ),
     //Pricecheck tool
     "priceChecker" => array(
-        "channelID" => 0 //If you want to restrict price checker from working in a channel, put that channel's ID here.
+        "channelID" => array(0, 0) //If you want to restrict price checker from working in a channel, put that channel's ID here.
     ),
     //SSO Auth
     "auth" => array(

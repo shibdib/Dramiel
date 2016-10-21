@@ -120,7 +120,7 @@ class price
             }
 
             // Check if the channel is restricted
-            if ($channelID == $this->excludeChannel) {
+            if (in_array($channelID, $this->excludeChannel, true)) {
                 return $this->message->reply("**Price Check not allowed in this channel**");
             }
 
