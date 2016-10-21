@@ -142,6 +142,7 @@ $config["plugins"] = array(
     //Killmail posting
     "getKillmails" => array(
         "channel" => 0, //killmails post to this channel
+        "bigKill" => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
         "corpID" => 0, //corpid for killmails
         "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
         "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.

@@ -74,6 +74,10 @@ class getKillmails
         $this->discord = $discord;
         $this->logger = $logger;
         $this->kmChannel = $config["plugins"]["getKillmails"]["channel"];
+        $this->bigKill = $config["plugins"]["getKillmails"]["bigKill"];
+        if ($this->bigKill == null) {
+            $this->bigKill = 999999999999999999;
+        }
         $this->corpID = $config["plugins"]["getKillmails"]["corpID"];
         $this->allianceID = $config["plugins"]["getKillmails"]["allianceID"];
         $this->startMail = $config["plugins"]["getKillmails"]["startMail"];
@@ -128,16 +132,16 @@ class getKillmails
         $this->newestKillmailID = getPermCache("newestKillmailID");
         $lastMail = $this->newestKillmailID;
         if ($this->allianceID == "0" & $this->lossMail == 'true') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
+            $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
         }
         if ($this->allianceID == "0" & $this->lossMail == 'false') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
+            $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$this->corpID}/";
         }
         if ($this->allianceID != "0" & $this->lossMail == 'true') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
+            $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
         }
         if ($this->allianceID != "0" & $this->lossMail == 'false') {
-            $url = "https://zkillboard.com/api/xml/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
+            $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$this->allianceID}/";
         }
 
         if (!isset($url)) { // Make sure it's always set.
@@ -145,29 +149,34 @@ class getKillmails
             return null;
         }
 
-        $xml = simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA);
+        $xml = json_decode(downloadData($url), true);
         $i = 0;
         $limit = $this->spamAmount;
-        if (isset($xml->result->rowset->row)) {
-            foreach ($xml->result->rowset->row as $kill) {
+        if (isset($xml)) {
+            foreach ($xml as $kill) {
                 if ($i < $limit) {
-                    $killID = $kill->attributes()->killID;
+                    $killID = $kill['killID'];
                     if ($this->startMail > $killID) {
                         $killID = $this->startMail;
                     }
-                    $solarSystemID = $kill->attributes()->solarSystemID;
+                    $solarSystemID = $kill['solarSystemID'];
                     $systemName = apiCharacterName($solarSystemID);
-                    $killTime = $kill->attributes()->killTime;
-                    $victimAllianceName = $kill->victim->attributes()->allianceName;
-                    $victimName = $kill->victim->attributes()->characterName;
-                    $victimCorpName = $kill->victim->attributes()->corporationName;
-                    $victimShipID = $kill->victim->attributes()->shipTypeID;
+                    $killTime = $kill['killTime'];
+                    $victimAllianceName = $kill['victim']['allianceName'];
+                    $victimName = $kill['victim']['characterName'];
+                    $victimCorpName = $kill['victim']['corporationName'];
+                    $victimShipID = $kill['victim']['shipTypeID'];
                     $shipName = apiTypeName($victimShipID);
+                    $totalValue = number_format($kill['zkb']['totalValue']);
+                    //$iskValue = number_format(($totalValue/100), 0);
                     // Check if it's a structure
                     if ($victimName != "") {
-                        $msg = "**{$killTime}**\n\n**{$shipName}** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                        if ($totalValue >= $this->bigKill){
+                            $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                        }
+                        $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     } elseif ($victimName == "") {
-                        $msg = "**{$killTime}**\n\n**{$shipName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                        $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
 
                     if (!isset($msg)) { // Make sure it's always set.
