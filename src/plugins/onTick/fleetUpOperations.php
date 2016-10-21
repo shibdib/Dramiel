@@ -112,7 +112,7 @@ class fleetUpOperations {
             $link = "https://fleet-up.com/Operation#{$id}";
             $timeDifference = $startTimeUnix - $eveTime;
             if ($currentID != $id) {
-                if ($timeDifference < 555) {
+                if ($timeDifference < 555 && $timeDifference > 1) {
                     $msg = "@everyone
 **Upcoming Operation** 
 Title - {$name} 
@@ -137,6 +137,8 @@ Link - {$link}";
     function checkFleetUp()
     {
         $discord = $this->discord;
+        date_default_timezone_set("UTC");
+        $eveTime = time();
 
         $lastChecked = getPermCache("fleetUpLastChecked");
 
@@ -148,14 +150,15 @@ Link - {$link}";
             foreach ($fleetUpOperations["Data"] as $operation) {
                 $name = $operation["Subject"];
                 $startTime = $operation["StartString"];
+                preg_match_all('!\d+!', $operation["Start"], $epochStart);
+                $startTimeUnix = substr($epochStart[0][0], 0, -3);
                 $desto = $operation["Location"];
                 $formUp = $operation["LocationInfo"];
                 $info = $operation["Details"];
                 $id = $operation["Id"];
                 $link = "https://fleet-up.com/Operation#{$id}";
-                var_dump($currentID);
-                var_dump($id);
-                if ($currentID < $id) {
+                $timeDifference = $startTimeUnix - $eveTime;
+                if ($currentID < $id && $timeDifference > 1) {
                     $msg = "
 **New Operation Posted** 
 Title - {$name} 
