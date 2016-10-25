@@ -190,12 +190,15 @@ class notifications
                         case 5: // War Declared
                             $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
                             $aggAllianceName = apiCharacterName($aggAllianceID);
-                            $msg = "@everyone | War declared by {$aggAllianceName}. Fighting begins in roughly 24 hours.";
+                            $msg = "@everyone | War declared against {$aggAllianceName}. Fighting begins in roughly 24 hours.";
+                            break;
+                        case 6: // Corp joins war (Not enough info in api to actual use this one)
+                            $msg = "skip";
                             break;
                         case 7: // War Declared corp
                             $aggCorpID = trim(explode(": ", $notificationString[2])[1]);
                             $aggCorpName = apiCharacterName($aggCorpID);
-                            $msg = "@everyone | War declared by {$aggCorpName}. Fighting begins in roughly 24 hours.";
+                            $msg = "@everyone | War declared against {$aggCorpName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 8: // Alliance war invalidated by CONCORD
                             $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
