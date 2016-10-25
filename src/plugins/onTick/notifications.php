@@ -188,17 +188,26 @@ class notifications
                         $notificationID));
                     switch ($typeID) {
                         case 5: // War Declared
+                            $defAllianceID = trim(explode(": ", $notificationString[0])[1]);
                             $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
+                            $defAllianceName = apiCharacterName($defAllianceID);
                             $aggAllianceName = apiCharacterName($aggAllianceID);
-                            $msg = "@everyone | War declared against {$aggAllianceName}. Fighting begins in roughly 24 hours.";
+                            $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
                             break;
-                        case 6: // Corp joins war (Not enough info in api to actual use this one)
-                            $msg = "skip";
+                        case 6: // Corp joins war (Not enough info in api to say who the 3rd party is)
+                            $defAllianceID = trim(explode(": ", $notificationString[0])[1]);
+                            $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
+                            $defAllianceName = apiCharacterName($defAllianceID);
+                            $aggAllianceName = apiCharacterName($aggAllianceID);
+                            $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been joined by a third party. This new group may begin fighting in roughly 24 hours.";
+                            break;
                             break;
                         case 7: // War Declared corp
+                            $defCorpID = trim(explode(": ", $notificationString[0])[1]);
                             $aggCorpID = trim(explode(": ", $notificationString[2])[1]);
+                            $defCorpName = apiCharacterName($defCorpID);
                             $aggCorpName = apiCharacterName($aggCorpID);
-                            $msg = "@everyone | War declared against {$aggCorpName}. Fighting begins in roughly 24 hours.";
+                            $msg = "@everyone | War declared by {$aggCorpName} against {$defCorpName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 8: // Alliance war invalidated by CONCORD
                             $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
