@@ -104,7 +104,6 @@ class fileReader
                     }
 
                     $ping .= $row . "  ";
-                    usleep(300000);
                 }
 
                 // Remove |  from the line or whatever else is at the last two characters in the string

@@ -193,7 +193,6 @@ class getKillmails
                     $channel->sendMessage($msg, false);
                     setPermCache("newestKillmailID", $killID);
 
-                    sleep(2);
                     $i++;
                 } else {
                     $updatedID = getPermCache("newestKillmailID");

@@ -116,7 +116,6 @@ class siphons {
                                 $channel->sendMessage($msg, false);
                                 $this->logger->addInfo($msg);
                                 $siphonCount++;
-                                sleep(2); // Lets sleep for a second, so we don't rage spam
                             }
                         }
                     }
@@ -141,7 +140,6 @@ class siphons {
                                 $channel->sendMessage($msg, false);
                                 $this->logger->addInfo($msg);
                                 $siphonCount++;
-                                sleep(2); // Lets sleep for a second, so we don't rage spam
                             }
                         }
                     }

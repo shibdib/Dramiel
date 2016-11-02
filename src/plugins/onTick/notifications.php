@@ -362,7 +362,7 @@ class notifications
                         case 130: // Corp app withdrawn?
                             $msg = "skip";
                             break;
-                        case 135: // ESS
+                        case 135: // ESS stolen
                             $msg = "skip";
                             break;
                         case 138: // Clone activation

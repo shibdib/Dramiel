@@ -134,7 +134,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16643:
@@ -159,7 +158,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16647:
@@ -184,7 +182,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16641:
@@ -209,7 +206,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16640:
@@ -234,7 +230,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16635:
@@ -259,7 +254,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16648:
@@ -284,7 +278,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16633:
@@ -309,7 +302,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16646:
@@ -334,7 +326,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16651:
@@ -359,7 +350,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16650:
@@ -384,7 +374,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16644:
@@ -409,7 +398,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16652:
@@ -434,7 +422,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16639:
@@ -459,7 +446,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16636:
@@ -484,7 +470,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16649:
@@ -509,7 +494,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16653:
@@ -534,7 +518,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16638:
@@ -559,7 +542,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16637:
@@ -584,7 +566,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                             case 16642:
@@ -609,7 +590,6 @@ class siloFull {
                                     $channel = $guild->channels->get('id', $channelID);
                                     $channel->sendMessage($msg, false);
                                     $siloCount++;
-                                    sleep(1);
                                 }
                                 break;
                         }

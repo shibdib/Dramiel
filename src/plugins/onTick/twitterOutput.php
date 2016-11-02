@@ -134,7 +134,6 @@ class twitterOutput
                     $guild = $discord->guilds->get('id', $this->guild);
                     $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
-                    sleep(1); // Lets sleep for a second, so we don't rage spam
                 }
             }
             $this->lastCheck = time() + 60;
