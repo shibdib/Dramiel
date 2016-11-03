@@ -36,7 +36,8 @@
  */
 
 
-function insertUser($url, $user, $pass, $dbName, $userID, $characterID, $eveName, $type) {
+function insertUser($url, $user, $pass, $dbName, $userID, $characterID, $eveName, $type)
+{
     $host = $url;
     $username = $user;
     $password = $pass;
@@ -66,7 +67,8 @@ function insertUser($url, $user, $pass, $dbName, $userID, $characterID, $eveName
  * @param $authCode
  * @return null
  */
-function disableReg($url, $user, $pass, $dbName, $authCode) {
+function disableReg($url, $user, $pass, $dbName, $authCode)
+{
     $host = $url;
     $username = $user;
     $password = $pass;
@@ -96,7 +98,8 @@ function disableReg($url, $user, $pass, $dbName, $authCode) {
  * @param $authCode
  * @return bool|null
  */
-function selectPending($url, $user, $pass, $dbName, $authCode) {
+function selectPending($url, $user, $pass, $dbName, $authCode)
+{
     $host = $url;
     $username = $user;
     $password = $pass;

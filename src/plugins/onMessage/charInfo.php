@@ -91,9 +91,10 @@ class charInfo
             $xml = makeApiRequest($url);
             $characterID = null;
 
-            if (isset($xml->result->rowset->row)) { foreach ($xml->result->rowset->row as $character) {
-                $characterID = $character->attributes()->characterID;
-            }
+            if (isset($xml->result->rowset->row)) {
+                foreach ($xml->result->rowset->row as $character) {
+                    $characterID = $character->attributes()->characterID;
+                }
             }
             if (empty($characterID)) {
                 return $this->message->reply("**Error:** no data available");

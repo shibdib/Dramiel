@@ -28,7 +28,8 @@ use discord\discord;
 /**
  * Class siphons
  */
-class siphons {
+class siphons
+{
     /**
      * @var
      */

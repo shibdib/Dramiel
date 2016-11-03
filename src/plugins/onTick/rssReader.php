@@ -96,9 +96,9 @@ class rssReader
 
     function getRss($feeds, $toChannel, $discord)
     {
-        foreach ($feeds as $rssUrl){
+        foreach ($feeds as $rssUrl) {
             //Check that url is set
-            if (!isset($rssUrl) || $rssUrl == ""){
+            if (!isset($rssUrl) || $rssUrl == "") {
                 continue;
             }
 
@@ -114,8 +114,8 @@ class rssReader
             }
 
             //Find item to check if feed is formatted
-            $itemTitle = (string) $rss->channel->item->title;
-            $itemUrl = (string) $rss->channel->item->link;
+            $itemTitle = (string)$rss->channel->item->title;
+            $itemUrl = (string)$rss->channel->item->link;
             $itemDate = strtotime($rss->channel->item->pubDate);
 
             //Check to see if feed is formatted correctly
@@ -125,10 +125,10 @@ class rssReader
             }
 
             //Find item to post
-            foreach($rss->channel->item as $item){
+            foreach ($rss->channel->item as $item) {
                 //Get item details
-                $itemTitle = (string) $item->title;
-                $itemUrl = (string) $item->link;
+                $itemTitle = (string)$item->title;
+                $itemUrl = (string)$item->link;
                 $itemPubbed = $item->pubDate;
                 $itemDate = strtotime($item->pubDate);
 
@@ -146,7 +146,7 @@ class rssReader
                 $channel = $guild->channels->get('id', $channelID);
                 $channel->sendMessage($msg, false);
                 $this->logger->addInfo("RSS Reader Item Posted: {$itemTitle}");
-                if($itemDate > getPermCache("rssFeed{$feedLink}")){
+                if ($itemDate > getPermCache("rssFeed{$feedLink}")) {
                     setPermCache("rssFeed{$feedLink}", $itemDate);
                 }
             }

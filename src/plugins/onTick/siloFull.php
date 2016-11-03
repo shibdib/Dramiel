@@ -29,7 +29,8 @@ use discord\discord;
  * Class siloFull
  * @property  towerRace
  */
-class siloFull {
+class siloFull
+{
     /**
      * @var
      */
@@ -51,6 +52,7 @@ class siloFull {
     protected $keyID;
     protected $vCode;
     protected $prefix;
+
     /**
      * @param $config
      * @param $discord
@@ -72,6 +74,7 @@ class siloFull {
             setPermCache("siloLastChecked{$this->keyID}", time() - 5);
         }
     }
+
     /**
      *
      */
@@ -85,6 +88,7 @@ class siloFull {
             $this->checkTowers($keyID, $vCode);
         }
     }
+
     function checkTowers($keyID, $vCode)
     {
         $discord = $this->discord;

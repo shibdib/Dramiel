@@ -31,7 +31,8 @@ use discord\discord;
  * @property  apiKey
  * @property  groupID
  */
-class fleetUpOperations {
+class fleetUpOperations
+{
     /**
      * @var
      */

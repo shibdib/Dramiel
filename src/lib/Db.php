@@ -23,8 +23,8 @@
  * SOFTWARE.
  */
 
-use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * @param string|null $db
@@ -35,7 +35,7 @@ function openDB($db = null)
     $logger = new Logger('Db');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
     if ($db === null) {
-            $db = __DIR__ . "/../../database/dramiel.sqlite";
+        $db = __DIR__ . "/../../database/dramiel.sqlite";
     }
 
     $dsn = "sqlite:$db";
@@ -46,8 +46,7 @@ function openDB($db = null)
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             )
         );
-    } catch (Exception $e)
-    {
+    } catch (Exception $e) {
         $logger->error($e->getMessage());
         $pdo = null;
         return $pdo;
@@ -67,7 +66,7 @@ function dbQueryField($query, $field, $params = array(), $db = null)
 {
     $pdo = openDB($db);
     if ($pdo == NULL) {
-            return null;
+        return null;
     }
 
     $stmt = $pdo->prepare($query);
@@ -94,7 +93,7 @@ function dbQueryRow($query, $params = array(), $db = null)
 {
     $pdo = openDB($db);
     if ($pdo == NULL) {
-            return null;
+        return null;
     }
 
     $stmt = $pdo->prepare($query);
@@ -119,7 +118,7 @@ function dbQuery($query, $params = array(), $db = null)
 {
     $pdo = openDB($db);
     if ($pdo == NULL) {
-            return null;
+        return null;
     }
 
     $stmt = $pdo->prepare($query);
@@ -140,7 +139,7 @@ function dbExecute($query, $params = array(), $db = null)
 {
     $pdo = openDB($db);
     if ($pdo == NULL) {
-            return;
+        return;
     }
 
     // This is ugly, but, yeah..

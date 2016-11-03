@@ -23,8 +23,8 @@
  * SOFTWARE.
  */
 
-use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * @param $url
@@ -55,6 +55,7 @@ function downloadData($url)
         return null;
     }
 }
+
 /**
  * @param string $url
  * @param $downloadPath

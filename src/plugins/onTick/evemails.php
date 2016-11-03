@@ -31,7 +31,8 @@ use discord\discord;
  * @property  vCode
  * @property  characterID
  */
-class evemails {
+class evemails
+{
     /**
      * @var
      */
@@ -141,7 +142,9 @@ class evemails {
         }
 
         $mails = array();
-        if (isset($data["@attributes"])) { $mails[] = $data["@attributes"]; }
+        if (isset($data["@attributes"])) {
+            $mails[] = $data["@attributes"];
+        }
         // Sometimes there is only ONE notification, so.. yeah..
         if (count($data) > 1) {
             foreach ($data as $multiMail) {

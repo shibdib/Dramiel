@@ -118,6 +118,7 @@ class notifications
             $this->allianceOnly = "false";
         }
     }
+
     /**
      *
      */
@@ -172,7 +173,9 @@ class notifications
             }
             $fixedData = array();
             // Sometimes there is only ONE notification, so.. yeah..
-            if (isset($data["@attributes"])) { $fixedData[] = $data["@attributes"]; }
+            if (isset($data["@attributes"])) {
+                $fixedData[] = $data["@attributes"];
+            }
             if (count($data) > 1) {
                 foreach ($data as $multiNotif) {
                     $fixedData[] = $multiNotif["@attributes"];
@@ -473,6 +476,7 @@ class notifications
         }
         return null;
     }
+
     /**
      * @param $keyID
      * @param $vCode
@@ -488,6 +492,7 @@ class notifications
         $data = $data["result"]["rowset"]["row"];
         return $data;
     }
+
     /**
      *
      */

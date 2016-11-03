@@ -115,12 +115,4 @@ class setNickname
         );
     }
 
-    /**
-     * @param $msgData
-     * @param $message
-     */
-    function onMessageAdmin()
-    {
-    }
-
 }

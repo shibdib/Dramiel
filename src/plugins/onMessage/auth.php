@@ -23,6 +23,7 @@
  * SOFTWARE.
  */
 use discord\discord;
+
 /**
  * Class auth
  */
@@ -69,13 +70,14 @@ class auth
         $this->dbUser = $config["database"]["user"];
         $this->dbPass = $config["database"]["pass"];
         $this->dbName = $config["database"]["database"];
-        $this->corpID = (int) $config["plugins"]["auth"]["corpID"];
-        $this->allianceID = (int) $config["plugins"]["auth"]["allianceID"];
+        $this->corpID = (int)$config["plugins"]["auth"]["corpID"];
+        $this->allianceID = (int)$config["plugins"]["auth"]["allianceID"];
         $this->roleName = $config["plugins"]["auth"]["corpMemberRole"];
         $this->allyroleName = $config["plugins"]["auth"]["allyMemberRole"];
         $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
         $this->ssoUrl = $config["plugins"]["auth"]["url"];
     }
+
     /**
      *
      */
@@ -116,12 +118,11 @@ class auth
             }
 
             while ($rows = $result->fetch_assoc()) {
-                $charid = (int) $rows['characterID'];
-                $corpid = (int) $rows['corporationID'];
-                $allianceid = (int) $rows['allianceID'];
+                $charid = (int)$rows['characterID'];
+                $corpid = (int)$rows['corporationID'];
+                $allianceid = (int)$rows['allianceID'];
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
                 $xml = makeApiRequest($url);
-
 
 
                 // We have an error, show it it
@@ -137,7 +138,7 @@ class auth
                     foreach ($xml->result->rowset->row as $character) {
                         $member = $guild->members->get("id", $userID);
                         $inGameName = $character->attributes()->name;
-                        $nick = (string) $inGameName;
+                        $nick = (string)$inGameName;
                         $member->setNickname($nick);
                     }
                 }
@@ -189,6 +190,7 @@ class auth
         }
         return null;
     }
+
     /**
      * @return array
      */

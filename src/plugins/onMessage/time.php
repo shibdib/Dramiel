@@ -71,7 +71,7 @@ class time
     {
         $this->message = $message;
         $user = $msgData["message"]["from"];
-        
+
         $message = $msgData["message"]["message"];
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);

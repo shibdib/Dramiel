@@ -97,7 +97,6 @@ class getKillmails
     }
 
 
-
     /**
      * @return array
      */
@@ -172,14 +171,12 @@ class getKillmails
                     //$iskValue = number_format(($totalValue/100), 0);
                     // Check if it's a structure
                     if ($victimName != "") {
-                        if ($rawValue >= $this->bigKill){
+                        if ($rawValue >= $this->bigKill) {
                             $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                        }
-                        elseif ($rawValue <= $this->bigKill)
-                        {
+                        } elseif ($rawValue <= $this->bigKill) {
                             $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                         }
-                        } elseif ($victimName == "") {
+                    } elseif ($victimName == "") {
                         $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
 

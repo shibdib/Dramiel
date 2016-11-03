@@ -23,7 +23,8 @@
  * SOFTWARE.
  */
 
-function gitRevision() {
+function gitRevision()
+{
     exec('git describe --always', $version_mini_hash);
     exec('git rev-list HEAD | wc -l', $version_number);
     exec('git log -1', $line);
@@ -33,7 +34,8 @@ function gitRevision() {
     return $version;
 }
 
-function gitBranch() {
+function gitBranch()
+{
     exec('git name-rev --name-only HEAD', $branch);
     $branchName = $branch[0];
     return $branchName;
