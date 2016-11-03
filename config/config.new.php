@@ -126,10 +126,6 @@ $config["plugins"] = array(
     "twitterOutput" => array(
         "channelID" => 0 // twitter output channel
     ),
-    //Pricecheck tool
-    "priceChecker" => array(
-        "channelID" => array(0, 0) //If you want to restrict price checker from working in a channel, put that channel's ID here.
-    ),
     //SSO Auth
     "auth" => array(
         "corpID" => array(0, 0), // If you'd like to auth based on corp put the corp ID's here
