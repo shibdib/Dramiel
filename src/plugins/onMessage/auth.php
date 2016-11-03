@@ -153,7 +153,7 @@ class auth
                 }
                 foreach ($xml->result->rowset->row as $character) {
                     $eveName = $character->attributes()->name;
-                    if ($corpid === $this->corpID) {
+                    if (in_array($corpid, $this->corpID, true)) {
                         $roles = $this->message->channel->guild->roles;
                         $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {
@@ -170,7 +170,7 @@ class auth
                             }
                         }
                     }
-                    if ($allianceid === $this->allianceID) {
+                    if (in_array($allianceid, $this->allianceID, true)) {
                         $roles = $this->message->channel->guild->roles;
                         $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {

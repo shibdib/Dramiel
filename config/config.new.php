@@ -132,8 +132,8 @@ $config["plugins"] = array(
     ),
     //SSO Auth
     "auth" => array(
-        "corpID" => 0,
-        "allianceID" => 0, // If you'd like to auth base on alliance put the alliance ID here.. also works to set blues..
+        "corpID" => array(0, 0), // If you'd like to auth based on corp put the corp ID's here
+        "allianceID" => array(0, 0), // If you'd like to auth based on alliance put the alliance ID's here
         "corpMemberRole" => "", // The name of the role your CORP members will be assigned too if the auth plugin is active.
         "allyMemberRole" => "", // The name of the role your ALLY members will be assigned too if the auth plugin is active.
         "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
