@@ -79,6 +79,7 @@ $config["enabledPlugins"] = array( // remove the slashes for the plugins you wan
     //"siphons", // report possible siphons, see wiki for more info
     //"siloFull", // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
     //"fleetUpOperations", // integrate with fleet up and post any new operations and then ping them when they get close
+    //"fleetUpOps", //show upcoming fleet up operations with a message command
     //"rssReader", //Post news to rss feeds
 );
 
@@ -174,6 +175,13 @@ $config["plugins"] = array(
         "userID" => 0, //fleet up user id
         "groupID" => 0, //fleet up group id
         "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
+    ),
+    //shows upcoming fleet up operations
+    "ops" => array(
+        "userID" => 0, //fleet up user id
+        "groupID" => 0, //fleet up group id
+        "apiKey" => "", //fleet up api code, link to application Dramiel Bot
+        "channelID" => 0, //If you want to restrict upcoming ops from working in a channel, put that channel's ID here.
     ),
     //Post well formatted rss feed links to a channel
     "rssReader" => array(
