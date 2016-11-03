@@ -33,7 +33,7 @@ use Monolog\Logger;
 function makeApiRequest($url)
 {
     $logger = new Logger('eveApi');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init($url);
@@ -64,7 +64,7 @@ function makeApiRequest($url)
 function serverStatus()
 {
     $logger = new Logger('eveApi');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init("https://api.eveonline.com/server/ServerStatus.xml.aspx");

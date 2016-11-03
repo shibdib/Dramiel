@@ -33,7 +33,7 @@ use Monolog\Logger;
 function downloadData($url)
 {
     $logger = new Logger('cURL');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     try {
         $userAgent = "Mozilla/5.0 (en-us;)";
         $curl = curl_init();
@@ -64,7 +64,7 @@ function downloadData($url)
 function downloadLargeData($url, $downloadPath)
 {
     $logger = new Logger('cURL');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $userAgent = "Mozilla/5.0 (en-us;)";
     try {
         $opts = array(
