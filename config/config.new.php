@@ -32,6 +32,7 @@ $config["bot"] = array(
     "guild" => 152677265635803136, // guildID 
     "token" => "", //enter the token for your app (https://discordapp.com/developers/applications/me)
     "adminRoles" => array("Admin", ""), //enter the roles that you'd like to have access to admin commands
+    "restrictedChannels" => array(0, 0), //bot will not respond in these channels
     "silentMode" => "false"//set this to true if you want to disable all the chat commands
 );
 

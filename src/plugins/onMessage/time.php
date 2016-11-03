@@ -41,6 +41,7 @@ class time
      * @var
      */
     var $logger;
+    var $excludeChannel;
     public $message;
 
     /**
@@ -53,6 +54,7 @@ class time
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
     /**
@@ -66,9 +68,17 @@ class time
     /**
      * @param $msgData
      * @param $message
+     * @return null
      */
     function onMessage($msgData, $message)
     {
+        $channelID = (int)$msgData["message"]["channelID"];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
+
         $this->message = $message;
         $user = $msgData["message"]["from"];
 

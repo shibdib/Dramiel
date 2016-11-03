@@ -68,7 +68,7 @@ class price
         $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Amarr");
         $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Rens");
         $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Dodixie");
-        $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
+        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
     /**
@@ -89,6 +89,11 @@ class price
         $this->message = $message;
         $user = $msgData["message"]["from"];
         $channelID = (int)$msgData["message"]["channelID"];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
 
 
         // Bind a few things to vars for the plugins

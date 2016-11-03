@@ -42,6 +42,7 @@ class charInfo
      * @var
      */
     var $logger;
+    var $excludeChannel;
     public $message;
 
     /**
@@ -54,6 +55,7 @@ class charInfo
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
     /**
@@ -70,6 +72,13 @@ class charInfo
      */
     function onMessage($msgData, $message)
     {
+        $channelID = (int)$msgData["message"]["channelID"];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
+
         $this->message = $message;
 
         $message = $msgData["message"]["message"];

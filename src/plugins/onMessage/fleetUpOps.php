@@ -73,7 +73,7 @@ class fleetUpOps
         $this->groupID = $config["plugins"]["ops"]["groupID"];
         $this->apiKey = $config["plugins"]["ops"]["apiKey"];
         $this->guild = $config["bot"]["guild"];
-        $this->excludeChannel = $config["plugins"]["ops"]["channelID"];
+        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
     /**
@@ -87,9 +87,17 @@ class fleetUpOps
     /**
      * @param $msgData
      * @param $message
+     * @return null
      */
     function onMessage($msgData, $message)
     {
+        $channelID = (int)$msgData["message"]["channelID"];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
+
         $this->message = $message;
         $user = $msgData["message"]["from"];
         $channelID = $msgData["message"]["channelID"];

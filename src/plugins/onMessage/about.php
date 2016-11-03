@@ -32,6 +32,7 @@ class about
      * @var
      */
     var $config;
+    var $excludeChannel;
     /**
      * @var
      */
@@ -56,6 +57,7 @@ class about
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
     /**
@@ -68,11 +70,18 @@ class about
     /**
      * @param $msgData
      * @param $message
+     * @return null
      */
     function onMessage($msgData, $message)
     {
         $this->message = $message;
         $info['guilds'] = $this->discord->guilds->count();
+        $channelID = (int)$msgData["message"]["channelID"];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
 
         global $startTime; // Get the starttime of the bot
         $time1 = new DateTime(date("Y-m-d H:i:s", $startTime));

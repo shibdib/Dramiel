@@ -43,6 +43,7 @@ class auth
     var $logger;
     var $solarSystems;
     var $triggers = array();
+    var $excludeChannel;
     public $guildID;
     public $roleName;
     public $corpID;
@@ -76,6 +77,7 @@ class auth
         $this->allyroleName = $config["plugins"]["auth"]["allyMemberRole"];
         $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
         $this->ssoUrl = $config["plugins"]["auth"]["url"];
+        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
     /**
@@ -92,6 +94,13 @@ class auth
      */
     function onMessage($msgData, $message)
     {
+        $channelID = (int)$msgData["message"]["channelID"];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
+
         $this->message = $message;
         $id = $this->config["bot"]["guild"];
         $guild = $this->discord->guilds->get('id', $id);
