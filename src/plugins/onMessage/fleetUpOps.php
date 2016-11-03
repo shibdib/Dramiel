@@ -94,6 +94,7 @@ class fleetUpOps
         $user = $msgData["message"]["from"];
         $channelID = $msgData["message"]["channelID"];
         $message = $msgData["message"]["message"];
+        date_default_timezone_set("UTC");
 
         $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
         if (isset($data["trigger"])) {
@@ -101,9 +102,6 @@ class fleetUpOps
             // Check if the channel is restricted
             if ($channelID == $this->excludeChannel) {
                 return $this->message->reply("**Upcoming Ops not allowed in this channel**");
-
-                $discord = $this->discord;
-                date_default_timezone_set("UTC");
             }
             //fleetUp post upcoming operations
             $ops = json_decode(downloadData("http://api.fleet-up.com/Api.svc/tlYgBRjmuXj2Yl1lEOyMhlDId/{$this->userID}/{$this->apiKey}/Operations/{$this->groupID}"), true);
@@ -111,7 +109,6 @@ class fleetUpOps
                 $name = $operation["Subject"];
                 $startTime = $operation["StartString"];
                 preg_match_all('!\d+!', $operation["Start"], $epochStart);
-                $startTimeUnix = substr($epochStart[0][0], 0, -3);
                 $desto = $operation["Location"];
                 $formUp = $operation["LocationInfo"];
                 $info = $operation["Details"];
@@ -129,6 +126,7 @@ Details - {$info}.
 Link - {$link}");
             }
         }
+        return null;
     }
 
     /**
