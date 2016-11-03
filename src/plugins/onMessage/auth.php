@@ -179,13 +179,13 @@ class auth
                         }
                     }
                     $this->message->reply("**Failure:** There are no roles available for your corp/alliance.");
-                    $this->logger->addInfo("auth: User was denied due to not being in the correct corp or alliance " . $eveName);
+                    $this->logger->addInfo("Auth: User was denied due to not being in the correct corp or alliance " . $eveName);
                     return null;
                 }
 
             }
             $this->message->reply("**Failure:** There was an issue with your code.");
-            $this->logger->addInfo("auth: User was denied due to not being in the correct corp or alliance " . $userName);
+            $this->logger->addInfo("Auth: User was denied due to not being in the correct corp or alliance " . $userName);
             return null;
         }
         return null;

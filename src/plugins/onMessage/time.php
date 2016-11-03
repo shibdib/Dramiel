@@ -92,7 +92,7 @@ class time
             $aus = $datetime->setTimezone(new DateTimeZone("Australia/Sydney"));
             $aus = $aus->format("H:i:s");
 
-            $this->logger->addInfo("time: Sending time info to {$user}");
+            $this->logger->addInfo("Time: Sending time info to {$user}");
             $this->message->reply("**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
         }
     }

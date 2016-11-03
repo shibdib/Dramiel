@@ -83,7 +83,7 @@ class siphons
         $vCode = $this->vCode;
 
         if ($lastChecked <= time()) {
-            $this->logger->addInfo("siphons: Checking API Key {$keyID} for siphons");
+            $this->logger->addInfo("Siphons: Checking API Key {$keyID} for siphons");
             $this->checkTowers($keyID, $vCode);
         }
     }
@@ -115,7 +115,7 @@ class siphons
                                 $guild = $discord->guilds->get('id', $this->guild);
                                 $channel = $guild->channels->get('id', $channelID);
                                 $channel->sendMessage($msg, false);
-                                $this->logger->addInfo("siphons: {$msg}");
+                                $this->logger->addInfo("Siphons: {$msg}");
                                 $siphonCount++;
                             }
                         }
@@ -139,7 +139,7 @@ class siphons
                                 $guild = $discord->guilds->get('id', $this->guild);
                                 $channel = $guild->channels->get('id', $channelID);
                                 $channel->sendMessage($msg, false);
-                                $this->logger->addInfo("siphons: {$msg}");
+                                $this->logger->addInfo("Siphons: {$msg}");
                                 $siphonCount++;
                             }
                         }
@@ -165,7 +165,7 @@ class siphons
             $channel = $guild->channels->get('id', $channelID);
             $channel->sendMessage($msg, false);
         }
-        $this->logger->addInfo("siphons: Siphon Check Complete Next Check At {$cacheTimer}");
+        $this->logger->addInfo("Siphons: Siphon Check Complete Next Check At {$cacheTimer}");
         return null;
     }
 
