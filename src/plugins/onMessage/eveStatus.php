@@ -81,7 +81,7 @@ class eveStatus
             $tqOnline = (int) $crestData["userCount"];
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
-            $this->logger->addInfo("Sending eve status info to {$user}");
+            $this->logger->addInfo("eveStatus: Sending eve status info to {$user}");
             $this->message->reply($msg);
         }
     }

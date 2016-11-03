@@ -91,11 +91,12 @@ class setNickname
                     $member->setNickname($nick);
 
                     $msg = "Bot nickname changed to **{$nick}** by {$msgData["message"]["from"]}";
-                    $this->logger->addInfo("Bot nickname changed to {$nick} by {$msgData["message"]["from"]}");
+                    $this->logger->addInfo("setNickname: Bot nickname changed to {$nick} by {$msgData["message"]["from"]}");
                     $this->message->reply($msg);
                     return null;
                 }
             }
+            $this->logger->addInfo("setNickname: {$msgData["message"]["from"]} attempted to change the bot's nickname.");
             $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
             $this->message->reply($msg);
             return null;

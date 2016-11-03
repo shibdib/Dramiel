@@ -117,7 +117,7 @@ class evemails
         $discord = $this->discord;
 
         if ($lastChecked <= time()) {
-            $this->logger->addInfo("Checking API Key {$keyID} for new mail..");
+            $this->logger->addInfo("Mails: Checking API Key {$keyID} for new mail..");
             $this->checkMails($keyID, $vCode, $characterID, $discord);
         }
 
@@ -197,7 +197,7 @@ class evemails
                 }
             }
         }
-        $this->logger->addInfo("Next Mail Check At: {$cacheTimer} EVE Time");
+        $this->logger->addInfo("Mails: Next Mail Check At: {$cacheTimer} EVE Time");
     }
 
     /**

@@ -129,7 +129,7 @@ class fileReader
                     $message = "skip";
                 }
                 if ($message != "skip") {
-                    $this->logger->addInfo("Ping sent to channel {$channelID}, Message - {$message}");
+                    $this->logger->addInfo("fileReader: Ping sent to channel {$channelID}, Message - {$message}");
                     // Send the pings to the channel
                     $guild = $discord->guilds->get('id', $this->guild);
                     $channel = $guild->channels->get('id', $channelID);

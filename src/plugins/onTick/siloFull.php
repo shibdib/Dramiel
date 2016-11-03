@@ -84,7 +84,7 @@ class siloFull
         $keyID = $this->keyID;
         $vCode = $this->vCode;
         if ($lastChecked <= time()) {
-            $this->logger->addInfo("Checking API Key {$keyID} for full silos");
+            $this->logger->addInfo("siloFull: Checking API Key {$keyID} for full silos");
             $this->checkTowers($keyID, $vCode);
         }
     }
@@ -131,7 +131,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -155,7 +155,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -179,7 +179,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -203,7 +203,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -227,7 +227,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -251,7 +251,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -275,7 +275,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -299,7 +299,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -323,7 +323,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -347,7 +347,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -371,7 +371,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -395,7 +395,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -419,7 +419,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -443,7 +443,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -467,7 +467,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -491,7 +491,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -515,7 +515,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -539,7 +539,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -563,7 +563,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -587,7 +587,7 @@ class siloFull
                                     }
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
-                                    $this->logger->addInfo("{$typeName} Silo nearing capacity in {$systemName}");
+                                    $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     $guild = $discord->guilds->get('id', $this->guild);
@@ -621,7 +621,7 @@ class siloFull
             $channel = $guild->channels->get('id', $channelID);
             $channel->sendMessage($msg, false);
         }
-        $this->logger->addInfo("Silo Check Complete Next Check At {$cacheTimer}");
+        $this->logger->addInfo("siloFull: Silo Check Complete Next Check At {$cacheTimer}");
         return null;
 
         /**

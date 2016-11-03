@@ -134,6 +134,7 @@ class twitterOutput
                     $guild = $discord->guilds->get('id', $this->guild);
                     $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
+                    $this->logger->addInfo("twitterOutput: Tweet posted to {$this->channelID}");
                 }
             }
             $this->lastCheck = time() + 60;

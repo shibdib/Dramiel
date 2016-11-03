@@ -156,7 +156,7 @@ class auth
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                                 $this->message->reply(":white_check_mark: **Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
-                                $this->logger->addInfo("User authed and added to corp group " . $eveName);
+                                $this->logger->addInfo("auth: User authed and added to corp group " . $eveName);
                                 return null;
                             }
                         }
@@ -173,19 +173,19 @@ class auth
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'ally');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                                 $this->message->reply("**Success:** You have now been added to the " . $this->allyroleName . " group. To get more roles, talk to the CEO / Directors");
-                                $this->logger->addInfo("User authed and added to the alliance group " . $eveName);
+                                $this->logger->addInfo("auth: User authed and added to the alliance group " . $eveName);
                                 return null;
                             }
                         }
                     }
                     $this->message->reply("**Failure:** There are no roles available for your corp/alliance.");
-                    $this->logger->addInfo("User was denied due to not being in the correct corp or alliance " . $eveName);
+                    $this->logger->addInfo("auth: User was denied due to not being in the correct corp or alliance " . $eveName);
                     return null;
                 }
 
             }
             $this->message->reply("**Failure:** There was an issue with your code.");
-            $this->logger->addInfo("User was denied due to not being in the correct corp or alliance " . $userName);
+            $this->logger->addInfo("auth: User was denied due to not being in the correct corp or alliance " . $userName);
             return null;
         }
         return null;

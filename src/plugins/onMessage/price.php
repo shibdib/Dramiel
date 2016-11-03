@@ -152,7 +152,7 @@ class price
                 $avgSell = number_format((float)$data->marketstat->type->sell->avg, 2);
                 $highSell = number_format((float)$data->marketstat->type->sell->max, 2);
 
-                $this->logger->addInfo("Sending pricing info to {$user}");
+                $this->logger->addInfo("price: Sending pricing info to {$user}");
                 $solarSystemName = $systemName == "pc" ? "Global" : ucfirst($systemName);
                 $messageData = "**System: {$solarSystemName}**
 **Buy:**

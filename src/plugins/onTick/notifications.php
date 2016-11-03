@@ -130,7 +130,7 @@ class notifications
         $characterID = $this->characterID;
 
         if ($lastChecked <= time()) {
-            $this->logger->addInfo("Checking API Key {$keyID} for notifications..");
+            $this->logger->addInfo("Notifications: Checking API Key {$keyID} for notifications..");
             $this->getNotifications($keyID, $vCode, $characterID);
         }
 
@@ -459,7 +459,7 @@ class notifications
                     if ($msg == "skip") {
                         return null;
                     }
-                    $this->logger->addInfo("Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
+                    $this->logger->addInfo("Notifications: Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
                     $guild = $discord->guilds->get('id', $this->guild);
                     $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
@@ -470,9 +470,9 @@ class notifications
                 }
             }
 
-            $this->logger->addInfo("Next Notification Check At: {$cacheTimer} EVE Time");
+            $this->logger->addInfo("Notifications: Next Notification Check At: {$cacheTimer} EVE Time");
         } catch (Exception $e) {
-            $this->logger->addInfo("Notification Error: " . $e->getMessage());
+            $this->logger->addInfo("Notifications: Notification Error: " . $e->getMessage());
         }
         return null;
     }

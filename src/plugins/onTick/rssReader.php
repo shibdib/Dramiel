@@ -87,10 +87,10 @@ class rssReader
         $toChannel = $this->toDiscordChannel;
 
         if ($lastCheck <= time()) {
-            $this->logger->addInfo("RSS Reader: Checking RSS feeds for updated news..");
+            $this->logger->addInfo("rssReader: Checking RSS feeds for updated news..");
             $this->getRss($feeds, $toChannel, $discord);
             setPermCache("rssLastChecked", time() + 900);
-            $this->logger->addInfo("RSS Reader: All feeds checked..");
+            $this->logger->addInfo("rssReader: All feeds checked..");
         }
     }
 
@@ -120,7 +120,7 @@ class rssReader
 
             //Check to see if feed is formatted correctly
             if ($itemTitle == NULL || $itemUrl == NULL || $itemDate == NULL) {
-                $this->logger->addInfo("RSS Reader Error: {$rssUrl} is not a properly formatted RSS feed.");
+                $this->logger->addInfo("rssReader: {$rssUrl} is not a properly formatted RSS feed.");
                 continue;
             }
 
@@ -145,7 +145,7 @@ class rssReader
                 $guild = $discord->guilds->get('id', $this->guild);
                 $channel = $guild->channels->get('id', $channelID);
                 $channel->sendMessage($msg, false);
-                $this->logger->addInfo("RSS Reader Item Posted: {$itemTitle}");
+                $this->logger->addInfo("rssReader: Item Posted {$itemTitle}");
                 if ($itemDate > getPermCache("rssFeed{$feedLink}")) {
                     setPermCache("rssFeed{$feedLink}", $itemDate);
                 }

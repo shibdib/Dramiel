@@ -129,7 +129,7 @@ ePeen Size: {$ePeenSize}
 ```
 For more info, visit: $url";
 
-            $this->logger->addInfo("Sending character info to {$user}");
+            $this->logger->addInfo("corpInfo: Sending character info to {$user}");
             $this->message->reply($msg);
         }
         return null;

@@ -101,7 +101,7 @@ Statistics:
 Currently on {$info['guilds']} different discord servers.
 Up-time: " . $interval->y . " Year(s), " . $interval->m . " Month(s), " . $interval->d . " Days, " . $interval->h . " Hours, " . $interval->i . " Minutes, " . $interval->s . " seconds.
 Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
-            $this->logger->addInfo("Sending about info to {$user}");
+            $this->logger->addInfo("About: Sending about info to {$user}");
             $this->message->reply($msg);
         }
     }

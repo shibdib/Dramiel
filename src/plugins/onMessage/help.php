@@ -100,7 +100,7 @@ class help
                 }
 
                 $this->message->reply("Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
-                $this->logger->addInfo("Sending help info to {$user}");
+                $this->logger->addInfo("help: Sending help info to {$user}");
             } else {
                 foreach ($plugins as $plugin) {
                     if ($messageString == $plugin->information()["name"]) {

@@ -116,7 +116,7 @@ class getKillmails
     {
         $lastChecked = getPermCache("killmailCheck{$this->corpID}");
         if ($lastChecked <= time()) {
-            $this->logger->addInfo("Checking for new killmails.");
+            $this->logger->addInfo("Killmails: Checking for new killmails.");
             $oldID = getPermCache("newestKillmailID");
             setPermCache("newestKillmailID", $oldID++);
             $this->getKM();
@@ -144,7 +144,7 @@ class getKillmails
         }
 
         if (!isset($url)) { // Make sure it's always set.
-            $this->logger->addInfo("ERROR - Ensure your config file is setup correctly for killmails.");
+            $this->logger->addInfo("Killmails: ERROR - Ensure your config file is setup correctly for killmails.");
             return null;
         }
 
@@ -193,13 +193,13 @@ class getKillmails
                     $i++;
                 } else {
                     $updatedID = getPermCache("newestKillmailID");
-                    $this->logger->addInfo("Kill posting cap reached, newest kill id is {$updatedID}");
+                    $this->logger->addInfo("Killmails: Kill posting cap reached, newest kill id is {$updatedID}");
                     return null;
                 }
             }
         }
         $updatedID = getPermCache("newestKillmailID");
-        $this->logger->addInfo("All kills posted, newest kill id is {$updatedID}");
+        $this->logger->addInfo("Killmails: All kills posted, newest kill id is {$updatedID}");
         return null;
     }
 }
