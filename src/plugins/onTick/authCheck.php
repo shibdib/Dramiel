@@ -38,6 +38,14 @@ class authCheck
      * @var
      */
     var $db;
+    var $dbUser;
+    var $dbPass;
+    var $dbName;
+    var $id;
+    var $allyID;
+    var $corpID;
+    var $exempt;
+    var $alertChannel;
     /**
      * @var
      */
@@ -65,11 +73,24 @@ class authCheck
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->db = $config["database"]["host"];
+        $this->dbUser = $config["database"]["user"];
+        $this->dbPass = $config["database"]["pass"];
+        $this->dbName = $config["database"]["database"];
+        $this->id = $config["bot"]["guild"];
+        $this->allyID = $config["plugins"]["auth"]["allianceID"];
+        $this->corpID = $config["plugins"]["auth"]["corpID"];
+        $this->exempt = $config["plugins"]["auth"]["exempt"];
+        $this->alertChannel = $config["plugins"]["auth"]["alertChannel"];
         $this->nextCheck = 0;
-        $lastCheck = getPermCache("authLastChecked");
-        if ($lastCheck == NULL) {
-            // Schedule it for right now if first run
-            setPermCache("authLastChecked", time() - 5);
+
+        //check if cache has been set
+        $permsChecked = getPermCache("permsLastChecked");
+
+        //if not set set for now (30 minutes from now for role removal)
+        if ($permsChecked == NULL) {
+            setPermCache("permsLastChecked", time() - 5);
+            setPermCache("authStateLastChecked", time() + 7200);
         }
     }
 
@@ -84,91 +105,51 @@ class authCheck
             "information" => ""
         );
     }
+
     function tick()
     {
-        $lastChecked = getPermCache("authLastChecked");
-        $discord = $this->discord;
+        $permsChecked = getPermCache("permsLastChecked");
+        $stateChecked = getPermCache("authStateLastChecked");
 
-        if ($lastChecked <= time()) {
-            $this->logger->addInfo("Checking authed users for changes....");
-            $this->checkAuth($discord);
+        if ($permsChecked <= time()) {
+            $this->logger->addInfo("AuthCheck: Checking for users who have left corp/alliance....");
+            $this->checkPermissions();
+            $this->logger->addInfo("AuthCheck: Corp/alliance check complete.");
         }
 
+        if ($stateChecked <= time()) {
+            $this->logger->addInfo("AuthCheck: Checking for users who have been wrongly given roles....");
+            $this->checkAuthState();
+            $this->logger->addInfo("AuthCheck: Role check complete.");
+        }
     }
 
     /**
-     * @param $discord
      * @return null
      */
-    function checkAuth($discord)
+
+    //Remove members who have roles but never authed
+    function checkPermissions()
     {
-        $db = $this->config["database"]["host"];
-        $dbUser = $this->config["database"]["user"];
-        $dbPass = $this->config["database"]["pass"];
-        $dbName = $this->config["database"]["database"];
-        $id = $this->config["bot"]["guild"];
-        $allyID = $this->config["plugins"]["auth"]["allianceID"];
-        $corpID = $this->config["plugins"]["auth"]["corpID"];
-        $exempt = $this->config["plugins"]["auth"]["exempt"];
-        if (is_null($exempt)) {
-            $exempt = "0";
-        }
-        $toDiscordChannel = $this->config["plugins"]["auth"]["alertChannel"];
-        $conn = new mysqli($db, $dbUser, $dbPass, $dbName);
-
-        //get bot ID so we don't remove out own roles
-        $botID = $this->discord->id;
-
         //Get guild object
-        $guild = $discord->guilds->get('id', $id);
+        $guild = $this->discord->guilds->get('id', $this->id);
 
-        //Check to make sure guildID is set correctly
-        if (is_null($guild)) {
-            $this->logger->addError("Config Error: Ensure the guild entry in the config is the guildID (aka serverID) for the main server that the bot is in.");
-            $nextCheck = time() + 7200;
-            setPermCache("authLastChecked", $nextCheck);
-            return null;
-        }
-
-        //Remove members who have roles but never authed
-        foreach ($guild->members as $member) {
-            $id = $member->id;
-            $username = $member->username;
-            $roles = $member->roles;
-
-            $sql = "SELECT * FROM authUsers WHERE discordID='$id' AND active='yes'";
-
-            $result = $conn->query($sql);
-            if ($result->num_rows == 0) {
-                foreach ($roles as $role) {
-                    if (!isset($role->name)) {
-                        if ($id != $botID && !in_array($role->name, $exempt, true)) {
-                            $member->removeRole($role);
-                            $guild->members->save($member);
-                            // Send the info to the channel
-                            $msg = "{$username} has been removed from the {$role->name} role as they never authed (Someone manually assigned them roles).";
-                            $channelID = $toDiscordChannel;
-                            $channel = $guild->channels->get('id', $channelID);
-                            $channel->sendMessage($msg, false);
-                            $this->logger->addInfo("{$username} has been removed from the {$role->name} role as they never authed.");
-                        }
-                    }
-                }
-            }
-        }
+        //Establish connection to mysql
+        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
 
         $sql = "SELECT characterID, discordID, eveName FROM authUsers WHERE active='yes'";
 
         $result = $conn->query($sql);
-        $num_rows = $result->num_rows;
 
-        if ($num_rows >= 1) {
+        if ($result->num_rows >= 1) {
             while ($rows = $result->fetch_assoc()) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get("id", $discordID);
                 $eveName = $rows['eveName'];
-                $roles = $member->roles;
+                if (is_null($member->roles)) {
+                    continue;
+                }
 
                 if ($this->config["plugins"]["auth"]["nameEnforce"] == "true" && !is_null($member)) {
                     $nick = $eveName;
@@ -184,58 +165,84 @@ class authCheck
                 }
                 if ($xml->result->rowset->row[0]) {
                     foreach ($xml->result->rowset->row as $character) {
-
-                        if ($character->attributes()->allianceID != $allyID && $character->attributes()->corporationID != $corpID) {
-                            foreach ($roles as $role) {
-                                $member->removeRole($role);
-                                $guild->members->save($member);
-                            }
-
-                            $statsURL = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=" . urlencode($character->attributes()->corporationID);
-                            $stats = makeApiRequest($statsURL);
-                            foreach ($stats->result->rowset->row as $corporation) {
-                                $corporationName = $corporation->attributes()->name;
-                            }
-
-                            if (!isset($corporationName)) { // Make sure it's always set.
-                                $corporationName = "Unknown";
-                            }
-
-                            if (!isset($role)) { // Make sure it's always set.
-                                $role = "Unknown";
-                            }
-
-                            // Send the info to the channel
-                            $msg = "{$eveName}'s roles have been removed, user is now a member of **{$corporationName}**.";
-                            $channelID = $toDiscordChannel;
-                            $channel = $guild->channels->get('id', $channelID);
-                            $channel->sendMessage($msg, false);
-                            $this->logger->addInfo("{$eveName} roles ({$role}) have been removed, user is now a member of **{$corporationName}**.");
-
+                        if ($character->attributes()->allianceID != $this->allyID && $character->attributes()->corporationID != $this->corpID) {
+                            // Deactivate user in database
                             $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+                            $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in the correct corp/alliance.");
                             $conn->query($sql);
-
                         }
                     }
                 }
             }
-            $this->logger->addInfo("All users successfully authed.");
-            $nextCheck = time() + 7200;
-            setPermCache("authLastChecked", $nextCheck);
-            $cacheTimer = gmdate("Y-m-d H:i:s", $nextCheck);
-            $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
+            $nextCheck = time() + 10800;
+            setPermCache("permsLastChecked", $nextCheck);
             return null;
         }
-        $this->logger->addInfo("No users found in database.");
-        $nextCheck = time() + 7200;
-        setPermCache("authLastChecked", $nextCheck);
-        $cacheTimer = gmdate("Y-m-d H:i:s", $nextCheck);
-        $this->logger->addInfo("Next auth and name check at {$cacheTimer} EVE");
+        $nextCheck = time() + 10800;
+        setPermCache("permsLastChecked", $nextCheck);
         return null;
     }
 
-    function onMessage()
+    //Check user corp/alliance affiliation
+
+
+    function checkAuthState()
     {
+
+        //Check if exempt roles are set
+        if (is_null($this->exempt)) {
+            $this->exempt = "0";
+        }
+
+        //Establish connection to mysql
+        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
+
+        //get bot ID so we don't remove out own roles
+        $botID = $this->discord->id;
+
+        //Get guild object
+        $guild = $this->discord->guilds->get('id', $this->id);
+
+        //Check to make sure guildID is set correctly
+        if (is_null($guild)) {
+            $this->logger->addError("Config Error: Ensure the guild entry in the config is the guildID (aka serverID) for the main server that the bot is in.");
+            $nextCheck = time() + 7200;
+            setPermCache("authLastChecked", $nextCheck);
+            return null;
+        }
+
+        //Perform check if roles were added without permission
+        foreach ($guild->members as $member) {
+            $id = $member->id;
+            $username = $member->username;
+            $roles = $member->roles;
+
+            //Skip to next member if this user has no roles
+            if (is_null($roles)) {
+                continue;
+            }
+            $sql = "SELECT * FROM authUsers WHERE discordID='$id' AND active='yes'";
+            $result = $conn->query($sql);
+
+            //If they are NOT active in the db, check for roles to remove
+            if ($result->num_rows == 0) {
+                foreach ($roles as $role) {
+                    if (!isset($role->name)) {
+                        if ($id != $botID && !in_array($role->name, $this->exempt, true)) {
+                            $member->removeRole($role);
+                            $guild->members->save($member);
+                            // Send the info to the channel
+                            $msg = "{$username} has been removed from the {$role->name} role.";
+                            $channel = $guild->channels->get('id', $this->alertChannel);
+                            $channel->sendMessage($msg, false);
+                            $this->logger->addInfo("AuthCheck: {$username} has been removed from the {$role->name} role.");
+                        }
+                    }
+                }
+            }
+        }
+        $nextCheck = time() + 1800;
+        setPermCache("authStateLastChecked", $nextCheck);
+        return null;
     }
 }
-    
