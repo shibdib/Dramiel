@@ -155,7 +155,7 @@ $discord->on(
                 $channel->sendMessage($queuedMessage['message'], false);
                 $id = $id + 1;
                 setPermCache("messageQueueID", $id);
-                clearQueuedMessages($id);
+                //clearQueuedMessages($id); bugtest me
             }
         });
 
