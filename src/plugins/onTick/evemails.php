@@ -179,11 +179,9 @@ class evemails
 
                 // Send the mails to the channel
                 $channelID = $this->toDiscordChannel;
-                $guild = $discord->guilds->get('id', $this->guild);
-                $channel = $guild->channels->get('id', $channelID);
-                $channel->sendMessage($msg, false);
+                queueMessage($msg, $channelID, $this->guild);
                 if (strlen($content) > 1850) {
-                    $channel->sendMessage($msgLong, false);
+                    queueMessage($msgLong, $channelID, $this->guild);
                 }
 
                 // Find the maxID so we don't spit this message out ever again

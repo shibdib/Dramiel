@@ -26,7 +26,7 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array("users", "usersSeen", "storage", "shipFits");
+    $tables = array("users", "usersSeen", "storage", "messageQueue");
 
     $tableCreateCode = array(
         "users" => "
@@ -69,13 +69,13 @@ function updateDramielDB($logger)
             );
             CREATE UNIQUE INDEX key ON storage (key);
             COMMIT;",
-        "shipFits" => "
+        "messageQueue" => "
             BEGIN;
-            CREATE TABLE IF NOT EXISTS `shipFits` (
+            CREATE TABLE IF NOT EXISTS `messageQueue` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                `submitter` VARCHAR(255) NOT NULL,
-                `fit` VARCHAR(255) NOT NULL,
-                `fitLink` VARCHAR(255) NOT NULL
+                `message` VARCHAR(255) NOT NULL,
+                `channel` VARCHAR(255) NOT NULL,
+                `guild` VARCHAR(255) NOT NULL
             );
             COMMIT;",
     );

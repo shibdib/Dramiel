@@ -131,9 +131,7 @@ class twitterOutput
                 foreach ($messages as $id => $msg) {
                     // Send the tweets to the channel
                     $channelID = $this->channelID;
-                    $guild = $discord->guilds->get('id', $this->guild);
-                    $channel = $guild->channels->get('id', $channelID);
-                    $channel->sendMessage($msg, false);
+                    queueMessage($msg, $channelID, $this->guild);
                     $this->logger->addInfo("twitterOutput: Tweet posted to {$this->channelID}");
                 }
             }
