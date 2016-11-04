@@ -204,7 +204,6 @@ class notifications
                             $aggAllianceName = apiCharacterName($aggAllianceID);
                             $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been joined by a third party. This new group may begin fighting in roughly 24 hours.";
                             break;
-                            break;
                         case 7: // War Declared corp
                             $defCorpID = trim(explode(": ", $notificationString[0])[1]);
                             $aggCorpID = trim(explode(": ", $notificationString[2])[1]);
