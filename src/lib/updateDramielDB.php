@@ -78,7 +78,7 @@ function updateDramielDB($logger)
                 `guild` VARCHAR(255) NOT NULL
             );
             COMMIT;",
-        "replyQueue" => "
+        "replysQueue" => "
             BEGIN;
             CREATE TABLE IF NOT EXISTS `replysQueue` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
