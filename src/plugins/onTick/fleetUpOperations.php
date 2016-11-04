@@ -128,7 +128,7 @@ Link - {$link}";
                     $channel = $guild->channels->get('id', $channelID);
                     $channel->sendMessage($msg, false);
                     setPermCache("fleetUpLastPostedOperation", $id);
-                    $this->logger->addInfo("FleetUp: Upcoming Operation - {$name}");
+                    $this->logger->addInfo("FleetUp: Upcoming Operation Queued for Posting - {$name}");
                 }
             }
         }
@@ -170,9 +170,7 @@ Details - {$info}
 
 Link - {$link}";
                     $channelID = $this->toDiscordChannel;
-                    $guild = $discord->guilds->get('id', $this->guild);
-                    $channel = $guild->channels->get('id', $channelID);
-                    $channel->sendMessage($msg, false);
+                    queueMessage($msg, $channelID, $this->guild);
                 }
                 if ($id > $currentID) {
                     setPermCache("fleetUpLastOperation", $id);

@@ -164,9 +164,7 @@ class getKillmails
                         if (!isset($msg)) { // Make sure it's always set.
                             return null;
                         }
-                        $guild = $discord->guilds->get('id', $this->guild);
-                        $channel = $guild->channels->get('id', $channelID);
-                        $channel->sendMessage($msg, false);
+                        queueMessage($msg, $channelID, $this->guild);
                         setPermCache("{$kmGroup["name"]}newestKillmailID", $killID++);
 
                         $i++;

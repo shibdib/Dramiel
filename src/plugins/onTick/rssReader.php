@@ -142,10 +142,8 @@ class rssReader
 
                 //Send message
                 $channelID = $toChannel;
-                $guild = $discord->guilds->get('id', $this->guild);
-                $channel = $guild->channels->get('id', $channelID);
-                $channel->sendMessage($msg, false);
-                $this->logger->addInfo("rssReader: Item Posted {$itemTitle}");
+                queueMessage($msg, $channelID, $this->guild);
+                $this->logger->addInfo("rssReader: Item Queued {$itemTitle}");
                 if ($itemDate > getPermCache("rssFeed{$feedLink}")) {
                     setPermCache("rssFeed{$feedLink}", $itemDate);
                 }
