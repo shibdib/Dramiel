@@ -143,13 +143,30 @@ $config["plugins"] = array(
     ),
     //Killmail posting
     "getKillmails" => array(
-        "channel" => 0, //killmails post to this channel
-        "bigKill" => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
-        "corpID" => 0, //corpid for killmails
-        "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
-        "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.
-        "spamAmount" => 10, //Max amount of kills the bot will post every 10 minutes. Default is 15 and won't get the bot kicked for spamming.
-        "startMail" => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
+        "groupConfig" => array(
+            "group1" => array(
+                "name" => "corp1", // insert a label (these must be unique)
+                "channel" => 0, //killmails post to this channel
+                "corpID" => 0, //corpid for killmails
+                "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
+                "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.
+                "spamAmount" => 10, //Max amount of kills the bot will post every 10 minutes. Default is 15 and won't get the bot kicked for spamming.
+                "startMail" => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
+                "bigKill" => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
+                "bigKillChannel" => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
+            ),
+            "group2" => array(
+                "name" => "corp2", // insert a label (these must be unique)
+                "channel" => 0, //killmails post to this channel
+                "corpID" => 0, //corpid for killmails
+                "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
+                "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.
+                "spamAmount" => 10, //Max amount of kills the bot will post every 10 minutes. Default is 15 and won't get the bot kicked for spamming.
+                "startMail" => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
+                "bigKill" => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
+                "bigKillChannel" => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
+            ),
+        ),
     ),
     //Siphon detection works by looking for multiples of 100 inside standard silos. So if you take out a weird number it will trigger false positives.
     "siphons" => array(
