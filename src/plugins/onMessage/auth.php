@@ -71,8 +71,8 @@ class auth
         $this->dbUser = $config["database"]["user"];
         $this->dbPass = $config["database"]["pass"];
         $this->dbName = $config["database"]["database"];
-        $this->corpID = $config["plugins"]["auth"]["corpID"];
-        $this->allianceID = $config["plugins"]["auth"]["allianceID"];
+        $this->corpID = (int)$config["plugins"]["auth"]["corpID"];
+        $this->allianceID = (int)$config["plugins"]["auth"]["allianceID"];
         $this->roleName = $config["plugins"]["auth"]["corpMemberRole"];
         $this->allyroleName = $config["plugins"]["auth"]["allyMemberRole"];
         $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
@@ -153,7 +153,7 @@ class auth
                 }
                 foreach ($xml->result->rowset->row as $character) {
                     $eveName = $character->attributes()->name;
-                    if (in_array($corpid, $this->corpID, true)) {
+                    if ($corpid === $this->corpID) {
                         $roles = $this->message->channel->guild->roles;
                         $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {
@@ -170,7 +170,7 @@ class auth
                             }
                         }
                     }
-                    if (in_array($allianceid, $this->allianceID, true)) {
+                    if ($allianceid === $this->allianceID) {
                         $roles = $this->message->channel->guild->roles;
                         $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {
