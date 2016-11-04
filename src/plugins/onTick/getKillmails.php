@@ -168,7 +168,6 @@ class getKillmails
                     $shipName = apiTypeName($victimShipID);
                     $rawValue = $kill['zkb']['totalValue'];
                     $totalValue = number_format($kill['zkb']['totalValue']);
-                    //$iskValue = number_format(($totalValue/100), 0);
                     // Check if it's a structure
                     if ($victimName != "") {
                         if ($rawValue >= $this->bigKill) {
