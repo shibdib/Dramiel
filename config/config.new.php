@@ -126,10 +126,14 @@ $config["plugins"] = array(
     "twitterOutput" => array(
         "channelID" => 0 // twitter output channel
     ),
+    //Pricecheck tool
+    "priceChecker" => array(
+        "channelID" => array(0, 0) //If you want to restrict price checker from working in a channel, put that channel's ID here.
+    ),
     //SSO Auth
     "auth" => array(
-        "corpID" => array(0, 0), // If you'd like to auth based on corp put the corp ID's here
-        "allianceID" => array(0, 0), // If you'd like to auth based on alliance put the alliance ID's here
+        "corpID" => 0,
+        "allianceID" => 0, // If you'd like to auth base on alliance put the alliance ID here.. also works to set blues..
         "corpMemberRole" => "", // The name of the role your CORP members will be assigned too if the auth plugin is active.
         "allyMemberRole" => "", // The name of the role your ALLY members will be assigned too if the auth plugin is active.
         "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
@@ -174,10 +178,11 @@ $config["plugins"] = array(
         "apiKey" => "xxxxx", //fleet up api code, link to application Dramiel Bot
     ),
     //shows upcoming fleet up operations
-    "fleetUpOps" => array(
+    "ops" => array(
         "userID" => 0, //fleet up user id
         "groupID" => 0, //fleet up group id
         "apiKey" => "", //fleet up api code, link to application Dramiel Bot
+        "channelID" => 0, //If you want to restrict upcoming ops from working in a channel, put that channel's ID here.
     ),
     //Post well formatted rss feed links to a channel
     "rssReader" => array(
