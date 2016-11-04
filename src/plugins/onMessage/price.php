@@ -126,7 +126,8 @@ class price
 
             // Check if the channel is restricted
             if (in_array($channelID, $this->excludeChannel, true)) {
-                return $this->message->reply("**Price Check not allowed in this channel**");
+                queueReplyMessage($this->message, "**Price Check not allowed in this channel**");
+                return null;
             }
 
             // If there is a single result, we'll get data now!
@@ -168,9 +169,9 @@ class price
    Low: {$lowSell}
    Avg: {$avgSell}
    High: {$highSell}";
-                $this->message->reply($messageData);
+                queueReplyMessage($this->message, $messageData);
             } else {
-                $this->message->reply("**Error:** ***{$itemName}*** not found");
+                queueReplyMessage($this->message, "**Error:** ***{$itemName}*** not found");
             }
         }
         return null;

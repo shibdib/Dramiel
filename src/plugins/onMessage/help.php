@@ -109,12 +109,12 @@ class help
                     }
                 }
 
-                $this->message->reply("Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
+                queueReplyMessage($this->message, "Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
                 $this->logger->addInfo("Help: Sending help info to {$user}");
             } else {
                 foreach ($plugins as $plugin) {
                     if ($messageString == $plugin->information()["name"]) {
-                        $this->message->reply($plugin->information()["information"]);
+                        queueReplyMessage($this->message, $plugin->information()["information"]);
                     }
                 }
             }

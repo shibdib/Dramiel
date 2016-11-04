@@ -26,7 +26,7 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array("users", "usersSeen", "storage", "messageQueue");
+    $tables = array("users", "usersSeen", "storage", "messageQueue", "replyQueue");
 
     $tableCreateCode = array(
         "users" => "
@@ -76,6 +76,14 @@ function updateDramielDB($logger)
                 `message` VARCHAR(255) NOT NULL,
                 `channel` VARCHAR(255) NOT NULL,
                 `guild` VARCHAR(255) NOT NULL
+            );
+            COMMIT;",
+        "replyQueue" => "
+            BEGIN;
+            CREATE TABLE IF NOT EXISTS `replyQueue` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                `messageData` VARCHAR(255) NOT NULL,
+                `message` VARCHAR(255) NOT NULL
             );
             COMMIT;",
     );

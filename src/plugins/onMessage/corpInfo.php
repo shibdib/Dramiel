@@ -89,7 +89,8 @@ class corpInfo
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
             if (empty($data)) {
-                return $this->message->reply("**Error:** Unable to find any group matching that name.");
+                queueReplyMessage($this->message, "**Error:** Unable to find any group matching that name.");
+                return null;
             }
             $corpID = null;
             if (isset($xml->result->rowset->row)) {
@@ -99,7 +100,8 @@ class corpInfo
             }
 
             if (empty($corpID)) {
-                return $this->message->reply("**Error:** Unable to find any group matching that name.");
+                queueReplyMessage($this->message, "**Error:** Unable to find any group matching that name.");
+                return null;
             }
 
             // Get stats
@@ -107,7 +109,8 @@ class corpInfo
             $stats = json_decode(downloadData($statsURL), true);
 
             if (is_null(@$stats["corporationActiveArea"])) {
-                return $this->message->reply("**Error:** No data available for that group.");
+                queueReplyMessage($this->message, "**Error:** No data available for that group.");
+                return null;
             }
 
             $corporationName = @$stats["corporationName"];
@@ -139,7 +142,7 @@ ePeen Size: {$ePeenSize}
 For more info, visit: $url";
 
             $this->logger->addInfo("corpInfo: Sending character info to {$user}");
-            $this->message->reply($msg);
+            queueReplyMessage($this->message, $msg);
         }
         return null;
     }

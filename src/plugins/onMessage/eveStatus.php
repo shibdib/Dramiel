@@ -92,7 +92,7 @@ class eveStatus
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
             $this->logger->addInfo("eveStatus: Sending eve status info to {$user}");
-            $this->message->reply($msg);
+            queueReplyMessage($this->message, $msg);
         }
     }
 
