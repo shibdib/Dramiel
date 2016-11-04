@@ -90,6 +90,12 @@ class getKillmails
     {
         $lastChecked = getPermCache("killmailCheck");
         if ($lastChecked <= time()) {
+            //check if user is still using the old config
+            if(is_null($this->groupConfig)){
+                $this->logger->addError("Killmails: UPDATE YOUR CONFIG TO RECEIVE KILLMAILS");
+                setPermCache("killmailCheck", time() + 900);
+                return null;
+            }
             $this->logger->addInfo("Killmails: Checking for new killmails.");
             $this->getKM();
             setPermCache("killmailCheck", time() + 900);
@@ -100,7 +106,6 @@ class getKillmails
     function getKM()
     {
         foreach($this->groupConfig as $kmGroup) {
-            $discord = $this->discord;
             $lastMail = getPermCache("{$kmGroup["name"]}newestKillmailID");
             if (is_null($lastMail)){
                 $lastMail = $kmGroup["startMail"];
