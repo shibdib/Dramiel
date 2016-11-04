@@ -150,9 +150,9 @@ $discord->on(
             }
             $queuedMessage = getReplyMessage($id);
             if(!is_null($queuedMessage)){
-                $this->message = $queuedMessage['messageData'];
+                $message = $queuedMessage['messageData'];
                 $msg = $queuedMessage['message'];
-                $this->message->reply($msg);
+                $message->reply($msg);
                 $id = $id + 1;
                 setPermCache("replyQueueID", $id);
                 //clearQueuedMessages($id); bugtest me
