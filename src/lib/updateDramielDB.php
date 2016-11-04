@@ -26,7 +26,7 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array("users", "usersSeen", "storage", "shipFits");
+    $tables = array("users", "usersSeen", "storage", "messageQueue");
 
     $tableCreateCode = array(
         "users" => "
