@@ -105,6 +105,7 @@ class auth
         $id = $this->config["bot"]["guild"];
         $guild = $this->discord->guilds->get('id', $id);
         $userID = $msgData["message"]["fromID"];
+        $channelID = (int)$msgData["message"]["channelID"];
         $userName = $msgData["message"]["from"];
         $message = $msgData["message"]["message"];
         $channelInfo = $this->message->channel;
@@ -113,7 +114,7 @@ class auth
         if (isset($data["trigger"])) {
             if (isset($this->config["bot"]["primary"])) {
                 if ($guildID != $this->config["bot"]["primary"]) {
-                    queueReplyMessage($this->message, "**Failure:** The auth code your attempting to use is for another discord server");
+                    queueReplyMessage($userName, $channelID, "**Failure:** The auth code your attempting to use is for another discord server");
                     return null;
                 }
 
@@ -122,7 +123,7 @@ class auth
             $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
 
             if (strlen($code) < 12) {
-                queueReplyMessage($this->message, "Invalid Code, check " . $this->config["bot"]["trigger"] . "help auth for more info.");
+                queueReplyMessage($userName, $channelID, "Invalid Code, check " . $this->config["bot"]["trigger"] . "help auth for more info.");
                 return null;
             }
 
@@ -136,12 +137,12 @@ class auth
 
                 // We have an error, show it it
                 if ($xml->error) {
-                    queueReplyMessage($this->message, "**Failure:** Eve API error, please try again in a little while.");
+                    queueReplyMessage($userName, $channelID, "**Failure:** Eve API error, please try again in a little while.");
                     return null;
                 }
 
                 if (!isset($xml->result->rowset->row)) {
-                    queueReplyMessage($this->message, "**Failure:** Eve API error, please try again in a little while.");
+                    queueReplyMessage($userName, $channelID, "**Failure:** Eve API error, please try again in a little while.");
                     return null;
                 } elseif ($this->nameEnforce == 'true') {
                     foreach ($xml->result->rowset->row as $character) {
@@ -164,7 +165,7 @@ class auth
                                 $guild->members->save($member);
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                                queueReplyMessage($this->message, ":white_check_mark: **Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
+                                queueReplyMessage($userName, $channelID, ":white_check_mark: **Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
                                 $this->logger->addInfo("auth: User authed and added to corp group " . $eveName);
                                 return null;
                             }
@@ -181,19 +182,19 @@ class auth
                                 $guild->members->save($member);
                                 insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'ally');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                                queueReplyMessage($this->message, ":white_check_mark: **Success:** You have now been added to the " . $this->allyroleName . " group. To get more roles, talk to the CEO / Directors");
+                                queueReplyMessage($userName, $channelID, ":white_check_mark: **Success:** You have now been added to the " . $this->allyroleName . " group. To get more roles, talk to the CEO / Directors");
                                 $this->logger->addInfo("auth: User authed and added to the alliance group " . $eveName);
                                 return null;
                             }
                         }
                     }
-                    queueReplyMessage($this->message, "**Failure:** There are no roles available for your corp/alliance.");
+                    queueReplyMessage($userName, $channelID, "**Failure:** There are no roles available for your corp/alliance.");
                     $this->logger->addInfo("Auth: User was denied due to not being in the correct corp or alliance " . $eveName);
                     return null;
                 }
 
             }
-            queueReplyMessage($this->message, "**Failure:** There was an issue with your code.");
+            queueReplyMessage($userName, $channelID, "**Failure:** There was an issue with your code.");
             $this->logger->addInfo("Auth: User was denied due to not being in the correct corp or alliance " . $userName);
             return null;
         }

@@ -71,6 +71,7 @@ class corpInfo
     function onMessage($msgData, $message)
     {
         $channelID = (int)$msgData["message"]["channelID"];
+        $userName = $msgData["message"]["from"];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -89,7 +90,7 @@ class corpInfo
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
             if (empty($data)) {
-                queueReplyMessage($this->message, "**Error:** Unable to find any group matching that name.");
+                queueReplyMessage($userName, $channelID, "**Error:** Unable to find any group matching that name.");
                 return null;
             }
             $corpID = null;
@@ -100,7 +101,7 @@ class corpInfo
             }
 
             if (empty($corpID)) {
-                queueReplyMessage($this->message, "**Error:** Unable to find any group matching that name.");
+                queueReplyMessage($userName, $channelID, "**Error:** Unable to find any group matching that name.");
                 return null;
             }
 
@@ -109,7 +110,7 @@ class corpInfo
             $stats = json_decode(downloadData($statsURL), true);
 
             if (is_null(@$stats["corporationActiveArea"])) {
-                queueReplyMessage($this->message, "**Error:** No data available for that group.");
+                queueReplyMessage($userName, $channelID, "**Error:** No data available for that group.");
                 return null;
             }
 
@@ -142,7 +143,7 @@ ePeen Size: {$ePeenSize}
 For more info, visit: $url";
 
             $this->logger->addInfo("corpInfo: Sending character info to {$user}");
-            queueReplyMessage($this->message, $msg);
+            queueReplyMessage($userName, $channelID, $msg);
         }
         return null;
     }

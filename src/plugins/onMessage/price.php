@@ -87,7 +87,7 @@ class price
     function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $user = $msgData["message"]["from"];
+        $userName = $msgData["message"]["from"];
         $channelID = (int)$msgData["message"]["channelID"];
 
         if (in_array($channelID, $this->excludeChannel, true))
@@ -126,7 +126,7 @@ class price
 
             // Check if the channel is restricted
             if (in_array($channelID, $this->excludeChannel, true)) {
-                queueReplyMessage($this->message, "**Price Check not allowed in this channel**");
+                queueReplyMessage($userName, $channelID, "**Price Check not allowed in this channel**");
                 return null;
             }
 
@@ -158,7 +158,7 @@ class price
                 $avgSell = number_format((float)$data->marketstat->type->sell->avg, 2);
                 $highSell = number_format((float)$data->marketstat->type->sell->max, 2);
 
-                $this->logger->addInfo("Price: Sending pricing info to {$user}");
+                $this->logger->addInfo("Price: Sending pricing info to {$userName}");
                 $solarSystemName = $systemName == "pc" ? "Global" : ucfirst($systemName);
                 $messageData = "**System: {$solarSystemName}**
 **Buy:**
@@ -169,9 +169,9 @@ class price
    Low: {$lowSell}
    Avg: {$avgSell}
    High: {$highSell}";
-                queueReplyMessage($this->message, $messageData);
+                queueReplyMessage($userName, $channelID, $messageData);
             } else {
-                queueReplyMessage($this->message, "**Error:** ***{$itemName}*** not found");
+                queueReplyMessage($userName, $channelID, "**Error:** ***{$itemName}*** not found");
             }
         }
         return null;

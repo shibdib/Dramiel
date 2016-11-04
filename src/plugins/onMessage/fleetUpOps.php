@@ -92,6 +92,7 @@ class fleetUpOps
     function onMessage($msgData, $message)
     {
         $channelID = (int)$msgData["message"]["channelID"];
+        $userName = $msgData["message"]["from"];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -109,7 +110,7 @@ class fleetUpOps
 
             // Check if the channel is restricted
             if ($channelID == $this->excludeChannel) {
-                queueReplyMessage($this->message, "**Upcoming Ops not allowed in this channel**");
+                queueReplyMessage($userName, $channelID, "**Upcoming Ops not allowed in this channel**");
                 return null;
             }
             //fleetUp post upcoming operations
@@ -125,7 +126,7 @@ class fleetUpOps
                 $link = "https://fleet-up.com/Operation#{$id}\
 	    ";
                 $this->logger->addInfo("Sending ops info to {$user}");
-                queueReplyMessage($this->message, "
+                queueReplyMessage($userName, $channelID, "
 **Upcoming Operation**.
 Title - {$name}.
 Form Up Time - {$startTime}. EVE time

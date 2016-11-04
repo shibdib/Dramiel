@@ -71,6 +71,7 @@ class help
     function onMessage($msgData, $message)
     {
         $channelID = (int)$msgData["message"]["channelID"];
+        $userName = $msgData["message"]["from"];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -109,12 +110,12 @@ class help
                     }
                 }
 
-                queueReplyMessage($this->message, "Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
+                queueReplyMessage($userName, $channelID, "Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
                 $this->logger->addInfo("Help: Sending help info to {$user}");
             } else {
                 foreach ($plugins as $plugin) {
                     if ($messageString == $plugin->information()["name"]) {
-                        queueReplyMessage($this->message, $plugin->information()["information"]);
+                        queueReplyMessage($userName, $channelID, $plugin->information()["information"]);
                     }
                 }
             }
