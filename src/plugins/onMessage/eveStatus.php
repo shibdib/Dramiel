@@ -71,7 +71,6 @@ class eveStatus
     function onMessage($msgData, $message)
     {
         $channelID = (int)$msgData["message"]["channelID"];
-        $userName = $msgData["message"]["from"];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -93,7 +92,7 @@ class eveStatus
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
             $this->logger->addInfo("eveStatus: Sending eve status info to {$user}");
-            queueReplyMessage($userName, $channelID, $msg);
+            queueReplyMessage($this->message, $msg);
         }
     }
 

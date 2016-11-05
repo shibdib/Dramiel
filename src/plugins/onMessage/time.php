@@ -73,7 +73,6 @@ class time
     function onMessage($msgData, $message)
     {
         $channelID = (int)$msgData["message"]["channelID"];
-        $userName = $msgData["message"]["from"];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -104,7 +103,7 @@ class time
             $aus = $aus->format("H:i:s");
 
             $this->logger->addInfo("Time: Sending time info to {$user}");
-            queueReplyMessage($userName, $channelID, "**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
+            queueReplyMessage($this->message, "**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
         }
     }
 

@@ -107,7 +107,7 @@ class charInfo
             }
             if (empty($characterID)) {
                 queueReplyMessage($this->message, "**Error:** no data available");
-                return $this->message->reply("**Error:** no data available");
+                return null;
             }
             // Get stats
             $statsURL = "https://beta.eve-kill.net/api/charInfo/characterID/" . urlencode($characterID) . "/";

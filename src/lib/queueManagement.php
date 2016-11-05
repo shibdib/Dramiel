@@ -50,12 +50,12 @@ function queueRoleRemoval($message, $channel, $guild)
     dbExecute("REPLACE INTO messageQueue (`message`, `channel`, `guild`) VALUES (:message,:channel,:guild)", array(":message" => $message, ":channel" => $channel, ":guild" => $guild));
 }
 
-function queueReplyMessage($sender, $channel, $message)
+function queueReplyMessage($messageData, $message)
 {
-    dbExecute("REPLACE INTO replysQueue (`sender`, `channel`, `message`) VALUES (:sender,:channel,:message)", array(":sender" => $sender, ":channel" => $channel, ":message" => $message));
+    dbExecute("REPLACE INTO replyQueue (`messageData`, `message`) VALUES (:messageData,:message)", array(":messageData" => $messageData, ":message" => $message));
 }
 
 function getReplyMessage($id)
 {
-    return dbQueryRow("SELECT * FROM replysQueue WHERE `id` = :id", array(":id" => $id));
+    return dbQueryRow("SELECT * FROM replyQueue WHERE `id` = :id", array(":id" => $id));
 }

@@ -143,16 +143,16 @@ $discord->on(
         });
 
         // Reply queue
-        $discord->loop->addPeriodicTimer(2, function () use ($discord, $config) {
+        $discord->loop->addPeriodicTimer(2, function () use ($discord) {
             $id = getPermCache("replyQueueID");
             if(is_null($id)){
                 $id = 1;
             }
             $queuedMessage = getReplyMessage($id);
             if(!is_null($queuedMessage)){
-                $guild = $discord->guilds->get('id', $config["bot"]["guild"]);
-                $channel = $guild->channels->get('id', $queuedMessage['channel']);
-                $channel->sendMessage("@{$queuedMessage['sender']} {$queuedMessage['message']}", false);
+                $message = $queuedMessage['messageData'];
+                $msg = $queuedMessage['message'];
+                $message->reply($msg);
                 $id = $id + 1;
                 setPermCache("replyQueueID", $id);
                 //clearQueuedMessages($id); bugtest me

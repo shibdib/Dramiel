@@ -80,10 +80,9 @@ function updateDramielDB($logger)
             COMMIT;",
         "replyQueue" => "
             BEGIN;
-            CREATE TABLE IF NOT EXISTS `replysQueue` (
+            CREATE TABLE IF NOT EXISTS `replyQueue` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                `sender` VARCHAR(255) NOT NULL,
-                `channel` VARCHAR(255) NOT NULL,
+                `messageData` VARCHAR(255) NOT NULL,
                 `message` VARCHAR(255) NOT NULL
             );
             COMMIT;",
