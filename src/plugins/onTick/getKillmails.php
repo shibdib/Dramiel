@@ -68,6 +68,8 @@ class getKillmails
         $this->logger = $logger;
         $this->groupConfig = $config["plugins"]["getKillmails"]["groupConfig"];
         $this->guild = $config["bot"]["guild"];
+        //Refresh check at bot start
+        setPermCache("killmailCheck",  time() - 5);
     }
 
 

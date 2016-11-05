@@ -98,11 +98,8 @@ class evemails
         $this->guild = $config["bot"]["guild"];
         $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
         $this->nextCheck = 0;
-        $lastCheck = getPermCache("mailLastChecked{$this->keyID}");
-        if ($lastCheck == NULL) {
-            // Schedule it for right now if first run
-            setPermCache("mailLastChecked{$this->keyID}", time() - 5);
-        }
+        //Refresh check at bot start
+        setPermCache("mailLastChecked{$this->keyID}",  time() - 5);
     }
 
     /**

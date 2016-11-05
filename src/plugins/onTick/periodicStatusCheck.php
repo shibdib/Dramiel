@@ -62,11 +62,8 @@ class periodicStatusCheck {
         $this->logger = $logger;
         $this->guild = $config["bot"]["guild"];
         $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
-        $lastCheck = getPermCache("statusLastChecked");
-        if ($lastCheck == NULL) {
-            // Schedule it for right now if first run
-            setPermCache("statusLastChecked", time() - 5);
-        }
+        //Refresh check at bot start
+        setPermCache("statusLastChecked",  time() - 5);
     }
 
     /**
