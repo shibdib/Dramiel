@@ -131,12 +131,11 @@ class getKillmails
                 return null;
             }
 
-            $xml = json_decode(downloadData($url), true);
+            $kills = json_decode(downloadData($url), true);
             $i = 0;
-            $limit = 25;
-            if (isset($xml)) {
-                foreach ($xml as $kill) {
-                    if ($i < $limit) {
+            if (isset($kills)) {
+                foreach ($kills as $kill) {
+                    if ($i < 25) {
                         //if big kill isn't set, disable it
                         if (is_null($kmGroup["bigKill"])){
                             $kmGroup["bigKill"] = 99999999999999999999999999;
