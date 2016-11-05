@@ -113,7 +113,7 @@ class charInfo
             $stats = json_decode(downloadData($statsURL), true);
 
             if (empty($stats)) {
-                return $this->message->reply("**Error:** no data available");
+                return $this->message->reply("**Error:** EVE-Kill is down. Try again later.");
             }
 
             $characterName = @$stats["characterName"];
