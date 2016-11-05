@@ -136,7 +136,7 @@ $discord->on(
         });
 
         // Run the Tick plugins
-        $discord->loop->addPeriodicTimer(5, function () use ($pluginsT) {
+        $discord->loop->addPeriodicTimer(3, function () use ($pluginsT) {
             foreach ($pluginsT as $plugin) {
                 $plugin->tick();
             }
@@ -147,6 +147,15 @@ $discord->on(
             $id = getPermCache("messageQueueID");
             if(is_null($id)){
                 $id = 1;
+            }
+            $queuedMessage = getQueuedMessage($id);
+            if(!is_null($queuedMessage)){
+                $guild = $discord->guilds->get('id', $queuedMessage['guild']);
+                $channel = $guild->channels->get('id', $queuedMessage['channel']);
+                $channel->sendMessage($queuedMessage['message'], false);
+                $id = $id + 1;
+                setPermCache("messageQueueID", $id);
+                //clearQueuedMessages($id); bugtest me
             }
             $queuedMessage = getQueuedMessage($id);
             if(!is_null($queuedMessage)){
