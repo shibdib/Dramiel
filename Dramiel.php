@@ -145,13 +145,13 @@ $discord->on(
         // Reply queue
         $discord->loop->addPeriodicTimer(2, function () use ($discord, $config) {
             $id = getPermCache("replyQueueID");
-            if(is_null($id)){
+            if (is_null($id)) {
                 $id = 1;
             }
             $queuedMessage = getReplyMessage($id);
             $id = $id + 1;
             setPermCache("replyQueueID", $id);
-            if(!is_null($queuedMessage)){
+            if (!is_null($queuedMessage)) {
                 $guild = $discord->guilds->get('id', $config["bot"]["guild"]);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
                 $channel->sendMessage("@{$queuedMessage['sender']} {$queuedMessage['message']}", false);
@@ -162,13 +162,13 @@ $discord->on(
         // Message queue
         $discord->loop->addPeriodicTimer(15, function () use ($discord) {
             $id = getPermCache("messageQueueID");
-            if(is_null($id)){
+            if (is_null($id)) {
                 $id = 1;
             }
             $queuedMessage = getQueuedMessage($id);
             $id = $id + 1;
             setPermCache("messageQueueID", $id);
-            if(!is_null($queuedMessage)){
+            if (!is_null($queuedMessage)) {
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
                 $channel->sendMessage($queuedMessage['message'], false);
