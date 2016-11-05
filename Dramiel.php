@@ -149,12 +149,12 @@ $discord->on(
                 $id = 1;
             }
             $queuedMessage = getReplyMessage($id);
+            $id = $id + 1;
+            setPermCache("replyQueueID", $id);
             if(!is_null($queuedMessage)){
                 $guild = $discord->guilds->get('id', $config["bot"]["guild"]);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
                 $channel->sendMessage("@{$queuedMessage['sender']} {$queuedMessage['message']}", false);
-                $id = $id + 1;
-                setPermCache("replyQueueID", $id);
                 //clearQueuedMessages($id); bugtest me
             }
         });
@@ -166,12 +166,12 @@ $discord->on(
                 $id = 1;
             }
             $queuedMessage = getQueuedMessage($id);
+            $id = $id + 1;
+            setPermCache("messageQueueID", $id);
             if(!is_null($queuedMessage)){
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
                 $channel->sendMessage($queuedMessage['message'], false);
-                $id = $id + 1;
-                setPermCache("messageQueueID", $id);
                 //clearQueuedMessages($id); bugtest me
             }
         });
