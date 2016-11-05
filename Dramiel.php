@@ -143,7 +143,7 @@ $discord->on(
         });
 
         // Message queue
-        $discord->loop->addPeriodicTimer(15, function () use ($discord) {
+        $discord->loop->addPeriodicTimer(15, function () use ($discord,$logger) {
             $id = getPermCache("messageQueueID");
             if(is_null($id)){
                 $id = 1;
@@ -152,6 +152,7 @@ $discord->on(
             if(!is_null($queuedMessage)){
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
+                $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
                 $channel->sendMessage($queuedMessage['message'], false);
                 $id = $id + 1;
                 setPermCache("messageQueueID", $id);
@@ -161,6 +162,7 @@ $discord->on(
             if(!is_null($queuedMessage)){
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
+                $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
                 $channel->sendMessage($queuedMessage['message'], false);
                 $id = $id + 1;
                 setPermCache("messageQueueID", $id);
