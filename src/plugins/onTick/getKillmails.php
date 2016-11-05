@@ -93,12 +93,12 @@ class getKillmails
             //check if user is still using the old config
             if(is_null($this->groupConfig)){
                 $this->logger->addError("Killmails: UPDATE YOUR CONFIG TO RECEIVE KILLMAILS");
-                setPermCache("killmailCheck", time() + 900);
+                setPermCache("killmailCheck", time() + 600);
                 return null;
             }
             $this->logger->addInfo("Killmails: Checking for new killmails.");
             $this->getKM();
-            setPermCache("killmailCheck", time() + 900);
+            setPermCache("killmailCheck", time() + 600);
         }
 
     }
@@ -107,7 +107,8 @@ class getKillmails
     {
         foreach($this->groupConfig as $kmGroup) {
             $lastMail = getPermCache("{$kmGroup["name"]}newestKillmailID");
-            if (is_null($lastMail)){
+            //check if start id is greater than current id and if it is set
+            if ($kmGroup["startMail"] > $lastMail || is_null($lastMail)) {
                 $lastMail = $kmGroup["startMail"];
             }
             if ($kmGroup["allianceID"] == "0" & $kmGroup["lossMails"] == 'true') {
@@ -130,7 +131,7 @@ class getKillmails
 
             $xml = json_decode(downloadData($url), true);
             $i = 0;
-            $limit = $kmGroup["spamAmount"];
+            $limit = 25;
             if (isset($xml)) {
                 foreach ($xml as $kill) {
                     if ($i < $limit) {
@@ -139,10 +140,6 @@ class getKillmails
                             $kmGroup["bigKill"] = 99999999999999999999999999;
                         }
                         $killID = $kill['killID'];
-                        //check if start id is greater than current id
-                        if ($kmGroup["startMail"] > $killID) {
-                            $killID = $kmGroup["startMail"];
-                        }
                         $channelID = $kmGroup["channel"];
                         $solarSystemID = $kill['solarSystemID'];
                         $systemName = apiCharacterName($solarSystemID);
@@ -170,7 +167,7 @@ class getKillmails
                             return null;
                         }
                         queueMessage($msg, $channelID, $this->guild);
-                        setPermCache("{$kmGroup["name"]}newestKillmailID", $killID++);
+                        setPermCache("{$kmGroup["name"]}newestKillmailID", $killID);
 
                         $i++;
                     } else {
