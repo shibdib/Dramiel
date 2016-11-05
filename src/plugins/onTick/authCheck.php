@@ -233,7 +233,7 @@ class authCheck
                             $guild->members->save($member);
                             // Send the info to the channel
                             $msg = "{$username} has been removed from the {$role->name} role.";
-                            queueMessage($msg, $this->alertChannel, $this->guild);
+                            //queueMessage($msg, $this->alertChannel, $this->guild);
                             $this->logger->addInfo("AuthCheck: {$username} has been removed from the {$role->name} role.");
                         }
                     }
