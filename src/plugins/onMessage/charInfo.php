@@ -106,22 +106,19 @@ class charInfo
                 }
             }
             if (empty($characterID)) {
-                queueReplyMessage($this->message, "**Error:** no data available");
-                return null;
+                return $this->message->reply("**Error:** no data available");
             }
             // Get stats
             $statsURL = "https://beta.eve-kill.net/api/charInfo/characterID/" . urlencode($characterID) . "/";
             $stats = json_decode(downloadData($statsURL), true);
 
             if (empty($stats)) {
-                queueReplyMessage($this->message, "**Error:** no data available");
-                return null;
+                return $this->message->reply("**Error:** no data available");
             }
 
             $characterName = @$stats["characterName"];
             if (empty($characterName)) {
-                queueReplyMessage($this->message, "**Error:** No Character Found");
-                return null;
+                return $this->message->reply("**Error:** No Character Found");
             }
             $corporationName = @$stats["corporationName"];
             $allianceName = isset($stats["allianceName"]) ? $stats["allianceName"] : "None";
@@ -156,7 +153,7 @@ lastUpdated: $lastUpdated```
 For more info, visit: $url";
 
             $this->logger->addInfo("charInfo: Sending character info to {$user}");
-            queueReplyMessage($this->message, $msg);
+            $this->message->reply($msg);
         }
         return null;
     }

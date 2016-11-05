@@ -109,8 +109,7 @@ class fleetUpOps
 
             // Check if the channel is restricted
             if ($channelID == $this->excludeChannel) {
-                queueReplyMessage($this->message, "**Upcoming Ops not allowed in this channel**");
-                return null;
+                return $this->message->reply("**Upcoming Ops not allowed in this channel**");
             }
             //fleetUp post upcoming operations
             $ops = json_decode(downloadData("http://api.fleet-up.com/Api.svc/tlYgBRjmuXj2Yl1lEOyMhlDId/{$this->userID}/{$this->apiKey}/Operations/{$this->groupID}"), true);
@@ -125,7 +124,7 @@ class fleetUpOps
                 $link = "https://fleet-up.com/Operation#{$id}\
 	    ";
                 $this->logger->addInfo("Sending ops info to {$user}");
-                queueReplyMessage($this->message, "
+                $this->message->reply("
 **Upcoming Operation**.
 Title - {$name}.
 Form Up Time - {$startTime}. EVE time

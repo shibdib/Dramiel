@@ -136,26 +136,9 @@ $discord->on(
         });
 
         // Run the Tick plugins
-        $discord->loop->addPeriodicTimer(10, function () use ($pluginsT) {
+        $discord->loop->addPeriodicTimer(5, function () use ($pluginsT) {
             foreach ($pluginsT as $plugin) {
                 $plugin->tick();
-            }
-        });
-
-        // Reply queue
-        $discord->loop->addPeriodicTimer(2, function () use ($discord) {
-            $id = getPermCache("replyQueueID");
-            if(is_null($id)){
-                $id = 1;
-            }
-            $queuedMessage = getReplyMessage($id);
-            if(!is_null($queuedMessage)){
-                $this->message = $queuedMessage['messageData'];
-                $msg = $queuedMessage['message'];
-                $this->message->reply($msg);
-                $id = $id + 1;
-                setPermCache("replyQueueID", $id);
-                //clearQueuedMessages($id); bugtest me
             }
         });
 
