@@ -44,8 +44,3 @@ function clearQueuedMessages($id)
     dbQueryRow("DELETE * from messageQueue where id < :id", array(":id" => $id));
     return null;
 }
-
-function queueRoleRemoval($message, $channel, $guild)
-{
-    dbExecute("REPLACE INTO messageQueue (`message`, `channel`, `guild`) VALUES (:message,:channel,:guild)", array(":message" => $message, ":channel" => $channel, ":guild" => $guild));
-}
