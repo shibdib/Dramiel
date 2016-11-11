@@ -343,6 +343,13 @@ class notifications
                         case 95: // IHub Transfer
                             $msg = "skip";
                             break;
+                        case 100: // Aggressor corp joins war
+                            $aggCorpID = trim(explode(": ", $notificationString[0])[1]);
+                            $defCorpID = trim(explode(": ", $notificationString[1])[1]);
+                            $aggCorpName = apiCharacterName($aggCorpID);
+                            $defCorpName = apiCharacterName($defCorpID);
+                            $msg = "{$aggCorpName} has joined the war against {$defCorpName}.";
+                            break;
                         case 102: // War support offer? I think?
                             $msg = "skip";
                             break;
