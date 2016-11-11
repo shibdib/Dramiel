@@ -41,6 +41,6 @@ function getQueuedMessage($id)
 
 function clearQueuedMessages($id)
 {
-    dbQueryRow("DELETE * from messageQueue where id < :id", array(":id" => $id));
+    dbQueryRow("DELETE from messageQueue where id < :id", array(":id" => $id));
     return null;
 }
