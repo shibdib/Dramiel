@@ -135,7 +135,7 @@ class getKillmails
             $i = 0;
             if (isset($kills)) {
                 foreach ($kills as $kill) {
-                    if ($i < 25) {
+                    if ($i < 10) {
                         //if big kill isn't set, disable it
                         if (is_null($kmGroup["bigKill"])){
                             $kmGroup["bigKill"] = 99999999999999999999999999;
