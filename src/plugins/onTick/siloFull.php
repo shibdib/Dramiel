@@ -135,6 +135,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -157,6 +158,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -179,6 +181,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -201,6 +204,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -223,6 +227,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -245,6 +250,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -267,6 +273,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -289,6 +296,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -311,6 +319,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -333,6 +342,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -355,6 +365,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -377,6 +388,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -399,6 +411,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -421,6 +434,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -443,6 +457,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -465,6 +480,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -487,6 +503,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -509,6 +526,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -531,6 +549,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;
@@ -553,6 +572,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
+                                    $this->logger->addInfo("siloFull: Silo Alert queued");
                                     $siloCount++;
                                 }
                                 break;

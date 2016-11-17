@@ -168,6 +168,7 @@ class getKillmails
                             return null;
                         }
                         queueMessage($msg, $channelID, $this->guild);
+                        $this->logger->addInfo("Killmails: Mail {$killID} queued.");
                         setPermCache("{$kmGroup["name"]}newestKillmailID", $killID);
 
                         $i++;

@@ -171,6 +171,7 @@ Details - {$info}
 Link - {$link}";
                     $channelID = $this->toDiscordChannel;
                     queueMessage($msg, $channelID, $this->guild);
+                    $this->logger->addInfo("FleetUp: Newest FleetUp operation - {$name} - Queued");
                 }
                 if ($id > $currentID) {
                     setPermCache("fleetUpLastOperation", $id);

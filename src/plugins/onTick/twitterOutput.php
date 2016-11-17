@@ -132,7 +132,7 @@ class twitterOutput
                     // Send the tweets to the channel
                     $channelID = $this->channelID;
                     queueMessage($msg, $channelID, $this->guild);
-                    $this->logger->addInfo("twitterOutput: Tweet posted to {$this->channelID}");
+                    $this->logger->addInfo("twitterOutput: Tweet queued.");
                 }
             }
             $this->lastCheck = time() + 60;
