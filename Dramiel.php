@@ -157,7 +157,7 @@ $discord->on(
                 $channel->sendMessage($queuedMessage['message'], false);
                 clearQueuedMessages($id);
             }
-            $queuedMessage = getQueuedMessage($id);
+            $queuedMessage = getQueuedMessage($id+1);
             if(!is_null($queuedMessage)){
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
