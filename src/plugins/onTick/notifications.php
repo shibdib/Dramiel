@@ -263,6 +263,9 @@ class notifications
                             $allianceName = apiCharacterName($allianceID);
                             $msg = "{$allianceName} now controls **{$systemName}**";
                             break;
+                        case 45: // Tower anchoring
+                            $msg = "skip";
+                            break;
                         case 52: // clone revoked
                             $msg = "skip";
                             break;
