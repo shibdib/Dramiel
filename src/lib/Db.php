@@ -33,7 +33,7 @@ use Monolog\Logger;
 function openDB($db = null)
 {
     $logger = new Logger('Db');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     if ($db === null) {
         $db = __DIR__ . "/../../database/dramiel.sqlite";
     }
