@@ -3,6 +3,8 @@
 
 EVE Discord Bot
 
+https://discord.gg/wD7n6pr For the official Dramiel discord server.
+
 Features (Basic)
 - Price check tool
 - TQ Status
