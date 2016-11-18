@@ -130,6 +130,7 @@ class periodicStatusCheck {
         priorityQueueMessage($msg, $channelID, $this->guild);
         setPermCache("statusLastState", $crestStatus);
         if ($crestStatus == "online") {
+            setPermCache("serverState", $crestStatus);
             setPermCache("statusLastChecked", time() + 300);
             $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");
             return null;

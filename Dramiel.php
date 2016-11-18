@@ -123,6 +123,7 @@ if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode
 $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
 $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
 setPermCache("serverState", $crestStatus);
+setPermCache("statusLastState", $crestStatus);
 $logger->addInfo("serverState: EVE is currently {$crestStatus}");
 
 $discord->on(
