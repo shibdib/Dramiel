@@ -91,7 +91,6 @@ class siloFull
 
     function checkTowers($keyID, $vCode)
     {
-        $discord = $this->discord;
 
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
         $xml = makeApiRequest($url);
