@@ -66,8 +66,6 @@ class siphons
         $this->keyID = $config["plugins"]["siphons"]["keyID"];
         $this->vCode = $config["plugins"]["siphons"]["vCode"];
         $this->prefix = $config["plugins"]["siphons"]["prefix"];
-        //Refresh check at bot start
-        setPermCache("siphonLastChecked{$this->keyID}",  time() - 5);
     }
 
     /**
