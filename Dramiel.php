@@ -119,6 +119,12 @@ if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode
     $logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
 }
 
+//Check initial server state (tick plugins will not run if eve is offline)
+$crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
+$crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
+setPermCache("serverState", $crestStatus);
+$logger->addInfo("serverState: EVE is currently {$crestStatus}");
+
 $discord->on(
     'ready',
     function ($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {
@@ -135,10 +141,21 @@ $discord->on(
             updateDramielDB($logger);
         });
 
+        // Server Status Check (tick plugins will not run if eve is offline)
+        $discord->loop->addPeriodicTimer(60, function () use ($logger) {
+            $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
+            $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
+            setPermCache("serverState", $crestStatus);
+        });
+
         // Run the Tick plugins
         $discord->loop->addPeriodicTimer(3, function () use ($pluginsT) {
-            foreach ($pluginsT as $plugin) {
-                $plugin->tick();
+            // What was the servers last reported state
+            $lastStatus = getPermCache("serverState");
+            if ($lastStatus == "online") {
+                foreach ($pluginsT as $plugin) {
+                    $plugin->tick();
+                }
             }
         });
 
