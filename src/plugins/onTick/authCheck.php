@@ -147,7 +147,7 @@ class authCheck
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get("id", $discordID);
                 $eveName = $rows['eveName'];
-                if (is_null($member->roles)) {
+                if (is_null($member->roles[0])) {
                     continue;
                 }
 
