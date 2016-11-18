@@ -245,11 +245,11 @@ class authCheck
             }
         }
         //Report removed users to log and channel
-        if ($userCount > 0){
-            $nameList = implode(", ",$removedRoles);
+        $nameList = implode(", ",$removedRoles);
+        if ($userCount > 0 && strlen($nameList) > 3 && !is_null($nameList)){
             $msg = "Following users roles have been removed - {$nameList}";
-            //queueMessage($msg, $this->alertChannel, $this->guild);
-            //$this->logger->addInfo("AuthCheck: Roles removed from {$nameList}");
+            queueMessage($msg, $this->alertChannel, $this->guild);
+            $this->logger->addInfo("AuthCheck: Roles removed from {$nameList}");
         }
         //queue up next check
         $nextCheck = time() + 1800;
