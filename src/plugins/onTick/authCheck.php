@@ -82,6 +82,7 @@ class authCheck
         $this->corpID = $config["plugins"]["auth"]["corpID"];
         $this->exempt = $config["plugins"]["auth"]["exempt"];
         $this->alertChannel = $config["plugins"]["auth"]["alertChannel"];
+        $this->guild = $config["bot"]["guild"];
         $this->nextCheck = 0;
 
         //check if cache has been set
