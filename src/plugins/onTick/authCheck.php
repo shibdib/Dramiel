@@ -211,6 +211,10 @@ class authCheck
             return null;
         }
 
+        //create empty array to store names
+        $removedRoles = array();
+        $userCount = 0;
+
         //Perform check if roles were added without permission
         foreach ($guild->members as $member) {
             $id = $member->id;
@@ -226,20 +230,27 @@ class authCheck
 
             //If they are NOT active in the db, check for roles to remove
             if ($result->num_rows == 0) {
+                $userCount++;
                 foreach ($roles as $role) {
                     if (!isset($role->name)) {
                         if ($id != $botID && !in_array($role->name, $this->exempt, true)) {
                             $member->removeRole($role);
                             $guild->members->save($member);
-                            // Send the info to the channel
-                            $msg = "{$username} has been removed from the {$role->name} role.";
-                            //queueMessage($msg, $this->alertChannel, $this->guild);
-                            $this->logger->addInfo("AuthCheck: {$username} has been removed from the {$role->name} role.");
+                            // Add users name to array
+                            array_push($removedRoles,$username);
                         }
                     }
                 }
             }
         }
+        //Report removed users to log and channel
+        if ($userCount > 0){
+            $nameList = implode(", ",$removedRoles);
+            $msg = "Following users roles have been removed - {$nameList}";
+            queueMessage($msg, $this->alertChannel, $this->guild);
+            $this->logger->addInfo("AuthCheck: Roles removed from {$nameList}");
+        }
+        //queue up next check
         $nextCheck = time() + 1800;
         setPermCache("authStateLastChecked", $nextCheck);
         return null;
