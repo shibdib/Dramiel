@@ -127,10 +127,10 @@ class auth
             }
 
             while ($rows = $result->fetch_assoc()) {
-                $charid = (int)$rows['characterID'];
-                $corpid = (int)$rows['corporationID'];
-                $allianceid = (int)$rows['allianceID'];
-                $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charid";
+                $charID = (int)$rows['characterID'];
+                $corpID = (int)$rows['corporationID'];
+                $allianceID = (int)$rows['allianceID'];
+                $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charID";
                 $xml = makeApiRequest($url);
 
 
@@ -153,7 +153,7 @@ class auth
                 }
                 foreach ($xml->result->rowset->row as $character) {
                     $eveName = $character->attributes()->name;
-                    if ($corpid === $this->corpID) {
+                    if ($corpID === $this->corpID) {
                         $roles = $this->message->channel->guild->roles;
                         $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {
@@ -162,7 +162,7 @@ class auth
                                 $member->addRole($role);
                                 $guild = $this->discord->guilds->get('id', $guildID);
                                 $guild->members->save($member);
-                                insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'corp');
+                                insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'corp');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                                 $this->message->reply(":white_check_mark: **Success:** You have now been added to the " . $this->roleName . " group. To get more roles, talk to the CEO / Directors");
                                 $this->logger->addInfo("auth: User authed and added to corp group " . $eveName);
@@ -170,7 +170,7 @@ class auth
                             }
                         }
                     }
-                    if ($allianceid === $this->allianceID) {
+                    if ($allianceID === $this->allianceID) {
                         $roles = $this->message->channel->guild->roles;
                         $member = $this->message->channel->guild->members->get("id", $userID);
                         foreach ($roles as $role) {
@@ -179,7 +179,7 @@ class auth
                                 $member->addRole($role);
                                 $guild = $this->discord->guilds->get('id', $guildID);
                                 $guild->members->save($member);
-                                insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charid, $eveName, 'ally');
+                                insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'ally');
                                 disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                                 $this->message->reply("**Success:** You have now been added to the " . $this->allyroleName . " group. To get more roles, talk to the CEO / Directors");
                                 $this->logger->addInfo("auth: User authed and added to the alliance group " . $eveName);
