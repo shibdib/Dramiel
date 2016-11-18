@@ -74,6 +74,10 @@ class siphons
     function tick()
     {
         $lastChecked = getPermCache("siphonLastChecked{$this->keyID}");
+        if ($lastChecked == NULL) {
+            // Schedule it for right now if first run
+            $lastChecked = 1;
+        }
         $keyID = $this->keyID;
         $vCode = $this->vCode;
 
