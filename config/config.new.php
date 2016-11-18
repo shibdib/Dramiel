@@ -143,6 +143,11 @@ $config["plugins"] = array(
     ),
     //Killmail posting
     "getKillmails" => array(
+        "bigKills" => array(
+            "shareBigKills" => "false", //If you'd like the bot to share eve wide big kills switch this to true
+            "bigKillChannel" => 0, //Set the channel the eve wide big kills post too
+            "bigKillStartID" => 57000000, //Recommend you set this to a recent killID to prevent it spamming from the beginning of time
+        ),
         "groupConfig" => array(
             "group1" => array(
                 "name" => "corp1", // insert a label (these must be unique)
