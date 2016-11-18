@@ -127,9 +127,7 @@ class periodicStatusCheck {
         }
         $msg = "**TQ Status Change:** {$crestStatus} with {$tqOnline} users online.";
         $channelID = $this->toDiscordChannel;
-        $guild = $discord->guilds->get('id', $this->guild);
-        $channel = $guild->channels->get('id', $channelID);
-        $channel->sendMessage($msg, false);
+        priorityQueueMessage($msg, $channelID, $this->guild);
         setPermCache("statusLastState", $crestStatus);
         setPermCache("statusLastChecked", time() + 300);
         $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");

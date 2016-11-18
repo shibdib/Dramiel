@@ -465,10 +465,8 @@ class notifications
                     if ($msg == "skip") {
                         return null;
                     }
-                    $this->logger->addInfo("Notifications: Notification sent to channel {$this->toDiscordChannel}, Message - {$msg}");
-                    $guild = $discord->guilds->get('id', $this->guild);
-                    $channel = $guild->channels->get('id', $channelID);
-                    $channel->sendMessage($msg, false);
+                    $this->logger->addInfo("Notifications: Notification queued, Message - {$msg}");
+                    priorityQueueMessage($msg, $channelID, $this->guild);
                     // Find the maxID so we don't output this message again in the future
                     $this->maxID = max($notificationID, $this->maxID);
                     $this->newestNotificationID = $this->maxID;

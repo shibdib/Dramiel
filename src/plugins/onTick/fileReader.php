@@ -129,11 +129,8 @@ class fileReader
                     $message = "skip";
                 }
                 if ($message != "skip") {
-                    $this->logger->addInfo("fileReader: Ping sent to channel {$channelID}, Message - {$message}");
-                    // Send the pings to the channel
-                    $guild = $discord->guilds->get('id', $this->guild);
-                    $channel = $guild->channels->get('id', $channelID);
-                    $channel->sendMessage($message, false);
+                    $this->logger->addInfo("fileReader: Ping sent to front of queue for {$channelID}, Message - {$message}");
+                    priorityQueueMessage($message, $channelID, $this->guild);
                 }
             }
             $h = fopen($this->db, "w+");

@@ -109,9 +109,7 @@ class siphons
                                 $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
                                 // Send the msg to the channel;
                                 $channelID = $this->toDiscordChannel;
-                                $guild = $discord->guilds->get('id', $this->guild);
-                                $channel = $guild->channels->get('id', $channelID);
-                                $channel->sendMessage($msg, false);
+                                priorityQueueMessage($msg, $channelID, $this->guild);
                                 $this->logger->addInfo("Siphons: {$msg}");
                                 $siphonCount++;
                             }
@@ -133,9 +131,7 @@ class siphons
                                 $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
                                 // Send the msg to the channel;
                                 $channelID = $this->toDiscordChannel;
-                                $guild = $discord->guilds->get('id', $this->guild);
-                                $channel = $guild->channels->get('id', $channelID);
-                                $channel->sendMessage($msg, false);
+                                priorityQueueMessage($msg, $channelID, $this->guild);
                                 $this->logger->addInfo("Siphons: {$msg}");
                                 $siphonCount++;
                             }

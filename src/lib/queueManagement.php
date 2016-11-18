@@ -49,3 +49,10 @@ function getOldestMessage()
 {
     return dbQueryRow("SELECT MIN(id) from messageQueue");
 }
+
+function priorityQueueMessage($message, $channel, $guild)
+{
+    $currentOldest = getOldestMessage();
+    $id = $currentOldest["MIN(id)"]-1;
+    dbExecute("REPLACE INTO messageQueue (`id`, `message`, `channel`, `guild`) VALUES (:id,:message,:channel,:guild)", array(":id" => $id, ":message" => $message, ":channel" => $channel, ":guild" => $guild));
+}
