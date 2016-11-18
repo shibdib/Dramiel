@@ -121,16 +121,19 @@ class notifications
      */
     function tick()
     {
-        $lastChecked = getPermCache("notificationsLastChecked{$this->keyID}");
-        $keyID = $this->keyID;
-        $vCode = $this->vCode;
-        $characterID = $this->characterID;
+        // What was the servers last reported state
+        $lastStatus = getPermCache("serverState");
+        if ($lastStatus == "online") {
+            $lastChecked = getPermCache("notificationsLastChecked{$this->keyID}");
+            $keyID = $this->keyID;
+            $vCode = $this->vCode;
+            $characterID = $this->characterID;
 
-        if ($lastChecked <= time()) {
-            $this->logger->addInfo("Notifications: Checking API Key {$keyID} for notifications..");
-            $this->getNotifications($keyID, $vCode, $characterID);
+            if ($lastChecked <= time()) {
+                $this->logger->addInfo("Notifications: Checking API Key {$keyID} for notifications..");
+                $this->getNotifications($keyID, $vCode, $characterID);
+            }
         }
-
     }
 
     /**

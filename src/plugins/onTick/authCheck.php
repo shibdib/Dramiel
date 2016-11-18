@@ -109,19 +109,23 @@ class authCheck
 
     function tick()
     {
-        $permsChecked = getPermCache("permsLastChecked");
-        $stateChecked = getPermCache("authStateLastChecked");
+        // What was the servers last reported state
+        $lastStatus = getPermCache("serverState");
+        if ($lastStatus == "online") {
+            $permsChecked = getPermCache("permsLastChecked");
+            $stateChecked = getPermCache("authStateLastChecked");
 
-        if ($permsChecked <= time()) {
-            $this->logger->addInfo("AuthCheck: Checking for users who have left corp/alliance....");
-            $this->checkPermissions();
-            $this->logger->addInfo("AuthCheck: Corp/alliance check complete.");
-        }
+            if ($permsChecked <= time()) {
+                $this->logger->addInfo("AuthCheck: Checking for users who have left corp/alliance....");
+                $this->checkPermissions();
+                $this->logger->addInfo("AuthCheck: Corp/alliance check complete.");
+            }
 
-        if ($stateChecked <= time()) {
-            $this->logger->addInfo("AuthCheck: Checking for users who have been wrongly given roles....");
-            $this->checkAuthState();
-            $this->logger->addInfo("AuthCheck: Role check complete.");
+            if ($stateChecked <= time()) {
+                $this->logger->addInfo("AuthCheck: Checking for users who have been wrongly given roles....");
+                $this->checkAuthState();
+                $this->logger->addInfo("AuthCheck: Role check complete.");
+            }
         }
     }
 

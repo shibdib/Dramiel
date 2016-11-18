@@ -150,12 +150,8 @@ $discord->on(
 
         // Run the Tick plugins
         $discord->loop->addPeriodicTimer(3, function () use ($pluginsT) {
-            // What was the servers last reported state
-            $lastStatus = getPermCache("serverState");
-            if ($lastStatus == "online") {
-                foreach ($pluginsT as $plugin) {
-                    $plugin->tick();
-                }
+            foreach ($pluginsT as $plugin) {
+                $plugin->tick();
             }
         });
 

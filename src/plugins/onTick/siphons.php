@@ -73,17 +73,21 @@ class siphons
      */
     function tick()
     {
-        $lastChecked = getPermCache("siphonLastChecked{$this->keyID}");
-        if ($lastChecked == NULL) {
-            // Schedule it for right now if first run
-            $lastChecked = 1;
-        }
-        $keyID = $this->keyID;
-        $vCode = $this->vCode;
+        // What was the servers last reported state
+        $lastStatus = getPermCache("serverState");
+        if ($lastStatus == "online") {
+            $lastChecked = getPermCache("siphonLastChecked{$this->keyID}");
+            if ($lastChecked == NULL) {
+                // Schedule it for right now if first run
+                $lastChecked = 1;
+            }
+            $keyID = $this->keyID;
+            $vCode = $this->vCode;
 
-        if ($lastChecked <= time()) {
-            $this->logger->addInfo("Siphons: Checking API Key {$keyID} for siphons");
-            $this->checkTowers($keyID, $vCode);
+            if ($lastChecked <= time()) {
+                $this->logger->addInfo("Siphons: Checking API Key {$keyID} for siphons");
+                $this->checkTowers($keyID, $vCode);
+            }
         }
     }
 

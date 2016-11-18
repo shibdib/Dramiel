@@ -80,12 +80,16 @@ class siloFull
      */
     function tick()
     {
-        $lastChecked = getPermCache("siloLastChecked{$this->keyID}");
-        $keyID = $this->keyID;
-        $vCode = $this->vCode;
-        if ($lastChecked <= time()) {
-            $this->logger->addInfo("siloFull: Checking API Key {$keyID} for full silos");
-            $this->checkTowers($keyID, $vCode);
+        // What was the servers last reported state
+        $lastStatus = getPermCache("serverState");
+        if ($lastStatus == "online") {
+            $lastChecked = getPermCache("siloLastChecked{$this->keyID}");
+            $keyID = $this->keyID;
+            $vCode = $this->vCode;
+            if ($lastChecked <= time()) {
+                $this->logger->addInfo("siloFull: Checking API Key {$keyID} for full silos");
+                $this->checkTowers($keyID, $vCode);
+            }
         }
     }
 

@@ -107,17 +107,20 @@ class evemails
      */
     function tick()
     {
-        $lastChecked = getPermCache("mailLastChecked{$this->keyID}");
-        $keyID = $this->keyID;
-        $vCode = $this->vCode;
-        $characterID = $this->characterID;
-        $discord = $this->discord;
+        // What was the servers last reported state
+        $lastStatus = getPermCache("serverState");
+        if ($lastStatus == "online") {
+            $lastChecked = getPermCache("mailLastChecked{$this->keyID}");
+            $keyID = $this->keyID;
+            $vCode = $this->vCode;
+            $characterID = $this->characterID;
+            $discord = $this->discord;
 
-        if ($lastChecked <= time()) {
-            $this->logger->addInfo("Mails: Checking API Key {$keyID} for new mail..");
-            $this->checkMails($keyID, $vCode, $characterID, $discord);
+            if ($lastChecked <= time()) {
+                $this->logger->addInfo("Mails: Checking API Key {$keyID} for new mail..");
+                $this->checkMails($keyID, $vCode, $characterID, $discord);
+            }
         }
-
     }
 
     function checkMails($keyID, $vCode, $characterID, $discord)
