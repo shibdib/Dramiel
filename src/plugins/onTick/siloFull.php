@@ -591,13 +591,6 @@ class siloFull
             $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
             setPermCache("siloLastChecked{$keyID}", $cacheClr);
         }
-
-        if ($siloCount > 0) {
-            $msg = "Next Silo Check At: {$cacheTimer} EVE Time";
-            // Send the msg to the channel;
-            $channelID = $this->toDiscordChannel;
-            queueMessage($msg, $channelID, $this->guild);
-        }
         $this->logger->addInfo("siloFull: Silo Check Complete Next Check At {$cacheTimer}");
         return null;
 

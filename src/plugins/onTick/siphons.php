@@ -151,13 +151,6 @@ class siphons
             $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
             setPermCache("siphonLastChecked{$keyID}", $cacheClr);
         }
-        if ($siphonCount > 0) {
-            $msg = "Next Siphon Check At: {$cacheTimer} EVE Time";
-            $channelID = $this->toDiscordChannel;
-            $guild = $discord->guilds->get('id', $this->guild);
-            $channel = $guild->channels->get('id', $channelID);
-            $channel->sendMessage($msg, false);
-        }
         $this->logger->addInfo("Siphons: Siphon Check Complete Next Check At {$cacheTimer}");
         return null;
     }
