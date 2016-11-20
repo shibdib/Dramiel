@@ -158,6 +158,14 @@ class getKillmails
                         $victimShipID = $kill['victim']['shipTypeID'];
                         $shipName = apiTypeName($victimShipID);
                         $rawValue = $kill['zkb']['totalValue'];
+                        //Check if killmail meets minimum value
+                        if (isset($kmGroup["minimumValue"])){
+                            if ($rawValue < $kmGroup["minimumValue"]){
+                                $this->logger->addInfo("Killmails: Mail {$killID} ignored for not meeting the minimum value required.");
+                                setPermCache("{$kmGroup["name"]}newestKillmailID", $killID);
+                                continue;
+                            }
+                        }
                         $totalValue = number_format($kill['zkb']['totalValue']);
                         // Check if it's a structure
                         if ($victimName != "") {

@@ -156,6 +156,7 @@ $config["plugins"] = array(
                 "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
                 "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.
                 "startMail" => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
+                "minimumValue" => 0, //Put the minimum isk value for killmails here (Do not put any commas just numbers)
                 "bigKill" => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
                 "bigKillChannel" => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
             ),
@@ -166,6 +167,7 @@ $config["plugins"] = array(
                 "allianceID" => 0, //allianceid for killmails (Leave as 0 if using it for a corp)
                 "lossMails" => "true", //set as true to post both kills and losses, false to post only kills.
                 "startMail" => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
+                "minimumValue" => 0, //Put the minimum isk value for killmails here (Do not put any commas just numbers)
                 "bigKill" => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
                 "bigKillChannel" => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
             ),
