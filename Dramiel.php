@@ -48,7 +48,7 @@ $startTime = time();
 
 // create a log channel
 $logger = new Logger('Dramiel');
-$logger->pushHandler(new StreamHandler(__DIR__ . '/log/dramielLog.log', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler(__DIR__ . '/log/dramielLog.log', Logger::INFO));
 $logger->addInfo('Logger Initiated');
 
 GLOBAL $logger;
