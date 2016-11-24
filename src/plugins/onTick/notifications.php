@@ -190,6 +190,18 @@ class notifications
                     $notificationString = explode("\n", $this->getNotificationText($keyID, $vCode, $characterID,
                         $notificationID));
                     switch ($typeID) {
+                        case 1: // Old
+                            $msg = "skip";
+                            break;
+                        case 2: // biomassed
+                            $msg = "skip";
+                            break;
+                        case 3: // medal awarded
+                            $msg = "skip";
+                            break;
+                        case 4: // alliance bill
+                            $msg = "skip";
+                            break;
                         case 5: // War Declared
                             $defAllianceID = trim(explode(": ", $notificationString[0])[1]);
                             $aggAllianceID = trim(explode(": ", $notificationString[2])[1]);
@@ -216,7 +228,16 @@ class notifications
                             $aggAllianceName = apiCharacterName($aggAllianceID);
                             $msg = "War with {$aggAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
                             break;
+                        case 9: // Pilot bill
+                            $msg = "skip";
+                            break;
                         case 10: // Bill issued
+                            $msg = "skip";
+                            break;
+                        case 11: // Bill stuff
+                            $msg = "skip";
+                            break;
+                        case 12: // Bill Stuff
                             $msg = "skip";
                             break;
                         case 13: // Bill issued
@@ -228,6 +249,12 @@ class notifications
                         case 16: // Mail
                             $msg = "skip";
                             break;
+                        case 17: // Corp app
+                            $msg = "skip";
+                            break;
+                        case 18: // Corp app
+                            $msg = "skip";
+                            break;
                         case 19: // corp tax changed
                             $corpID = trim(explode(": ", $notificationString[0])[1]);
                             $corpName = apiCharacterName($corpID);
@@ -237,6 +264,9 @@ class notifications
                             if ($this->allianceOnly == "true") {
                                 $msg = "skip";
                             }
+                            break;
+                        case 20: // Corp news?
+                            $msg = "skip";
                             break;
                         case 21: // member left corp
                             $msg = "skip";
@@ -406,6 +436,9 @@ class notifications
                             $typeID = trim(explode(": ", $notificationString[1])[1]);
                             $typeName = apiTypeName($typeID);
                             $msg = "Entosis has disabled a module in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
+                            break;
+                        case 152: // Sov bill
+                            $msg = "skip";
                             break;
                         case 160: // Entosis successful
                             $solarSystemID = trim(explode(": ", $notificationString[2])[1]);
