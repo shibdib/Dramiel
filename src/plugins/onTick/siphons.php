@@ -103,7 +103,6 @@ class siphons
             }
             $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$siphonCorp["keyID"]}&vCode={$siphonCorp["vCode"]}";
             $xml = makeApiRequest($url);
-            $siphonCount = 0;
             $rawGoo = array(16634, 16643, 16647, 16641, 16640, 16635, 16648, 16633, 16646, 16651, 16650, 16644, 16652, 16639, 16636, 16649, 16653, 16638, 16637, 16642);
             foreach ($xml->result->rowset->row as $structures) {
                 //Check silos
@@ -112,8 +111,17 @@ class siphons
                         foreach ($structures->rowset->row as $silo) {
                             //Avoid reporting empty silos
                             if ($silo->attributes()->quantity != 0 && in_array($silo->attributes()->typeID, $rawGoo)) {
-                                //Check for a multiple of 50
-                                if ($silo->attributes()->quantity % 50 != 0) {
+                                $siloID = $structures->attributes()->itemID;
+                                $lastAmount = getPermCache("silo{$siloID}Amount");
+                                $gooAmount = $silo->attributes()->quantity;
+                                $gooDifference = $gooAmount - $lastAmount;
+                                //Check if silo has been checked before
+                                if(!isset($lastAmount) || $gooAmount = 0 || $gooDifference < 0){
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
+                                    continue;
+                                }
+                                //Check for a multiple of 50 in the difference
+                                if ($gooDifference % 50 != 0) {
                                     $gooType = apiTypeName($silo->attributes()->typeID);
                                     $systemName = apiCharacterName($structures->attributes()->locationID);
                                     $msg = "{$this->prefix}";
@@ -122,7 +130,9 @@ class siphons
                                     // Queue the message
                                     priorityQueueMessage($msg, $siphonCorp["channelID"], $this->guild);
                                     $this->logger->addInfo("Siphons: {$msg}");
-                                    $siphonCount++;
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
+                                } else {
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                 }
                             }
                         }
@@ -132,10 +142,19 @@ class siphons
                     if (isset($structures->rowset->row)) {
                         foreach ($structures->rowset->row as $coupling) {
                             //Avoid reporting empty coupling arrays
-                            if ($coupling->attributes()->quantity != 0) {
-                                //Check for a multiple of 50
-                                if ($coupling->attributes()->quantity % 50 != 0) {
-                                    $gooType = apiTypeName($silo->attributes()->typeID);
+                            if ($coupling->attributes()->quantity != 0 && in_array($coupling->attributes()->typeID, $rawGoo)) {
+                                $couplingID = $structures->attributes()->itemID;
+                                $lastAmount = getPermCache("couplingArray{$couplingID}Amount");
+                                $gooAmount = $coupling->attributes()->quantity;
+                                $gooDifference = $gooAmount - $lastAmount;
+                                //Check if silo has been checked before
+                                if(!isset($lastAmount) || $gooAmount = 0 || $gooDifference < 0){
+                                    setPermCache("couplingArray{$couplingID}Amount", $gooAmount);
+                                    continue;
+                                }
+                                //Check for a multiple of 50 in the difference
+                                if ($gooDifference % 50 != 0) {
+                                    $gooType = apiTypeName($coupling->attributes()->typeID);
                                     $systemName = apiCharacterName($structures->attributes()->locationID);
                                     $msg = "{$this->prefix}";
                                     $msg .= "**POSSIBLE SIPHON**\n";
@@ -143,7 +162,9 @@ class siphons
                                     // Queue the message
                                     priorityQueueMessage($msg, $siphonCorp["channelID"], $this->guild);
                                     $this->logger->addInfo("Siphons: {$msg}");
-                                    $siphonCount++;
+                                    setPermCache("couplingArray{$couplingID}Amount", $gooAmount);
+                                } else {
+                                    setPermCache("couplingArray{$couplingID}Amount", $gooAmount);
                                 }
                             }
                         }
