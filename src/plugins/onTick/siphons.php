@@ -116,7 +116,7 @@ class siphons
                                 $gooAmount = $silo->attributes()->quantity;
                                 $gooDifference = $gooAmount - $lastAmount;
                                 //Check if silo has been checked before
-                                if(!isset($lastAmount) || $gooAmount = 0 || $gooDifference < 0){
+                                if(!isset($lastAmount) || $gooDifference < 0){
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     continue;
                                 }
@@ -124,7 +124,7 @@ class siphons
                                 if ($gooDifference % 50 != 0) {
                                     $gooType = apiTypeName($silo->attributes()->typeID);
                                     $systemName = apiCharacterName($structures->attributes()->locationID);
-                                    $msg = "{$this->prefix}";
+                                    $msg = "{$siphonCorp["prefix"]}";
                                     $msg .= "**POSSIBLE SIPHON**\n";
                                     $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
                                     // Queue the message
@@ -148,7 +148,7 @@ class siphons
                                 $gooAmount = $coupling->attributes()->quantity;
                                 $gooDifference = $gooAmount - $lastAmount;
                                 //Check if silo has been checked before
-                                if(!isset($lastAmount) || $gooAmount = 0 || $gooDifference < 0){
+                                if(!isset($lastAmount) || $gooDifference < 0){
                                     setPermCache("couplingArray{$couplingID}Amount", $gooAmount);
                                     continue;
                                 }
@@ -156,7 +156,7 @@ class siphons
                                 if ($gooDifference % 50 != 0) {
                                     $gooType = apiTypeName($coupling->attributes()->typeID);
                                     $systemName = apiCharacterName($structures->attributes()->locationID);
-                                    $msg = "{$this->prefix}";
+                                    $msg = "{$siphonCorp["prefix"]}";
                                     $msg .= "**POSSIBLE SIPHON**\n";
                                     $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
                                     // Queue the message
