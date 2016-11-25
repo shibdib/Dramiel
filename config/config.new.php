@@ -103,14 +103,14 @@ $config["plugins"] = array(
             ),
             "supers" => array(
                 "default" => false,
-                "searchString" => "",
+                "searchString" => "supers",
                 "textStringPrepend" => "@everyone |",
                 "textStringAppend" => "",
                 "channelID" => 0
             ),
             "blackops" => array(
                 "default" => false,
-                "searchString" => "",
+                "searchString" => "blops",
                 "textStringPrepend" => "@everyone |",
                 "textStringAppend" => "",
                 "channelID" => 0
