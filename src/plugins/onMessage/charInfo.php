@@ -96,6 +96,7 @@ class charInfo
 
             $cleanString = urlencode($messageString);
 
+            //API call 1
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
             $characterID = null;
@@ -108,48 +109,50 @@ class charInfo
             if (empty($characterID)) {
                 return $this->message->reply("**Error:** no data available");
             }
-            // Get stats
-            $statsURL = "https://beta.eve-kill.net/api/charInfo/characterID/" . urlencode($characterID) . "/";
-            $stats = json_decode(downloadData($statsURL), true);
+            $characterID = urlencode($characterID);
 
-            if (empty($stats)) {
-                return $this->message->reply("**Error:** EVE-Kill is down. Try again later.");
+            //API call 2
+            $url = "https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID={$characterID}";
+            $xml = makeApiRequest($url);
+            foreach ($xml->result as $characterDetails) {
+                $dob = $characterDetails->DoB;
+                $corporationName = $characterDetails->corporation;
+                $corporationJoinDate = $characterDetails->corporationDate;
+                $allianceName = $characterDetails->alliance;
+                $securityStatus = $characterDetails->securityStatus;
+                $characterName = $characterDetails->characterName;
             }
 
-            $characterName = @$stats["characterName"];
-            if (empty($characterName)) {
-                return $this->message->reply("**Error:** No Character Found");
+            //ZKill lookup
+            $url = "https://zkillboard.com/api/orderDirection/desc/limit/1/no-items/characterID/{$characterID}/xml/";
+            $xml = makeApiRequest($url);
+            if (empty($xml)) {
+                return $this->message->reply("**Error:** ZKill is down. Try again later.");
             }
-            $corporationName = @$stats["corporationName"];
-            $allianceName = isset($stats["allianceName"]) ? $stats["allianceName"] : "None";
-            $factionName = isset($stats["factionName"]) ? $stats["factionName"] : "None";
-            $securityStatus = @$stats["securityStatus"];
-            $lastSeenSystem = @$stats["lastSeenSystem"];
-            $lastSeenRegion = @$stats["lastSeenRegion"];
-            $lastSeenShip = @$stats["lastSeenShip"];
-            $lastSeenDate = @$stats["lastSeenDate"];
-            $corporationActiveArea = @$stats["corporationActiveArea"];
-            $allianceActiveArea = @$stats["allianceActiveArea"];
-            $ePeenSize = @$stats["ePeenSize"];
-            $facepalms = @$stats["facepalms"];
-            $lastUpdated = @$stats["lastUpdatedOnBackend"];
-            $url = "https://zkillboard.com/character/" . $stats["characterID"] . "/";
+            foreach ($xml->result->rowset->row as $kill) {
+                $lastSeenSystemID = $kill->attributes()->solarSystemID;
+                $lastSeenSystem = apiCharacterName($lastSeenSystemID);
+                $lastSeenDate = $kill->attributes()->killTime;
+            }
+            foreach ($xml->result->rowset->row->rowset->row as $attacker) {
+                if ($attacker->attributes()->characterID == $characterID){
+                    $lastSeenShipID = $attacker->attributes()->shipTypeID;
+                    $lastSeenShip = apiTypeName($lastSeenShipID);
+                }
+            }
+            $url = "https://zkillboard.com/character/{$characterID}/";
 
+            $msg = "```Name: {$characterName}      
+			
+Corporation Name: {$corporationName}
+Joined Corporation On: {$corporationJoinDate}
+Alliance Name: {$allianceName}
+Security Status: {$securityStatus}
 
-            $msg = "```characterName: {$characterName}
-corporationName: {$corporationName}
-allianceName: {$allianceName}
-factionName: {$factionName}
-securityStatus: {$securityStatus}
-lastSeenSystem: {$lastSeenSystem}
-lastSeenRegion: {$lastSeenRegion}
-lastSeenShip: {$lastSeenShip}
-lastSeenDate: {$lastSeenDate}
-corporationActiveArea: {$corporationActiveArea}
-allianceActiveArea: {$allianceActiveArea}
-ePeenSize: {$ePeenSize}
-facepalms: {$facepalms}
-lastUpdated: $lastUpdated```
+Last Seen In System: {$lastSeenSystem}
+Last Seen Flying a: {$lastSeenShip}
+Last Seen On: {$lastSeenDate}```
+
 For more info, visit: $url";
 
             $this->logger->addInfo("charInfo: Sending character info to {$user}");
