@@ -45,11 +45,8 @@ class siphons
     /**
      * @var
      */
-    var $toDiscordChannel;
+    var $groupConfig;
     public $guild;
-    protected $keyID;
-    protected $vCode;
-    protected $prefix;
 
     /**
      * @param $config
@@ -62,10 +59,7 @@ class siphons
         $this->discord = $discord;
         $this->logger = $logger;
         $this->guild = $config["bot"]["guild"];
-        $this->toDiscordChannel = $config["plugins"]["siphons"]["channelID"];
-        $this->keyID = $config["plugins"]["siphons"]["keyID"];
-        $this->vCode = $config["plugins"]["siphons"]["vCode"];
-        $this->prefix = $config["plugins"]["siphons"]["prefix"];
+        $this->groupConfig = $config["plugins"]["siphons"]["groupConfig"];
     }
 
     /**
@@ -76,107 +70,99 @@ class siphons
         // What was the servers last reported state
         $lastStatus = getPermCache("serverState");
         if ($lastStatus == "online") {
-            $lastChecked = getPermCache("siphonLastChecked{$this->keyID}");
-            if ($lastChecked == NULL) {
-                // Schedule it for right now if first run
-                $lastChecked = 1;
-            }
-            $keyID = $this->keyID;
-            $vCode = $this->vCode;
+            foreach($this->groupConfig as $siphonCorp) {
+                //Check if user is running old config
+                if(!isset($siphonCorp["channelID"])){
+                    $this->logger->addInfo("Siphons: Update your config file to the latest version.");
+                    return;
+                }
+                //If group channel is set to 0 skip
+                if($siphonCorp["channelID"] == 0){
+                    continue;
+                }
+                $lastChecked = getPermCache("siphonLastChecked{$siphonCorp["keyID"]}");
+                if ($lastChecked == NULL) {
+                    // Schedule it for right now if first run
+                    $lastChecked = 1;
+                }
 
-            if ($lastChecked <= time()) {
-                $this->logger->addInfo("Siphons: Checking API Key {$keyID} for siphons");
-                $this->checkTowers($keyID, $vCode);
+                if ($lastChecked <= time()) {
+                    $this->logger->addInfo("Siphons: Checking keyID - {$siphonCorp["keyID"]} for siphons");
+                    $this->checkTowers();
+                }
             }
         }
     }
 
-    function checkTowers($keyID, $vCode)
+    function checkTowers()
     {
-        $discord = $this->discord;
-
-        $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
-        $xml = makeApiRequest($url);
-        $siphonCount = 0;
-        $rawGoo = array(16634, 16643, 16647, 16641, 16640, 16635, 16648, 16633, 16646, 16651, 16650, 16644, 16652, 16639, 16636, 16649, 16653, 16638, 16637, 16642);
-        foreach ($xml->result->rowset->row as $structures) {
-            //Check silos
-            if ($structures->attributes()->typeID == 14343) {
-                if (isset($structures->rowset->row)) {
-                    foreach ($structures->rowset->row as $silo) {
-                        //Avoid reporting empty silos
-                        if ($silo->attributes()->quantity != 0 && in_array($silo->attributes()->typeID, $rawGoo)) {
-                            //Check for a multiple of 50
-                            if ($silo->attributes()->quantity % 50 != 0) {
-                                $gooType = apiTypeName($silo->attributes()->typeID);
-                                $systemName = apiCharacterName($structures->attributes()->locationID);
-                                $msg = "{$this->prefix}";
-                                $msg .= "**POSSIBLE SIPHON**\n";
-                                $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
-                                // Send the msg to the channel;
-                                $channelID = $this->toDiscordChannel;
-                                priorityQueueMessage($msg, $channelID, $this->guild);
-                                $this->logger->addInfo("Siphons: {$msg}");
-                                $siphonCount++;
+        foreach($this->groupConfig as $siphonCorp) {
+            //If group channel is set to 0 skip
+            if($siphonCorp["channelID"] == 0){
+                continue;
+            }
+            $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$siphonCorp["keyID"]}&vCode={$siphonCorp["vCode"]}";
+            $xml = makeApiRequest($url);
+            $siphonCount = 0;
+            $rawGoo = array(16634, 16643, 16647, 16641, 16640, 16635, 16648, 16633, 16646, 16651, 16650, 16644, 16652, 16639, 16636, 16649, 16653, 16638, 16637, 16642);
+            foreach ($xml->result->rowset->row as $structures) {
+                //Check silos
+                if ($structures->attributes()->typeID == 14343) {
+                    if (isset($structures->rowset->row)) {
+                        foreach ($structures->rowset->row as $silo) {
+                            //Avoid reporting empty silos
+                            if ($silo->attributes()->quantity != 0 && in_array($silo->attributes()->typeID, $rawGoo)) {
+                                //Check for a multiple of 50
+                                if ($silo->attributes()->quantity % 50 != 0) {
+                                    $gooType = apiTypeName($silo->attributes()->typeID);
+                                    $systemName = apiCharacterName($structures->attributes()->locationID);
+                                    $msg = "{$this->prefix}";
+                                    $msg .= "**POSSIBLE SIPHON**\n";
+                                    $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
+                                    // Queue the message
+                                    priorityQueueMessage($msg, $siphonCorp["channelID"], $this->guild);
+                                    $this->logger->addInfo("Siphons: {$msg}");
+                                    $siphonCount++;
+                                }
+                            }
+                        }
+                    }
+                }
+                if ($structures->attributes()->typeID == 17982) {
+                    if (isset($structures->rowset->row)) {
+                        foreach ($structures->rowset->row as $coupling) {
+                            //Avoid reporting empty coupling arrays
+                            if ($coupling->attributes()->quantity != 0) {
+                                //Check for a multiple of 50
+                                if ($coupling->attributes()->quantity % 50 != 0) {
+                                    $gooType = apiTypeName($silo->attributes()->typeID);
+                                    $systemName = apiCharacterName($structures->attributes()->locationID);
+                                    $msg = "{$this->prefix}";
+                                    $msg .= "**POSSIBLE SIPHON**\n";
+                                    $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
+                                    // Queue the message
+                                    priorityQueueMessage($msg, $siphonCorp["channelID"], $this->guild);
+                                    $this->logger->addInfo("Siphons: {$msg}");
+                                    $siphonCount++;
+                                }
                             }
                         }
                     }
                 }
             }
-            if ($structures->attributes()->typeID == 17982) {
-                if (isset($structures->rowset->row)) {
-                    foreach ($structures->rowset->row as $coupling) {
-                        //Avoid reporting empty coupling arrays
-                        if ($coupling->attributes()->quantity != 0) {
-                            //Check for a multiple of 50
-                            if ($coupling->attributes()->quantity % 50 != 0) {
-                                $gooType = apiTypeName($silo->attributes()->typeID);
-                                $systemName = apiCharacterName($structures->attributes()->locationID);
-                                $msg = "{$this->prefix}";
-                                $msg .= "**POSSIBLE SIPHON**\n";
-                                $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";
-                                // Send the msg to the channel;
-                                $channelID = $this->toDiscordChannel;
-                                priorityQueueMessage($msg, $channelID, $this->guild);
-                                $this->logger->addInfo("Siphons: {$msg}");
-                                $siphonCount++;
-                            }
-                        }
-                    }
-                }
+            $cached = $xml->cachedUntil[0];
+            $baseUnix = strtotime($cached);
+            $cacheClr = $baseUnix - 13500;
+            if ($cacheClr <= time()) {
+                $weirdTime = time() + 21700;
+                $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
+                setPermCache("siphonLastChecked{$siphonCorp["keyID"]}", $weirdTime);
+            } else {
+                $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
+                setPermCache("siphonLastChecked{$siphonCorp["keyID"]}", $cacheClr);
             }
+            $this->logger->addInfo("Siphons: Siphon Check Complete Next Check At {$cacheTimer}");
+            return null;
         }
-        $cached = $xml->cachedUntil[0];
-        $baseUnix = strtotime($cached);
-        $cacheClr = $baseUnix - 13500;
-        if ($cacheClr <= time()) {
-            $weirdTime = time() + 21700;
-            $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
-            setPermCache("siphonLastChecked{$keyID}", $weirdTime);
-        } else {
-            $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
-            setPermCache("siphonLastChecked{$keyID}", $cacheClr);
-        }
-        $this->logger->addInfo("Siphons: Siphon Check Complete Next Check At {$cacheTimer}");
-        return null;
-    }
-
-    /**
-     *
-     */
-    function onMessage()
-    {
-    }
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
-        );
     }
 }

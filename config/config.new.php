@@ -173,12 +173,28 @@ $config["plugins"] = array(
             ),
         ),
     ),
-    //Siphon detection works by looking for multiples of 100 inside standard silos. So if you take out a weird number it will trigger false positives.
+    //Siphon detection works by looking for multiples of 100 inside standard silos. https://github.com/shibdib/Dramiel/wiki/1b.-Siphon-Detection for more info
     "siphons" => array(
-        "channelID" => 0, //killmails post to this channel
-        "keyID" => "", //corpid for killmails
-        "vCode" => "", //allianceid for killmails (Leave as 0 if using it for a corp)
-        "prefix" => "", //put @everyone if you'd like everyone to be pinged when a siphon is detected
+        "groupConfig" => array(
+            "group1" => array(
+                "channelID" => 0, //siphon alerts post to this channel
+                "keyID" => "", //keyID
+                "vCode" => "", //vCode
+                "prefix" => "", //put @everyone if you'd like everyone to be pinged when a siphon is detected
+            ),
+            "group2" => array(
+                "channelID" => 0, //siphon alerts post to this channel (Leave as 0 if not in use)
+                "keyID" => "", //keyID
+                "vCode" => "", //vCode
+                "prefix" => "", //put @everyone if you'd like everyone to be pinged when a siphon is detected
+            ),
+            "group3" => array(
+                "channelID" => 0, //siphon alerts post to this channel (Leave as 0 if not in use)
+                "keyID" => "", //keyID
+                "vCode" => "", //vCode
+                "prefix" => "", //put @everyone if you'd like everyone to be pinged when a siphon is detected
+            ),
+        ),
     ),
     //If you'd like low fuel warnings to go to a different channel set this here. Otherwise leave it as null
     "fuel" => array(
