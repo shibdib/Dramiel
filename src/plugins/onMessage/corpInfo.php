@@ -102,47 +102,31 @@ class corpInfo
                 return $this->message->reply("**Error:** Unable to find any group matching that name.");
             }
 
-            // Get stats
-            $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($corpID) . "/";
-            $stats = json_decode(downloadData($statsURL), true);
-
-            if (is_null($stats)) {
-                return $this->message->reply("**Error:** EVE-Kill is down. Try again later.");
+            $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$corpID}";
+            $xml = makeApiRequest($url);
+            foreach ($xml->result as $corporation) {
+                $corporationName = $corporation->corporationName;
+                $allianceName = $corporation->allianceName;
+                $ceoName = $corporation->ceoName;
+                $taxRate = $corporation->taxRate;
+                $homeStation = $corporation->stationName;
+                $memberCount = $corporation->memberCount;
+                $corpTicker = $corporation->ticker;
+                $url = "https://zkillboard.com/corporation/{$corpID}/";
             }
-
-            if (is_null(@$stats["corporationActiveArea"])) {
-                return $this->message->reply("**Error:** No data available for that group.");
-            }
-
-            $corporationName = @$stats["corporationName"];
-            $allianceName = isset($stats["allianceName"]) ? $stats["allianceName"] : "None";
-            $factionName = isset($stats["factionName"]) ? $stats["factionName"] : "None";
-            $ceoName = @$stats["ceoName"];
-            $homeStation = @$stats["stationName"];
-            $taxRate = @$stats["taxRate"];
-            $corporationActiveArea = @$stats["corporationActiveArea"];
-            $allianceActiveArea = @$stats["allianceActiveArea"];
-            $memberCount = @$stats["memberArrayCount"];
-            $superCaps = @count($stats["superCaps"]);
-            $ePeenSize = @$stats["ePeenSize"];
-            $url = "https://zkillboard.com/corporation/" . @$stats["corporationID"] . "/";
 
 
             $msg = "```Corp Name: {$corporationName}
-Alliance Name: {$allianceName}
-Faction: {$factionName}
+Corp Ticker: {$corpTicker}
 CEO: {$ceoName}
+Alliance Name: {$allianceName}
 Home Station: {$homeStation}
 Tax Rate: {$taxRate}%
-Corp Active Region: {$corporationActiveArea}
-Alliance Active Region: {$allianceActiveArea}
 Member Count: {$memberCount}
-Known Super Caps: {$superCaps}
-ePeen Size: {$ePeenSize}
 ```
 For more info, visit: $url";
 
-            $this->logger->addInfo("corpInfo: Sending character info to {$user}");
+            $this->logger->addInfo("corpInfo: Sending corp info to {$user}");
             $this->message->reply($msg);
         }
         return null;
