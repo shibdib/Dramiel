@@ -132,14 +132,24 @@ $config["plugins"] = array(
     ),
     //SSO Auth
     "auth" => array(
-        "corpID" => 0,
-        "allianceID" => 0, // If you'd like to auth base on alliance put the alliance ID here.. also works to set blues..
-        "corpMemberRole" => "", // The name of the role your CORP members will be assigned too if the auth plugin is active.
-        "allyMemberRole" => "", // The name of the role your ALLY members will be assigned too if the auth plugin is active.
-        "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
-        "nameEnforce" => "false", // if "true" bot will automatically change nicknames so that they match player names.
         "url" => "http://.....", // put a url here if using sso auth for ur sso page.
-        "exempt" => array("", "") // role names that are exempt from auth checks (wont be removed by the bot)
+        "exempt" => array("", ""), // role names that are exempt from auth checks (wont be removed by the bot)
+        "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
+        "corpTickers" => "false", // if "true" bot will automatically add corp tickers to the front of users names at auth.
+        "authGroups" => array(
+            "group1" => array(
+                "corpID" => 0, // If you'd like to auth based on CORP put the corp ID here otherwise leave it as 0
+                "allianceID" => 0, // If you'd like to auth based on ALLIANCE put the alliance ID here otherwise leave it as 0 (Can be used in conjunction with corp)
+                "corpMemberRole" => "", // The name of the role your CORP members will be assigned too if the auth plugin is active.
+                "allyMemberRole" => "", // The name of the role your ALLIANCE members will be assigned too if the auth plugin is active.
+            ),
+            "group2" => array(
+                "corpID" => 0, // If you'd like to auth based on CORP put the corp ID here otherwise leave it as 0
+                "allianceID" => 0, // If you'd like to auth based on ALLIANCE put the alliance ID here otherwise leave it as 0 (Can be used in conjunction with corp)
+                "corpMemberRole" => "", // The name of the role your CORP members will be assigned too if the auth plugin is active.
+                "allyMemberRole" => "", // The name of the role your ALLIANCE members will be assigned too if the auth plugin is active.
+            )
+        )
     ),
     //Killmail posting
     "getKillmails" => array(
