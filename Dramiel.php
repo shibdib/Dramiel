@@ -70,7 +70,6 @@ foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
 updateDramielDB($logger);
 
 // Init Discord
-
 $discord = new Discord(["token" => $config["bot"]["token"]]);
 
 // Load tick plugins
@@ -97,7 +96,7 @@ $logger->info("Loaded: " . count($pluginsT) . " background plugins");
 if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode"])) {
 // Load chat plugins
     $pluginDirs = array("src/plugins/onMessage/*.php", "src/plugins/admin/*.php");
-    $adminPlugins = array("setNickname", "updateBot", "holder");
+    $adminPlugins = array("setNickname", "updateBot", "setGame");
     $logger->addInfo("Loading in chat plugins");
     $plugins = array();
     foreach ($pluginDirs as $dir) {
@@ -141,6 +140,16 @@ $discord->on(
         $discord->loop->addPeriodicTimer(86400, function () use ($logger) {
             updateDramielDB($logger);
         });
+
+        //Set Initial Game
+        $gameTitle = $config["bot"]["game"];
+        if (!is_null(getPermCache("botGame"))) {
+            $gameTitle = getPermCache("botGame");
+        }
+        $game = $discord->factory(Game::class, [
+            'name' => $gameTitle,
+        ]);
+        $discord->updatePresence($game);
 
         // Server Status Check (tick plugins will not run if eve is offline)
         $discord->loop->addPeriodicTimer(60, function () use ($logger) {
