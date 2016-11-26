@@ -460,6 +460,23 @@ class notifications
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "Station in **{$systemName}** has now entered freeport mode.";
                             break;
+                        case 165: //  System became Capital
+                            $solarSystemID = trim(explode(": ", $notificationString[1])[1]);
+                            $systemName = apiCharacterName($solarSystemID);
+                            $allianceID = trim(explode(": ", $notificationString[0])[1]);
+                            $allianceName = apiCharacterName($allianceID);
+                            $msg = "**{$systemName}** is now the capital for {$allianceName}.";
+                            break;
+                        case 167: //  Initiate Self-destruct on TCU
+                            $solarSystemID = trim(explode(": ", $notificationString[3])[1]);
+                            $systemName = apiCharacterName($solarSystemID);
+                            $msg = "TCU in **{$systemName}** has initiated a self destruct sequence.";
+                            break;
+                        case 169: //  TCU Self-Destructed
+                            $solarSystemID = trim(explode(": ", $notificationString[0])[1]);
+                            $systemName = apiCharacterName($solarSystemID);
+                            $msg = "TCU in **{$systemName}** has self destructed.";
+                            break;
                         case 182: //  Citadel being anchored
                             $corpName = trim(explode(": ", $notificationString[1])[1]);
                             $solarSystemID = trim(explode(": ", $notificationString[2])[1]);
@@ -490,6 +507,9 @@ class notifications
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
                             break;
                         case 199: // citadel delivery
+                            $msg = "skip";
+                            break;
+                        case 1031: // plex delivery
                             $msg = "skip";
                             break;
                         default: // Unknown typeID
