@@ -115,22 +115,22 @@ class getKillmails
     function getKM()
     {
         foreach($this->groupConfig as $kmGroup) {
-            $lastMail = getPermCache("{$kmGroup["name"]}newestKillmailID");
+            $killID = getPermCache("{$kmGroup["name"]}newestKillmailID");
             //check if start id is greater than current id and if it is set
-            if ($kmGroup["startMail"] > $lastMail || is_null($lastMail)) {
-                $lastMail = $kmGroup["startMail"];
+            if ($kmGroup["startMail"] > $killID || is_null($killID)) {
+                $killID = $kmGroup["startMail"];
             }
             if ($kmGroup["allianceID"] == "0" & $kmGroup["lossMails"] == 'true') {
-                $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$kmGroup["corpID"]}/";
+                $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup["corpID"]}/";
             }
             if ($kmGroup["allianceID"] == "0" & $kmGroup["lossMails"] == 'false') {
-                $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/corporationID/{$kmGroup["corpID"]}/";
+                $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup["corpID"]}/";
             }
             if ($kmGroup["allianceID"] != "0" & $kmGroup["lossMails"] == 'true') {
-                $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$kmGroup["allianceID"]}/";
+                $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup["allianceID"]}/";
             }
             if ($kmGroup["allianceID"] != "0" & $kmGroup["lossMails"] == 'false') {
-                $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$lastMail}/allianceID/{$kmGroup["allianceID"]}/";
+                $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup["allianceID"]}/";
             }
 
             if (!isset($url)) { // Make sure it's always set.
@@ -202,12 +202,12 @@ class getKillmails
 
     function getBigKM()
     {
-        $lastMail = getPermCache("bigKillNewestKillmailID");
-        if ($this->config["plugins"]["getKillmails"]["bigKills"]["bigKillStartID"] > $lastMail || is_null($lastMail)) {
-            $lastMail = $this->config["plugins"]["getKillmails"]["bigKills"]["bigKillStartID"];
+        $killID = getPermCache("bigKillNewestKillmailID");
+        if ($this->config["plugins"]["getKillmails"]["bigKills"]["bigKillStartID"] > $killID || is_null($killID)) {
+            $killID = $this->config["plugins"]["getKillmails"]["bigKills"]["bigKillStartID"];
         }
 
-        $url = "https://zkillboard.com/api/kills/iskValue/10000000000/afterKillID/{$lastMail}/";
+        $url = "https://zkillboard.com/api/kills/iskValue/10000000000/afterKillID/{$killID}/";
 
         $kills = json_decode(downloadData($url), true);
         $i = 0;
