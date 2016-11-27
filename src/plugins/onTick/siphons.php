@@ -77,9 +77,9 @@ class siphons
         // What was the servers last reported state
         $lastStatus = getPermCache("serverState");
         if ($lastStatus == "online") {
-            foreach($this->groupConfig as $siphonCorp) {
+            foreach ($this->groupConfig as $siphonCorp) {
                 //If group channel is set to 0 skip
-                if($siphonCorp["channelID"] == 0){
+                if ($siphonCorp["channelID"] == 0) {
                     continue;
                 }
                 $lastChecked = getPermCache("siphonLastChecked{$siphonCorp["keyID"]}");
@@ -98,9 +98,9 @@ class siphons
 
     function checkTowers()
     {
-        foreach($this->groupConfig as $siphonCorp) {
+        foreach ($this->groupConfig as $siphonCorp) {
             //If group channel is set to 0 skip
-            if($siphonCorp["channelID"] == 0){
+            if ($siphonCorp["channelID"] == 0) {
                 continue;
             }
             $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$siphonCorp["keyID"]}&vCode={$siphonCorp["vCode"]}";
@@ -118,7 +118,7 @@ class siphons
                                 $gooAmount = $silo->attributes()->quantity;
                                 $gooDifference = $gooAmount - $lastAmount;
                                 //Check if silo has been checked before
-                                if(!isset($lastAmount) || $gooDifference < 0){
+                                if (!isset($lastAmount) || $gooDifference < 0) {
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     continue;
                                 }
@@ -150,7 +150,7 @@ class siphons
                                 $gooAmount = $coupling->attributes()->quantity;
                                 $gooDifference = $gooAmount - $lastAmount;
                                 //Check if silo has been checked before
-                                if(!isset($lastAmount) || $gooDifference < 0){
+                                if (!isset($lastAmount) || $gooDifference < 0) {
                                     setPermCache("couplingArray{$couplingID}Amount", $gooAmount);
                                     continue;
                                 }

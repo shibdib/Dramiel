@@ -96,7 +96,7 @@ $logger->info("Loaded: " . count($pluginsT) . " background plugins");
 if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode"])) {
 // Load chat plugins
     $pluginDirs = array("src/plugins/onMessage/*.php", "src/plugins/admin/*.php");
-    $adminPlugins = array("setNickname", "updateBot", "setGame");
+    $adminPlugins = array("setNickname", "getLog", "setGame");
     $logger->addInfo("Loading in chat plugins");
     $plugins = array();
     foreach ($pluginDirs as $dir) {
@@ -166,14 +166,14 @@ $discord->on(
         });
 
         // Message queue
-        $discord->loop->addPeriodicTimer(7, function () use ($discord,$logger) {
+        $discord->loop->addPeriodicTimer(7, function () use ($discord, $logger) {
             $id = getOldestMessage();
             $id = $id["MIN(id)"];
-            if(is_null($id)){
+            if (is_null($id)) {
                 $id = 1;
             }
             $queuedMessage = getQueuedMessage($id);
-            if(!is_null($queuedMessage)){
+            if (!is_null($queuedMessage)) {
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
                 $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
