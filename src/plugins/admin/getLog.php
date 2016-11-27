@@ -119,7 +119,7 @@ class getLog
         return array(
             "name" => "log",
             "trigger" => array($this->config["bot"]["trigger"] . "log"),
-            "information" => "Get the end of log files. Follow command with either log, error, other (Admin Role)"
+            "information" => "Get the end of log files. Follow command with either log, error, other **(Admin Role Required)**"
         );
     }
 

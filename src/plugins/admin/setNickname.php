@@ -112,7 +112,7 @@ class setNickname
         return array(
             "name" => "nickname",
             "trigger" => array($this->config["bot"]["trigger"] . "nickname"),
-            "information" => "Changes the bots nickname (Admin Role)"
+            "information" => "Changes the bots nickname **(Admin Role Required)**"
         );
     }
 

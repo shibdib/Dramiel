@@ -116,7 +116,7 @@ class setGame
         return array(
             "name" => "game",
             "trigger" => array($this->config["bot"]["trigger"] . "game"),
-            "information" => "Changes the bots game (Admin Role)"
+            "information" => "Changes the bots game **(Admin Role Required)**"
         );
     }
 

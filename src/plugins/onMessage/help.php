@@ -101,9 +101,10 @@ class help
                             }
                         }
                     }
-                    if ($info["name"] == "update" || $info["name"] == "nickname") {
-                        continue;
-                    }
+                    //Skip these plugins
+                    //if ($info["name"] == "update" || $info["name"] == "nickname") {
+                    //    continue;
+                    //}
                     if (!empty($info["name"])) {
                         $commands[] = $info["name"];
                     }
