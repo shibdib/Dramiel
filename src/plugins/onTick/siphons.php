@@ -67,15 +67,17 @@ class siphons
      */
     function tick()
     {
+        // If config is outdated
+        if (is_null($this->groupConfig)) {
+            $this->logger->addInfo("Siphons: Update your config file to the latest version.");
+            $msg = "**Siphon Failure:** Please update the bots config to the latest version.";
+            queueMessage($msg, $this->config["notifications"]["channelID"], $this->guild);
+        }
+
         // What was the servers last reported state
         $lastStatus = getPermCache("serverState");
         if ($lastStatus == "online") {
             foreach($this->groupConfig as $siphonCorp) {
-                //Check if user is running old config
-                if(!isset($siphonCorp["channelID"])){
-                    $this->logger->addInfo("Siphons: Update your config file to the latest version.");
-                    return;
-                }
                 //If group channel is set to 0 skip
                 if($siphonCorp["channelID"] == 0){
                     continue;
