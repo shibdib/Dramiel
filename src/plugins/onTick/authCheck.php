@@ -358,9 +358,11 @@ class authCheck
                             }
                             $nick = "[{$corpTicker}] {$eveName}";
                             queueRename($discordID, $nick, $this->guildID);
+                            continue;
                         }
                         $nick = "{$eveName}";
                         queueRename($discordID, $nick, $this->guildID);
+                        continue;
                     }
                 }
             }
