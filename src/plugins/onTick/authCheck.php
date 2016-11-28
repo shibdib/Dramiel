@@ -270,6 +270,8 @@ class authCheck
         //Perform check if roles were added without permission
         foreach ($guild->members as $member) {
             $id = $member->id;
+            $memberArray = array();
+            array_push($memberArray, (int)$id);
             $username = $member->username;
             $roles = $member->roles;
 
@@ -294,6 +296,12 @@ class authCheck
                     }
                 }
             }
+        }
+        // Prune old users
+        if (isset($memberArray)) {
+            $memberArray = implode(', ', $memberArray);
+            $sql = "UPDATE authUsers SET active='no' WHERE discordID NOT IN ($memberArray)";
+            $conn->query($sql);
         }
         //Report removed users to log and channel
         $nameList = implode(", ", $removedRoles);
