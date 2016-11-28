@@ -196,7 +196,6 @@ $discord->on(
                 if (!is_null($queuedRename)) {
                     $guild = $discord->guilds->get('id', $queuedRename['guild']);
                     $member = $guild->members->get("id", $queuedRename['discordID']);
-                    $logger->addInfo("RenameProcessing - Completing rename item #{$id} : {$queuedRename['nick']}");
                     $member->setNickname($queuedRename['nick']);
                     clearQueuedRename($id);
                 }
