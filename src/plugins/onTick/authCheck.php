@@ -117,6 +117,7 @@ class authCheck
         if ($lastStatus == "online") {
             $permsChecked = getPermCache("permsLastChecked");
             $stateChecked = getPermCache("authStateLastChecked");
+            $namesChecked = getPermCache("nameStateLastChecked");
 
             if ($permsChecked <= time()) {
                 $this->logger->addInfo("AuthCheck: Checking for users who have left corp/alliance....");
@@ -128,6 +129,12 @@ class authCheck
                 $this->logger->addInfo("AuthCheck: Checking for users who have been wrongly given roles....");
                 $this->checkAuthState();
                 $this->logger->addInfo("AuthCheck: Role check complete.");
+            }
+
+            if ($this->nameEnforce == "true" && $namesChecked <= time()) {
+                $this->logger->addInfo("AuthCheck: Resetting player names....");
+                $this->nameReset();
+                $this->logger->addInfo("AuthCheck: Names reset.");
             }
         }
     }
@@ -178,9 +185,8 @@ class authCheck
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get("id", $discordID);
                 $eveName = $rows['eveName'];
-
                 //Check if member has roles
-                if (is_null($member->roles[0])) {
+                if (is_null($member->roles)) {
                     continue;
                 }
 
@@ -192,6 +198,7 @@ class authCheck
                     $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
                     return null;
                 }
+
                 //Auth things
                 if ($xml->result->rowset->row[0]) {
                     foreach ($xml->result->rowset->row as $character) {
@@ -203,23 +210,6 @@ class authCheck
                             continue;
                         }
                     }
-                }
-                //Perform name check if true
-                if ($this->nameEnforce == "true") {
-                    if ($this->corpTickers == "true") {
-                        $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
-                        $xml = makeApiRequest($url);
-                        $corpTicker = "";
-                        foreach ($xml->result as $corporation) {
-                            $corpTicker = $corporation->ticker;
-                        }
-                        $nick = "[{$corpTicker}] {$eveName}";
-                        queueRename($discordID, $nick, $this->guildID);
-                        continue;
-                    }
-                    $nick = "{$eveName}";
-                    queueRename($discordID, $nick, $this->guildID);
-                    continue;
                 }
             }
             $nextCheck = time() + 10800;
@@ -312,5 +302,75 @@ class authCheck
         $nextCheck = time() + 1800;
         setPermCache("authStateLastChecked", $nextCheck);
         return null;
+    }
+
+    function nameReset()
+    {
+        //Get guild object
+        $guild = $this->discord->guilds->get('id', $this->guildID);
+
+        //Establish connection to mysql
+        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
+
+        $sql = "SELECT characterID, discordID, eveName FROM authUsers WHERE active='yes'";
+
+        $result = $conn->query($sql);
+
+        // If config is outdated
+        if (is_null($this->authGroups)) {
+            $msg = "**Auth Failure:** Please update the bots config to the latest version.";
+            queueMessage($msg, $this->alertChannel, $this->guild);
+            $nextCheck = time() + 10800;
+            setPermCache("permsLastChecked", $nextCheck);
+            return null;
+        }
+
+        if ($result->num_rows >= 1) {
+            while ($rows = $result->fetch_assoc()) {
+                $charID = $rows['characterID'];
+                $discordID = $rows['discordID'];
+                $member = $guild->members->get("id", $discordID);
+                $eveName = $rows['eveName'];
+                //Check if member has roles
+                if (is_null($member->roles)) {
+                    continue;
+                }
+
+                //Get ingame affiliations
+                $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
+                $xml = makeApiRequest($url);
+                // Stop the process if the api is throwing an error
+                if (is_null($xml)) {
+                    $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
+                    return null;
+                }
+
+                //Perform name check if true
+
+                if ($xml->result->rowset->row[0]) {
+                    foreach ($xml->result->rowset->row as $character) {
+                        if ($this->corpTickers == "true") {
+                            $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
+                            $xml = makeApiRequest($url);
+                            $corpTicker = "";
+                            foreach ($xml->result as $corporation) {
+                                $corpTicker = $corporation->ticker;
+                            }
+                            $nick = "[{$corpTicker}] {$eveName}";
+                            queueRename($discordID, $nick, $this->guildID);
+                        }
+                        $nick = "{$eveName}";
+                        queueRename($discordID, $nick, $this->guildID);
+                    }
+                }
+            }
+            $nextCheck = time() + 43200;
+            setPermCache("nameStateLastChecked", $nextCheck);
+            return null;
+        }
+        $nextCheck = time() + 43200;
+        setPermCache("nameStateLastChecked", $nextCheck);
+        return null;
+
     }
 }
