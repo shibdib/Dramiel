@@ -90,6 +90,10 @@ class authCheck
 
         //check if cache has been set
         $permsChecked = getPermCache("permsLastChecked");
+        $namesChecked = getPermCache("nameStateLastChecked");
+        if ($namesChecked == NULL) {
+            setPermCache("nameStateLastChecked", time());
+        }
 
         //if not set set for now (30 minutes from now for role removal)
         if ($permsChecked == NULL) {
