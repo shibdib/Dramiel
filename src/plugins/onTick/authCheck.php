@@ -41,12 +41,13 @@ class authCheck
     var $dbUser;
     var $dbPass;
     var $dbName;
-    var $id;
+    var $guildID;
     var $corpTickers;
     var $authGroups;
     var $exempt;
     var $alertChannel;
     var $guild;
+    var $nameEnforce;
     /**
      * @var
      */
@@ -78,9 +79,10 @@ class authCheck
         $this->dbUser = $config["database"]["user"];
         $this->dbPass = $config["database"]["pass"];
         $this->dbName = $config["database"]["database"];
-        $this->id = $config["bot"]["guild"];
+        $this->guildID = $config["bot"]["guild"];
         $this->exempt = $config["plugins"]["auth"]["exempt"];
         $this->corpTickers = $config["plugins"]["auth"]["corpTickers"];
+        $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
         $this->authGroups = $config["plugins"]["auth"]["authGroups"];
         $this->alertChannel = $config["plugins"]["auth"]["alertChannel"];
         $this->guild = $config["bot"]["guild"];
@@ -138,7 +140,7 @@ class authCheck
     function checkPermissions()
     {
         //Get guild object
-        $guild = $this->discord->guilds->get('id', $this->id);
+        $guild = $this->discord->guilds->get('id', $this->guildID);
 
         //Establish connection to mysql
         $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
@@ -198,8 +200,26 @@ class authCheck
                             $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                             $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
                             $conn->query($sql);
+                            continue;
                         }
                     }
+                }
+                //Perform name check if true
+                if ($this->nameEnforce == "true") {
+                    if ($this->corpTickers == "true") {
+                        $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
+                        $xml = makeApiRequest($url);
+                        $corpTicker = "";
+                        foreach ($xml->result as $corporation) {
+                            $corpTicker = $corporation->ticker;
+                        }
+                        $nick = "[{$corpTicker}] {$eveName}";
+                        queueRename($discordID, $nick, $this->guildID);
+                        continue;
+                    }
+                    $nick = "{$eveName}";
+                    queueRename($discordID, $nick, $this->guildID);
+                    continue;
                 }
             }
             $nextCheck = time() + 10800;
@@ -239,7 +259,7 @@ class authCheck
         $botID = $this->discord->id;
 
         //Get guild object
-        $guild = $this->discord->guilds->get('id', $this->id);
+        $guild = $this->discord->guilds->get('id', $this->guildID);
 
         //Check to make sure guildID is set correctly
         if (is_null($guild)) {

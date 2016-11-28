@@ -44,6 +44,7 @@ class auth
     var $solarSystems;
     var $triggers = array();
     var $excludeChannel;
+    var $nameEnforce;
     public $guildID;
     public $db;
     public $dbUser;
@@ -70,6 +71,7 @@ class auth
         $this->dbPass = $config["database"]["pass"];
         $this->dbName = $config["database"]["database"];
         $this->corpTickers = $config["plugins"]["auth"]["corpTickers"];
+        $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
         $this->ssoUrl = $config["plugins"]["auth"]["url"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
         $this->authGroups = $config["plugins"]["auth"]["authGroups"];
@@ -154,6 +156,12 @@ class auth
                         $corpTicker = $corporation->ticker;
                     }
                 }
+
+                //Set eve name if nameCheck is true
+                if ($this->nameEnforce == "true") {
+                    $nameEnforce = 1;
+                }
+
                 $allianceRoleSet = 0;
                 $corpRoleSet = 0;
 
@@ -182,17 +190,25 @@ class auth
                         }
                         if ($allianceRoleSet == 1 || $corpRoleSet == 1) {
                             $guild = $this->discord->guilds->get('id', $guildID);
-                            $guild->members->save($member);
                             insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'corp');
                             disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                             $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
                             $this->logger->addInfo("auth: {$eveName} authed");
                             priorityQueueMessage($msg, $channelID, $this->guild);
-                            //Add ticker if set
-                            if (isset($setTicker)) {
-                                $nick = "[{$corpTicker}] {$userName}";
-                                $member->setNickname($nick);
+                            //Add ticker if set and change name if nameEnforce is on
+                            if (isset($setTicker) || isset($nameEnforce)) {
+                                if (isset($setTicker) && isset($nameEnforce)) {
+                                    $nick = "[{$corpTicker}] {$eveName}";
+                                } elseif (!isset($setTicker) && isset($nameEnforce)) {
+                                    $nick = "{$eveName}";
+                                } elseif (isset($setTicker) && !isset($nameEnforce)) {
+                                    $nick = "[{$corpTicker}] {$userName}";
+                                }
                             }
+                            if (isset($nick)) {
+                                queueRename($userID, $nick, $this->guild);
+                            }
+                            $guild->members->save($member);
                             return null;
                         }
                     }

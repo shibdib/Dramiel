@@ -136,6 +136,7 @@ $config["plugins"] = array(
         "exempt" => array("", ""), // role names that are exempt from auth checks (wont be removed by the bot)
         "alertChannel" => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
         "corpTickers" => "false", // if "true" bot will automatically add corp tickers to the front of users names at auth.
+        "nameEnforce" => "false", // if "true" bot will automatically rename users to match their ingame name, can be used in conjunction with corpTickers.
         "authGroups" => array(
             "group1" => array(
                 "corpID" => 0, // If you'd like to auth based on CORP put the corp ID here otherwise leave it as 0

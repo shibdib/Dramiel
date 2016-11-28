@@ -182,6 +182,25 @@ $discord->on(
             }
         });
 
+        // Rename queue
+        if ($config["plugins"]["auth"]["corpTickers"] == "true" || $config["plugins"]["auth"]["nameEnforce"] == "true") {
+            $discord->loop->addPeriodicTimer(30, function () use ($discord, $logger) {
+                $id = getOldestRename();
+                $id = $id["MIN(id)"];
+                if (is_null($id)) {
+                    $id = 1;
+                }
+                $queuedRename = getQueuedRename($id);
+                if (!is_null($queuedRename)) {
+                    $guild = $discord->guilds->get('id', $queuedRename['guild']);
+                    $member = $guild->members->get("id", $queuedRename['discordID']);
+                    $logger->addInfo("RenameProcessing - Completing rename item #{$id} : {$queuedRename['nick']}");
+                    $member->setNickname($queuedRename['nick']);
+                    clearQueuedRename($id);
+                }
+            });
+        }
+
         // Mem cleanup every 30 minutes
         $discord->loop->addPeriodicTimer(1800, function () use ($logger) {
             $logger->addInfo("Memory in use: " . memory_get_usage() / 1024 / 1024 . "MB");

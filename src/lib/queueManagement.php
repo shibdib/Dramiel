@@ -56,3 +56,24 @@ function priorityQueueMessage($message, $channel, $guild)
     $id = $currentOldest["MIN(id)"]-1;
     dbExecute("REPLACE INTO messageQueue (`id`, `message`, `channel`, `guild`) VALUES (:id,:message,:channel,:guild)", array(":id" => $id, ":message" => $message, ":channel" => $channel, ":guild" => $guild));
 }
+
+function queueRename($discordID, $nick, $guild)
+{
+    dbExecute("REPLACE INTO renameQueue (`discordID`, `nick`, `guild`) VALUES (:discordID,:nick,:guild)", array(":discordID" => $discordID, ":nick" => $nick, ":guild" => $guild));
+}
+
+function getQueuedRename($id)
+{
+    return dbQueryRow("SELECT * FROM renameQueue WHERE `id` = :id", array(":id" => $id));
+}
+
+function getOldestRename()
+{
+    return dbQueryRow("SELECT MIN(id) from renameQueue");
+}
+
+function clearQueuedRename($id)
+{
+    dbQueryRow("DELETE from renameQueue where id = :id", array(":id" => $id));
+    return null;
+}
