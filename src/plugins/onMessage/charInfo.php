@@ -38,6 +38,7 @@ class charInfo
      * @var
      */
     var $discord;
+    var $guild;
     /**
      * @var
      */
@@ -55,6 +56,7 @@ class charInfo
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->guild = $config["bot"]["guild"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
@@ -107,7 +109,8 @@ class charInfo
                 }
             }
             if (empty($characterID)) {
-                return $this->message->reply("**Error:** no data available");
+                priorityQueueMessage("**Error:** No character found.", $channelID, $this->guild);
+                return null;
             }
             $characterID = urlencode($characterID);
 
@@ -124,14 +127,16 @@ class charInfo
             }
 
             if ($characterName == null || $characterName == "") {
-                return $this->message->reply("**Error:** No character found.");
+                priorityQueueMessage("**Error:** No character found.", $channelID, $this->guild);
+                return null;
             }
 
             //ZKill lookup
             $url = "https://zkillboard.com/api/orderDirection/desc/limit/1/no-items/characterID/{$characterID}/xml/";
             $xml = makeApiRequest($url);
             if (empty($xml)) {
-                return $this->message->reply("**Error:** ZKill is down. Try again later.");
+                priorityQueueMessage("**Error:** ZKill is down. Try again later.", $channelID, $this->guild);
+                return null;
             }
             foreach ($xml->result->rowset->row as $kill) {
                 $lastSeenSystemID = $kill->attributes()->solarSystemID;
@@ -147,6 +152,7 @@ class charInfo
             $url = "https://zkillboard.com/character/{$characterID}/";
 
             $msg = "```Name: {$characterName}      
+Date of Birth: {$dob}
 			
 Corporation Name: {$corporationName}
 Joined Corporation On: {$corporationJoinDate}
@@ -160,7 +166,7 @@ Last Seen On: {$lastSeenDate}```
 For more info, visit: $url";
 
             $this->logger->addInfo("charInfo: Sending character info to {$user}");
-            $this->message->reply($msg);
+            priorityQueueMessage($msg, $channelID, $this->guild);
         }
         return null;
     }

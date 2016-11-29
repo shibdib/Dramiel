@@ -42,6 +42,7 @@ class price
      * @var
      */
     var $logger;
+    var $guild;
     /**
      * @var
      */
@@ -63,6 +64,7 @@ class price
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->guild = $config["bot"]["guild"];
         $this->triggers[] = $this->config["bot"]["trigger"] . "pc";
         $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Jita");
         $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Amarr");
@@ -126,7 +128,8 @@ class price
 
             // Check if the channel is restricted
             if (in_array($channelID, $this->excludeChannel, true)) {
-                return $this->message->reply("**Price Check not allowed in this channel**");
+                priorityQueueMessage("**Price Check not allowed in this channel**", $channelID, $this->guild);
+                return null;
             }
 
             // If there is a single result, we'll get data now!
@@ -168,9 +171,10 @@ class price
    Low: {$lowSell}
    Avg: {$avgSell}
    High: {$highSell}";
-                $this->message->reply($messageData);
+                priorityQueueMessage($messageData, $channelID, $this->guild);
             } else {
-                $this->message->reply("**Error:** ***{$itemName}*** not found");
+                priorityQueueMessage("**Error:** ***{$itemName}*** not found", $channelID, $this->guild);
+                return null;
             }
         }
         return null;
