@@ -135,7 +135,7 @@ class authCheck
                 $this->logger->addInfo("AuthCheck: Role check complete.");
             }
 
-            if ($this->nameEnforce == "true" && $namesChecked <= time()) {
+            if ($this->nameEnforce == "true" || $this->corpTickers == "true" && $namesChecked <= time()) {
                 $this->logger->addInfo("AuthCheck: Resetting player names....");
                 $this->nameReset();
                 $this->logger->addInfo("AuthCheck: Names reset.");
@@ -335,12 +335,27 @@ class authCheck
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get("id", $discordID);
                 $eveName = $rows['eveName'];
+                $eveNameSet = 0;
+
                 //Check if member has roles
                 if (is_null($member->roles)) {
                     continue;
                 }
 
-                //Get ingame affiliations
+                //Get current nickname and make sure it's set
+                $member = $guild->members->get("id", $discordID);
+                if (is_null($member->nick)) {
+                    $nickName = 0;
+                } else {
+                    $nickName = $member->nick;
+                }
+
+                //Check if current nickname contains eveName
+                if (strpos($nickName, $eveName) !== false) {
+                    $eveNameSet = 1;
+                }
+
+                //Get in game affiliations
                 $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                 $xml = makeApiRequest($url);
                 // Stop the process if the api is throwing an error
@@ -350,24 +365,50 @@ class authCheck
                 }
 
                 //Perform name check if true
+                if ($this->nameEnforce == "true") {
+                    if ($xml->result->rowset->row[0]) {
+                        foreach ($xml->result->rowset->row as $character) {
+                            if ($this->corpTickers == "true") {
+                                $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
+                                $xml = makeApiRequest($url);
+                                $corpTicker = "";
+                                foreach ($xml->result as $corporation) {
+                                    $corpTicker = "[{$corporation->ticker}]";
+                                }
 
-                if ($xml->result->rowset->row[0]) {
-                    foreach ($xml->result->rowset->row as $character) {
-                        if ($this->corpTickers == "true") {
-                            $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
-                            $xml = makeApiRequest($url);
-                            $corpTicker = "";
-                            foreach ($xml->result as $corporation) {
-                                $corpTicker = $corporation->ticker;
+                                //Check if current nickname contains the corpTicker and eveName already
+                                if (strpos($nickName, $corpTicker) !== false && $eveNameSet == 1) {
+                                    continue;
+                                }
+
+                                $nick = "{$corpTicker} {$eveName}";
+                                queueRename($discordID, $nick, $this->guildID);
+                                continue;
                             }
-                            $nick = "[{$corpTicker}] {$eveName}";
+                            $nick = "{$eveName}";
                             queueRename($discordID, $nick, $this->guildID);
                             continue;
                         }
-                        $nick = "{$eveName}";
-                        queueRename($discordID, $nick, $this->guildID);
+                    }
+                }
+
+                //Perform corp ticker if true
+                if ($this->corpTickers == "true" && $this->nameEnforce == "false") {
+                    $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
+                    $xml = makeApiRequest($url);
+                    $corpTicker = "";
+                    foreach ($xml->result as $corporation) {
+                        $corpTicker = "[{$corporation->ticker}]";
+                    }
+
+                    //Check if current nickname contains the corpTicker and eveName already
+                    if (strpos($nickName, $corpTicker) !== false) {
                         continue;
                     }
+
+                    $nick = "{$corpTicker} {$nickName}";
+                    queueRename($discordID, $nick, $this->guildID);
+                    continue;
                 }
             }
             $nextCheck = time() + 43200;
