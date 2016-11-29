@@ -115,6 +115,10 @@ class corpInfo
                 $url = "https://zkillboard.com/corporation/{$corpID}/";
             }
 
+            if ($corporationName == null || $corporationName == "") {
+                return $this->message->reply("**Error:** No corporation found.");
+            }
+
 
             $msg = "```Corp Name: {$corporationName}
 Corp Ticker: {$corpTicker}
