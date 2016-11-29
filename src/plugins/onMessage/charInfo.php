@@ -123,6 +123,10 @@ class charInfo
                 $characterName = $characterDetails->characterName;
             }
 
+            if ($characterName == null || $characterName == "") {
+                return $this->message->reply("**Error:** No character found.");
+            }
+
             //ZKill lookup
             $url = "https://zkillboard.com/api/orderDirection/desc/limit/1/no-items/characterID/{$characterID}/xml/";
             $xml = makeApiRequest($url);
