@@ -299,6 +299,9 @@ class notifications
                         case 45: // Tower anchoring
                             $msg = "skip";
                             break;
+                        case 45: // Office Expired
+                            $msg = "skip";
+                            break;
                         case 52: // clone revoked
                             $msg = "skip";
                             break;
@@ -357,6 +360,9 @@ class notifications
                             $solarSystemID = trim(explode(": ", $notificationString[6])[1]);
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "IHUB under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Status: Hull: {$hullValue}, Armor: {$armorValue}, Shield: {$shieldValue}";
+                            break;
+                        case 89: // Sov level?
+                            $msg = "skip";
                             break;
                         case 93: // Customs office is being attacked
                             $aggAllianceID = trim(explode(": ", $notificationString[0])[1]);
