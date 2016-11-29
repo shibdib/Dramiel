@@ -398,6 +398,12 @@ class authCheck
 
                 //Perform corp ticker if true
                 if ($this->corpTickers == "true" && $this->nameEnforce == "false") {
+                    $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
+                    $xml = makeApiRequest($url);
+                    $corpTicker = "";
+                    foreach ($xml->result as $corporation) {
+                        $corpTicker = "[{$corporation->ticker}]";
+                    }
 
                     //Check if current nickname contains the corpTicker and eveName already
                     if (strpos($nickName, $corpTicker) !== false) {
