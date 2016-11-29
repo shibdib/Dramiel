@@ -41,7 +41,6 @@ class eveStatus
      */
     var $logger;
     var $excludeChannel;
-    var $guild;
     public $message;
 
     /**
@@ -54,7 +53,6 @@ class eveStatus
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
@@ -94,7 +92,7 @@ class eveStatus
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
             $this->logger->addInfo("eveStatus: Sending eve status info to {$user}");
-            priorityQueueMessage($msg, $channelID, $this->guild);
+            $this->message->reply($msg);
         }
     }
 

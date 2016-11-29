@@ -32,7 +32,6 @@ class about
      * @var
      */
     var $config;
-    var $guild;
     var $excludeChannel;
     /**
      * @var
@@ -58,7 +57,6 @@ class about
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
@@ -113,7 +111,7 @@ Currently on {$info['guilds']} different discord servers.
 Up-time: " . $interval->y . " Year(s), " . $interval->m . " Month(s), " . $interval->d . " Days, " . $interval->h . " Hours, " . $interval->i . " Minutes, " . $interval->s . " seconds.
 Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
             $this->logger->addInfo("About: Sending about info to {$user}");
-            priorityQueueMessage($msg, $channelID, $this->guild);
+            $this->message->reply($msg);
         }
     }
 

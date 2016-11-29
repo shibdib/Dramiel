@@ -36,7 +36,6 @@ class corpInfo
      * @var
      */
     var $discord;
-    var $guild;
     /**
      * @var
      */
@@ -54,7 +53,6 @@ class corpInfo
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
@@ -91,8 +89,7 @@ class corpInfo
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
             if (empty($data)) {
-                priorityQueueMessage("**Error:** No corporation found.", $channelID, $this->guild);
-                return null;
+                return $this->message->reply("**Error:** Unable to find any group matching that name.");
             }
             $corpID = null;
             if (isset($xml->result->rowset->row)) {
@@ -102,8 +99,7 @@ class corpInfo
             }
 
             if (empty($corpID)) {
-                priorityQueueMessage("**Error:** No corporation found.", $channelID, $this->guild);
-                return null;
+                return $this->message->reply("**Error:** Unable to find any group matching that name.");
             }
 
             $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$corpID}";
@@ -120,8 +116,7 @@ class corpInfo
             }
 
             if ($corporationName == null || $corporationName == "") {
-                priorityQueueMessage("**Error:** No corporation found.", $channelID, $this->guild);
-                return null;
+                return $this->message->reply("**Error:** No corporation found.");
             }
 
 
@@ -136,7 +131,7 @@ Member Count: {$memberCount}
 For more info, visit: $url";
 
             $this->logger->addInfo("corpInfo: Sending corp info to {$user}");
-            priorityQueueMessage($msg, $channelID, $this->guild);
+            $this->message->reply($msg);
         }
         return null;
     }

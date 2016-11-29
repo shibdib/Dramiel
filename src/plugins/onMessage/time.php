@@ -37,7 +37,6 @@ class time
      * @var
      */
     var $discord;
-    var $guild;
     /**
      * @var
      */
@@ -55,7 +54,6 @@ class time
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
@@ -105,8 +103,7 @@ class time
             $aus = $aus->format("H:i:s");
 
             $this->logger->addInfo("Time: Sending time info to {$user}");
-            $msg = "**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}";
-            priorityQueueMessage($msg, $channelID, $this->guild);
+            $this->message->reply("**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
         }
     }
 

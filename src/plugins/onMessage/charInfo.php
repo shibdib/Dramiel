@@ -38,7 +38,6 @@ class charInfo
      * @var
      */
     var $discord;
-    var $guild;
     /**
      * @var
      */
@@ -56,7 +55,6 @@ class charInfo
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
@@ -109,8 +107,7 @@ class charInfo
                 }
             }
             if (empty($characterID)) {
-                priorityQueueMessage("**Error:** No character found.", $channelID, $this->guild);
-                return null;
+                return $this->message->reply("**Error:** no data available");
             }
             $characterID = urlencode($characterID);
 
@@ -126,16 +123,14 @@ class charInfo
             }
 
             if ($characterName == null || $characterName == "") {
-                priorityQueueMessage("**Error:** No character found.", $channelID, $this->guild);
-                return null;
+                return $this->message->reply("**Error:** No character found.");
             }
 
             //ZKill lookup
             $url = "https://zkillboard.com/api/orderDirection/desc/limit/1/no-items/characterID/{$characterID}/xml/";
             $xml = makeApiRequest($url);
             if (empty($xml)) {
-                priorityQueueMessage("**Error:** ZKill is down. Try again later.", $channelID, $this->guild);
-                return null;
+                return $this->message->reply("**Error:** ZKill is down. Try again later.");
             }
             foreach ($xml->result->rowset->row as $kill) {
                 $lastSeenSystemID = $kill->attributes()->solarSystemID;
@@ -164,7 +159,7 @@ Last Seen On: {$lastSeenDate}```
 For more info, visit: $url";
 
             $this->logger->addInfo("charInfo: Sending character info to {$user}");
-            priorityQueueMessage($msg, $channelID, $this->guild);
+            $this->message->reply($msg);
         }
         return null;
     }

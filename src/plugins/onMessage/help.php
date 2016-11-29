@@ -40,7 +40,6 @@ class help
      * @var
      */
     var $logger;
-    var $guild;
     var $excludeChannel;
     public $message;
 
@@ -54,7 +53,6 @@ class help
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
         $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
     }
 
@@ -112,13 +110,12 @@ class help
                     }
                 }
 
-                $msg = "Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>";
-                priorityQueueMessage($msg, $channelID, $this->guild);
+                $this->message->reply("Here is a list of plugins available: **" . implode("** |  **", $commands) . "** If you'd like help with a specific plugin simply use the command !help <PluginName>");
                 $this->logger->addInfo("Help: Sending help info to {$user}");
             } else {
                 foreach ($plugins as $plugin) {
                     if ($messageString == $plugin->information()["name"]) {
-                        priorityQueueMessage($plugin->information()["information"], $channelID, $this->guild);
+                        $this->message->reply($plugin->information()["information"]);
                     }
                 }
             }
