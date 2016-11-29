@@ -90,7 +90,7 @@ class about
         $time2 = new DateTime(date("Y-m-d H:i:s"));
         $interval = $time1->diff($time2);
 
-        $botid = $this->discord->id;
+        $botID = $this->discord->id;
 
         $message = $msgData["message"]["message"];
         $user = $msgData["message"]["from"];
@@ -102,7 +102,7 @@ class about
             $msg = "```
 Developer: Shibdib (In-game Name: Mr Twinkie)
 
-Bot ID: " . $botid . "
+Bot ID: " . $botID . "
 
 Current Version: " . $gitRevision["short"] . "
 Current Branch: " . $gitBranch . "

@@ -118,7 +118,6 @@ class charInfo
             $url = "https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID={$characterID}";
             $xml = makeApiRequest($url);
             foreach ($xml->result as $characterDetails) {
-                $dob = $characterDetails->DoB;
                 $corporationName = $characterDetails->corporation;
                 $corporationJoinDate = $characterDetails->corporationDate;
                 $allianceName = $characterDetails->alliance;
@@ -152,7 +151,6 @@ class charInfo
             $url = "https://zkillboard.com/character/{$characterID}/";
 
             $msg = "```Name: {$characterName}      
-Date of Birth: {$dob}
 			
 Corporation Name: {$corporationName}
 Joined Corporation On: {$corporationJoinDate}
