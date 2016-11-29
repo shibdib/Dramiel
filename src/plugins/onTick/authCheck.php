@@ -364,32 +364,36 @@ class authCheck
                     return null;
                 }
 
-                //Perform name check if true
-                if ($this->nameEnforce == "true") {
+                //Get ticker if required
+                $corpTicker = "";
+                if ($this->corpTickers == "true") {
                     if ($xml->result->rowset->row[0]) {
                         foreach ($xml->result->rowset->row as $character) {
-                            if ($this->corpTickers == "true") {
-                                $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
-                                $xml = makeApiRequest($url);
-                                $corpTicker = "";
-                                foreach ($xml->result as $corporation) {
-                                    $corpTicker = "[{$corporation->ticker}]";
-                                }
-
-                                //Check if current nickname contains the corpTicker and eveName already
-                                if (strpos($nickName, $corpTicker) !== false && $eveNameSet == 1) {
-                                    continue;
-                                }
-
-                                $nick = "{$corpTicker} {$eveName}";
-                                queueRename($discordID, $nick, $this->guildID);
-                                continue;
+                            $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
+                            $xml = makeApiRequest($url);
+                            foreach ($xml->result as $corporation) {
+                                $corpTicker = "[{$corporation->ticker}]";
                             }
-                            $nick = "{$eveName}";
-                            queueRename($discordID, $nick, $this->guildID);
-                            continue;
                         }
                     }
+                }
+
+                //Perform name check if true
+                if ($this->nameEnforce == "true") {
+                    if ($this->corpTickers == "true") {
+
+                        //Check if current nickname contains the corpTicker and eveName already
+                        if (strpos($nickName, $corpTicker) !== false && $eveNameSet == 1) {
+                            continue;
+                        }
+
+                        $nick = "{$corpTicker} {$eveName}";
+                        queueRename($discordID, $nick, $this->guildID);
+                        continue;
+                    }
+                    $nick = "{$eveName}";
+                    queueRename($discordID, $nick, $this->guildID);
+                    continue;
                 }
 
                 //Perform corp ticker if true
