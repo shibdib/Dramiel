@@ -129,13 +129,13 @@ class authCheck
                 $this->logger->addInfo("AuthCheck: Corp/alliance check complete.");
             }
 
-            if ($stateChecked >= time()) {
+            if ($stateChecked <= time()) {
                 $this->logger->addInfo("AuthCheck: Checking for users who have been wrongly given roles....");
                 $this->checkAuthState();
                 $this->logger->addInfo("AuthCheck: Role check complete.");
             }
 
-            if ($this->nameEnforce == "true" && $namesChecked <= time()) {
+            if ($this->nameEnforce == "true" || $this->corpTickers == "true" && $namesChecked <= time()) {
                 $this->logger->addInfo("AuthCheck: Resetting player names....");
                 $this->nameReset();
                 $this->logger->addInfo("AuthCheck: Names reset.");
@@ -270,8 +270,6 @@ class authCheck
         //Perform check if roles were added without permission
         foreach ($guild->members as $member) {
             $id = $member->id;
-            $memberArray = array();
-            array_push($memberArray, (int)$id);
             $username = $member->username;
             $roles = $member->roles;
 
@@ -297,12 +295,6 @@ class authCheck
                 }
             }
         }
-        // Prune old users
-        if (isset($memberArray)) {
-            $memberArray = implode(', ', $memberArray);
-            $sql = "UPDATE authUsers SET active='no' WHERE discordID NOT IN ($memberArray)";
-            $conn->query($sql);
-        }
         //Report removed users to log and channel
         $nameList = implode(", ", $removedRoles);
         if ($userCount > 0 && strlen($nameList) > 3 && !is_null($nameList)) {
@@ -318,6 +310,10 @@ class authCheck
 
     function nameReset()
     {
+        //Queue next check immediately to avoid spamming
+        $nextCheck = time() + 43200;
+        setPermCache("nameStateLastChecked", $nextCheck);
+
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
@@ -343,12 +339,27 @@ class authCheck
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get("id", $discordID);
                 $eveName = $rows['eveName'];
+                $eveNameSet = 0;
+
                 //Check if member has roles
                 if (is_null($member->roles)) {
                     continue;
                 }
 
-                //Get ingame affiliations
+                //Get current nickname and make sure it's set
+                $member = $guild->members->get("id", $discordID);
+                if (is_null($member->nick)) {
+                    $nickName = 0;
+                } else {
+                    $nickName = $member->nick;
+                }
+
+                //Check if current nickname contains eveName
+                if (strpos($nickName, $eveName) !== false) {
+                    $eveNameSet = 1;
+                }
+
+                //Get in game affiliations
                 $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                 $xml = makeApiRequest($url);
                 // Stop the process if the api is throwing an error
@@ -357,33 +368,53 @@ class authCheck
                     return null;
                 }
 
-                //Perform name check if true
-
-                if ($xml->result->rowset->row[0]) {
-                    foreach ($xml->result->rowset->row as $character) {
-                        if ($this->corpTickers == "true") {
+                //Get ticker if required
+                $corpTicker = "";
+                if ($this->corpTickers == "true") {
+                    if ($xml->result->rowset->row[0]) {
+                        foreach ($xml->result->rowset->row as $character) {
                             $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
                             $xml = makeApiRequest($url);
-                            $corpTicker = "";
                             foreach ($xml->result as $corporation) {
-                                $corpTicker = $corporation->ticker;
+                                $corpTicker = "[{$corporation->ticker}]";
                             }
-                            $nick = "[{$corpTicker}] {$eveName}";
-                            queueRename($discordID, $nick, $this->guildID);
+                        }
+                    }
+                }
+
+                //Perform name check if true
+                if ($this->nameEnforce == "true") {
+                    if ($this->corpTickers == "true") {
+
+                        //Check if current nickname contains the corpTicker and eveName already
+                        if (strpos($nickName, $corpTicker) !== false && $eveNameSet == 1) {
                             continue;
                         }
-                        $nick = "{$eveName}";
+
+                        $nick = "{$corpTicker} {$eveName}";
                         queueRename($discordID, $nick, $this->guildID);
                         continue;
                     }
+                    $nick = "{$eveName}";
+                    queueRename($discordID, $nick, $this->guildID);
+                    continue;
+                }
+
+                //Perform corp ticker if true
+                if ($this->corpTickers == "true" && $this->nameEnforce == "false") {
+
+                    //Check if current nickname contains the corpTicker and eveName already
+                    if (strpos($nickName, $corpTicker) !== false) {
+                        continue;
+                    }
+
+                    $nick = "{$corpTicker} {$nickName}";
+                    queueRename($discordID, $nick, $this->guildID);
+                    continue;
                 }
             }
-            $nextCheck = time() + 43200;
-            setPermCache("nameStateLastChecked", $nextCheck);
             return null;
         }
-        $nextCheck = time() + 43200;
-        setPermCache("nameStateLastChecked", $nextCheck);
         return null;
 
     }
