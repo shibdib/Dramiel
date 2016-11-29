@@ -310,6 +310,10 @@ class authCheck
 
     function nameReset()
     {
+        //Queue next check immediately to avoid spamming
+        $nextCheck = time() + 43200;
+        setPermCache("nameStateLastChecked", $nextCheck);
+
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
@@ -409,12 +413,8 @@ class authCheck
                     continue;
                 }
             }
-            $nextCheck = time() + 43200;
-            setPermCache("nameStateLastChecked", $nextCheck);
             return null;
         }
-        $nextCheck = time() + 43200;
-        setPermCache("nameStateLastChecked", $nextCheck);
         return null;
 
     }
