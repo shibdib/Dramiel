@@ -244,7 +244,8 @@ class getKillmails
                     break;
                 }
             }
-            setPermCache("bigKillNewestKillmailID", $killID);
+            $newID = $killID++;
+            setPermCache("bigKillNewestKillmailID", $newID);
         }
         $updatedID = getPermCache("bigKillNewestKillmailID");
         $this->logger->addInfo("Killmails: All bigKills posted, newest kill id is {$updatedID}");
