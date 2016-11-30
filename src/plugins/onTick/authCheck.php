@@ -370,6 +370,8 @@ class authCheck
                                 $corpTicker = $corpInfo['corpTicker'];
                                 if ($this->nameEnforce == "true") {
                                     $nick = "[{$corpTicker}] {$eveName}";
+                                } elseif ($nickName == $corpTicker) {
+                                    $nick = "[{$corpTicker}] {$userName}";
                                 } elseif (strpos($nickName, $corpTicker) == false) {
                                     $nick = "[{$corpTicker}] {$nickName}";
                                 } elseif (strpos($nickName, $corpTicker) !== false) {
