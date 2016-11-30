@@ -26,7 +26,7 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array("users", "usersSeen", "storage", "messageQueue", "renameQueue");
+    $tables = array("users", "usersSeen", "storage", "messageQueue", "renameQueue", "corpIDs");
 
     $tableCreateCode = array(
         "users" => "
@@ -85,6 +85,15 @@ function updateDramielDB($logger)
                 `discordID` VARCHAR(255) NOT NULL,
                 `nick` VARCHAR(255) NOT NULL,
                 `guild` VARCHAR(255) NOT NULL
+            );
+            COMMIT;",
+        "corpIDs" => "
+            BEGIN;
+            CREATE TABLE IF NOT EXISTS `corpIDs` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                `corpID` VARCHAR(255) NOT NULL,
+                `corpTicker` VARCHAR(255) NOT NULL,
+                `corpName` VARCHAR(255) NOT NULL
             );
             COMMIT;",
     );
