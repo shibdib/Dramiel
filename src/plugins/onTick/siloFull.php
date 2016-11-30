@@ -124,14 +124,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -147,14 +159,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -170,14 +194,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -193,14 +229,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 30000 + (30000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.6;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -216,14 +264,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -239,14 +299,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -262,14 +334,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -285,14 +369,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -308,14 +404,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -331,14 +439,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -354,14 +474,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -377,14 +509,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -400,14 +544,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -423,14 +579,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -446,14 +614,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -469,14 +649,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -492,14 +684,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -515,14 +719,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -538,14 +754,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
@@ -561,14 +789,26 @@ class siloFull
                                 $systemName = apiCharacterName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
+                                    $siloID = $structures->attributes()->itemID;
+                                    $lastAmount = getPermCache("silo{$siloID}Amount");
                                     $gooAmount = $silo->attributes()->quantity;
+                                    $gooDifference = $gooAmount - $lastAmount;
+                                    //Check if silo has been checked before, and if it's an input silo ignore
+                                    if (!isset($lastAmount) || $gooDifference < 0) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
+                                    }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull) {
+                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
+                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                        setPermCache("silo{$siloID}Amount", $gooAmount);
+                                        continue;
                                     }
+                                    setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
                                     $msg .= "**Capacity: **{$cleanNumber}/{$cleanFull}m3\n";
                                     $this->logger->addInfo("siloFull: {$typeName} Silo nearing capacity in {$systemName}");
