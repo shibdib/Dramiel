@@ -131,6 +131,21 @@ class auth
                 $charID = (int) $rows['characterID'];
                 $corpID = (int) $rows['corporationID'];
                 $allianceID = (int) $rows['allianceID'];
+
+                //If corp is new store in DB
+                $corpInfo = getCorpInfo($corpID);
+                if (is_null($corpInfo)) {
+                    $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$corpID}";
+                    $xml = makeApiRequest($url);
+                    foreach ($xml->result as $corporation) {
+                        $corpTicker = $corporation->ticker;
+                        $corpName = $corporation->corporationName;
+                    }
+                    addCorpInfo($corpID, $corpTicker, $corpName);
+                } else {
+                    $corpTicker = $corpInfo['corpTicker'];
+                }
+
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charID";
                 $xmlCharacter = makeApiRequest($url);
 
@@ -149,12 +164,7 @@ class auth
 
                 //Add corp ticker to name
                 if ($this->corpTickers == 'true') {
-                    $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$corpID}";
-                    $xml = makeApiRequest($url);
                     $setTicker = 1;
-                    foreach ($xml->result as $corporation) {
-                        $corpTicker = $corporation->ticker;
-                    }
                 }
 
                 //Set eve name if nameCheck is true
