@@ -348,6 +348,11 @@ class authCheck
                 $guild = $this->discord->guilds->get('id', $this->guildID);
                 $member = $guild->members->get("id", $discordID);
                 $nickName = $member->nick;
+                $userName = $member->user->username;
+                //If nick isn't set than make it username
+                if ($nickName == "" || is_null($nickName)) {
+                    $nickName = $userName;
+                }
 
                 //Get ingame affiliations
                 if ($this->corpTickers == "true") {
@@ -386,6 +391,8 @@ class authCheck
                             }
                             if ($this->nameEnforce == "true") {
                                 $nick = "[{$corpTicker}] {$eveName}";
+                            } elseif ($nickName == $corpTicker) {
+                                $nick = "[{$corpTicker}] {$userName}";
                             } elseif (strpos($nickName, $corpTicker) == false) {
                                 $nick = "[{$corpTicker}] {$nickName}";
                             } elseif (strpos($nickName, $corpTicker) !== false) {
