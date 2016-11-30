@@ -4,21 +4,29 @@
  * @author Torleif Berger, Lorenzo Stanco
  * @link http://stackoverflow.com/a/15025877/995958
  * @license http://creativecommons.org/licenses/by/3.0/
+ * @param string $filepath
  */
 function tailCustom($filepath, $lines = 1, $adaptive = true)
 {
     // Open file
     $f = @fopen($filepath, "rb");
-    if ($f === false) return false;
+    if ($f === false) {
+        return false;
+    }
     // Sets buffer size, according to the number of lines to retrieve.
     // This gives a performance boost when reading a few lines from the file.
-    if (!$adaptive) $buffer = 4096;
-    else $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
+    if (!$adaptive) {
+        $buffer = 4096;
+    } else {
+        $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
+    }
     // Jump to last character
     fseek($f, -1, SEEK_END);
     // Read it and adjust line number if necessary
     // (Otherwise the result would be wrong if file doesn't end with a blank line)
-    if (fread($f, 1) != "\n") $lines -= 1;
+    if (fread($f, 1) != "\n") {
+        $lines -= 1;
+    }
 
     // Start reading
     $output = '';

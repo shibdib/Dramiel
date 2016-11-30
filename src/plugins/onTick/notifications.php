@@ -110,7 +110,7 @@ class notifications
         $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
         $this->guild = $config["bot"]["guild"];
         //Refresh check at bot start
-        setPermCache("notificationsLastChecked{$this->keyID}",  time() - 5);
+        setPermCache("notificationsLastChecked{$this->keyID}", time() - 5);
         if (is_null($this->allianceOnly)) {
             $this->allianceOnly = "false";
         }
