@@ -99,7 +99,7 @@ class evemails
         $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
         $this->nextCheck = 0;
         //Refresh check at bot start
-        setPermCache("mailLastChecked{$this->keyID}",  time() - 5);
+        setPermCache("mailLastChecked{$this->keyID}", time() - 5);
     }
 
     /**
