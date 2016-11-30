@@ -401,7 +401,7 @@ class authCheck
                     }
                 }
                 $nick = "{$eveName}";
-                if ($nick != $nickName) {
+                if ($nick != $nickName && $this->corpTickers != "true") {
                     queueRename($discordID, $nick, $this->guildID);
                 }
                 continue;
