@@ -92,7 +92,7 @@ class auth
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int)$msgData["message"]["channelID"];
+        $channelID = (int) $msgData["message"]["channelID"];
 
         if (in_array($channelID, $this->excludeChannel, true)) {
             return null;
@@ -128,9 +128,9 @@ class auth
             }
 
             while ($rows = $result->fetch_assoc()) {
-                $charID = (int)$rows['characterID'];
-                $corpID = (int)$rows['corporationID'];
-                $allianceID = (int)$rows['allianceID'];
+                $charID = (int) $rows['characterID'];
+                $corpID = (int) $rows['corporationID'];
+                $allianceID = (int) $rows['allianceID'];
                 $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charID";
                 $xmlCharacter = makeApiRequest($url);
 

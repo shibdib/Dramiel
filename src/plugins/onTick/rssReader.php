@@ -114,8 +114,8 @@ class rssReader
             }
 
             //Find item to check if feed is formatted
-            $itemTitle = (string)$rss->channel->item->title;
-            $itemUrl = (string)$rss->channel->item->link;
+            $itemTitle = (string) $rss->channel->item->title;
+            $itemUrl = (string) $rss->channel->item->link;
             $itemDate = strtotime($rss->channel->item->pubDate);
 
             //Check to see if feed is formatted correctly
@@ -127,8 +127,8 @@ class rssReader
             //Find item to post
             foreach ($rss->channel->item as $item) {
                 //Get item details
-                $itemTitle = (string)$item->title;
-                $itemUrl = (string)$item->link;
+                $itemTitle = (string) $item->title;
+                $itemUrl = (string) $item->link;
                 $itemPubbed = $item->pubDate;
                 $itemDate = strtotime($item->pubDate);
 

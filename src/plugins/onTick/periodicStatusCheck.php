@@ -63,7 +63,7 @@ class periodicStatusCheck {
         $this->guild = $config["bot"]["guild"];
         $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
         //Refresh check at bot start
-        setPermCache("statusLastChecked",  time() - 5);
+        setPermCache("statusLastChecked", time() - 5);
     }
 
     /**

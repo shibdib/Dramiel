@@ -72,7 +72,7 @@ class charInfo
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int)$msgData["message"]["channelID"];
+        $channelID = (int) $msgData["message"]["channelID"];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -138,7 +138,7 @@ class charInfo
                 $lastSeenDate = $kill->attributes()->killTime;
             }
             foreach ($xml->result->rowset->row->rowset->row as $attacker) {
-                if ($attacker->attributes()->characterID == $characterID){
+                if ($attacker->attributes()->characterID == $characterID) {
                     $lastSeenShipID = $attacker->attributes()->shipTypeID;
                     $lastSeenShip = apiTypeName($lastSeenShipID);
                 }

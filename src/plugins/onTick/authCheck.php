@@ -182,10 +182,10 @@ class authCheck
         //Set corp/ally id arrays
         foreach ($this->authGroups as $authGroup) {
             if ($authGroup["corpID"] != 0) {
-                array_push($corpArray, (int)$authGroup["corpID"]);
+                array_push($corpArray, (int) $authGroup["corpID"]);
             }
             if ($authGroup["allianceID"] != 0) {
-                array_push($allianceArray, (int)$authGroup["allianceID"]);
+                array_push($allianceArray, (int) $authGroup["allianceID"]);
             }
         }
 
@@ -212,7 +212,7 @@ class authCheck
                 //Auth things
                 if ($xml->result->rowset->row[0]) {
                     foreach ($xml->result->rowset->row as $character) {
-                        if (!in_array((int)$character->attributes()->allianceID, $allianceArray) && !in_array((int)$character->attributes()->corporationID, $corpArray)) {
+                        if (!in_array((int) $character->attributes()->allianceID, $allianceArray) && !in_array((int) $character->attributes()->corporationID, $corpArray)) {
                             // Deactivate user in database
                             $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                             $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");

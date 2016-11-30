@@ -69,7 +69,7 @@ class getKillmails
         $this->groupConfig = $config["plugins"]["getKillmails"]["groupConfig"];
         $this->guild = $config["bot"]["guild"];
         //Refresh check at bot start
-        setPermCache("killmailCheck",  time() - 5);
+        setPermCache("killmailCheck", time() - 5);
     }
 
 
@@ -114,7 +114,7 @@ class getKillmails
 
     function getKM()
     {
-        foreach($this->groupConfig as $kmGroup) {
+        foreach ($this->groupConfig as $kmGroup) {
             $killID = getPermCache("{$kmGroup["name"]}newestKillmailID");
             //check if start id is greater than current id and if it is set
             if ($kmGroup["startMail"] > $killID || is_null($killID)) {
@@ -144,7 +144,7 @@ class getKillmails
                 foreach ($kills as $kill) {
                     if ($i < 10) {
                         //if big kill isn't set, disable it
-                        if (is_null($kmGroup["bigKill"])){
+                        if (is_null($kmGroup["bigKill"])) {
                             $kmGroup["bigKill"] = 99999999999999999999999999;
                         }
                         $killID = $kill['killID'];
@@ -159,8 +159,8 @@ class getKillmails
                         $shipName = apiTypeName($victimShipID);
                         $rawValue = $kill['zkb']['totalValue'];
                         //Check if killmail meets minimum value
-                        if (isset($kmGroup["minimumValue"])){
-                            if ($rawValue < $kmGroup["minimumValue"]){
+                        if (isset($kmGroup["minimumValue"])) {
+                            if ($rawValue < $kmGroup["minimumValue"]) {
                                 $this->logger->addInfo("Killmails: Mail {$killID} ignored for not meeting the minimum value required.");
                                 setPermCache("{$kmGroup["name"]}newestKillmailID", $killID);
                                 continue;

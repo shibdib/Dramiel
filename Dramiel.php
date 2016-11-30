@@ -127,7 +127,7 @@ $logger->addInfo("serverState: EVE is currently {$crestStatus}");
 
 $discord->on(
     'ready',
-    function ($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {
+    function($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -137,7 +137,7 @@ $discord->on(
         $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
 
         // Database check
-        $discord->loop->addPeriodicTimer(86400, function () use ($logger) {
+        $discord->loop->addPeriodicTimer(86400, function() use ($logger) {
             updateDramielDB($logger);
         });
 
@@ -152,21 +152,21 @@ $discord->on(
         $discord->updatePresence($game);
 
         // Server Status Check (tick plugins will not run if eve is offline)
-        $discord->loop->addPeriodicTimer(60, function () use ($logger) {
+        $discord->loop->addPeriodicTimer(60, function() use ($logger) {
             $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
             $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
             setPermCache("serverState", $crestStatus);
         });
 
         // Run the Tick plugins
-        $discord->loop->addPeriodicTimer(3, function () use ($pluginsT) {
+        $discord->loop->addPeriodicTimer(3, function() use ($pluginsT) {
             foreach ($pluginsT as $plugin) {
                 $plugin->tick();
             }
         });
 
         // Message queue
-        $discord->loop->addPeriodicTimer(7, function () use ($discord, $logger) {
+        $discord->loop->addPeriodicTimer(7, function() use ($discord, $logger) {
             $id = getOldestMessage();
             $id = $id["MIN(id)"];
             if (is_null($id)) {
@@ -183,7 +183,7 @@ $discord->on(
         });
 
         // Rename queue
-        $discord->loop->addPeriodicTimer(10, function () use ($discord, $logger) {
+        $discord->loop->addPeriodicTimer(10, function() use ($discord, $logger) {
             $x = 0;
             while ($x < 4) {
                 $id = getOldestRename();
@@ -204,7 +204,7 @@ $discord->on(
         });
 
         // Mem cleanup every 30 minutes
-        $discord->loop->addPeriodicTimer(1800, function () use ($logger) {
+        $discord->loop->addPeriodicTimer(1800, function() use ($logger) {
             $logger->addInfo("Memory in use: " . memory_get_usage() / 1024 / 1024 . "MB");
             gc_collect_cycles(); // Collect garbage
             $logger->addInfo("Memory in use after garbage collection: " . memory_get_usage() / 1024 / 1024 . "MB");
@@ -212,7 +212,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function ($message) use ($logger, $config, $plugins) {
+            function($message) use ($logger, $config, $plugins) {
 
                 $msgData = array(
                     "message" => array(
@@ -253,19 +253,19 @@ $discord->on(
 );
 $discord->on(
     'error',
-    function ($error) use ($logger) {
+    function($error) use ($logger) {
         $logger->addError($error);
         exit(1);
     }
 );
 $discord->on(
     'reconnecting',
-    function () use ($logger) {
+    function() use ($logger) {
         $logger->addInfo('Websocket is reconnecting..');
     });
 $discord->on(
     'reconnected',
-    function () use ($logger) {
+    function() use ($logger) {
         $logger->addInfo('Websocket was reconnected..');
     });
 // Now we will run the ReactPHP Event Loop!
