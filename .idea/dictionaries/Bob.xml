@@ -2,8 +2,11 @@
   <dictionary name="Bob">
     <words>
       <w>angeles</w>
+      <w>dramiel</w>
+      <w>eveonline</w>
       <w>killmail</w>
       <w>killmails</w>
+      <w>websocket</w>
     </words>
   </dictionary>
 </component>

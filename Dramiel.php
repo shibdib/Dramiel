@@ -24,6 +24,7 @@
  */
 
 // Require the vendor stuff
+/** @noinspection PhpIncludeInspection */
 require_once(__DIR__ . "/vendor/autoload.php");
 
 // Setup logger
@@ -37,7 +38,7 @@ use Monolog\Logger;
 // More memory allowance
 ini_set("memory_limit", "1024M");
 
-// Just incase we get launched from somewhere else
+// Just in case we get launched from somewhere else
 chdir(__DIR__);
 
 // Enable garbage collection
@@ -55,6 +56,7 @@ GLOBAL $logger;
 
 // Require the config
 if (file_exists("config/config.php")) {
+    /** @noinspection PhpIncludeInspection */
     require_once("config/config.php");
 } else {
     $logger->error("config.php not found (you might wanna start by editing and renaming config_new.php)");
@@ -63,6 +65,7 @@ if (file_exists("config/config.php")) {
 
 // Load the library files (Probably a prettier way to do this that i haven't thought up yet)
 foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
+    /** @noinspection PhpIncludeInspection */
     require_once($lib);
 }
 
@@ -83,6 +86,7 @@ foreach ($pluginDirs as $dir) {
             continue;
         }
 
+        /** @noinspection PhpIncludeInspection */
         require_once($plugin);
         $fileName = str_replace(".php", "", basename($plugin));
         $p = new $fileName();
@@ -106,6 +110,7 @@ if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode
                 continue;
             }
 
+            /** @noinspection PhpIncludeInspection */
             require_once($plugin);
             $fileName = str_replace(".php", "", basename($plugin));
             $p = new $fileName();
@@ -135,11 +140,6 @@ $discord->on(
         //
         // We will echo to the console that the WebSocket is ready.
         $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
-
-        // Database check
-        $discord->loop->addPeriodicTimer(86400, function () use ($logger) {
-            updateDramielDB($logger);
-        });
 
         //Set Initial Game
         $gameTitle = $config["bot"]["game"];
@@ -185,7 +185,7 @@ $discord->on(
                     $channel = $guild->channels->get('id', $queuedMessage['channel']);
                     //Check if channel is bad
                     if (is_null($channel) || is_null($guild)) {
-                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
+                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
                         clearQueuedMessages($id);
                     }
                     $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
@@ -249,10 +249,6 @@ $discord->on(
                     $message->reply('┬─┬﻿ ノ( ゜-゜ノ)');
                 }
 
-                // We are just checking if the message equals to ping and replying to the user with a pong!
-                if ($message->content == 'ping') {
-                    $message->reply('pong!');
-                }
                 // Check for plugins
                 if (isset($message->content[0])) {
                     if ($message->content[0] == $config["bot"]["trigger"]) {
