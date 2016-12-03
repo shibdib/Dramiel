@@ -319,6 +319,9 @@ class notifications
                         case 45: // Office Expired
                             $msg = "skip";
                             break;
+                        case 50: // Office Expired
+                            $msg = "skip";
+                            break;
                         case 52: // clone revoked
                             $msg = "skip";
                             break;
@@ -416,6 +419,9 @@ class notifications
                             $msg = "skip";
                             break;
                         case 111: // Bounty
+                            $msg = "skip";
+                            break;
+                        case 113: // Bounty
                             $msg = "skip";
                             break;
                         case 128: // Corp App
@@ -528,6 +534,14 @@ class notifications
                             $solarSystemID = trim(explode(": ", $notificationString[5])[1]);
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
+                            break;
+                        case 198: // citadel out of fuel
+                            $solarSystemID = trim(explode(": ", $notificationString[1])[1]);
+                            $systemName = apiCharacterName($solarSystemID);
+                            $msg = "Citadel in **{$systemName}** has run out of fuel.";
+                            if ($this->fuelSkip == "true" || $this->allianceOnly == "true") {
+                                $msg = "skip";
+                            }
                             break;
                         case 199: // citadel delivery
                             $msg = "skip";
