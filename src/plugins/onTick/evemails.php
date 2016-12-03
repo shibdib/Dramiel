@@ -102,6 +102,10 @@ class evemails
         //Get number of keys
         $x = 0;
         foreach ($this->apiKey as $apiKey) {
+            //Check if api is set
+            if ($apiKey['keyID'] == "" || $apiKey['vCode'] == "" || $apiKey['characterID'] == null) {
+                continue;
+            }
             $x++;
         }
         $this->numberOfKeys = $x;
