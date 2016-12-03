@@ -205,8 +205,7 @@ class notifications
                 $sentDate = $notification["sentDate"];
                 $channelID = $this->toDiscordChannel;
                 if ($notificationID > $this->newestNotificationID) {
-                    $notificationString = explode("\n", $this->getNotificationText($keyID, $vCode, $characterID,
-                        $notificationID));
+                    $notificationString = explode("\n", $this->getNotificationText($keyID, $vCode, $characterID, $notificationID));
                     switch ($typeID) {
                         case 1: // Old
                             $msg = "skip";
@@ -553,7 +552,7 @@ class notifications
                     setPermCache("newestNotificationID", $this->maxID);
                 }
             }
-            return $this->logger->addInfo("Notifications: Next Notification Check At: {$nextKeyTime} EVE Time");
+            $this->logger->addInfo("Notifications: Next Notification Check At: {$nextKeyTime} EVE Time");
         } catch (Exception $e) {
             $this->logger->addInfo("Notifications: Notification Error: " . $e->getMessage());
         }
