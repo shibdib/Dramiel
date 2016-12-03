@@ -127,7 +127,7 @@ class authCheck
         if ($lastStatus == "online") {
             $permsChecked = getPermCache("permsLastChecked");
             $stateChecked = getPermCache("authStateLastChecked");
-            $namesChecked = getPermCache("nameStateLastChecked");
+            $namesChecked = getPermCache("nextRename");
 
             if ($permsChecked <= time()) {
                 $this->logger->addInfo("AuthCheck: Checking for users who have left corp/alliance....");
@@ -182,10 +182,10 @@ class authCheck
         //Set corp/ally id arrays
         foreach ($this->authGroups as $authGroup) {
             if ($authGroup["corpID"] != 0) {
-                array_push($corpArray, (int) $authGroup["corpID"]);
+                array_push($corpArray, (int)$authGroup["corpID"]);
             }
             if ($authGroup["allianceID"] != 0) {
-                array_push($allianceArray, (int) $authGroup["allianceID"]);
+                array_push($allianceArray, (int)$authGroup["allianceID"]);
             }
         }
 
@@ -212,7 +212,7 @@ class authCheck
                 //Auth things
                 if ($xml->result->rowset->row[0]) {
                     foreach ($xml->result->rowset->row as $character) {
-                        if (!in_array((int) $character->attributes()->allianceID, $allianceArray) && !in_array((int) $character->attributes()->corporationID, $corpArray)) {
+                        if (!in_array((int)$character->attributes()->allianceID, $allianceArray) && !in_array((int)$character->attributes()->corporationID, $corpArray)) {
                             // Deactivate user in database
                             $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                             $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
@@ -319,17 +319,28 @@ class authCheck
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
+        //Get name queue status
+        $x = (int)getPermCache("nameQueueState");
+
         //Establish connection to mysql
         $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
-        $sql = "SELECT characterID, discordID, eveName FROM authUsers WHERE active='yes'";
+        $sql = "select count(*) from authUsers WHERE active='yes'";
+        $count = (int)$conn->query($sql);
+        if ($x == 1) {
+            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$count}/2 OFFSET {$count}/2";
+            setPermCache("nameQueueState", 0);
+        } else {
+            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$count}/2";
+            setPermCache("nameQueueState", 1);
+        }
         $result = $conn->query($sql);
 
         // If config is outdated
         if (is_null($this->authGroups)) {
             $msg = "**Auth Failure:** Please update the bots config to the latest version.";
             queueMessage($msg, $this->alertChannel, $this->guild);
-            $nextCheck = time() + 10800;
-            setPermCache("permsLastChecked", $nextCheck);
+            $nextCheck = time() + 1800;
+            setPermCache("nextRename", $nextCheck);
             return null;
         }
 
@@ -415,12 +426,12 @@ class authCheck
                 }
                 continue;
             }
-            $nextCheck = time() + 43200;
-            setPermCache("nameStateLastChecked", $nextCheck);
+            $nextCheck = time() + 1800;
+            setPermCache("nextRename", $nextCheck);
             return null;
         }
-        $nextCheck = time() + 43200;
-        setPermCache("nameStateLastChecked", $nextCheck);
+        $nextCheck = time() + 1800;
+        setPermCache("nextRename", $nextCheck);
         return null;
 
     }
