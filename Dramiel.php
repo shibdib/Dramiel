@@ -173,15 +173,16 @@ $discord->on(
                 $id = 1;
             }
             $queuedMessage = getQueuedMessage($id);
+            //Check if queued item is corrupt and delete it if it is
+            if (is_null($queuedMessage['guild']) || is_null($queuedMessage['channel']) || is_null($queuedMessage['message'])) {
+                $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
+                clearQueuedMessages($id);
+            }
             if (!is_null($queuedMessage)) {
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
                 $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
-                try {
                 $channel->sendMessage($queuedMessage['message'], false);
-                    } catch (Exception $e) {
-                $logger->error("QueueProcessing Error: " . $e->getMessage());
-                    }           
                 clearQueuedMessages($id);
             }
         });
@@ -197,6 +198,10 @@ $discord->on(
                     $x = 4;
                 }
                 $queuedRename = getQueuedRename($id);
+                //Check if queued item is corrupt and delete it if it is
+                if (is_null($queuedRename['guild']) || is_null($queuedRename['discordID'])) {
+                    clearQueuedRename($id);
+                }
                 if (!is_null($queuedRename)) {
                     $guild = $discord->guilds->get('id', $queuedRename['guild']);
                     $member = $guild->members->get("id", $queuedRename['discordID']);
