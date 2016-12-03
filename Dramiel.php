@@ -181,6 +181,11 @@ $discord->on(
             if (!is_null($queuedMessage)) {
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
+                //Check if channel is bad
+                if (is_null($channel) || is_null($guild)) {
+                    $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
+                    clearQueuedMessages($id);
+                }
                 $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
                 $channel->sendMessage($queuedMessage['message'], false);
                 clearQueuedMessages($id);
