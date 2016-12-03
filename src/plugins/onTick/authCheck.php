@@ -96,9 +96,9 @@ class authCheck
 
         //check if cache has been set
         $permsChecked = getPermCache("permsLastChecked");
-        $namesChecked = getPermCache("nameStateLastChecked");
+        $namesChecked = getPermCache("nextRename");
         if ($namesChecked == NULL) {
-            setPermCache("nameStateLastChecked", time());
+            setPermCache("nextRename", time());
         }
 
         //if not set set for now (30 minutes from now for role removal)
@@ -324,13 +324,14 @@ class authCheck
 
         //Establish connection to mysql
         $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
-        $sql = "select count(*) from authUsers WHERE active='yes'";
-        $count = (int)$conn->query($sql);
+        $sql = "SELECT id FROM authUsers WHERE active='yes'";
+        $count = $conn->query($sql);
+        $rowAmount = $count->num_rows / 2;
         if ($x == 1) {
-            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$count}/2 OFFSET {$count}/2";
+            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$rowAmount} OFFSET {$rowAmount}";
             setPermCache("nameQueueState", 0);
         } else {
-            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$count}/2";
+            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$rowAmount}";
             setPermCache("nameQueueState", 1);
         }
         $result = $conn->query($sql);
