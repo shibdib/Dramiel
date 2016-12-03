@@ -148,7 +148,7 @@ class evemails
         //Set timer for next key based on number of keys
         $nextKey = (1900 / (int)$this->numberOfKeys) + time();
         $nextKeyTime = gmdate("Y-m-d H:i:s", $nextKey);
-        setPermCache("notificationsLastChecked", $nextKey);
+        setPermCache("mailLastChecked", $nextKey);
 
         //Set cache timer for api key
         if ($cacheClr <= time()) {
