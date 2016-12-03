@@ -177,7 +177,11 @@ $discord->on(
                 $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                 $channel = $guild->channels->get('id', $queuedMessage['channel']);
                 $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
+                try {
                 $channel->sendMessage($queuedMessage['message'], false);
+                    } catch (Exception $e) {
+                $logger->error("QueueProcessing Error: " . $e->getMessage());
+                    }           
                 clearQueuedMessages($id);
             }
         });
