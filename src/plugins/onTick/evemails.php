@@ -74,8 +74,8 @@ class evemails
      * @var
      */
     var $keys;
-    public $keyID;
-    public $vCode;
+    public $apiKey;
+    public $numberOfKeys;
     public $guild;
     public $characterID;
 
@@ -93,13 +93,18 @@ class evemails
         $this->toDiscordChannel = $config["plugins"]["evemails"]["channelID"];
         $this->newestMailID = getPermCache("newestCorpMailID");
         $this->maxID = 0;
-        $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
-        $this->vCode = $config["eve"]["apiKeys"]["user1"]["vCode"];
+        $this->apiKey = $config["eve"]["apiKeys"];
         $this->guild = $config["bot"]["guild"];
-        $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
         $this->nextCheck = 0;
         //Refresh check at bot start
         setPermCache("mailLastChecked{$this->keyID}", time() - 5);
+
+        //Get number of keys
+        $x = 0;
+        foreach ($this->apiKey as $apiKey) {
+            $x++;
+        }
+        $this->numberOfKeys = $x;
     }
 
     /**
@@ -110,20 +115,25 @@ class evemails
         // What was the servers last reported state
         $lastStatus = getPermCache("serverState");
         if ($lastStatus == "online") {
-            $lastChecked = getPermCache("mailLastChecked{$this->keyID}");
-            $keyID = $this->keyID;
-            $vCode = $this->vCode;
-            $characterID = $this->characterID;
-            $discord = $this->discord;
-
-            if ($lastChecked <= time()) {
-                $this->logger->addInfo("Mails: Checking API Key {$keyID} for new mail..");
-                $this->checkMails($keyID, $vCode, $characterID, $discord);
+            foreach ($this->apiKey as $apiKey) {
+                //Check if api is set
+                if ($apiKey['keyID'] == "" || $apiKey['vCode'] == "" || $apiKey['characterID'] == null) {
+                    continue;
+                }
+                //Get
+                $lastChecked = getPermCache("mailLastChecked");
+                if ($lastChecked <= time()) {
+                    $lastCheckedAPI = getPermCache("mailLastChecked{$apiKey['keyID']}");
+                    if ($lastCheckedAPI <= time()) {
+                        $this->logger->addInfo("Mails: Checking API Key {$apiKey['keyID']} for new mail...");
+                        $this->checkMails($apiKey['keyID'], $apiKey['vCode'], $apiKey['characterID']);
+                    }
+                }
             }
         }
     }
 
-    function checkMails($keyID, $vCode, $characterID, $discord)
+    function checkMails($keyID, $vCode, $characterID)
     {
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
         $data = json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)), true);
@@ -132,12 +142,17 @@ class evemails
         $cached = $xml->cachedUntil[0];
         $baseUnix = strtotime($cached);
         $cacheClr = $baseUnix - 13500;
+
+        //Set timer for next key based on number of keys
+        $nextKey = (1900 / (int)$this->numberOfKeys) + time();
+        $nextKeyTime = gmdate("Y-m-d H:i:s", $nextKey);
+        setPermCache("notificationsLastChecked", $nextKey);
+
+        //Set cache timer for api key
         if ($cacheClr <= time()) {
             $weirdTime = time() + 1830;
-            $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
             setPermCache("mailLastChecked{$keyID}", $weirdTime);
         } else {
-            $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
             setPermCache("mailLastChecked{$keyID}", $cacheClr);
         }
 
@@ -196,7 +211,7 @@ class evemails
                 }
             }
         }
-        $this->logger->addInfo("Mails: Next Mail Check At: {$cacheTimer} EVE Time");
+        $this->logger->addInfo("Mails: Next Mail Check At: {$nextKeyTime} EVE Time");
     }
 
     /**

@@ -52,8 +52,18 @@ $config["twitter"] = array(
 );
 
 $config["eve"] = array(
-    "apiKeys" => array(
+    "apiKeys" => array( //Put at least one character API here with access to Mails and Notifications. The more keys added the more often the bot will check for new notifications and mails (The characters must all be in the same corp!)
         "user1" => array(
+            "keyID" => "",
+            "vCode" => "",
+            "characterID" => 0
+        ),
+        "user2" => array(
+            "keyID" => "",
+            "vCode" => "",
+            "characterID" => 0
+        ),
+        "user3" => array(
             "keyID" => "",
             "vCode" => "",
             "characterID" => 0

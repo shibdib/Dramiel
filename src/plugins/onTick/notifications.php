@@ -82,6 +82,8 @@ class notifications
      * @var
      */
     var $alliApi;
+    var $apiKey;
+    var $numberOfKeys;
     public $fuelChannel;
     public $fuelSkip;
     public $keyID;
@@ -105,15 +107,20 @@ class notifications
         $this->fuelSkip = $config["plugins"]["fuel"]["skip"];
         $this->newestNotificationID = getPermCache("newestNotificationID");
         $this->maxID = 0;
-        $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
-        $this->vCode = $config["eve"]["apiKeys"]["user1"]["vCode"];
-        $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
+        $this->apiKey = $config["eve"]["apiKeys"];
         $this->guild = $config["bot"]["guild"];
         //Refresh check at bot start
         setPermCache("notificationsLastChecked{$this->keyID}", time() - 5);
         if (is_null($this->allianceOnly)) {
             $this->allianceOnly = "false";
         }
+
+        //Get number of keys
+        $x = 0;
+        foreach ($this->apiKey as $apiKey) {
+            $x++;
+        }
+        $this->numberOfKeys = $x;
     }
 
     /**
@@ -124,14 +131,20 @@ class notifications
         // What was the servers last reported state
         $lastStatus = getPermCache("serverState");
         if ($lastStatus == "online") {
-            $lastChecked = getPermCache("notificationsLastChecked{$this->keyID}");
-            $keyID = $this->keyID;
-            $vCode = $this->vCode;
-            $characterID = $this->characterID;
-
-            if ($lastChecked <= time()) {
-                $this->logger->addInfo("Notifications: Checking API Key {$keyID} for notifications..");
-                $this->getNotifications($keyID, $vCode, $characterID);
+            foreach ($this->apiKey as $apiKey) {
+                //Check if api is set
+                if ($apiKey['keyID'] == "" || $apiKey['vCode'] == "" || $apiKey['characterID'] == null) {
+                    continue;
+                }
+                //Get
+                $lastChecked = getPermCache("notificationsLastChecked");
+                if ($lastChecked <= time()) {
+                    $lastCheckedAPI = getPermCache("notificationsLastChecked{$apiKey['keyID']}");
+                    if ($lastCheckedAPI <= time()) {
+                        $this->logger->addInfo("Notifications: Checking API Key {$apiKey['keyID']} for notifications..");
+                        $this->getNotifications($apiKey['keyID'], $apiKey['vCode'], $apiKey['characterID']);
+                    }
+                }
             }
         }
     }
@@ -144,8 +157,6 @@ class notifications
      */
     function getNotifications($keyID, $vCode, $characterID)
     {
-        $discord = $this->discord;
-
         try {
             $url = "https://api.eveonline.com/char/Notifications.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
             $xml = makeApiRequest($url);
@@ -156,12 +167,15 @@ class notifications
             if (!isset($this->fuelChannel)) {
                 $this->fuelChannel = $this->toDiscordChannel;
             }
+            //Set timer for next key based on number of keys
+            $nextKey = (1900 / (int)$this->numberOfKeys) + time();
+            $nextKeyTime = gmdate("Y-m-d H:i:s", $nextKey);
+            setPermCache("notificationsLastChecked", $nextKey);
+            //Set cache timer for api key
             if ($cacheClr <= time()) {
                 $weirdTime = time() + 1830;
-                $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
                 setPermCache("notificationsLastChecked{$keyID}", $weirdTime);
             } else {
-                $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
                 setPermCache("notificationsLastChecked{$keyID}", $cacheClr);
             }
             $data = json_decode(json_encode(simplexml_load_string(downloadData($url),
@@ -169,7 +183,7 @@ class notifications
             $data = $data["result"]["rowset"]["row"];
             // If there is no data, just quit..
             if (empty($data)) {
-                return;
+                return null;
             }
             $fixedData = array();
             // Sometimes there is only ONE notification, so.. yeah..
@@ -535,8 +549,7 @@ class notifications
                     setPermCache("newestNotificationID", $this->maxID);
                 }
             }
-
-            $this->logger->addInfo("Notifications: Next Notification Check At: {$cacheTimer} EVE Time");
+            return $this->logger->addInfo("Notifications: Next Notification Check At: {$nextKeyTime} EVE Time");
         } catch (Exception $e) {
             $this->logger->addInfo("Notifications: Notification Error: " . $e->getMessage());
         }
