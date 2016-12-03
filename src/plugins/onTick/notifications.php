@@ -109,8 +109,8 @@ class notifications
         $this->maxID = 0;
         $this->apiKey = $config["eve"]["apiKeys"];
         $this->guild = $config["bot"]["guild"];
-        //Refresh check at bot start
-        setPermCache("notificationsLastChecked{$this->keyID}", time() - 5);
+
+        //check if allianceOnly is set
         if (is_null($this->allianceOnly)) {
             $this->allianceOnly = "false";
         }

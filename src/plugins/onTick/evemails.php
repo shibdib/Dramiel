@@ -96,8 +96,6 @@ class evemails
         $this->apiKey = $config["eve"]["apiKeys"];
         $this->guild = $config["bot"]["guild"];
         $this->nextCheck = 0;
-        //Refresh check at bot start
-        setPermCache("mailLastChecked{$this->keyID}", time() - 5);
 
         //Get number of keys
         $x = 0;
