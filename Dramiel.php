@@ -175,12 +175,12 @@ $discord->on(
                     $id = 1;
                 }
                 $queuedMessage = getQueuedMessage($id);
-                //Check if queued item is corrupt and delete it if it is
-                if (is_null($queuedMessage['guild']) || is_null($queuedMessage['channel']) || is_null($queuedMessage['message'])) {
-                    $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
-                    clearQueuedMessages($id);
-                }
                 if (!is_null($queuedMessage)) {
+                    //Check if queued item is corrupt and delete it if it is
+                    if (is_null($queuedMessage['guild']) || is_null($queuedMessage['channel']) || is_null($queuedMessage['message'])) {
+                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
+                        clearQueuedMessages($id);
+                    }
                     $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                     $channel = $guild->channels->get('id', $queuedMessage['channel']);
                     //Check if channel is bad
@@ -207,11 +207,11 @@ $discord->on(
                     $x = 4;
                 }
                 $queuedRename = getQueuedRename($id);
-                //Check if queued item is corrupt and delete it if it is
-                if (is_null($queuedRename['guild']) || is_null($queuedRename['discordID'])) {
-                    clearQueuedRename($id);
-                }
                 if (!is_null($queuedRename)) {
+                    //Check if queued item is corrupt and delete it if it is
+                    if (is_null($queuedRename['guild']) || is_null($queuedRename['discordID'])) {
+                        clearQueuedRename($id);
+                    }
                     $guild = $discord->guilds->get('id', $queuedRename['guild']);
                     $member = $guild->members->get("id", $queuedRename['discordID']);
                     $member->setNickname($queuedRename['nick']);
