@@ -137,9 +137,9 @@ class evemails
 
     function checkMails($keyID, $vCode, $characterID)
     {
+
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
         $data = json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)), true);
-        $data = $data["result"]["rowset"]["row"];
         $xml = makeApiRequest($url);
         $cached = $xml->cachedUntil[0];
         $baseUnix = strtotime($cached);
@@ -157,6 +157,12 @@ class evemails
         } else {
             setPermCache("mailLastChecked{$keyID}", $cacheClr);
         }
+
+        // If there is no data, just quit..
+        if (empty($data["result"]["rowset"]["row"])) {
+            return null;
+        }
+        $data = $data["result"]["rowset"]["row"];
 
         $mails = array();
         if (isset($data["@attributes"])) {

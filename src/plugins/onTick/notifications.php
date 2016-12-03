@@ -184,11 +184,11 @@ class notifications
             }
             $data = json_decode(json_encode(simplexml_load_string(downloadData($url),
                 "SimpleXMLElement", LIBXML_NOCDATA)), true);
-            $data = $data["result"]["rowset"]["row"];
             // If there is no data, just quit..
-            if (empty($data)) {
+            if (empty($data["result"]["rowset"]["row"])) {
                 return null;
             }
+            $data = $data["result"]["rowset"]["row"];
             $fixedData = array();
             // Sometimes there is only ONE notification, so.. yeah..
             if (isset($data["@attributes"])) {
