@@ -316,9 +316,6 @@ class notifications
                         case 45: // Tower anchoring
                             $msg = "skip";
                             break;
-                        case 45: // Office Expired
-                            $msg = "skip";
-                            break;
                         case 50: // Office Expired
                             $msg = "skip";
                             break;
@@ -326,6 +323,9 @@ class notifications
                             $msg = "skip";
                             break;
                         case 54: // insurance
+                            $msg = "skip";
+                            break;
+                        case 55: // insurance
                             $msg = "skip";
                             break;
                         case 57: // jump clone destruction
