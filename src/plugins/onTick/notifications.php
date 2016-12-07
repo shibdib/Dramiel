@@ -334,6 +334,9 @@ class notifications
                         case 71: // Mission Expiration
                             $msg = "skip";
                             break;
+                        case 73: // special mission
+                            $msg = "skip";
+                            break;
                         case 75: // POS / POS Module under attack
                             $aggAllianceID = trim(explode(": ", $notificationString[0])[1]);
                             $aggAllianceName = apiCharacterName($aggAllianceID);
