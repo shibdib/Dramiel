@@ -214,7 +214,6 @@ class getKillmails
         if (isset($kills)) {
             foreach ($kills as $kill) {
                 if ($i < 5) {
-                    $newestID = getPermCache("bigKillNewestKillmailID");
                     $killID = $kill['killID'];
                     $channelID = $this->config["plugins"]["getKillmails"]["bigKills"]["bigKillChannel"];
                     $solarSystemID = $kill['solarSystemID'];
@@ -226,26 +225,27 @@ class getKillmails
                     $victimShipID = $kill['victim']['shipTypeID'];
                     $shipName = apiTypeName($victimShipID);
                     $totalValue = number_format($kill['zkb']['totalValue']);
-                    if ($killID > $newestID) {
-                        // Check if it's a structure
-                        if ($victimName != "") {
-                            $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                        } else {
-                            $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                        }
-                        if (!isset($msg)) { // Make sure it's always set.
-                            return null;
-                        }
-                        queueMessage($msg, $channelID, $this->guild);
-                        $this->logger->addInfo("Killmails: Mail {$killID} queued.");
-                        setPermCache("bigKillNewestKillmailID", $newID);
+                    // Check if it's a structure
+                    if ($victimName != "") {
+                        $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                    } else {
+                        $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
+                    if (!isset($msg)) { // Make sure it's always set.
+                        return null;
+                    }
+                    queueMessage($msg, $channelID, $this->guild);
+                    $this->logger->addInfo("Killmails: Mail {$killID} queued.");
+
                     $i++;
                 } else {
+                    $updatedID = getPermCache("bigKillNewestKillmailID");
                     $this->logger->addInfo("Killmails: bigKill posting cap reached, newest kill id is {$updatedID}");
                     break;
                 }
             }
+            $newID = $killID++;
+            setPermCache("bigKillNewestKillmailID", $newID);
         }
         $updatedID = getPermCache("bigKillNewestKillmailID");
         $this->logger->addInfo("Killmails: All bigKills posted, newest kill id is {$updatedID}");
