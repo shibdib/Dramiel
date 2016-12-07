@@ -123,6 +123,9 @@ if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode
     $logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
 }
 
+// Clear queue at restart
+clearAllMessageQueue();
+
 //Check initial server state (tick plugins will not run if eve is offline)
 $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
 $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
@@ -140,6 +143,9 @@ $discord->on(
         //
         // We will echo to the console that the WebSocket is ready.
         $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
+
+        //Clear queue if it's super backed up
+
 
         //Set Initial Game
         $gameTitle = $config["bot"]["game"];

@@ -82,6 +82,12 @@ function clearQueuedRename($id)
     return null;
 }
 
+//Clear Queue
+function clearAllMessageQueue()
+{
+    dbQueryRow("DELETE * from messageQueue");
+    return null;
+}
 
 //CORP INFO
 function addCorpInfo($corpID, $corpTicker, $corpName)
