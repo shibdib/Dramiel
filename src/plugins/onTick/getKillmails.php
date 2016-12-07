@@ -207,7 +207,7 @@ class getKillmails
             $killID = $this->config["plugins"]["getKillmails"]["bigKills"]["bigKillStartID"];
         }
 
-        $url = "https://zkillboard.com/api/kills/iskValue/10000000000/afterKillID/{$killID}/";
+        $url = "https://zkillboard.com/api/kills/orderDirection/asc/iskValue/10000000000/afterKillID/{$killID}/";
 
         $kills = json_decode(downloadData($url), true);
         $i = 0;
