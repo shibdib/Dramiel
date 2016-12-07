@@ -85,7 +85,7 @@ function clearQueuedRename($id)
 //Clear Queue
 function clearAllMessageQueue()
 {
-    dbQueryRow("DELETE * from messageQueue");
+    dbQueryRow("DELETE from messageQueue");
     return null;
 }
 
