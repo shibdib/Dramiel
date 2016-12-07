@@ -82,6 +82,16 @@ function clearQueuedRename($id)
     return null;
 }
 
+//
+function clearQueueCheck()
+{
+    $result = dbQueryRow("SELECT * FROM messageQueue");
+    if ($result->num_rows > 35) {
+        clearAllMessageQueue();
+    }
+    return null;
+}
+
 //Clear Queue
 function clearAllMessageQueue()
 {

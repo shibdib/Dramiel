@@ -123,8 +123,8 @@ if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode
     $logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
 }
 
-// Clear queue at restart
-clearAllMessageQueue();
+// Clear queue at restart if it's too high
+clearQueueCheck();
 
 //Check initial server state (tick plugins will not run if eve is offline)
 $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
