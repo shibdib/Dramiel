@@ -87,7 +87,7 @@ class setGame
             $roles = $member->roles;
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
-                    $newGame = (string)$data['messageString'];
+                    $newGame = (string) $data['messageString'];
                     $game = $this->discord->factory(Game::class, [
                         'name' => $newGame,
                     ]);

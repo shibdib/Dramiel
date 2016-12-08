@@ -76,7 +76,7 @@ class about
     {
         $this->message = $message;
         $info['guilds'] = $this->discord->guilds->count();
-        $channelID = (int)$msgData['message']['channelID'];
+        $channelID = (int) $msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {

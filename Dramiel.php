@@ -135,7 +135,7 @@ $logger->addInfo("serverState: EVE is currently {$crestStatus}");
 
 $discord->on(
     'ready',
-    function ($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {
+    function($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -203,7 +203,7 @@ $discord->on(
         });
 
         // Rename queue
-        $discord->loop->addPeriodicTimer(10, function () use ($discord, $logger) {
+        $discord->loop->addPeriodicTimer(10, function() use ($discord, $logger) {
             $x = 0;
             while ($x < 4) {
                 $id = getOldestRename();
@@ -236,7 +236,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function ($message) use ($logger, $config, $plugins) {
+            function($message) use ($logger, $config, $plugins) {
 
                 $msgData = array(
                     'message' => array(
@@ -273,19 +273,19 @@ $discord->on(
 );
 $discord->on(
     'error',
-    function ($error) use ($logger) {
+    function($error) use ($logger) {
         $logger->addError($error);
         exit(1);
     }
 );
 $discord->on(
     'reconnecting',
-    function () use ($logger) {
+    function() use ($logger) {
         $logger->addInfo('Websocket is reconnecting..');
     });
 $discord->on(
     'reconnected',
-    function () use ($logger) {
+    function() use ($logger) {
         $logger->addInfo('Websocket was reconnected..');
     });
 // Now we will run the ReactPHP Event Loop!

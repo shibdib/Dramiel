@@ -70,7 +70,7 @@ class help
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int)$msgData['message']['channelID'];
+        $channelID = (int) $msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
