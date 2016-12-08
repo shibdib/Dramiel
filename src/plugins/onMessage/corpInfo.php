@@ -53,7 +53,7 @@ class corpInfo
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
     }
 
     /**
@@ -70,7 +70,7 @@ class corpInfo
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int) $msgData["message"]["channelID"];
+        $channelID = (int)$msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -79,17 +79,17 @@ class corpInfo
 
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
+        $message = $msgData['message']['message'];
+        $user = $msgData['message']['from'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
-            $messageString = $data["messageString"];
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
+            $messageString = $data['messageString'];
             $cleanString = urlencode($messageString);
             $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
             $xml = makeApiRequest($url);
             if (empty($data)) {
-                return $this->message->reply("**Error:** Unable to find any group matching that name.");
+                return $this->message->reply('**Error:** Unable to find any group matching that name.');
             }
             $corpID = null;
             if (isset($xml->result->rowset->row)) {
@@ -99,7 +99,7 @@ class corpInfo
             }
 
             if (empty($corpID)) {
-                return $this->message->reply("**Error:** Unable to find any group matching that name.");
+                return $this->message->reply('**Error:** Unable to find any group matching that name.');
             }
 
             $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$corpID}";
@@ -115,8 +115,8 @@ class corpInfo
                 $url = "https://zkillboard.com/corporation/{$corpID}/";
             }
 
-            if ($corporationName == null || $corporationName == "") {
-                return $this->message->reply("**Error:** No corporation found.");
+            if ($corporationName == null || $corporationName == '') {
+                return $this->message->reply('**Error:** No corporation found.');
             }
 
 
@@ -142,9 +142,9 @@ For more info, visit: $url";
     function information()
     {
         return array(
-            "name" => "corp",
-            "trigger" => array($this->config["bot"]["trigger"] . "corp"),
-            "information" => "Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name"
+            'name' => 'corp',
+            'trigger' => array($this->config['bot']['trigger'] . 'corp'),
+            'information' => 'Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name'
         );
     }
 

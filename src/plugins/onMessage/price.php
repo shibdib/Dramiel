@@ -63,12 +63,12 @@ class price
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->triggers[] = $this->config["bot"]["trigger"] . "pc";
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Jita");
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Amarr");
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Rens");
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Dodixie");
-        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'pc';
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Jita');
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Amarr');
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Rens');
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Dodixie');
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
     }
 
     /**
@@ -87,8 +87,8 @@ class price
     function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $user = $msgData["message"]["from"];
-        $channelID = (int) $msgData["message"]["channelID"];
+        $user = $msgData['message']['from'];
+        $channelID = (int)$msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -97,26 +97,26 @@ class price
 
 
         // Bind a few things to vars for the plugins
-        $message = $msgData["message"]["message"];
+        $message = $msgData['message']['message'];
 
         // Quick Lookups
         $quickLookUps = array(
-            "plex" => array(
-                "typeID" => 29668,
-                "typeName" => "30 Day Pilot's License Extension (PLEX)"
+            'plex' => array(
+                'typeID' => 29668,
+                'typeName' => "30 Day Pilot's License Extension (PLEX)"
             ),
-            "30 day" => array(
-                "typeID" => 29668,
-                "typeName" => "30 Day Pilot's License Extension (PLEX)"
+            '30 day' => array(
+                'typeID' => 29668,
+                'typeName' => "30 Day Pilot's License Extension (PLEX)"
             )
         );
 
-        $data = command(strtolower($message), $this->information()["trigger"], $this->config["bot"]["trigger"]);
+        $data = command(strtolower($message), $this->information()['trigger'], $this->config['bot']['trigger']);
 
-        if (isset($data["trigger"])) {
+        if (isset($data['trigger'])) {
 
-            $systemName = $data["trigger"];
-            $itemName = $data["messageString"];
+            $systemName = $data['trigger'];
+            $itemName = $data['messageString'];
             $single = apiTypeID(urlencode($itemName));
 
             // Quick lookups
@@ -126,25 +126,25 @@ class price
 
             // Check if the channel is restricted
             if (in_array($channelID, $this->excludeChannel, true)) {
-                return $this->message->reply("**Price Check not allowed in this channel**");
+                return $this->message->reply('**Price Check not allowed in this channel**');
             }
 
             // If there is a single result, we'll get data now!
             if ($single) {
-                $typeID = $single["typeID"];
+                $typeID = $single['typeID'];
 
-                if (is_null($typeID)) {
+                if (null === $typeID) {
                     $typeID = $single;
                 }
 
-                if ($systemName == "pc") {
-                    $solarSystemID = "global";
+                if ($systemName == 'pc') {
+                    $solarSystemID = 'global';
                 } else {
                     $solarSystemID = apiCharacterID(urlencode($systemName));
                 }
 
                 // Get pricing data
-                if ($solarSystemID == "global") {
+                if ($solarSystemID == 'global') {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?typeid={$typeID}"));
                 } else {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
@@ -158,7 +158,7 @@ class price
                 $highSell = number_format((float) $data->marketstat->type->sell->max, 2);
 
                 $this->logger->addInfo("Price: Sending pricing info to {$user}");
-                $solarSystemName = $systemName == "pc" ? "Global" : ucfirst($systemName);
+                $solarSystemName = $systemName == 'pc' ? 'Global' : ucfirst($systemName);
                 $messageData = "**System: {$solarSystemName}**
 **Buy:**
    Low: {$lowBuy}
@@ -182,9 +182,9 @@ class price
     function information()
     {
         return array(
-            "name" => "pc",
-            "trigger" => $this->triggers,
-            "information" => "Shows price information for items in EVE. To use simply type **!pc item_name** for global stats or **!jita/amarr/rens_or_dodixie item_name** for hub specific info."
+            'name' => 'pc',
+            'trigger' => $this->triggers,
+            'information' => 'Shows price information for items in EVE. To use simply type **!pc item_name** for global stats or **!jita/amarr/rens_or_dodixie item_name** for hub specific info.'
         );
     }
 }

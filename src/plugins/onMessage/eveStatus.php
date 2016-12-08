@@ -53,7 +53,7 @@ class eveStatus
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
     }
 
     /**
@@ -70,7 +70,7 @@ class eveStatus
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int) $msgData["message"]["channelID"];
+        $channelID = (int)$msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -79,16 +79,16 @@ class eveStatus
 
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
+        $message = $msgData['message']['message'];
+        $user = $msgData['message']['from'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
 
-            $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
+            $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
 
-            $tqStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
-            $tqOnline = (int) $crestData["userCount"];
+            $tqStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
+            $tqOnline = (int)$crestData['userCount'];
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
             $this->logger->addInfo("eveStatus: Sending eve status info to {$user}");
@@ -102,9 +102,9 @@ class eveStatus
     function information()
     {
         return array(
-            "name" => "tq",
-            "trigger" => array($this->config["bot"]["trigger"] . "tq", $this->config["bot"]["trigger"] . "status"),
-            "information" => "Shows the current status of Tranquility"
+            'name' => 'tq',
+            'trigger' => array($this->config['bot']['trigger'] . 'tq', $this->config['bot']['trigger'] . 'status'),
+            'information' => 'Shows the current status of Tranquility'
         );
     }
 

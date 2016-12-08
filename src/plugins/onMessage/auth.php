@@ -66,16 +66,16 @@ class auth
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->db = $config["database"]["host"];
-        $this->dbUser = $config["database"]["user"];
-        $this->dbPass = $config["database"]["pass"];
-        $this->dbName = $config["database"]["database"];
-        $this->corpTickers = $config["plugins"]["auth"]["corpTickers"];
-        $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
-        $this->ssoUrl = $config["plugins"]["auth"]["url"];
-        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
-        $this->authGroups = $config["plugins"]["auth"]["authGroups"];
-        $this->guild = $config["bot"]["guild"];
+        $this->db = $config['database']['host'];
+        $this->dbUser = $config['database']['user'];
+        $this->dbPass = $config['database']['pass'];
+        $this->dbName = $config['database']['database'];
+        $this->corpTickers = $config['plugins']['auth']['corpTickers'];
+        $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
+        $this->ssoUrl = $config['plugins']['auth']['url'];
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->authGroups = $config['plugins']['auth']['authGroups'];
+        $this->guild = $config['bot']['guild'];
     }
 
     /**
@@ -92,38 +92,38 @@ class auth
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int) $msgData["message"]["channelID"];
+        $channelID = (int)$msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true)) {
             return null;
         }
 
         $this->message = $message;
-        $userID = $msgData["message"]["fromID"];
-        $userName = $msgData["message"]["from"];
-        $message = $msgData["message"]["message"];
+        $userID = $msgData['message']['fromID'];
+        $userName = $msgData['message']['from'];
+        $message = $msgData['message']['message'];
         $channelInfo = $this->message->channel;
         $guildID = $channelInfo[@guild_id];
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
-            if (isset($this->config["bot"]["primary"])) {
-                if ($guildID != $this->config["bot"]["primary"]) {
-                    $this->message->reply("**Failure:** The auth code your attempting to use is for another discord server");
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
+            if (isset($this->config['bot']['primary'])) {
+                if ($guildID != $this->config['bot']['primary']) {
+                    $this->message->reply('**Failure:** The auth code your attempting to use is for another discord server');
                     return null;
                 }
 
             }
             // If config is outdated
-            if (is_null($this->authGroups)) {
-                $this->message->reply("**Failure:** Please update the bots config to the latest version.");
+            if (null === $this->authGroups) {
+                $this->message->reply('**Failure:** Please update the bots config to the latest version.');
                 return null;
             }
 
-            $code = $data["messageString"];
+            $code = $data['messageString'];
             $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
 
             if (strlen($code) < 12) {
-                $this->message->reply("Invalid Code, check " . $this->config["bot"]["trigger"] . "help auth for more info.");
+                $this->message->reply('Invalid Code, check ' . $this->config['bot']['trigger'] . 'help auth for more info.');
                 return null;
             }
 
@@ -134,7 +134,7 @@ class auth
 
                 //If corp is new store in DB
                 $corpInfo = getCorpInfo($corpID);
-                if (is_null($corpInfo)) {
+                if (null === $corpInfo) {
                     $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$corpID}";
                     $xml = makeApiRequest($url);
                     foreach ($xml->result as $corporation) {
@@ -152,13 +152,13 @@ class auth
 
                 // We have an error, show it it
                 if ($xmlCharacter->error) {
-                    $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
+                    $this->message->reply('**Failure:** Eve API error, please try again in a little while.');
                     return null;
                 }
 
                 // Check that the api is working
                 if (!isset($xmlCharacter->result->rowset->row)) {
-                    $this->message->reply("**Failure:** Eve API error, please try again in a little while.");
+                    $this->message->reply('**Failure:** Eve API error, please try again in a little while.');
                     return null;
                 }
 
@@ -168,7 +168,7 @@ class auth
                 }
 
                 //Set eve name if nameCheck is true
-                if ($this->nameEnforce == "true") {
+                if ($this->nameEnforce == 'true') {
                     $nameEnforce = 1;
                 }
 
@@ -177,22 +177,22 @@ class auth
 
                 foreach ($xmlCharacter->result->rowset->row as $character) {
                     $roles = $this->message->channel->guild->roles;
-                    $member = $this->message->channel->guild->members->get("id", $userID);
+                    $member = $this->message->channel->guild->members->get('id', $userID);
                     $eveName = $character->attributes()->name;
                     foreach ($this->authGroups as $authGroup) {
                         //Check if corpID matches
-                        if ($corpID === $authGroup["corpID"]) {
+                        if ($corpID === $authGroup['corpID']) {
                             foreach ($roles as $role) {
-                                if ($role->name == $authGroup["corpMemberRole"]) {
+                                if ($role->name == $authGroup['corpMemberRole']) {
                                     $member->addRole($role);
                                     $corpRoleSet = 1;
                                 }
                             }
                         }
                         //Check if allianceID matches
-                        if ($allianceID === $authGroup["allianceID"] && $authGroup["allianceID"] != 0) {
+                        if ($allianceID === $authGroup['allianceID'] && $authGroup['allianceID'] != 0) {
                             foreach ($roles as $role) {
-                                if ($role->name == $authGroup["allyMemberRole"]) {
+                                if ($role->name == $authGroup['allyMemberRole']) {
                                     $member->addRole($role);
                                     $allianceRoleSet = 1;
                                 }
@@ -222,13 +222,13 @@ class auth
                             return null;
                         }
                     }
-                    $this->message->reply("**Failure:** There are no roles available for your corp/alliance.");
-                    $this->logger->addInfo("Auth: User was denied due to not being in the correct corp or alliance " . $eveName);
+                    $this->message->reply('**Failure:** There are no roles available for your corp/alliance.');
+                    $this->logger->addInfo('Auth: User was denied due to not being in the correct corp or alliance ' . $eveName);
                     return null;
                 }
             }
-            $this->message->reply("**Failure:** There was an issue with your code.");
-            $this->logger->addInfo("Auth: User was denied due to not being in the correct corp or alliance " . $userName);
+            $this->message->reply('**Failure:** There was an issue with your code.');
+            $this->logger->addInfo('Auth: User was denied due to not being in the correct corp or alliance ' . $userName);
             return null;
         }
         return null;
@@ -240,9 +240,9 @@ class auth
     function information()
     {
         return array(
-            "name" => "auth",
-            "trigger" => array($this->config["bot"]["trigger"] . "auth"),
-            "information" => "SSO based auth system. " . $this->ssoUrl . " Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat."
+            'name' => 'auth',
+            'trigger' => array($this->config['bot']['trigger'] . 'auth'),
+            'information' => 'SSO based auth system. ' . $this->ssoUrl . ' Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat.'
         );
     }
 

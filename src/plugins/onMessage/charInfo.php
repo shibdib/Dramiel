@@ -55,7 +55,7 @@ class charInfo
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->excludeChannel = $this->config["bot"]["restrictedChannels"];
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
     }
 
     /**
@@ -72,7 +72,7 @@ class charInfo
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int) $msgData["message"]["channelID"];
+        $channelID = (int)$msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -81,17 +81,17 @@ class charInfo
 
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
+        $message = $msgData['message']['message'];
+        $user = $msgData['message']['from'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
 
             // Most EVE players on Discord use their ingame name, so lets support @highlights
-            $messageString = stristr($data["messageString"], "@") ? str_replace("<@", "", str_replace(">", "", $data["messageString"])) : $data["messageString"];
+            $messageString = strstr($data['messageString'], '@') ? str_replace('<@', '', str_replace('>', '', $data['messageString'])) : $data['messageString'];
             if (is_numeric($messageString)) {
                 // The person used @highlighting, so now we got a discord id, lets map that to a name
-                $messageString = dbQueryField("SELECT name FROM usersSeen WHERE id = :id", "name", array(":id" => $messageString));
+                $messageString = dbQueryField('SELECT name FROM usersSeen WHERE id = :id', 'name', array(':id' => $messageString));
             }
 
             $cleanString = urlencode($messageString);
@@ -107,7 +107,7 @@ class charInfo
                 }
             }
             if (empty($characterID)) {
-                return $this->message->reply("**Error:** no data available");
+                return $this->message->reply('**Error:** no data available');
             }
             $characterID = urlencode($characterID);
 
@@ -122,15 +122,15 @@ class charInfo
                 $characterName = $characterDetails->characterName;
             }
 
-            if ($characterName == null || $characterName == "") {
-                return $this->message->reply("**Error:** No character found.");
+            if ($characterName == null || $characterName == '') {
+                return $this->message->reply('**Error:** No character found.');
             }
 
             //ZKill lookup
             $url = "https://zkillboard.com/api/orderDirection/desc/limit/1/no-items/characterID/{$characterID}/xml/";
             $xml = makeApiRequest($url);
             if (empty($xml)) {
-                return $this->message->reply("**Error:** ZKill is down. Try again later.");
+                return $this->message->reply('**Error:** ZKill is down. Try again later.');
             }
             foreach ($xml->result->rowset->row as $kill) {
                 $lastSeenSystemID = $kill->attributes()->solarSystemID;
@@ -170,9 +170,9 @@ For more info, visit: $url";
     function information()
     {
         return array(
-            "name" => "char",
-            "trigger" => array($this->config["bot"]["trigger"] . "char"),
-            "information" => "Returns basic EVE Online data about a character. To use simply type !char character_name"
+            'name' => 'char',
+            'trigger' => array($this->config['bot']['trigger'] . 'char'),
+            'information' => 'Returns basic EVE Online data about a character. To use simply type !char character_name'
         );
     }
 
