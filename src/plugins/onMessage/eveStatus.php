@@ -70,7 +70,7 @@ class eveStatus
      */
     function onMessage($msgData, $message)
     {
-        $channelID = (int)$msgData['message']['channelID'];
+        $channelID = (int) $msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
@@ -88,7 +88,7 @@ class eveStatus
             $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
 
             $tqStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
-            $tqOnline = (int)$crestData['userCount'];
+            $tqOnline = (int) $crestData['userCount'];
 
             $msg = "**TQ Status:** {$tqStatus} with {$tqOnline} users online.";
             $this->logger->addInfo("eveStatus: Sending eve status info to {$user}");
