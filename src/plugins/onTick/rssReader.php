@@ -66,13 +66,13 @@ class rssReader
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
-        $this->rssFeeds = $config["plugins"]["rssReader"]["rssFeeds"];
-        $this->toDiscordChannel = $config["plugins"]["rssReader"]["channelID"];
-        $lastCheck = getPermCache("rssLastChecked");
+        $this->guild = $config['bot']['guild'];
+        $this->rssFeeds = $config['plugins']['rssReader']['rssFeeds'];
+        $this->toDiscordChannel = $config['plugins']['rssReader']['channelID'];
+        $lastCheck = getPermCache('rssLastChecked');
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run
-            setPermCache("rssLastChecked", time() - 5);
+            setPermCache('rssLastChecked', time() - 5);
         }
     }
 
@@ -81,24 +81,23 @@ class rssReader
      */
     function tick()
     {
-        $discord = $this->discord;
-        $lastCheck = getPermCache("rssLastChecked");
+        $lastCheck = getPermCache('rssLastChecked');
         $feeds = $this->rssFeeds;
         $toChannel = $this->toDiscordChannel;
 
         if ($lastCheck <= time()) {
-            $this->logger->addInfo("rssReader: Checking RSS feeds for updated news..");
-            $this->getRss($feeds, $toChannel, $discord);
-            setPermCache("rssLastChecked", time() + 900);
-            $this->logger->addInfo("rssReader: All feeds checked..");
+            $this->logger->addInfo('rssReader: Checking RSS feeds for updated news..');
+            $this->getRss($feeds, $toChannel);
+            setPermCache('rssLastChecked', time() + 900);
+            $this->logger->addInfo('rssReader: All feeds checked..');
         }
     }
 
-    function getRss($feeds, $toChannel, $discord)
+    function getRss($feeds, $toChannel)
     {
         foreach ($feeds as $rssUrl) {
             //Check that url is set
-            if (!isset($rssUrl) || $rssUrl == "") {
+            if (!isset($rssUrl) || $rssUrl == '') {
                 continue;
             }
 

@@ -66,9 +66,9 @@ class fileReader
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
-        $this->channelConfig = $config["plugins"]["fileReader"]["channelConfig"];
-        $this->db = $config["plugins"]["fileReader"]["db"];
+        $this->guild = $config['bot']['guild'];
+        $this->channelConfig = $config['plugins']['fileReader']['channelConfig'];
+        $this->db = $config['plugins']['fileReader']['db'];
         if (!is_file($this->db)) {
             touch($this->db);
         }
@@ -80,9 +80,9 @@ class fileReader
     function information()
     {
         return array(
-            "name" => "",
-            "trigger" => array(),
-            "information" => ""
+            'name' => '',
+            'trigger' => array(),
+            'information' => ''
         );
     }
 
@@ -96,25 +96,25 @@ class fileReader
         if (filemtime($this->db) >= $this->lastCheck) {
             $data = file($this->db);
             if ($data) {
-                $ping = "";
+                $ping = '';
                 foreach ($data as $row) {
-                    $row = str_replace("^@", "", $row);
-                    if ($row == "" || $row == " ") {
+                    $row = str_replace('^@', '', $row);
+                    if ($row == '' || $row == ' ') {
                         continue;
                     }
 
-                    $ping .= $row . "  ";
+                    $ping .= $row . '  ';
                 }
 
                 // Remove |  from the line or whatever else is at the last two characters in the string
                 $message = trim(substr($ping, 0, -2));
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
-                    if ($chanConfig["searchString"] == false) { // If no match was found, and searchString is false, just use that
-                        $message = $chanConfig["textStringPrepend"] . " \n " . $message . "  " . $chanConfig["textStringAppend"];
-                        $channelID = $chanConfig["channelID"];
-                    } elseif (stristr($message, $chanConfig["searchString"])) {
-                        $message = $chanConfig["textStringPrepend"] . " \n " . $message . "  " . $chanConfig["textStringAppend"];
-                        $channelID = $chanConfig["channelID"];
+                    if ($chanConfig['searchString'] == false) { // If no match was found, and searchString is false, just use that
+                        $message = $chanConfig['textStringPrepend'] . " \n " . $message . '  ' . $chanConfig['textStringAppend'];
+                        $channelID = $chanConfig['channelID'];
+                    } elseif (stristr($message, $chanConfig['searchString'])) {
+                        $message = $chanConfig['textStringPrepend'] . " \n " . $message . '  ' . $chanConfig['textStringAppend'];
+                        $channelID = $chanConfig['channelID'];
                     }
                 }
 
@@ -122,18 +122,18 @@ class fileReader
                     $channelID = null;
                 }
                 $begin = mb_substr($message, 0, 15);
-                if (stristr($begin, "#")) {
-                    $message = "skip";
+                if (strstr($begin, '#')) {
+                    $message = 'skip';
                 }
-                if ($channelID == "" || $channelID == null) {
-                    $message = "skip";
+                if ($channelID == '' || $channelID == null) {
+                    $message = 'skip';
                 }
-                if ($message != "skip") {
+                if ($message != 'skip') {
                     $this->logger->addInfo("fileReader: Ping sent to front of queue for {$channelID}, Message - {$message}");
                     priorityQueueMessage($message, $channelID, $this->guild);
                 }
             }
-            $h = fopen($this->db, "w+");
+            $h = fopen($this->db, 'wb+');
             fclose($h);
             chmod($this->db, 0777);
         }

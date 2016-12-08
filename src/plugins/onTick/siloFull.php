@@ -63,11 +63,11 @@ class siloFull
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
-        $this->toDiscordChannel = $config["plugins"]["siloFull"]["channelID"];
-        $this->keyID = $config["plugins"]["siloFull"]["keyID"];
-        $this->vCode = $config["plugins"]["siloFull"]["vCode"];
-        $this->towerRace = $config["plugins"]["siloFull"]["towerRace"];
+        $this->guild = $config['bot']['guild'];
+        $this->toDiscordChannel = $config['plugins']['siloFull']['channelID'];
+        $this->keyID = $config['plugins']['siloFull']['keyID'];
+        $this->vCode = $config['plugins']['siloFull']['vCode'];
+        $this->towerRace = $config['plugins']['siloFull']['towerRace'];
         $lastCheck = getPermCache("siloLastChecked{$this->keyID}");
         if ($lastCheck == NULL) {
             // Schedule it for right now if first run
@@ -81,8 +81,8 @@ class siloFull
     function tick()
     {
         // What was the servers last reported state
-        $lastStatus = getPermCache("serverState");
-        if ($lastStatus == "online") {
+        $lastStatus = getPermCache('serverState');
+        if ($lastStatus == 'online') {
             $lastChecked = getPermCache("siloLastChecked{$this->keyID}");
             $keyID = $this->keyID;
             $vCode = $this->vCode;
@@ -131,7 +131,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -141,7 +141,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -150,7 +150,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -166,7 +166,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -176,7 +176,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -185,7 +185,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -201,7 +201,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -211,7 +211,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -220,7 +220,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -236,7 +236,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.6;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -246,7 +246,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -255,7 +255,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -271,7 +271,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -281,7 +281,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -290,7 +290,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -306,7 +306,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -316,7 +316,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -325,7 +325,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -341,7 +341,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -351,7 +351,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -360,7 +360,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -376,7 +376,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -386,7 +386,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -395,7 +395,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -411,7 +411,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -421,7 +421,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -430,7 +430,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -446,7 +446,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -456,7 +456,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -465,7 +465,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -481,7 +481,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -491,7 +491,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -500,7 +500,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -516,7 +516,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -526,7 +526,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -535,7 +535,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -551,7 +551,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -561,7 +561,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -570,7 +570,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -586,7 +586,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -596,7 +596,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -605,7 +605,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -621,7 +621,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -631,7 +631,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -640,7 +640,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -656,7 +656,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -666,7 +666,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -675,7 +675,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -691,7 +691,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -701,7 +701,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -710,7 +710,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -726,7 +726,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -736,7 +736,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -745,7 +745,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -761,7 +761,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -771,7 +771,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -780,7 +780,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -796,7 +796,7 @@ class siloFull
                                     //Check if silo has been checked before, and if it's an input silo ignore
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -806,7 +806,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue;
+                                        continue 2;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -815,7 +815,7 @@ class siloFull
                                     // Send the msg to the channel;
                                     $channelID = $this->toDiscordChannel;
                                     queueMessage($msg, $channelID, $this->guild);
-                                    $this->logger->addInfo("siloFull: Silo Alert queued");
+                                    $this->logger->addInfo('siloFull: Silo Alert queued');
                                     $siloCount++;
                                 }
                                 break;
@@ -829,10 +829,10 @@ class siloFull
         $cacheClr = $baseUnix - 13500;
         if ($cacheClr <= time()) {
             $weirdTime = time() + 21700;
-            $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
+            $cacheTimer = gmdate('Y-m-d H:i:s', $weirdTime);
             setPermCache("siloLastChecked{$keyID}", $weirdTime);
         } else {
-            $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
+            $cacheTimer = gmdate('Y-m-d H:i:s', $cacheClr);
             setPermCache("siloLastChecked{$keyID}", $cacheClr);
         }
         $this->logger->addInfo("siloFull: Silo Check Complete Next Check At {$cacheTimer}");
@@ -844,9 +844,9 @@ class siloFull
         function information()
         {
             return array(
-                "name" => "",
-                "trigger" => array(""),
-                "information" => ""
+                'name' => '',
+                'trigger' => array(''),
+                'information' => ''
             );
         }
     }

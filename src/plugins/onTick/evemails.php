@@ -89,19 +89,19 @@ class evemails
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->toIDs = $config["plugins"]["evemails"]["fromIDs"];
-        $this->toDiscordChannel = $config["plugins"]["evemails"]["channelID"];
-        $this->newestMailID = getPermCache("newestCorpMailID");
+        $this->toIDs = $config['plugins']['evemails']['fromIDs'];
+        $this->toDiscordChannel = $config['plugins']['evemails']['channelID'];
+        $this->newestMailID = getPermCache('newestCorpMailID');
         $this->maxID = 0;
-        $this->apiKey = $config["eve"]["apiKeys"];
-        $this->guild = $config["bot"]["guild"];
+        $this->apiKey = $config['eve']['apiKeys'];
+        $this->guild = $config['bot']['guild'];
         $this->nextCheck = 0;
 
         //Get number of keys
         $x = 0;
         foreach ($this->apiKey as $apiKey) {
             //Check if api is set
-            if ($apiKey['keyID'] == "" || $apiKey['vCode'] == "" || $apiKey['characterID'] == null) {
+            if ($apiKey['keyID'] == '' || $apiKey['vCode'] == '' || $apiKey['characterID'] == null) {
                 continue;
             }
             $x++;
@@ -115,15 +115,15 @@ class evemails
     function tick()
     {
         // What was the servers last reported state
-        $lastStatus = getPermCache("serverState");
-        if ($lastStatus == "online") {
+        $lastStatus = getPermCache('serverState');
+        if ($lastStatus == 'online') {
             foreach ($this->apiKey as $apiKey) {
                 //Check if api is set
-                if ($apiKey['keyID'] == "" || $apiKey['vCode'] == "" || $apiKey['characterID'] == null) {
+                if ($apiKey['keyID'] == '' || $apiKey['vCode'] == '' || $apiKey['characterID'] == null) {
                     continue;
                 }
                 //Get
-                $lastChecked = getPermCache("mailLastChecked");
+                $lastChecked = getPermCache('mailLastChecked');
                 if ($lastChecked <= time()) {
                     $lastCheckedAPI = getPermCache("mailLastChecked{$apiKey['keyID']}");
                     if ($lastCheckedAPI <= time()) {
@@ -139,7 +139,7 @@ class evemails
     {
 
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
-        $data = json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)), true);
+        $data = json_decode(json_encode(simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA)), true);
         $xml = makeApiRequest($url);
         $cached = $xml->cachedUntil[0];
         $baseUnix = strtotime($cached);
@@ -147,8 +147,8 @@ class evemails
 
         //Set timer for next key based on number of keys
         $nextKey = (1900 / (int)$this->numberOfKeys) + time();
-        $nextKeyTime = gmdate("Y-m-d H:i:s", $nextKey);
-        setPermCache("mailLastChecked", $nextKey);
+        $nextKeyTime = gmdate('Y-m-d H:i:s', $nextKey);
+        setPermCache('mailLastChecked', $nextKey);
 
         //Set cache timer for api key
         if ($cacheClr <= time()) {
@@ -159,34 +159,34 @@ class evemails
         }
 
         // If there is no data, just quit..
-        if (empty($data["result"]["rowset"]["row"])) {
+        if (empty($data['result']['rowset']['row'])) {
             return null;
         }
-        $data = $data["result"]["rowset"]["row"];
+        $data = $data['result']['rowset']['row'];
 
         $mails = array();
-        if (isset($data["@attributes"])) {
-            $mails[] = $data["@attributes"];
+        if (isset($data['@attributes'])) {
+            $mails[] = $data['@attributes'];
         }
         // Sometimes there is only ONE notification, so.. yeah..
         if (count($data) > 1) {
             foreach ($data as $multiMail) {
-                $mails[] = $multiMail["@attributes"];
+                $mails[] = $multiMail['@attributes'];
             }
         }
 
-        usort($mails, array($this, "sortByDate"));
+        usort($mails, array($this, 'sortByDate'));
 
         foreach ($mails as $mail) {
-            if (in_array($mail["toCorpOrAllianceID"], $this->toIDs) && $mail["messageID"] > $this->newestMailID) {
-                $sentBy = $mail["senderName"];
-                $title = $mail["title"];
-                $sentDate = $mail["sentDate"];
-                $url = "https://api.eveonline.com/char/MailBodies.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}&ids=" . $mail["messageID"];
-                $content = strip_tags(str_replace("<br>", "\n", json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)))->result->rowset->row));
+            if (in_array($mail['toCorpOrAllianceID'], $this->toIDs) && $mail['messageID'] > $this->newestMailID) {
+                $sentBy = $mail['senderName'];
+                $title = $mail['title'];
+                $sentDate = $mail['sentDate'];
+                $url = "https://api.eveonline.com/char/MailBodies.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}&ids=" . $mail['messageID'];
+                $content = strip_tags(str_replace('<br>', "\n", json_decode(json_encode(simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA)))->result->rowset->row));
 
                 // Blank Content Check
-                if ($content == "") {
+                if ($content == '') {
                     return null;
                 }
 
@@ -209,13 +209,13 @@ class evemails
                 }
 
                 // Find the maxID so we don't spit this message out ever again
-                $this->maxID = max($mail["messageID"], $this->maxID);
+                $this->maxID = max($mail['messageID'], $this->maxID);
                 $this->newestMailID = $this->maxID; //$mail["messageID"];
                 $updateMaxID = true;
 
                 // set the maxID
                 if ($updateMaxID) {
-                    setPermCache("newestCorpMailID", $this->maxID);
+                    setPermCache('newestCorpMailID', $this->maxID);
                 }
             }
         }
@@ -229,7 +229,7 @@ class evemails
      */
     function sortByDate($alpha, $bravo)
     {
-        return strcmp($alpha["sentDate"], $bravo["sentDate"]);
+        return strcmp($alpha['sentDate'], $bravo['sentDate']);
     }
 
     /**
@@ -245,9 +245,9 @@ class evemails
     function information()
     {
         return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
+            'name' => '',
+            'trigger' => array(''),
+            'information' => ''
         );
     }
 }

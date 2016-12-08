@@ -60,10 +60,10 @@ class periodicStatusCheck {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
-        $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
+        $this->guild = $config['bot']['guild'];
+        $this->toDiscordChannel = $config['plugins']['notifications']['channelID'];
         //Refresh check at bot start
-        setPermCache("statusLastChecked", time() - 5);
+        setPermCache('statusLastChecked', time() - 5);
     }
 
     /**
@@ -71,7 +71,7 @@ class periodicStatusCheck {
      */
     function tick()
     {
-        $lastChecked = getPermCache("statusLastChecked");
+        $lastChecked = getPermCache('statusLastChecked');
 
         if ($lastChecked <= time()) {
             $this->checkStatus();
@@ -83,59 +83,67 @@ class periodicStatusCheck {
         $discord = $this->discord;
 
         if ($this->toDiscordChannel == 0) {
-            setPermCache("statusLastChecked", time() + 300);
-            $this->logger->addInfo("statusCheck: TQ Status Check Failed - Add a channel ID to the notifications section in the config.");
+            setPermCache('statusLastChecked', time() + 300);
+            $this->logger->addInfo('statusCheck: TQ Status Check Failed - Add a channel ID to the notifications section in the config.');
             return null;
         }
         // What was the servers last reported state
-        $lastStatus = getPermCache("statusLastState");
+        $lastStatus = getPermCache('statusLastState');
 
         //api
-        $url = "https://api.eveonline.com/server/ServerStatus.xml.aspx";
+        $url = 'https://api.eveonline.com/server/ServerStatus.xml.aspx';
         $xml = makeApiRequest($url);
 
         //Crest
-        $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
-        $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
-        $tqOnline = (int) $crestData["userCount"];
+        $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
+        $crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
+        $tqOnline = (int)$crestData['userCount'];
 
         if (!isset($xml->result)) {
-            $this->logger->addInfo("statusCheck: TQ Status check canceled, API Error.");
-            setPermCache("statusLastChecked", time() + 300);
+            $this->logger->addInfo('statusCheck: TQ Status check canceled, API Error.');
+            setPermCache('statusLastChecked', time() + 300);
             return null;
         }
 
         foreach ($xml->result as $info) {
             $apiStatus = $info->serverOpen;
-            if ($apiStatus == "True") {$apiStatus = "online"; } else {$apiStatus = "offline"; }
+            if ($apiStatus == 'True') {
+                $apiStatus = 'online';
+            } else {
+                $apiStatus = 'offline';
+            }
         }
 
         if (!isset($apiStatus)) { // Make sure it's always set.
-            $apiStatus = "offline";
+            $apiStatus = 'offline';
         }
 
-        if ($crestStatus != "online") { $crestHolder = "offline"; } else { $crestHolder = "online"; }
+        if ($crestStatus != 'online') {
+            $crestHolder = 'offline';
+        } else {
+            $crestHolder = 'online';
+        }
         if ($crestHolder != $apiStatus) {
-            $this->logger->addInfo("statusCheck: TQ Status check canceled, CREST and API different.");
-            setPermCache("statusLastChecked", time() + 300);
+            $this->logger->addInfo('statusCheck: TQ Status check canceled, CREST and API different.');
+            setPermCache('statusLastChecked', time() + 300);
             return null;
         }
         if ($lastStatus == $crestStatus) {
             // No change
-            setPermCache("statusLastChecked", time() + 300);
+            setPermCache('statusLastChecked', time() + 300);
             return null;
         }
         $msg = "**TQ Status Change:** {$crestStatus} with {$tqOnline} users online.";
         $channelID = $this->toDiscordChannel;
         priorityQueueMessage($msg, $channelID, $this->guild);
-        setPermCache("statusLastState", $crestStatus);
-        if ($crestStatus == "online") {
-            setPermCache("serverState", $crestStatus);
-            setPermCache("statusLastChecked", time() + 300);
+        setPermCache('statusLastState', $crestStatus);
+        if ($crestStatus == 'online') {
+            setPermCache('serverState', $crestStatus);
+            setPermCache('statusLastChecked', time() + 300);
             $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");
             return null;
         }
-        setPermCache("statusLastChecked", time() + 90);
+        setPermCache('statusLastChecked', time() + 90);
         $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");
         return null;
     }
@@ -153,9 +161,9 @@ class periodicStatusCheck {
     function information()
     {
         return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
+            'name' => '',
+            'trigger' => array(''),
+            'information' => ''
         );
     }
 }

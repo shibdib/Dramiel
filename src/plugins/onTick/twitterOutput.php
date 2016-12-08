@@ -75,11 +75,11 @@ class twitterOutput
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
-        $this->twitter = new Twitter($config["twitter"]["consumerKey"], $config["twitter"]["consumerSecret"], $config["twitter"]["accessToken"], $config["twitter"]["accessTokenSecret"]);
+        $this->guild = $config['bot']['guild'];
+        $this->twitter = new Twitter($config['twitter']['consumerKey'], $config['twitter']['consumerSecret'], $config['twitter']['accessToken'], $config['twitter']['accessTokenSecret']);
         $this->lastCheck = time();
         $this->maxID = 0;
-        $this->channelID = $config["plugins"]["twitterOutput"]["channelID"]; // outputs to the news channel on the 4M server
+        $this->channelID = $config['plugins']['twitterOutput']['channelID']; // outputs to the news channel on the 4M server
     }
 
     /**
@@ -102,7 +102,7 @@ class twitterOutput
                     $postedBy = (array) $message->user->name;
                     $screenName = (array) $message->user->screen_name;
                     $id = (int) $message->id;
-                    $this->lastID = getPermCache("twitterLatestID"); // get the last posted ID
+                    $this->lastID = getPermCache('twitterLatestID'); // get the last posted ID
 
                     if ($id <= $this->lastID) {
                         continue;
@@ -110,15 +110,15 @@ class twitterOutput
 
                     $this->maxID = max($id, $this->maxID);
 
-                    $url = "https://twitter.com/" . $screenName[0] . "/status/" . $id;
-                    $message = array("message" => $text[0], "postedAt" => $createdAt[0], "postedBy" => $postedBy[0], "screenName" => $screenName[0], "url" => $url . $id[0]);
-                    $msg = "**@" . $screenName[0] . "** (" . $message["postedBy"] . ") / " . htmlspecialchars_decode($message["message"]);
+                    $url = 'https://twitter.com/' . $screenName[0] . '/status/' . $id;
+                    $message = array('message' => $text[0], 'postedAt' => $createdAt[0], 'postedBy' => $postedBy[0], 'screenName' => $screenName[0], 'url' => $url . $id[0]);
+                    $msg = '**@' . $screenName[0] . '** (' . $message['postedBy'] . ') / ' . htmlspecialchars_decode($message['message']);
                     $messages[$id] = $msg;
 
                     $continue = true;
 
-                    if (sizeof($data)) {
-                        setPermCache("twitterLatestID", $this->maxID);
+                    if (count($data)) {
+                        setPermCache('twitterLatestID', $this->maxID);
                     }
                 }
             } catch (Exception $e) {
@@ -132,7 +132,7 @@ class twitterOutput
                     // Send the tweets to the channel
                     $channelID = $this->channelID;
                     queueMessage($msg, $channelID, $this->guild);
-                    $this->logger->addInfo("twitterOutput: Tweet queued.");
+                    $this->logger->addInfo('twitterOutput: Tweet queued.');
                 }
             }
             $this->lastCheck = time() + 60;
@@ -145,7 +145,7 @@ class twitterOutput
      */
     function shortenUrl($url)
     {
-        return file_get_contents("http://is.gd/api.php?longurl=" . $url);
+        return file_get_contents('http://is.gd/api.php?longurl=' . $url);
     }
 
     function onMessage()
@@ -158,9 +158,9 @@ class twitterOutput
     function information()
     {
         return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
+            'name' => '',
+            'trigger' => array(''),
+            'information' => ''
         );
     }
 }
