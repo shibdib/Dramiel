@@ -86,7 +86,7 @@ class getLog
             $roles = $member->roles;
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
-                    $logType = (string)$data['messageString'];
+                    $logType = (string) $data['messageString'];
                     if ($logType == 'log') {
                         $filePath = __DIR__ . '/../../../log/dramielLog.log';
                     } elseif ($logType == 'error') {

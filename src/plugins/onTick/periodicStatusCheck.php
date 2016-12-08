@@ -97,7 +97,7 @@ class periodicStatusCheck {
         //Crest
         $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
         $crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
-        $tqOnline = (int)$crestData['userCount'];
+        $tqOnline = (int) $crestData['userCount'];
 
         if (!isset($xml->result)) {
             $this->logger->addInfo('statusCheck: TQ Status check canceled, API Error.');

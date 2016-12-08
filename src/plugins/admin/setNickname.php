@@ -87,7 +87,7 @@ class setNickname
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
                     $member = $guild->members->get('id', $botID);
-                    $nick = (string)$data['messageString'];
+                    $nick = (string) $data['messageString'];
                     $member->setNickname($nick);
 
                     $msg = "Bot nickname changed to **{$nick}** by {$msgData['message']['from']}";
