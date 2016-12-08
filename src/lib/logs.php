@@ -5,11 +5,14 @@
  * @link http://stackoverflow.com/a/15025877/995958
  * @license http://creativecommons.org/licenses/by/3.0/
  * @param string $filepath
+ * @param int $lines
+ * @param bool $adaptive
+ * @return string
  */
 function tailCustom($filepath, $lines = 1, $adaptive = true)
 {
     // Open file
-    $f = @fopen($filepath, "rb");
+    $f = @fopen($filepath, 'rb');
     if ($f === false) {
         return false;
     }
@@ -25,7 +28,7 @@ function tailCustom($filepath, $lines = 1, $adaptive = true)
     // Read it and adjust line number if necessary
     // (Otherwise the result would be wrong if file doesn't end with a blank line)
     if (fread($f, 1) != "\n") {
-        $lines -= 1;
+        --$lines;
     }
 
     // Start reading
@@ -54,5 +57,3 @@ function tailCustom($filepath, $lines = 1, $adaptive = true)
     fclose($f);
     return trim($output);
 }
-
-?>

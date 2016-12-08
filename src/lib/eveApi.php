@@ -41,7 +41,7 @@ function makeApiRequest($url)
         curl_setopt_array($ch, array(
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_SSL_VERIFYPEER => false, // Do not verify the SSL certificate
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
             CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
             CURLOPT_TIMEOUT => 15,
         ));
@@ -52,7 +52,7 @@ function makeApiRequest($url)
         // Return a new SimpleXMLElement based upon the received data
         return new SimpleXMLElement($data);
     } catch (Exception $e) {
-        $logger->error("EVE API Error: " . $e->getMessage());
+        $logger->error('EVE API Error: ' . $e->getMessage());
         return null;
     }
 }
@@ -67,28 +67,28 @@ function serverStatus()
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
-        $ch = curl_init("https://api.eveonline.com/server/ServerStatus.xml.aspx");
+        $ch = curl_init('https://api.eveonline.com/server/ServerStatus.xml.aspx');
         // Set the options for this request
         curl_setopt_array($ch, array(
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
             CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => false, // Do not verify the SSL certificate
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
         ));
         // Fetch the data from the URL
         $data = curl_exec($ch);
         // Close the connection
         curl_close($ch);
 
-        $true = "true";
+        $true = 'true';
         //If server is down return false
-        if ($data->serverOpen != "True") {
+        if ($data->serverOpen != 'True') {
             return FALSE;
         }
         //If server is up return true
         return $true;
     } catch (Exception $e) {
-        $logger->error("EVE API Error: " . $e->getMessage());
+        $logger->error('EVE API Error: ' . $e->getMessage());
         return null;
     }
 }
@@ -107,7 +107,7 @@ function apiCharacterName($typeID)
     }
 
     if (!isset($name)) { // Make sure it's always set.
-        $name = "Unknown";
+        $name = 'Unknown';
     }
 
     return $name;
@@ -127,7 +127,7 @@ function apiCharacterID($typeName)
     }
 
     if (!isset($ID)) { // Make sure it's always set.
-        $ID = "Unknown";
+        $ID = 'Unknown';
     }
 
     return $ID;
@@ -147,7 +147,7 @@ function apiTypeName($typeID)
     }
 
     if (!isset($name)) { // Make sure it's always set.
-        $name = "Unknown";
+        $name = 'Unknown';
     }
 
     return $name;
@@ -167,7 +167,7 @@ function apiTypeID($typeName)
     }
 
     if (!isset($ID)) { // Make sure it's always set.
-        $ID = "Unknown";
+        $ID = 'Unknown';
     }
 
     return $ID;

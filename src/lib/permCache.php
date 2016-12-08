@@ -30,7 +30,7 @@
  */
 function setPermCache($key, $value)
 {
-    dbExecute("REPLACE INTO storage (`key`, value) VALUES (:key, :value)", array(":key" => $key, ":value" => $value));
+    dbExecute('REPLACE INTO storage (`key`, value) VALUES (:key, :value)', array(':key' => $key, ':value' => $value));
 }
 
 /**
@@ -40,5 +40,5 @@ function setPermCache($key, $value)
  */
 function getPermCache($key)
 {
-    return dbQueryField("SELECT value FROM storage WHERE `key` = :key COLLATE NOCASE", "value", array(":key" => $key));
+    return dbQueryField('SELECT value FROM storage WHERE `key` = :key COLLATE NOCASE', 'value', array(':key' => $key));
 }

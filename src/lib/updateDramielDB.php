@@ -26,10 +26,10 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array("users", "usersSeen", "storage", "messageQueue", "renameQueue", "corpIDs");
+    $tables = array('users', 'usersSeen', 'storage', 'messageQueue', 'renameQueue', 'corpIDs');
 
     $tableCreateCode = array(
-        "users" => "
+        'users' => '
             BEGIN;
             CREATE TABLE IF NOT EXISTS `users` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,8 +46,8 @@ function updateDramielDB($logger)
             CREATE INDEX serverID ON users (serverID);
             CREATE INDEX corporationID ON users (corporationID);
             CREATE INDEX allianceID ON users (allianceID);
-            COMMIT;",
-        "usersSeen" => "
+            COMMIT;',
+        'usersSeen' => "
             BEGIN;
             CREATE TABLE IF NOT EXISTS `usersSeen` (
                 `id` INTEGER PRIMARY KEY,
@@ -60,7 +60,7 @@ function updateDramielDB($logger)
             );
             CREATE INDEX name ON usersSeen (name);
             COMMIT;",
-        "storage" => "
+        'storage' => '
             BEGIN;
             CREATE TABLE IF NOT EXISTS `storage` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,8 +68,8 @@ function updateDramielDB($logger)
                 `value` VARCHAR(255) NOT NULL
             );
             CREATE UNIQUE INDEX key ON storage (key);
-            COMMIT;",
-        "messageQueue" => "
+            COMMIT;',
+        'messageQueue' => '
             BEGIN;
             CREATE TABLE IF NOT EXISTS `messageQueue` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,8 +77,8 @@ function updateDramielDB($logger)
                 `channel` VARCHAR(255) NOT NULL,
                 `guild` VARCHAR(255) NOT NULL
             );
-            COMMIT;",
-        "renameQueue" => "
+            COMMIT;',
+        'renameQueue' => '
             BEGIN;
             CREATE TABLE IF NOT EXISTS `renameQueue` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,8 +86,8 @@ function updateDramielDB($logger)
                 `nick` VARCHAR(255) NOT NULL,
                 `guild` VARCHAR(255) NOT NULL
             );
-            COMMIT;",
-        "corpIDs" => "
+            COMMIT;',
+        'corpIDs' => '
             BEGIN;
             CREATE TABLE IF NOT EXISTS `corpIDs` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -95,17 +95,17 @@ function updateDramielDB($logger)
                 `corpTicker` VARCHAR(255) NOT NULL,
                 `corpName` VARCHAR(255) NOT NULL
             );
-            COMMIT;",
+            COMMIT;',
     );
 
     // Does the file exist?
-    if (!file_exists(__DIR__ . "/../../database/dramiel.sqlite")) {
-        touch(__DIR__ . "/../../database/dramiel.sqlite");
+    if (!file_exists(__DIR__ . '/../../database/dramiel.sqlite')) {
+        touch(__DIR__ . '/../../database/dramiel.sqlite');
     }
 
     // Create table if not exists
     foreach ($tables as $table) {
-        $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", "name", array(":name" => $table));
+        $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", 'name', array(':name' => $table));
         if (!$exists) {
             $logger->addInfo("Creating {$table} in dramiel.sqlite, since it does not exist");
             dbExecute(trim($tableCreateCode[$table]));

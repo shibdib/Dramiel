@@ -27,20 +27,18 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 /**
- * @param string|null $db
  * @return null|PDO
+ * @internal param null|string $db
  */
-function openDB($db = null)
+function openDB()
 {
     $logger = new Logger('Db');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
-    if ($db === null) {
-        $db = __DIR__ . "/../../database/dramiel.sqlite";
-    }
+    $db = __DIR__ . '/../../database/dramiel.sqlite';
 
     $dsn = "sqlite:$db";
     try {
-        $pdo = new PDO($dsn, "", "", array(
+        $pdo = new PDO($dsn, '', '', array(
                 PDO::ATTR_PERSISTENT => false,
                 PDO::ATTR_EMULATE_PREPARES => true,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -59,12 +57,12 @@ function openDB($db = null)
  * @param string $query
  * @param string $field
  * @param array $params
- * @param string $db
  * @return string
+ * @internal param string $db
  */
-function dbQueryField($query, $field, $params = array(), $db = null)
+function dbQueryField($query, $field, array $params = array())
 {
-    $pdo = openDB($db);
+    $pdo = openDB();
     if ($pdo == NULL) {
         return null;
     }
@@ -75,7 +73,7 @@ function dbQueryField($query, $field, $params = array(), $db = null)
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    if (sizeof($result) == 0) {
+    if (count($result) == 0) {
         return null;
     }
 
@@ -86,12 +84,12 @@ function dbQueryField($query, $field, $params = array(), $db = null)
 /**
  * @param string $query
  * @param array $params
- * @param string $db
  * @return null|void
+ * @internal param string $db
  */
-function dbQueryRow($query, $params = array(), $db = null)
+function dbQueryRow($query, array $params = array())
 {
-    $pdo = openDB($db);
+    $pdo = openDB();
     if ($pdo == NULL) {
         return null;
     }
@@ -102,7 +100,7 @@ function dbQueryRow($query, $params = array(), $db = null)
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    if (sizeof($result) >= 1) {
+    if (count($result) >= 1) {
         return $result[0];
     }
     return null;
@@ -111,12 +109,12 @@ function dbQueryRow($query, $params = array(), $db = null)
 /**
  * @param string $query
  * @param array $params
- * @param string $db
  * @return array|void
+ * @internal param string $db
  */
-function dbQuery($query, $params = array(), $db = null)
+function dbQuery($query, array $params = array())
 {
-    $pdo = openDB($db);
+    $pdo = openDB();
     if ($pdo == NULL) {
         return null;
     }
@@ -133,18 +131,18 @@ function dbQuery($query, $params = array(), $db = null)
 /**
  * @param string $query
  * @param array $params
- * @param string $db
+ * @internal param string $db
  */
-function dbExecute($query, $params = array(), $db = null)
+function dbExecute($query, array $params = array())
 {
-    $pdo = openDB($db);
+    $pdo = openDB();
     if ($pdo == NULL) {
         return;
     }
 
     // This is ugly, but, yeah..
-    if (stristr($query, ";")) {
-        $explodedQuery = explode(";", $query);
+    if (strstr($query, ';')) {
+        $explodedQuery = explode(';', $query);
         $stmt = null;
         foreach ($explodedQuery as $newQry) {
             $stmt = $pdo->prepare($newQry);

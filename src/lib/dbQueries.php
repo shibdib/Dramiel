@@ -33,59 +33,60 @@
 //MESSAGE QUEUE
 function queueMessage($message, $channel, $guild)
 {
-    dbExecute("REPLACE INTO messageQueue (`message`, `channel`, `guild`) VALUES (:message,:channel,:guild)", array(":message" => $message, ":channel" => $channel, ":guild" => $guild));
+    dbExecute('REPLACE INTO messageQueue (`message`, `channel`, `guild`) VALUES (:message,:channel,:guild)', array(':message' => $message, ':channel' => $channel, ':guild' => $guild));
+    return null;
 }
 
 function getQueuedMessage($id)
 {
-    return dbQueryRow("SELECT * FROM messageQueue WHERE `id` = :id", array(":id" => $id));
+    return dbQueryRow('SELECT * FROM messageQueue WHERE `id` = :id', array(':id' => $id));
 }
 
 function clearQueuedMessages($id)
 {
-    dbQueryRow("DELETE from messageQueue where id = :id", array(":id" => $id));
+    dbQueryRow('DELETE from messageQueue where id = :id', array(':id' => $id));
     return null;
 }
 
 function getOldestMessage()
 {
-    return dbQueryRow("SELECT MIN(id) from messageQueue");
+    return dbQueryRow('SELECT MIN(id) from messageQueue');
 }
 
 function priorityQueueMessage($message, $channel, $guild)
 {
     $currentOldest = getOldestMessage();
-    $id = $currentOldest["MIN(id)"] - 1;
-    dbExecute("REPLACE INTO messageQueue (`id`, `message`, `channel`, `guild`) VALUES (:id,:message,:channel,:guild)", array(":id" => $id, ":message" => $message, ":channel" => $channel, ":guild" => $guild));
+    $id = $currentOldest['MIN(id)'] - 1;
+    dbExecute('REPLACE INTO messageQueue (`id`, `message`, `channel`, `guild`) VALUES (:id,:message,:channel,:guild)', array(':id' => $id, ':message' => $message, ':channel' => $channel, ':guild' => $guild));
 }
 
 
 //RENAME QUEUE
 function queueRename($discordID, $nick, $guild)
 {
-    dbExecute("REPLACE INTO renameQueue (`discordID`, `nick`, `guild`) VALUES (:discordID,:nick,:guild)", array(":discordID" => $discordID, ":nick" => $nick, ":guild" => $guild));
+    dbExecute('REPLACE INTO renameQueue (`discordID`, `nick`, `guild`) VALUES (:discordID,:nick,:guild)', array(':discordID' => $discordID, ':nick' => $nick, ':guild' => $guild));
 }
 
 function getQueuedRename($id)
 {
-    return dbQueryRow("SELECT * FROM renameQueue WHERE `id` = :id", array(":id" => $id));
+    return dbQueryRow('SELECT * FROM renameQueue WHERE `id` = :id', array(':id' => $id));
 }
 
 function getOldestRename()
 {
-    return dbQueryRow("SELECT MIN(id) from renameQueue");
+    return dbQueryRow('SELECT MIN(id) from renameQueue');
 }
 
 function clearQueuedRename($id)
 {
-    dbQueryRow("DELETE from renameQueue where id = :id", array(":id" => $id));
+    dbQueryRow('DELETE from renameQueue where id = :id', array(':id' => $id));
     return null;
 }
 
 //
 function clearQueueCheck()
 {
-    $result = dbQueryRow("SELECT * FROM messageQueue");
+    $result = dbQueryRow('SELECT * FROM messageQueue');
     if ($result->num_rows > 35) {
         clearAllMessageQueue();
     }
@@ -95,17 +96,17 @@ function clearQueueCheck()
 //Clear Queue
 function clearAllMessageQueue()
 {
-    dbQueryRow("DELETE from messageQueue");
+    dbQueryRow('DELETE from messageQueue');
     return null;
 }
 
 //CORP INFO
 function addCorpInfo($corpID, $corpTicker, $corpName)
 {
-    dbExecute("REPLACE INTO corpIDs (`corpID`, `corpTicker`, `corpName`) VALUES (:corpID,:corpTicker,:corpName)", array(":corpID" => $corpID, ":corpTicker" => $corpTicker, ":corpName" => $corpName));
+    dbExecute('REPLACE INTO corpIDs (`corpID`, `corpTicker`, `corpName`) VALUES (:corpID,:corpTicker,:corpName)', array(':corpID' => $corpID, ':corpTicker' => $corpTicker, ':corpName' => $corpName));
 }
 
 function getCorpInfo($corpID)
 {
-    return dbQueryRow("SELECT * FROM corpIDs WHERE `corpID` = :corpID", array(":corpID" => $corpID));
+    return dbQueryRow('SELECT * FROM corpIDs WHERE `corpID` = :corpID', array(':corpID' => $corpID));
 }
