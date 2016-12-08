@@ -25,7 +25,7 @@
 
 // Require the vendor stuff
 /** @noinspection PhpIncludeInspection */
-require_once(__DIR__ . "/vendor/autoload.php");
+require_once __DIR__ . '/vendor/autoload.php';
 
 // Setup logger
 use Discord\Discord;
@@ -36,7 +36,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 // More memory allowance
-ini_set("memory_limit", "1024M");
+ini_set('memory_limit', '1024M');
 
 // Just in case we get launched from somewhere else
 chdir(__DIR__);
@@ -55,64 +55,64 @@ $logger->addInfo('Logger Initiated');
 GLOBAL $logger;
 
 // Require the config
-if (file_exists("config/config.php")) {
+if (file_exists('config/config.php')) {
     /** @noinspection PhpIncludeInspection */
-    require_once("config/config.php");
+    require_once 'config/config.php';
 } else {
-    $logger->error("config.php not found (you might wanna start by editing and renaming config_new.php)");
+    $logger->error('config.php not found (you might wanna start by editing and renaming config_new.php)');
     die();
 }
 
 // Load the library files (Probably a prettier way to do this that i haven't thought up yet)
-foreach (glob(__DIR__ . "/src/lib/*.php") as $lib) {
+foreach (glob(__DIR__ . '/src/lib/*.php') as $lib) {
     /** @noinspection PhpIncludeInspection */
-    require_once($lib);
+    require_once $lib;
 }
 
 //Startup DB Check
 updateDramielDB($logger);
 
 // Init Discord
-$discord = new Discord(["token" => $config["bot"]["token"]]);
+$discord = new Discord(['token' => $config['bot']['token']]);
 
 // Load tick plugins
-$pluginDirs = array("src/plugins/onTick/*.php");
-$logger->info("Loading background plugins");
+$pluginDirs = array('src/plugins/onTick/*.php');
+$logger->info('Loading background plugins');
 $plugins = array();
 foreach ($pluginDirs as $dir) {
     foreach (glob($dir) as $plugin) {
         // Only load the plugins we want to load, according to the config
-        if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"])) {
+        if (!in_array(str_replace('.php', '', basename($plugin)), $config['enabledPlugins'])) {
             continue;
         }
 
         /** @noinspection PhpIncludeInspection */
-        require_once($plugin);
-        $fileName = str_replace(".php", "", basename($plugin));
+        require_once $plugin;
+        $fileName = str_replace('.php', '', basename($plugin));
         $p = new $fileName();
         $p->init($config, $discord, $logger);
         $pluginsT[] = $p;
     }
 }
 // Number of plugins loaded
-$logger->info("Loaded: " . count($pluginsT) . " background plugins");
+$logger->info('Loaded: ' . count($pluginsT) . ' background plugins');
 
-if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode"])) {
+if ($config['bot']['silentMode'] == 'false' || !isset($config['bot']['silentMode'])) {
 // Load chat plugins
-    $pluginDirs = array("src/plugins/onMessage/*.php", "src/plugins/admin/*.php");
-    $adminPlugins = array("setNickname", "getLog", "setGame");
-    $logger->addInfo("Loading in chat plugins");
+    $pluginDirs = array('src/plugins/onMessage/*.php', 'src/plugins/admin/*.php');
+    $adminPlugins = array('setNickname', 'getLog', 'setGame');
+    $logger->addInfo('Loading in chat plugins');
     $plugins = array();
     foreach ($pluginDirs as $dir) {
         foreach (glob($dir) as $plugin) {
             // Only load the plugins we want to load, according to the config
-            if (!in_array(str_replace(".php", "", basename($plugin)), $config["enabledPlugins"]) && !in_array(str_replace(".php", "", basename($plugin)), $adminPlugins)) {
+            if (!in_array(str_replace('.php', '', basename($plugin)), $config['enabledPlugins']) && !in_array(str_replace('.php', '', basename($plugin)), $adminPlugins)) {
                 continue;
             }
 
             /** @noinspection PhpIncludeInspection */
-            require_once($plugin);
-            $fileName = str_replace(".php", "", basename($plugin));
+            require_once $plugin;
+            $fileName = str_replace('.php', '', basename($plugin));
             $p = new $fileName();
             $p->init($config, $discord, $logger);
             $plugins[] = $p;
@@ -120,17 +120,17 @@ if ($config["bot"]["silentMode"] == "false" || !isset($config["bot"]["silentMode
     }
 
 // Number of chat plugins loaded
-    $logger->addInfo("Loaded: " . count($plugins) . " chat plugins");
+    $logger->addInfo('Loaded: ' . count($plugins) . ' chat plugins');
 }
 
 // Clear queue at restart if it's too high
 clearQueueCheck();
 
 //Check initial server state (tick plugins will not run if eve is offline)
-$crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
-$crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
-setPermCache("serverState", $crestStatus);
-setPermCache("statusLastState", $crestStatus);
+$crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
+$crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
+setPermCache('serverState', $crestStatus);
+setPermCache('statusLastState', $crestStatus);
 $logger->addInfo("serverState: EVE is currently {$crestStatus}");
 
 $discord->on(
@@ -148,9 +148,9 @@ $discord->on(
 
 
         //Set Initial Game
-        $gameTitle = $config["bot"]["game"];
-        if (!is_null(getPermCache("botGame"))) {
-            $gameTitle = getPermCache("botGame");
+        $gameTitle = $config['bot']['game'];
+        if (null !== getPermCache('botGame')) {
+            $gameTitle = getPermCache('botGame');
         }
         $game = $discord->factory(Game::class, [
             'name' => $gameTitle,
@@ -159,9 +159,9 @@ $discord->on(
 
         // Server Status Check (tick plugins will not run if eve is offline)
         $discord->loop->addPeriodicTimer(60, function () use ($logger) {
-            $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
-            $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
-            setPermCache("serverState", $crestStatus);
+            $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
+            $crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
+            setPermCache('serverState', $crestStatus);
         });
 
         // Run the Tick plugins
@@ -176,21 +176,21 @@ $discord->on(
             $x = 0;
             while ($x < 3) {
                 $id = getOldestMessage();
-                $id = $id["MIN(id)"];
-                if (is_null($id)) {
+                $id = $id['MIN(id)'];
+                if (null === $id) {
                     $id = 1;
                 }
                 $queuedMessage = getQueuedMessage($id);
-                if (!is_null($queuedMessage)) {
+                if (null !== $queuedMessage) {
                     //Check if queued item is corrupt and delete it if it is
-                    if (is_null($queuedMessage['guild']) || is_null($queuedMessage['channel']) || is_null($queuedMessage['message'])) {
+                    if (null === $queuedMessage['guild'] || null === $queuedMessage['channel'] || null === $queuedMessage['message']) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
                         clearQueuedMessages($id);
                     }
                     $guild = $discord->guilds->get('id', $queuedMessage['guild']);
                     $channel = $guild->channels->get('id', $queuedMessage['channel']);
                     //Check if channel is bad
-                    if (is_null($channel) || is_null($guild)) {
+                    if (null === $channel || null === $guild) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
                         clearQueuedMessages($id);
                     }
@@ -207,19 +207,19 @@ $discord->on(
             $x = 0;
             while ($x < 4) {
                 $id = getOldestRename();
-                $id = $id["MIN(id)"];
-                if (is_null($id)) {
+                $id = $id['MIN(id)'];
+                if (null === $id) {
                     $id = 1;
                     $x = 4;
                 }
                 $queuedRename = getQueuedRename($id);
-                if (!is_null($queuedRename)) {
+                if (null !== $queuedRename) {
                     //Check if queued item is corrupt and delete it if it is
-                    if (is_null($queuedRename['guild']) || is_null($queuedRename['discordID'])) {
+                    if (null === $queuedRename['guild'] || null === $queuedRename['discordID']) {
                         clearQueuedRename($id);
                     }
                     $guild = $discord->guilds->get('id', $queuedRename['guild']);
-                    $member = $guild->members->get("id", $queuedRename['discordID']);
+                    $member = $guild->members->get('id', $queuedRename['discordID']);
                     $member->setNickname($queuedRename['nick']);
                     clearQueuedRename($id);
                 }
@@ -229,9 +229,9 @@ $discord->on(
 
         // Mem cleanup every 30 minutes
         $discord->loop->addPeriodicTimer(1800, function () use ($logger) {
-            $logger->addInfo("Memory in use: " . memory_get_usage() / 1024 / 1024 . "MB");
+            $logger->addInfo('Memory in use: ' . memory_get_usage() / 1024 / 1024 . 'MB');
             gc_collect_cycles(); // Collect garbage
-            $logger->addInfo("Memory in use after garbage collection: " . memory_get_usage() / 1024 / 1024 . "MB");
+            $logger->addInfo('Memory in use after garbage collection: ' . memory_get_usage() / 1024 / 1024 . 'MB');
         });
 
         $discord->on(
@@ -239,15 +239,15 @@ $discord->on(
             function ($message) use ($logger, $config, $plugins) {
 
                 $msgData = array(
-                    "message" => array(
-                        "timestamp" => $message->timestamp,
-                        "id" => $message->id,
-                        "message" => $message->content,
-                        "channelID" => $message->channel_id,
-                        "from" => $message->author->username,
-                        "fromID" => $message->author->id,
-                        "fromDiscriminator" => $message->author->discriminator,
-                        "fromAvatar" => $message->author->avatar
+                    'message' => array(
+                        'timestamp' => $message->timestamp,
+                        'id' => $message->id,
+                        'message' => $message->content,
+                        'channelID' => $message->channel_id,
+                        'from' => $message->author->username,
+                        'fromID' => $message->author->id,
+                        'fromDiscriminator' => $message->author->discriminator,
+                        'fromAvatar' => $message->author->avatar
                     )
                 );
 
@@ -257,12 +257,12 @@ $discord->on(
 
                 // Check for plugins
                 if (isset($message->content[0])) {
-                    if ($message->content[0] == $config["bot"]["trigger"]) {
+                    if ($message->content[0] == $config['bot']['trigger']) {
                         foreach ($plugins as $plugin) {
                             try {
                                 $plugin->onMessage($msgData, $message);
                             } catch (Exception $e) {
-                                $logger->addError("Error: " . $e->getMessage());
+                                $logger->addError('Error: ' . $e->getMessage());
                             }
                         }
                     }
