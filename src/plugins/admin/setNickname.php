@@ -71,33 +71,33 @@ class setNickname
     {
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
+        $message = $msgData['message']['message'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
 
             //Admin Check
             $botID = $this->discord->id;
-            $userID = $msgData["message"]["fromID"];
-            $adminRoles = $this->config["bot"]["adminRoles"];
-            $id = $this->config["bot"]["guild"];
+            $userID = $msgData['message']['fromID'];
+            $adminRoles = $this->config['bot']['adminRoles'];
+            $id = $this->config['bot']['guild'];
             $guild = $this->discord->guilds->get('id', $id);
-            $member = $guild->members->get("id", $userID);
+            $member = $guild->members->get('id', $userID);
             $roles = $member->roles;
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
-                    $member = $guild->members->get("id", $botID);
-                    $nick = (string) $data["messageString"];
+                    $member = $guild->members->get('id', $botID);
+                    $nick = (string)$data['messageString'];
                     $member->setNickname($nick);
 
-                    $msg = "Bot nickname changed to **{$nick}** by {$msgData["message"]["from"]}";
-                    $this->logger->addInfo("setNickname: Bot nickname changed to {$nick} by {$msgData["message"]["from"]}");
+                    $msg = "Bot nickname changed to **{$nick}** by {$msgData['message']['from']}";
+                    $this->logger->addInfo("setNickname: Bot nickname changed to {$nick} by {$msgData['message']['from']}");
                     $this->message->reply($msg);
                     return null;
                 }
             }
-            $this->logger->addInfo("setNickname: {$msgData["message"]["from"]} attempted to change the bot's nickname.");
-            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
+            $this->logger->addInfo("setNickname: {$msgData['message']['from']} attempted to change the bot's nickname.");
+            $msg = ':bangbang: You do not have the necessary roles to issue this command :bangbang:';
             $this->message->reply($msg);
             return null;
         }
@@ -110,9 +110,9 @@ class setNickname
     function information()
     {
         return array(
-            "name" => "nickname",
-            "trigger" => array($this->config["bot"]["trigger"] . "nickname"),
-            "information" => "Changes the bots nickname **(Admin Role Required)**"
+            'name' => 'nickname',
+            'trigger' => array($this->config['bot']['trigger'] . 'nickname'),
+            'information' => 'Changes the bots nickname **(Admin Role Required)**'
         );
     }
 

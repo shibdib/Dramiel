@@ -72,29 +72,29 @@ class getLog
     {
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
+        $message = $msgData['message']['message'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
 
             //Admin Check
-            $userID = $msgData["message"]["fromID"];
-            $adminRoles = $this->config["bot"]["adminRoles"];
-            $id = $this->config["bot"]["guild"];
+            $userID = $msgData['message']['fromID'];
+            $adminRoles = $this->config['bot']['adminRoles'];
+            $id = $this->config['bot']['guild'];
             $guild = $this->discord->guilds->get('id', $id);
-            $member = $guild->members->get("id", $userID);
+            $member = $guild->members->get('id', $userID);
             $roles = $member->roles;
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
-                    $logType = (string) $data["messageString"];
-                    if ($logType == "log") {
-                        $filePath = dirname(__FILE__) . "/../../../log/dramielLog.log";
-                    } elseif ($logType == "error") {
-                        $filePath = dirname(__FILE__) . "/../../../log/dramielError.log";
-                    } elseif ($logType == "other") {
-                        $filePath = dirname(__FILE__) . "/../../../log/dramielOther.log";
+                    $logType = (string)$data['messageString'];
+                    if ($logType == 'log') {
+                        $filePath = __DIR__ . '/../../../log/dramielLog.log';
+                    } elseif ($logType == 'error') {
+                        $filePath = __DIR__ . '/../../../log/dramielError.log';
+                    } elseif ($logType == 'other') {
+                        $filePath = __DIR__ . '/../../../log/dramielOther.log';
                     } else {
-                        $msg = "Incorrect log selected. Use either log, error, other";
+                        $msg = 'Incorrect log selected. Use either log, error, other';
                         $this->message->reply($msg);
                         return null;
                     }
@@ -104,7 +104,7 @@ class getLog
                     return null;
                 }
             }
-            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
+            $msg = ':bangbang: You do not have the necessary roles to issue this command :bangbang:';
             $this->message->reply($msg);
             return null;
         }
@@ -117,9 +117,9 @@ class getLog
     function information()
     {
         return array(
-            "name" => "log",
-            "trigger" => array($this->config["bot"]["trigger"] . "log"),
-            "information" => "Get the end of log files. Follow command with either log, error, other **(Admin Role Required)**"
+            'name' => 'log',
+            'trigger' => array($this->config['bot']['trigger'] . 'log'),
+            'information' => 'Get the end of log files. Follow command with either log, error, other **(Admin Role Required)**'
         );
     }
 

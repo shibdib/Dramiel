@@ -73,35 +73,35 @@ class setGame
     {
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
+        $message = $msgData['message']['message'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
 
             //Admin Check
-            $userID = $msgData["message"]["fromID"];
-            $adminRoles = $this->config["bot"]["adminRoles"];
-            $id = $this->config["bot"]["guild"];
+            $userID = $msgData['message']['fromID'];
+            $adminRoles = $this->config['bot']['adminRoles'];
+            $id = $this->config['bot']['guild'];
             $guild = $this->discord->guilds->get('id', $id);
-            $member = $guild->members->get("id", $userID);
+            $member = $guild->members->get('id', $userID);
             $roles = $member->roles;
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
-                    $newGame = (string) $data["messageString"];
+                    $newGame = (string)$data['messageString'];
                     $game = $this->discord->factory(Game::class, [
                         'name' => $newGame,
                     ]);
                     $this->discord->updatePresence($game);
-                    setPermCache("botGame", $newGame);
+                    setPermCache('botGame', $newGame);
 
                     $msg = "Bot is now playing **{$newGame}**";
-                    $this->logger->addInfo("setGame: Bot game changed to {$newGame} by {$msgData["message"]["from"]}");
+                    $this->logger->addInfo("setGame: Bot game changed to {$newGame} by {$msgData['message']['from']}");
                     $this->message->reply($msg);
                     return null;
                 }
             }
-            $this->logger->addInfo("setGame: {$msgData["message"]["from"]} attempted to change the bot's game.");
-            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
+            $this->logger->addInfo("setGame: {$msgData['message']['from']} attempted to change the bot's game.");
+            $msg = ':bangbang: You do not have the necessary roles to issue this command :bangbang:';
             $this->message->reply($msg);
             return null;
         }
@@ -114,9 +114,9 @@ class setGame
     function information()
     {
         return array(
-            "name" => "game",
-            "trigger" => array($this->config["bot"]["trigger"] . "game"),
-            "information" => "Changes the bots game **(Admin Role Required)**"
+            'name' => 'game',
+            'trigger' => array($this->config['bot']['trigger'] . 'game'),
+            'information' => 'Changes the bots game **(Admin Role Required)**'
         );
     }
 
