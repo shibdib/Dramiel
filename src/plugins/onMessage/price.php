@@ -65,7 +65,7 @@ class price
     {
         $this->message = $message;
         $user = $msgData['message']['from'];
-        $channelID = (int)$msgData['message']['channelID'];
+        $channelID = (int) $msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
         {
