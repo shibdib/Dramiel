@@ -427,6 +427,9 @@ class notifications
                         case 113: // Bounty
                             $msg = 'skip';
                             break;
+                        case 116: // Kill right
+                            $msg = 'skip';
+                            break;
                         case 128: // Corp App
                             $msg = 'skip';
                             break;
