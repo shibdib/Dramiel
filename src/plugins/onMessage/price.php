@@ -24,41 +24,26 @@
  */
 
 /**
- * Class priceChecks
- * @property  excludeChannel
- * @property  message
+ * Class price
  */
 class price
 {
     /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $solarSystems;
-    /**
      * @var array
      */
-    var $triggers = array();
-    public $excludeChannel;
-    public $message;
+    public $triggers = array();
+    private $excludeChannel;
+    private $message;
+    private $config;
+    private $discord;
+    private $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -72,19 +57,11 @@ class price
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
         $user = $msgData['message']['from'];
@@ -137,14 +114,14 @@ class price
                     $typeID = $single;
                 }
 
-                if ($systemName == 'pc') {
+                if ($systemName === 'pc') {
                     $solarSystemID = 'global';
                 } else {
                     $solarSystemID = apiCharacterID(urlencode($systemName));
                 }
 
                 // Get pricing data
-                if ($solarSystemID == 'global') {
+                if ($solarSystemID === 'global') {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?typeid={$typeID}"));
                 } else {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
@@ -158,7 +135,7 @@ class price
                 $highSell = number_format((float) $data->marketstat->type->sell->max, 2);
 
                 $this->logger->addInfo("Price: Sending pricing info to {$user}");
-                $solarSystemName = $systemName == 'pc' ? 'Global' : ucfirst($systemName);
+                $solarSystemName = $systemName === 'pc' ? 'Global' : ucfirst($systemName);
                 $messageData = "**System: {$solarSystemName}**
 **Buy:**
    Low: {$lowBuy}
@@ -179,7 +156,7 @@ class price
     /**
      * @return array
      */
-    function information()
+    private function information()
     {
         return array(
             'name' => 'pc',

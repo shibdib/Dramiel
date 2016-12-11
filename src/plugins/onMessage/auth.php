@@ -198,13 +198,13 @@ class auth
                                 }
                             }
                         }
-                        if ($allianceRoleSet == 1 || $corpRoleSet == 1) {
+                        if ($allianceRoleSet === 1 || $corpRoleSet === 1) {
                             $guild = $this->discord->guilds->get('id', $guildID);
                             insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'corp');
                             disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                             $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
                             $this->logger->addInfo("auth: {$eveName} authed");
-                            priorityQueueMessage($msg, $channelID, $this->guild);
+                            $this->message->reply($msg);
                             //Add ticker if set and change name if nameEnforce is on
                             if (isset($setTicker) || isset($nameEnforce)) {
                                 if (isset($setTicker) && isset($nameEnforce)) {
