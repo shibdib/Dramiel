@@ -30,121 +30,93 @@
  */
 class authCheck
 {
+
     /**
      * @var
      */
-    var $config;
-    /**
-     * @var
-     */
-    var $db;
-    var $dbUser;
-    var $dbPass;
-    var $dbName;
-    var $guildID;
-    var $corpTickers;
-    var $authGroups;
-    var $exempt;
-    var $alertChannel;
-    var $guild;
-    var $nameEnforce;
-    var $nameCheck;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $channelConfig;
-    /**
-     * @var int
-     */
-    var $lastCheck = 0;
-    /**
-     * @var
-     */
-    var $logger;
+    private $config;
+    private $db;
+    private $dbUser;
+    private $dbPass;
+    private $dbName;
+    private $guildID;
+    private $corpTickers;
+    private $authGroups;
+    private $exempt;
+    private $alertChannel;
+    private $guild;
+    private $nameEnforce;
+    private $nameCheck;
+    private $discord;
+    private $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->db = $config["database"]["host"];
-        $this->dbUser = $config["database"]["user"];
-        $this->dbPass = $config["database"]["pass"];
-        $this->dbName = $config["database"]["database"];
-        $this->guildID = $config["bot"]["guild"];
-        $this->exempt = $config["plugins"]["auth"]["exempt"];
-        $this->corpTickers = $config["plugins"]["auth"]["corpTickers"];
-        $this->nameEnforce = $config["plugins"]["auth"]["nameEnforce"];
-        $this->authGroups = $config["plugins"]["auth"]["authGroups"];
-        $this->alertChannel = $config["plugins"]["auth"]["alertChannel"];
-        $this->guild = $config["bot"]["guild"];
+        $this->db = $config['database']['host'];
+        $this->dbUser = $config['database']['user'];
+        $this->dbPass = $config['database']['pass'];
+        $this->dbName = $config['database']['database'];
+        $this->guildID = $config['bot']['guild'];
+        $this->exempt = $config['plugins']['auth']['exempt'];
+        $this->corpTickers = $config['plugins']['auth']['corpTickers'];
+        $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
+        $this->authGroups = $config['plugins']['auth']['authGroups'];
+        $this->alertChannel = $config['plugins']['auth']['alertChannel'];
+        $this->guild = $config['bot']['guild'];
         $this->nextCheck = 0;
 
         //Set name check to happen if corpTicker or nameEnforce is set
-        if ($this->nameEnforce == "true" || $this->corpTickers == "true") {
-            $this->nameCheck = "true";
+        if ($this->nameEnforce === 'true' || $this->corpTickers === 'true') {
+            $this->nameCheck = 'true';
         }
 
         //check if cache has been set
-        $permsChecked = getPermCache("permsLastChecked");
-        $namesChecked = getPermCache("nextRename");
-        if ($namesChecked == NULL) {
-            setPermCache("nextRename", time());
+        $permsChecked = getPermCache('permsLastChecked');
+        $namesChecked = getPermCache('nextRename');
+        if ($namesChecked === NULL) {
+            setPermCache('nextRename', time());
         }
 
         //if not set set for now (30 minutes from now for role removal)
-        if ($permsChecked == NULL) {
-            setPermCache("permsLastChecked", time() - 5);
-            setPermCache("authStateLastChecked", time() + 7200);
+        if ($permsChecked === NULL) {
+            setPermCache('permsLastChecked', time() - 5);
+            setPermCache('authStateLastChecked', time() + 7200);
         }
     }
 
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            "name" => "",
-            "trigger" => array(),
-            "information" => ""
-        );
-    }
-
-    function tick()
+    public function tick()
     {
         // What was the servers last reported state
-        $lastStatus = getPermCache("serverState");
-        if ($lastStatus == "online") {
-            $permsChecked = getPermCache("permsLastChecked");
-            $stateChecked = getPermCache("authStateLastChecked");
-            $namesChecked = getPermCache("nextRename");
+        $lastStatus = getPermCache('serverState');
+        if ($lastStatus === 'online') {
+            $permsChecked = getPermCache('permsLastChecked');
+            $stateChecked = getPermCache('authStateLastChecked');
+            $namesChecked = getPermCache('nextRename');
 
             if ($permsChecked <= time()) {
-                $this->logger->addInfo("AuthCheck: Checking for users who have left corp/alliance....");
+                $this->logger->addInfo('AuthCheck: Checking for users who have left corp/alliance....');
                 $this->checkPermissions();
-                $this->logger->addInfo("AuthCheck: Corp/alliance check complete.");
+                $this->logger->addInfo('AuthCheck: Corp/alliance check complete.');
             }
 
             if ($stateChecked <= time()) {
-                $this->logger->addInfo("AuthCheck: Checking for users who have been wrongly given roles....");
+                $this->logger->addInfo('AuthCheck: Checking for users who have been wrongly given roles....');
                 $this->checkAuthState();
-                $this->logger->addInfo("AuthCheck: Role check complete.");
+                $this->logger->addInfo('AuthCheck: Role check complete.');
             }
 
-            if ($this->nameCheck == "true" && $namesChecked <= time()) {
-                $this->logger->addInfo("AuthCheck: Resetting player names....");
+            if ($this->nameCheck === 'true' && $namesChecked <= time()) {
+                $this->logger->addInfo('AuthCheck: Resetting player names....');
                 $this->nameReset();
-                $this->logger->addInfo("AuthCheck: Names reset.");
+                $this->logger->addInfo('AuthCheck: Names reset.');
             }
         }
     }
@@ -154,7 +126,7 @@ class authCheck
      */
 
     //Remove members who have roles but never authed
-    function checkPermissions()
+    private function checkPermissions()
     {
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
@@ -171,21 +143,21 @@ class authCheck
         $allianceArray = array();
 
         // If config is outdated
-        if (is_null($this->authGroups)) {
-            $msg = "**Auth Failure:** Please update the bots config to the latest version.";
+        if (null === $this->authGroups) {
+            $msg = '**Auth Failure:** Please update the bots config to the latest version.';
             queueMessage($msg, $this->alertChannel, $this->guild);
             $nextCheck = time() + 10800;
-            setPermCache("permsLastChecked", $nextCheck);
+            setPermCache('permsLastChecked', $nextCheck);
             return null;
         }
 
         //Set corp/ally id arrays
         foreach ($this->authGroups as $authGroup) {
-            if ($authGroup["corpID"] != 0) {
-                array_push($corpArray, (int) $authGroup["corpID"]);
+            if ($authGroup['corpID'] !== 0) {
+                $corpArray[] = (int)$authGroup['corpID'];
             }
-            if ($authGroup["allianceID"] != 0) {
-                array_push($allianceArray, (int) $authGroup["allianceID"]);
+            if ($authGroup['allianceID'] !== 0) {
+                $allianceArray[] = (int)$authGroup['allianceID'];
             }
         }
 
@@ -193,10 +165,10 @@ class authCheck
             while ($rows = $result->fetch_assoc()) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
-                $member = $guild->members->get("id", $discordID);
+                $member = $guild->members->get('id', $discordID);
                 $eveName = $rows['eveName'];
                 //Check if member has roles
-                if (is_null($member->roles)) {
+                if (null === @$member->roles) {
                     continue;
                 }
 
@@ -204,7 +176,7 @@ class authCheck
                 $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                 $xml = makeApiRequest($url);
                 // Stop the process if the api is throwing an error
-                if (is_null($xml)) {
+                if (null === $xml) {
                     $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
                     return null;
                 }
@@ -223,32 +195,32 @@ class authCheck
                 }
             }
             $nextCheck = time() + 10800;
-            setPermCache("permsLastChecked", $nextCheck);
+            setPermCache('permsLastChecked', $nextCheck);
             return null;
         }
         $nextCheck = time() + 10800;
-        setPermCache("permsLastChecked", $nextCheck);
+        setPermCache('permsLastChecked', $nextCheck);
         return null;
     }
 
     //Check user corp/alliance affiliation
 
 
-    function checkAuthState()
+    private function checkAuthState()
     {
 
         //Check if exempt roles are set
-        if (is_null($this->exempt)) {
-            $this->exempt = "0";
+        if (null === $this->exempt) {
+            $this->exempt = '0';
         }
 
         // If config is outdated
-        if (is_null($this->authGroups)) {
-            $msg = "**Auth Failure:** Please update the bots config to the latest version.";
+        if (null === $this->authGroups) {
+            $msg = '**Auth Failure:** Please update the bots config to the latest version.';
             queueMessage($msg, $this->alertChannel, $this->guild);
             //queue up next check
             $nextCheck = time() + 1800;
-            setPermCache("authStateLastChecked", $nextCheck);
+            setPermCache('authStateLastChecked', $nextCheck);
             return null;
         }
 
@@ -262,10 +234,10 @@ class authCheck
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
         //Check to make sure guildID is set correctly
-        if (is_null($guild)) {
-            $this->logger->addError("Config Error: Ensure the guild entry in the config is the guildID (aka serverID) for the main server that the bot is in.");
+        if (null === $guild) {
+            $this->logger->addError('Config Error: Ensure the guild entry in the config is the guildID (aka serverID) for the main server that the bot is in.');
             $nextCheck = time() + 7200;
-            setPermCache("authLastChecked", $nextCheck);
+            setPermCache('authLastChecked', $nextCheck);
             return null;
         }
 
@@ -280,47 +252,47 @@ class authCheck
             $roles = $member->roles;
 
             //Skip to next member if this user has no roles
-            if (is_null($roles)) {
+            if (null === $roles) {
                 continue;
             }
             $sql = "SELECT * FROM authUsers WHERE discordID='$id' AND active='yes'";
             $result = $conn->query($sql);
 
             //If they are NOT active in the db, check for roles to remove
-            if ($result->num_rows == 0) {
+            if ($result->num_rows === 0) {
                 $userCount++;
                 foreach ($roles as $role) {
                     if (!isset($role->name)) {
-                        if ($id != $botID && !in_array($role->name, $this->exempt, true)) {
+                        if ($id !== $botID && !in_array($role->name, $this->exempt, true)) {
                             $member->removeRole($role);
                             $guild->members->save($member);
                             // Add users name to array
-                            array_push($removedRoles, $username);
+                            $removedRoles[] = $username;
                         }
                     }
                 }
             }
         }
         //Report removed users to log and channel
-        $nameList = implode(", ", $removedRoles);
-        if ($userCount > 0 && strlen($nameList) > 3 && !is_null($nameList)) {
+        $nameList = implode(', ', $removedRoles);
+        if ($userCount > 0 && strlen($nameList) > 3 && null !== $nameList) {
             $msg = "Following users roles have been removed - {$nameList}";
             queueMessage($msg, $this->alertChannel, $this->guild);
             $this->logger->addInfo("AuthCheck: Roles removed from {$nameList}");
         }
         //queue up next check
         $nextCheck = time() + 1800;
-        setPermCache("authStateLastChecked", $nextCheck);
+        setPermCache('authStateLastChecked', $nextCheck);
         return null;
     }
 
-    function nameReset()
+    private function nameReset()
     {
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
         //Get name queue status
-        $x = (int) getPermCache("nameQueueState");
+        $x = (int)getPermCache('nameQueueState');
 
         //Establish connection to mysql
         $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
@@ -329,60 +301,60 @@ class authCheck
         $rowAmount = $count->num_rows / 2;
         if ($x == 1) {
             $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$rowAmount} OFFSET {$rowAmount}";
-            setPermCache("nameQueueState", 0);
+            setPermCache('nameQueueState', 0);
         } else {
             $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$rowAmount}";
-            setPermCache("nameQueueState", 1);
+            setPermCache('nameQueueState', 1);
         }
         $result = $conn->query($sql);
 
         // If config is outdated
-        if (is_null($this->authGroups)) {
-            $msg = "**Auth Failure:** Please update the bots config to the latest version.";
+        if (null === $this->authGroups) {
+            $msg = '**Auth Failure:** Please update the bots config to the latest version.';
             queueMessage($msg, $this->alertChannel, $this->guild);
             $nextCheck = time() + 1800;
-            setPermCache("nextRename", $nextCheck);
+            setPermCache('nextRename', $nextCheck);
             return null;
         }
 
-        if ($result->num_rows >= 1) {
+        if (@$result->num_rows >= 1) {
             while ($rows = $result->fetch_assoc()) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
-                $member = $guild->members->get("id", $discordID);
+                $member = $guild->members->get('id', $discordID);
                 $eveName = $rows['eveName'];
                 //Check if member has roles
-                if (is_null($member->roles)) {
+                if (null === $member->roles) {
                     continue;
                 }
 
                 //Get current nickname
                 $guild = $this->discord->guilds->get('id', $this->guildID);
-                $member = $guild->members->get("id", $discordID);
+                $member = $guild->members->get('id', $discordID);
                 $nickName = $member->nick;
                 $userName = $member->user->username;
                 //If nick isn't set than make it username
-                if ($nickName == "" || is_null($nickName)) {
+                if ($nickName == '' || null === $nickName) {
                     $nickName = $userName;
                 }
 
                 //Get ingame affiliations
-                if ($this->corpTickers == "true") {
+                if ($this->corpTickers === 'true') {
                     $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
                     $xml = makeApiRequest($url);
                     // Stop the process if the api is throwing an error
-                    if (is_null($xml)) {
+                    if (null === $xml) {
                         $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
                         return null;
                     }
                     if ($xml->result->rowset->row[0]) {
                         foreach ($xml->result->rowset->row as $character) {
                             $corpInfo = getCorpInfo($character->attributes()->corporationID);
-                            if (!is_null($corpInfo)) {
-                                $corpTicker = $corpInfo['corpTicker'];
-                                if ($this->nameEnforce == "true") {
+                            if (null !== $corpInfo) {
+                                $corpTicker = (string)$corpInfo['corpTicker'];
+                                if ($this->nameEnforce === 'true') {
                                     $nick = "[{$corpTicker}] {$eveName}";
-                                } elseif ($nickName == "[{$corpTicker}]") {
+                                } elseif ((string)$nickName === "[{$corpTicker}]") {
                                     $nick = "[{$corpTicker}] {$userName}";
                                 } elseif (strpos($nickName, $corpTicker) == false) {
                                     $nick = "[{$corpTicker}] {$nickName}";
@@ -397,15 +369,15 @@ class authCheck
                             }
                             $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
                             $xml = makeApiRequest($url);
-                            $corpTicker = "";
-                            $corpName = "";
+                            $corpTicker = '';
+                            $corpName = '';
                             foreach ($xml->result as $corporation) {
                                 $corpTicker = $corporation->ticker;
                                 $corpName = $corporation->corporationName;
                             }
-                            if ($this->nameEnforce == "true") {
+                            if ($this->nameEnforce === 'true') {
                                 $nick = "[{$corpTicker}] {$eveName}";
-                            } elseif ($nickName == "[{$corpTicker}]") {
+                            } elseif ((string)$nickName === "[{$corpTicker}]") {
                                 $nick = "[{$corpTicker}] {$userName}";
                             } elseif (strpos($nickName, $corpTicker) == false) {
                                 $nick = "[{$corpTicker}] {$nickName}";
@@ -413,7 +385,7 @@ class authCheck
                                 $nick = "{$nickName}";
                                 continue;
                             }
-                            if ($nick != $nickName) {
+                            if ($nick !== $nickName) {
                                 queueRename($discordID, $nick, $this->guildID);
                             }
                             addCorpInfo($character->attributes()->corporationID, $corpTicker, $corpName);
@@ -422,17 +394,17 @@ class authCheck
                     }
                 }
                 $nick = "{$eveName}";
-                if ($nick != $nickName && $this->corpTickers != "true") {
+                if ($nick !== $nickName && $this->corpTickers !== 'true') {
                     queueRename($discordID, $nick, $this->guildID);
                 }
                 continue;
             }
             $nextCheck = time() + 1800;
-            setPermCache("nextRename", $nextCheck);
+            setPermCache('nextRename', $nextCheck);
             return null;
         }
         $nextCheck = time() + 1800;
-        setPermCache("nextRename", $nextCheck);
+        setPermCache('nextRename', $nextCheck);
         return null;
 
     }
