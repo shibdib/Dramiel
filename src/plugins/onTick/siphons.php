@@ -68,7 +68,7 @@ class siphons
     public function tick()
     {
         // If config is outdated
-        if (is_null($this->groupConfig)) {
+        if (null === $this->groupConfig) {
             $this->logger->addInfo('Siphons: Update your config file to the latest version.');
             $msg = '**Siphon Failure:** Please update the bots config to the latest version.';
             queueMessage($msg, $this->config['notifications']['channelID'], $this->guild);
