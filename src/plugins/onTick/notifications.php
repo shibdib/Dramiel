@@ -111,7 +111,7 @@ class notifications
         $this->guild = $config['bot']['guild'];
 
         //check if allianceOnly is set
-        if (is_null($this->allianceOnly)) {
+        if (null === $this->allianceOnly) {
             $this->allianceOnly = 'false';
         }
 

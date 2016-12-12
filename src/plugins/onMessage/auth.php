@@ -176,8 +176,8 @@ class auth
                 $corpRoleSet = 0;
 
                 foreach ($xmlCharacter->result->rowset->row as $character) {
-                    $roles = $this->message->channel->guild->roles;
-                    $member = $this->message->channel->guild->members->get('id', $userID);
+                    $roles = @$this->message->channel->guild->roles;
+                    $member = @$this->message->channel->guild->members->get('id', $userID);
                     $eveName = $character->attributes()->name;
                     foreach ($this->authGroups as $authGroup) {
                         //Check if corpID matches

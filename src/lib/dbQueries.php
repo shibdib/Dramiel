@@ -87,7 +87,7 @@ function clearQueuedRename($id)
 function clearQueueCheck()
 {
     $result = dbQueryRow('SELECT * FROM messageQueue');
-    if ($result->num_rows > 35) {
+    if (@$result->num_rows > 35) {
         clearAllMessageQueue();
     }
     return null;

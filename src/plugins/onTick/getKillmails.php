@@ -96,7 +96,7 @@ class getKillmails
             $lastChecked = getPermCache('killmailCheck');
             if ($lastChecked <= time()) {
                 //check if user is still using the old config
-                if (is_null($this->groupConfig)) {
+                if (null === $this->groupConfig) {
                     $this->logger->addError('Killmails: UPDATE YOUR CONFIG TO RECEIVE KILLMAILS');
                     setPermCache('killmailCheck', time() + 600);
                     return null;
@@ -117,7 +117,7 @@ class getKillmails
         foreach ($this->groupConfig as $kmGroup) {
             $killID = getPermCache("{$kmGroup['name']}newestKillmailID");
             //check if start id is greater than current id and if it is set
-            if ($kmGroup['startMail'] > $killID || is_null($killID)) {
+            if ($kmGroup['startMail'] > $killID || null === $killID) {
                 $killID = $kmGroup['startMail'];
             }
             if ($kmGroup['allianceID'] == '0' & $kmGroup['lossMails'] == 'true') {
@@ -144,7 +144,7 @@ class getKillmails
                 foreach ($kills as $kill) {
                     if ($i < 10) {
                         //if big kill isn't set, disable it
-                        if (is_null($kmGroup['bigKill'])) {
+                        if (null === $kmGroup['bigKill']) {
                             $kmGroup['bigKill'] = 99999999999999999999999999;
                         }
                         $killID = $kill['killID'];
@@ -203,7 +203,7 @@ class getKillmails
     function getBigKM()
     {
         $killID = getPermCache('bigKillNewestKillmailID');
-        if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || is_null($killID)) {
+        if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID) {
             $killID = $this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'];
         }
 

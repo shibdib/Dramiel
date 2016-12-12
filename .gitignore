@@ -1,4 +1,2 @@
 *.xml
-*.log
 database/
-config/config.php

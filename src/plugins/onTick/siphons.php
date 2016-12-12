@@ -30,30 +30,30 @@ use discord\discord;
  */
 class siphons
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $groupConfig;
     public $guild;
+    /**
+     * @var
+     */
+    private $config;
+    /**
+     * @var
+     */
+    private $discord;
+    /**
+     * @var
+     */
+    private $logger;
+    /**
+     * @var
+     */
+    private $groupConfig;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -65,10 +65,10 @@ class siphons
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         // If config is outdated
-        if (is_null($this->groupConfig)) {
+        if (null === $this->groupConfig) {
             $this->logger->addInfo('Siphons: Update your config file to the latest version.');
             $msg = '**Siphon Failure:** Please update the bots config to the latest version.';
             queueMessage($msg, $this->config['notifications']['channelID'], $this->guild);
@@ -76,14 +76,14 @@ class siphons
 
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
-        if ($lastStatus == 'online') {
+        if ($lastStatus === 'online') {
             foreach ($this->groupConfig as $siphonCorp) {
                 //If group channel is set to 0 skip
-                if ($siphonCorp['channelID'] == 0) {
+                if ($siphonCorp['channelID'] === 0) {
                     continue;
                 }
                 $lastChecked = getPermCache("siphonLastChecked{$siphonCorp['keyID']}");
-                if ($lastChecked == NULL) {
+                if ($lastChecked === NULL) {
                     // Schedule it for right now if first run
                     $lastChecked = 1;
                 }
@@ -96,11 +96,11 @@ class siphons
         }
     }
 
-    function checkTowers()
+    private function checkTowers()
     {
         foreach ($this->groupConfig as $siphonCorp) {
             //If group channel is set to 0 skip
-            if ($siphonCorp['channelID'] == 0) {
+            if ($siphonCorp['channelID'] === 0) {
                 continue;
             }
             $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$siphonCorp['keyID']}&vCode={$siphonCorp['vCode']}";
@@ -108,11 +108,11 @@ class siphons
             $rawGoo = array(16634, 16643, 16647, 16641, 16640, 16635, 16648, 16633, 16646, 16651, 16650, 16644, 16652, 16639, 16636, 16649, 16653, 16638, 16637, 16642);
             foreach ($xml->result->rowset->row as $structures) {
                 //Check silos
-                if ($structures->attributes()->typeID == 14343) {
+                if ($structures->attributes()->typeID === 14343) {
                     if (isset($structures->rowset->row)) {
                         foreach ($structures->rowset->row as $silo) {
                             //Avoid reporting empty silos
-                            if ($silo->attributes()->quantity != 0 && in_array($silo->attributes()->typeID, $rawGoo)) {
+                            if ($silo->attributes()->quantity !== 0 && in_array($silo->attributes()->typeID, $rawGoo)) {
                                 $siloID = $structures->attributes()->itemID;
                                 $lastAmount = getPermCache("silo{$siloID}Amount");
                                 $gooAmount = $silo->attributes()->quantity;
@@ -123,7 +123,7 @@ class siphons
                                     continue;
                                 }
                                 //Check for a multiple of 50 in the difference
-                                if ($gooDifference % 50 != 0) {
+                                if ($gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($silo->attributes()->typeID);
                                     $systemName = apiCharacterName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
@@ -140,11 +140,11 @@ class siphons
                         }
                     }
                 }
-                if ($structures->attributes()->typeID == 17982) {
+                if ($structures->attributes()->typeID === 17982) {
                     if (isset($structures->rowset->row)) {
                         foreach ($structures->rowset->row as $coupling) {
                             //Avoid reporting empty coupling arrays
-                            if ($coupling->attributes()->quantity != 0 && in_array($coupling->attributes()->typeID, $rawGoo)) {
+                            if ($coupling->attributes()->quantity !== 0 && in_array($coupling->attributes()->typeID, $rawGoo)) {
                                 $couplingID = $structures->attributes()->itemID;
                                 $lastAmount = getPermCache("couplingArray{$couplingID}Amount");
                                 $gooAmount = $coupling->attributes()->quantity;
@@ -155,7 +155,7 @@ class siphons
                                     continue;
                                 }
                                 //Check for a multiple of 50 in the difference
-                                if ($gooDifference % 50 != 0) {
+                                if ($gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($coupling->attributes()->typeID);
                                     $systemName = apiCharacterName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
