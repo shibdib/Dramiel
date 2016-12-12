@@ -228,7 +228,7 @@ class auth
                 }
             }
             $this->message->reply('**Failure:** There was an issue with your code.');
-            $this->logger->addInfo('Auth: User was denied due to not being in the correct corp or alliance ' . $userName);
+            $this->logger->addInfo('Auth: User was denied due to the code being invalid ' . $userName);
             return null;
         }
         return null;
