@@ -194,7 +194,7 @@ $discord->on(
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
                         clearQueuedMessages($id);
                     }
-                    $logger->addInfo("QueueProcessing - Completing queued item #{$id} : {$queuedMessage['message']}");
+                    $logger->addInfo("QueueProcessing - Completing queued item #{$id}");
                     $channel->sendMessage($queuedMessage['message'], false);
                     clearQueuedMessages($id);
                 }

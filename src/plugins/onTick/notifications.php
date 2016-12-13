@@ -564,7 +564,7 @@ class notifications
                     if ($msg == 'skip') {
                         return null;
                     }
-                    $this->logger->addInfo("Notifications: Notification queued, Message - {$msg}");
+                    $this->logger->addInfo('Notifications: Notification queued');
                     priorityQueueMessage($msg, $channelID, $this->guild);
                     // Find the maxID so we don't output this message again in the future
                     $this->maxID = max($notificationID, $this->maxID);

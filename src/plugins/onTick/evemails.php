@@ -203,7 +203,7 @@ class evemails
                 // Send the mails to the channel
                 $channelID = $this->toDiscordChannel;
                 queueMessage($msg, $channelID, $this->guild);
-                $this->logger->addInfo("Mails: New mail queued - $msg");
+                $this->logger->addInfo('Mails: New mail queued');
                 if (strlen($content) > 1850) {
                     queueMessage($msgLong, $channelID, $this->guild);
                 }
