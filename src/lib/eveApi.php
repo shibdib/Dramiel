@@ -178,7 +178,7 @@ function corpID($corpName)
     $url = "https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $id = (int)$data['character'][0];
+    $id = (int)$data['corporation'][0];
 
     if (null === $id) { // Make sure it's always set.
         $id = 'Unknown';
