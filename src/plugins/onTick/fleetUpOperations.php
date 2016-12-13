@@ -73,7 +73,7 @@ class fleetUpOperations
         $this->apiKey = $config['plugins']['fleetUp']['apiKey'];
         $this->guild = $config['bot']['guild'];
         $lastCheck = getPermCache('fleetUpPostLastChecked');
-        if ($lastCheck == NULL) {
+        if ($lastCheck === NULL) {
             // Schedule it for right now if first run
             setPermCache('fleetUpPostLastChecked', time() - 5);
         }
@@ -126,7 +126,7 @@ Link - {$link}";
                     $channelID = $this->toDiscordChannel;
                     priorityQueueMessage($msg, $channelID, $this->guild);
                     setPermCache('fleetUpLastPostedOperation', $id);
-                    $this->logger->addInfo("FleetUp: Upcoming Operation Queued for Posting - {$name}");
+                    $this->logger->addInfo('FleetUp: Upcoming Operation Queued for Posting');
                 }
             }
         }
@@ -169,11 +169,11 @@ Details - {$info}
 Link - {$link}";
                     $channelID = $this->toDiscordChannel;
                     queueMessage($msg, $channelID, $this->guild);
-                    $this->logger->addInfo("FleetUp: Newest FleetUp operation queued for posting - {$name}");
+                    $this->logger->addInfo('FleetUp: Newest FleetUp operation queued for posting');
                 }
                 if ($id > $currentID) {
                     setPermCache('fleetUpLastOperation', $id);
-                    $this->logger->addInfo("FleetUp: Newest FleetUp operation - {$name}");
+                    $this->logger->addInfo('FleetUp: Newest FleetUp operation');
                 }
             }
             setPermCache('fleetUpLastChecked', time() + 300);

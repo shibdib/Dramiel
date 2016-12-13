@@ -129,7 +129,7 @@ class fileReader
                     $message = 'skip';
                 }
                 if ($message != 'skip') {
-                    $this->logger->addInfo("fileReader: Ping sent to front of queue for {$channelID}, Message - {$message}");
+                    $this->logger->addInfo("fileReader: Ping sent to front of queue for {$channelID}");
                     priorityQueueMessage($message, $channelID, $this->guild);
                 }
             }
