@@ -94,7 +94,7 @@ class corpInfo
             $msg = "```Corp Name: {$corporationName}
 Corp Ticker: {$corpTicker}
 CEO: {$ceoName}
-Alliance Name: {$allianceName}=
+Alliance Name: {$allianceName}
 Member Count: {$memberCount}
 ```
 For more info, visit: $url";
