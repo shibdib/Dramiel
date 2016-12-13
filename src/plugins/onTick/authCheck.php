@@ -184,7 +184,7 @@ class authCheck
                 //Auth things
                 if ($xml->result->rowset->row[0]) {
                     foreach ($xml->result->rowset->row as $character) {
-                        if (!in_array((int) $character->attributes()->allianceID, $allianceArray) && !in_array((int) $character->attributes()->corporationID, $corpArray)) {
+                        if (!in_array((int)$character->attributes()->allianceID, $allianceArray) && !in_array((int)$character->attributes()->corporationID, $corpArray)) {
                             // Deactivate user in database
                             $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                             $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
@@ -262,13 +262,11 @@ class authCheck
             if ($result->num_rows === 0) {
                 $userCount++;
                 foreach ($roles as $role) {
-                    if (!isset($role->name)) {
-                        if ($id !== $botID && !in_array($role->name, $this->exempt, true)) {
-                            $member->removeRole($role);
-                            $guild->members->save($member);
-                            // Add users name to array
-                            $removedRoles[] = $username;
-                        }
+                    if ($id !== $botID && !in_array($role->name, $this->exempt, true)) {
+                        $member->removeRole($role);
+                        $guild->members->save($member);
+                        // Add users name to array
+                        $removedRoles[] = $username;
                     }
                 }
             }
@@ -324,7 +322,7 @@ class authCheck
                 $member = $guild->members->get('id', $discordID);
                 $eveName = $rows['eveName'];
                 //Check if member has roles
-                if (null === $member->roles) {
+                if (null === @$member->roles) {
                     continue;
                 }
 

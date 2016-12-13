@@ -32,16 +32,9 @@ class getLog
     /**
      * @var
      */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-
+    public $config;
+    public $discord;
+    public $logger;
     public $message;
 
     /**
@@ -49,7 +42,7 @@ class getLog
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -57,18 +50,11 @@ class getLog
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
 
@@ -87,20 +73,24 @@ class getLog
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
                     $logType = (string) $data['messageString'];
-                    if ($logType == 'log') {
+                    if ($logType === 'log') {
                         $filePath = __DIR__ . '/../../../log/dramielLog.log';
-                    } elseif ($logType == 'error') {
+                        $title = "dramielLog - from userID {$userID}";
+                    } elseif ($logType === 'error') {
                         $filePath = __DIR__ . '/../../../log/dramielError.log';
-                    } elseif ($logType == 'other') {
+                        $title = "dramielError - from userID {$userID}";
+                    } elseif ($logType === 'other') {
                         $filePath = __DIR__ . '/../../../log/dramielOther.log';
+                        $title = "dramielOther - from userID {$userID}";
                     } else {
                         $msg = 'Incorrect log selected. Use either log, error, other';
                         $this->message->reply($msg);
                         return null;
                     }
-                    $logContents = tailCustom($filePath, 10);
+                    $logContents = tailCustom($filePath, 100);
+                    $pasteURL = pasteLog($logContents, $title);
 
-                    $this->message->reply($logContents);
+                    $this->message->reply($pasteURL);
                     return null;
                 }
             }
@@ -114,12 +104,12 @@ class getLog
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'log',
             'trigger' => array($this->config['bot']['trigger'] . 'log'),
-            'information' => 'Get the end of log files. Follow command with either log, error, other **(Admin Role Required)**'
+            'information' => 'Get a pastebin of the last 100 lines of your log files. Follow command with either log, error, other **(Admin Role Required)**'
         );
     }
 
