@@ -322,7 +322,7 @@ class authCheck
                 $member = $guild->members->get('id', $discordID);
                 $eveName = $rows['eveName'];
                 //Check if member has roles
-                if (null === $member->roles) {
+                if (null === @$member->roles) {
                     continue;
                 }
 
