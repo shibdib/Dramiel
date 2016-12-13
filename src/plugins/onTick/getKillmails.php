@@ -61,7 +61,7 @@ class getKillmails
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
-        if ($lastStatus == 'online') {
+        if ($lastStatus === 'online') {
             $lastChecked = getPermCache('killmailCheck');
             if ($lastChecked <= time()) {
                 //check if user is still using the old config

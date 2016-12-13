@@ -240,14 +240,14 @@ $discord->on(
 
                 $msgData = array(
                     'message' => array(
-                        'timestamp' => $message->timestamp,
-                        'id' => $message->id,
-                        'message' => $message->content,
-                        'channelID' => $message->channel_id,
-                        'from' => $message->author->username,
-                        'fromID' => $message->author->id,
-                        'fromDiscriminator' => $message->author->discriminator,
-                        'fromAvatar' => $message->author->avatar
+                        'timestamp' => @$message->timestamp,
+                        'id' => @$message->id,
+                        'message' => @$message->content,
+                        'channelID' => @$message->channel_id,
+                        'from' => @$message->author->username,
+                        'fromID' => @$message->author->id,
+                        'fromDiscriminator' => @$message->author->discriminator,
+                        'fromAvatar' => @$message->author->avatar
                     )
                 );
 

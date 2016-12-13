@@ -33,58 +33,24 @@ use discord\discord;
  */
 class evemails
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $nextCheck;
-    /**
-     * @var
-     */
-    var $toIDs;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
-
-    /**
-     * @var
-     */
-    var $newestMailID;
-    /**
-     * @var
-     */
-    var $maxID;
-    /**
-     * @var
-     */
-    var $keyCount;
-    /**
-     * @var
-     */
-    var $keys;
-    public $apiKey;
-    public $numberOfKeys;
-    public $guild;
-    public $characterID;
+    public $config;
+    public $discord;
+    public $logger;
+    private $nextCheck;
+    private $toIDs;
+    private $toDiscordChannel;
+    private $newestMailID;
+    private $maxID;
+    private $apiKey;
+    private $numberOfKeys;
+    private $guild;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -101,7 +67,7 @@ class evemails
         $x = 0;
         foreach ($this->apiKey as $apiKey) {
             //Check if api is set
-            if ($apiKey['keyID'] == '' || $apiKey['vCode'] == '' || $apiKey['characterID'] == null) {
+            if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
                 continue;
             }
             $x++;
@@ -112,14 +78,14 @@ class evemails
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
         if ($lastStatus == 'online') {
             foreach ($this->apiKey as $apiKey) {
                 //Check if api is set
-                if ($apiKey['keyID'] == '' || $apiKey['vCode'] == '' || $apiKey['characterID'] == null) {
+                if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
                     continue;
                 }
                 //Get
@@ -135,7 +101,7 @@ class evemails
         }
     }
 
-    function checkMails($keyID, $vCode, $characterID)
+    private function checkMails($keyID, $vCode, $characterID)
     {
 
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
@@ -186,7 +152,7 @@ class evemails
                 $content = strip_tags(str_replace('<br>', "\n", json_decode(json_encode(simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA)))->result->rowset->row));
 
                 // Blank Content Check
-                if ($content == '') {
+                if ($content === '') {
                     return null;
                 }
 
@@ -227,27 +193,8 @@ class evemails
      * @param $bravo
      * @return int
      */
-    function sortByDate($alpha, $bravo)
+    private function sortByDate($alpha, $bravo)
     {
         return strcmp($alpha['sentDate'], $bravo['sentDate']);
-    }
-
-    /**
-     *
-     */
-    function onMessage()
-    {
-    }
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            'name' => '',
-            'trigger' => array(''),
-            'information' => ''
-        );
     }
 }
