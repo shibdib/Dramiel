@@ -104,7 +104,7 @@ class getKillmails
                 $this->logger->addInfo('Killmails: Checking for new killmails.');
                 $this->getKM();
                 setPermCache('killmailCheck', time() + 600);
-                if ($this->config['plugins']['getKillmails']['bigKills']['shareBigKills'] == 'true') {
+                if (@$this->config['plugins']['getKillmails']['bigKills']['shareBigKills'] === 'true') {
                     $this->logger->addInfo('Killmails: Checking for 10b+ kills.');
                     $this->getBigKM();
                 }
