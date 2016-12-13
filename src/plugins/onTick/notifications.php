@@ -28,75 +28,28 @@ use discord\discord;
 
 /**
  * Class notifications
- * @property  keyID
- * @property  vCode
  * @property string allianceOnly
  */
 class notifications
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $nextCheck;
-    /**
-     * @var
-     */
-    var $keys;
-    /**
-     * @var
-     */
-    var $keyCount;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
-    /**
-     * @var
-     */
-    var $newestNotificationID;
-    /**
-     * @var
-     */
-    var $maxID;
-    /**
-     * @var
-     */
-    var $charApi;
-    /**
-     * @var
-     */
-    var $corpApi;
-    /**
-     * @var
-     */
-    var $alliApi;
-    var $apiKey;
-    var $numberOfKeys;
-    public $fuelChannel;
-    public $fuelSkip;
-    public $keyID;
-    public $vCode;
-    public $characterID;
-    public $guild;
+    public $config;
+    public $discord;
+    public $logger;
+    private $toDiscordChannel;
+    private $newestNotificationID;
+    private $maxID;
+    private $apiKey;
+    private $numberOfKeys;
+    private $fuelChannel;
+    private $fuelSkip;
+    private $guild;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -119,7 +72,7 @@ class notifications
         $x = 0;
         foreach ($this->apiKey as $apiKey) {
             //Check if api is set
-            if ($apiKey['keyID'] == '' || $apiKey['vCode'] == '' || $apiKey['characterID'] == null) {
+            if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
                 continue;
             }
             $x++;
@@ -130,14 +83,14 @@ class notifications
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
-        if ($lastStatus == 'online') {
+        if ($lastStatus === 'online') {
             foreach ($this->apiKey as $apiKey) {
                 //Check if api is set
-                if ($apiKey['keyID'] == '' || $apiKey['vCode'] == '' || $apiKey['characterID'] == null) {
+                if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
                     continue;
                 }
                 //Get
@@ -159,7 +112,7 @@ class notifications
      * @param $characterID
      * @return null
      */
-    function getNotifications($keyID, $vCode, $characterID)
+    private function getNotifications($keyID, $vCode, $characterID)
     {
         try {
             $url = "https://api.eveonline.com/char/Notifications.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
@@ -168,7 +121,7 @@ class notifications
             $cached = $xml->cachedUntil[0];
             $baseUnix = strtotime($cached);
             $cacheClr = $baseUnix - 13500;
-            if (!isset($this->fuelChannel)) {
+            if (null === $this->fuelChannel) {
                 $this->fuelChannel = $this->toDiscordChannel;
             }
             //Set timer for next key based on number of keys
@@ -278,7 +231,7 @@ class notifications
                             $oldTax = trim(explode(': ', $notificationString[2])[1]);
                             $newTax = trim(explode(': ', $notificationString[1])[1]);
                             $msg = "{$corpName} tax changed from {$oldTax}% to {$newTax}%";
-                            if ($this->allianceOnly == 'true') {
+                            if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
                             }
                             break;
@@ -351,7 +304,7 @@ class notifications
                             $typeName = apiTypeName($typeID);
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "**{$typeName}** under attack in **{$systemName} - {$moonName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}).";
-                            if ($this->allianceOnly == 'true') {
+                            if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
                             }
                             break;
@@ -365,7 +318,7 @@ class notifications
                             $channelID = $this->fuelChannel;
                             $typeName = apiTypeName($typeID);
                             $msg = "POS in {$systemName} - {$moonName} needs fuel. Only {$blocksRemaining} {$typeName}'s remaining.";
-                            if ($this->fuelSkip == 'true' || $this->allianceOnly == 'true') {
+                            if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';
                             }
 
@@ -398,7 +351,7 @@ class notifications
                             $solarSystemID = trim(explode(': ', $notificationString[6])[1]);
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "Customs Office under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Shield Status: {$shieldValue}";
-                            if ($this->allianceOnly == 'true') {
+                            if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
                             }
                             break;
@@ -545,7 +498,7 @@ class notifications
                             $solarSystemID = trim(explode(': ', $notificationString[1])[1]);
                             $systemName = apiCharacterName($solarSystemID);
                             $msg = "Citadel in **{$systemName}** has run out of fuel.";
-                            if ($this->fuelSkip == 'true' || $this->allianceOnly == 'true') {
+                            if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';
                             }
                             break;
@@ -561,7 +514,7 @@ class notifications
                             break;
                     }
 
-                    if ($msg == 'skip') {
+                    if ($msg === 'skip') {
                         return null;
                     }
                     $this->logger->addInfo('Notifications: Notification queued');
@@ -586,31 +539,12 @@ class notifications
      * @param $notificationID
      * @return string
      */
-    function getNotificationText($keyID, $vCode, $characterID, $notificationID)
+    private function getNotificationText($keyID, $vCode, $characterID, $notificationID)
     {
         $url = "https://api.eveonline.com/char/NotificationTexts.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}&IDs={$notificationID}";
         $data = json_decode(json_encode(simplexml_load_string(downloadData($url),
             'SimpleXMLElement', LIBXML_NOCDATA)), true);
         $data = $data['result']['rowset']['row'];
         return $data;
-    }
-
-    /**
-     *
-     */
-    function onMessage()
-    {
-    }
-
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            'name' => '',
-            'trigger' => array(''),
-            'information' => '');
     }
 }
