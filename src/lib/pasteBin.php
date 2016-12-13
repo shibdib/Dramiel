@@ -20,7 +20,5 @@ function pasteLog($pasteText, $pasteName)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_VERBOSE, 0);
     curl_setopt($ch, CURLOPT_NOBODY, 0);
-
-    $response = curl_exec($ch);
-    return $response;
+    return curl_exec($ch);
 }
