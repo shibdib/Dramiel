@@ -174,9 +174,9 @@ class authCheck
 
                 //Auth things
                 $character = characterDetails($charID);
-                $corporationID = $character['corporation_id'][0];
+                $corporationID = $character['corporation_id'];
                 $corporationDetails = corpDetails($corporationID);
-                $allianceID = $corporationDetails['alliance_id'][0];
+                $allianceID = $corporationDetails['alliance_id'];
                 if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray)) {
                     // Deactivate user in database
                     $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
@@ -330,10 +330,10 @@ class authCheck
                 //Get ingame affiliations
                 if ($this->corpTickers === 'true') {
                     $character = characterDetails($charID);
-                    $corporationID = $character['corporation_id'][0];
+                    $corporationID = $character['corporation_id'];
                     $corporationDetails = corpDetails($corporationID);
-                    $corpTicker = (string)$corporationDetails['corpTicker'][0];
-                    $corpName = (string)$corporationDetails['corporation_name'][0];
+                    $corpTicker = (string)$corporationDetails['corpTicker'];
+                    $corpName = (string)$corporationDetails['corporation_name'];
                     if (null !== $corporationDetails) {
                                 if ($this->nameEnforce === 'true') {
                                     $nick = "[{$corpTicker}] {$eveName}";

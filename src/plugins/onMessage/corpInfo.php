@@ -77,13 +77,13 @@ class corpInfo
             }
 
             $corporation = corpDetails($corpID);
-            $corporationName = $corporation['corporation_name'][0];
-            $allianceID = $corporation['alliance_id'][0];
+            $corporationName = $corporation['corporation_name'];
+            $allianceID = $corporation['alliance_id'];
             $allianceName = allianceName($allianceID);
-            $ceoID = $corporation['ceo_id'][0];
+            $ceoID = $corporation['ceo_id'];
             $ceoName = characterName($ceoID);
-            $memberCount = $corporation['member_count'][0];
-            $corpTicker = $corporation['ticker'][0];
+            $memberCount = $corporation['member_count'];
+            $corpTicker = $corporation['ticker'];
             $url = "https://zkillboard.com/corporation/{$corpID}/";
 
             if ($corporationName === null || $corporationName === '') {
