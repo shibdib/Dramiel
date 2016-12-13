@@ -30,30 +30,12 @@ use discord\discord;
  */
 class getKillmails
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $db;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $channelConfig;
-    /**
-     * @var int
-     */
-    var $lastCheck = 0;
-    /**
-     * @var
-     */
-    var $logger;
+    public $config;
+    public $db;
+    public $discord;
+    public $channelConfig;
+    public $lastCheck = 0;
+    public $logger;
     public $groupConfig;
 
     /**
@@ -61,7 +43,7 @@ class getKillmails
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -72,23 +54,10 @@ class getKillmails
         setPermCache('killmailCheck', time() - 5);
     }
 
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            'name' => '',
-            'trigger' => array(),
-            'information' => ''
-        );
-    }
-
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
@@ -112,7 +81,7 @@ class getKillmails
         }
     }
 
-    function getKM()
+    private function getKM()
     {
         foreach ($this->groupConfig as $kmGroup) {
             $killID = getPermCache("{$kmGroup['name']}newestKillmailID");
@@ -120,16 +89,16 @@ class getKillmails
             if ($kmGroup['startMail'] > $killID || null === $killID) {
                 $killID = $kmGroup['startMail'];
             }
-            if ($kmGroup['allianceID'] == '0' & $kmGroup['lossMails'] == 'true') {
+            if ($kmGroup['allianceID'] == '0' & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup['corpID']}/";
             }
-            if ($kmGroup['allianceID'] == '0' & $kmGroup['lossMails'] == 'false') {
+            if ($kmGroup['allianceID'] == '0' & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup['corpID']}/";
             }
-            if ($kmGroup['allianceID'] != '0' & $kmGroup['lossMails'] == 'true') {
+            if ($kmGroup['allianceID'] != '0' & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup['allianceID']}/";
             }
-            if ($kmGroup['allianceID'] != '0' & $kmGroup['lossMails'] == 'false') {
+            if ($kmGroup['allianceID'] != '0' & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup['allianceID']}/";
             }
 
@@ -168,14 +137,14 @@ class getKillmails
                         }
                         $totalValue = number_format($kill['zkb']['totalValue']);
                         // Check if it's a structure
-                        if ($victimName != '') {
+                        if ($victimName !== '') {
                             if ($rawValue >= $kmGroup['bigKill']) {
                                 $channelID = $kmGroup['bigKillChannel'];
                                 $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                             } elseif ($rawValue <= $kmGroup['bigKill']) {
                                 $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                             }
-                        } elseif ($victimName == '') {
+                        } elseif ($victimName === '') {
                             $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                         }
 
@@ -200,7 +169,7 @@ class getKillmails
         }
     }
 
-    function getBigKM()
+    private function getBigKM()
     {
         $killID = getPermCache('bigKillNewestKillmailID');
         if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID) {
@@ -226,7 +195,7 @@ class getKillmails
                     $shipName = apiTypeName($victimShipID);
                     $totalValue = number_format($kill['zkb']['totalValue']);
                     // Check if it's a structure
-                    if ($victimName != '') {
+                    if ($victimName !== '') {
                         $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     } else {
                         $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
