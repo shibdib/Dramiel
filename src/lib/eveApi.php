@@ -103,7 +103,7 @@ function characterName($characterID)
     $url = "https://esi.tech.ccp.is/latest/characters/{$characterID}/";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $name = (string)$data['name'];
+    $name = (string)$data['name'][0];
 
     if (null === $name) { // Make sure it's always set.
         $name = 'Unknown';
@@ -123,7 +123,7 @@ function characterID($characterName)
     $url = "https://esi.tech.ccp.is/latest/search/?search={$characterName}&categories=character&language=en-us&strict=true&datasource=tranquility";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $id = (int)$data['character'];
+    $id = (int)$data['character'][0];
 
     if (null === $id) { // Make sure it's always set.
         $id = 'Unknown';
@@ -160,7 +160,7 @@ function systemName($systemID)
     $url = "https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $name = (string)$data['solar_system_name'];
+    $name = (string)$data['solar_system_name'][0];
 
     if (null === $name) { // Make sure it's always set.
         $name = 'Unknown';
@@ -180,7 +180,7 @@ function corpID($corpName)
     $url = "https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $id = (int)$data['character'];
+    $id = (int)$data['character'][0];
 
     if (null === $id) { // Make sure it's always set.
         $id = 'Unknown';
@@ -200,7 +200,7 @@ function corpName($corpID)
     $url = "https://esi.tech.ccp.is/latest/corporations/{$corpID}/";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $name = (string)$data['corporation_name'];
+    $name = (string)$data['corporation_name'][0];
 
     if (null === $name) { // Make sure it's always set.
         $name = 'Unknown';
@@ -237,7 +237,7 @@ function allianceName($allianceID)
     $url = "https://esi.tech.ccp.is/latest/alliances/{$allianceID}/";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $name = (string)$data['alliance_name'];
+    $name = (string)$data['alliance_name'][0];
 
     if (null === $name) { // Make sure it's always set.
         $name = 'Unknown';
@@ -257,7 +257,7 @@ function systemID($systemName)
     $url = "https://esi.tech.ccp.is/latest/search/?search={$systemName}&categories=solarsystem&language=en-us&strict=true&datasource=tranquility";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $id = (int)$data['solarsystem'];
+    $id = (int)$data['solarsystem'][0];
 
     if (null === $id) { // Make sure it's always set.
         $id = 'Unknown';
@@ -276,7 +276,7 @@ function apiTypeName($typeID)
     $url = "https://esi.tech.ccp.is/latest/universe/types/{$typeID}/";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $name = (string)$data['type_name'];
+    $name = (string)$data['type_name'][0];
 
     if (null === $name) { // Make sure it's always set.
         $name = 'Unknown';
@@ -296,7 +296,7 @@ function apiTypeID($typeName)
     $url = "https://www.fuzzwork.co.uk/api/typeid.php?typename={$typeName}";
     $json = file_get_contents($url);
     $data = json_decode($json, TRUE);
-    $id = (int)$data['typeID'];
+    $id = (int)$data['typeID'][0];
 
     if (null === $id) { // Make sure it's always set.
         $id = 'Unknown';

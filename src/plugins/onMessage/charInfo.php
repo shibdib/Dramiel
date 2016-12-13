@@ -87,13 +87,13 @@ class charInfo
 
             //Get details
             $characterDetails = characterDetails($characterID);
-            $corporationID = $characterDetails['corporation_id'];
+            $corporationID = $characterDetails['corporation_id'][0];
             $corporationName = corpName($corporationID);
             $corporationDetails = corpDetails($corporationID);
-            $allianceID = $corporationDetails['alliance_id'];
+            $allianceID = $corporationDetails['alliance_id'][0];
             $allianceName = allianceName($allianceID);
-            $characterName = $characterDetails['name'];
-            $dateOfBirth = $characterDetails['birthday'];
+            $characterName = $characterDetails['name'][0];
+            $dateOfBirth = $characterDetails['birthday'][0];
 
             if ($characterName === null || $characterName === '') {
                 return $this->message->reply('**Error:** No character found.');
