@@ -197,8 +197,8 @@ class evemails
                 $msg .= "**Sent Date: **{$sentDate}\n";
                 $msg .= "**Title: ** {$title}\n";
                 $msg .= "**Content: **\n";
-                $msg .= htmlspecialchars_decode(trim($messageSplit[0]));
-                $msgLong = htmlspecialchars_decode(trim($messageSplit[1]));
+                $msg .= htmlspecialchars_decode(trim($messageSplit[0]), null);
+                $msgLong = htmlspecialchars_decode(trim($messageSplit[1]), null);
 
                 // Send the mails to the channel
                 $channelID = $this->toDiscordChannel;
