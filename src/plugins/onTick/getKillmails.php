@@ -119,7 +119,7 @@ class getKillmails
                         $killID = $kill['killID'];
                         $channelID = $kmGroup['channel'];
                         $solarSystemID = $kill['solarSystemID'];
-                        $systemName = apiCharacterName($solarSystemID);
+                        $systemName = systemName($solarSystemID);
                         $killTime = $kill['killTime'];
                         $victimAllianceName = $kill['victim']['allianceName'];
                         $victimName = $kill['victim']['characterName'];
@@ -186,7 +186,7 @@ class getKillmails
                     $killID = $kill['killID'];
                     $channelID = $this->config['plugins']['getKillmails']['bigKills']['bigKillChannel'];
                     $solarSystemID = $kill['solarSystemID'];
-                    $systemName = apiCharacterName($solarSystemID);
+                    $systemName = systemName($solarSystemID);
                     $killTime = $kill['killTime'];
                     $victimAllianceName = $kill['victim']['allianceName'];
                     $victimName = $kill['victim']['characterName'];

@@ -30,27 +30,18 @@ use Discord\Discord;
  */
 class charInfo
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    var $excludeChannel;
-    public $message;
+    public $config;
+    public $discord;
+    public $logger;
+    private $excludeChannel;
+    private $message;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -59,18 +50,11 @@ class charInfo
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $channelID = (int) $msgData['message']['channelID'];
 
@@ -95,34 +79,23 @@ class charInfo
             }
 
             $cleanString = urlencode($messageString);
+            $characterID = urlencode(characterID($cleanString));
 
-            //API call 1
-            $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
-            $xml = makeApiRequest($url);
-            $characterID = null;
-
-            if (isset($xml->result->rowset->row)) {
-                foreach ($xml->result->rowset->row as $character) {
-                    $characterID = $character->attributes()->characterID;
-                }
-            }
             if (empty($characterID)) {
                 return $this->message->reply('**Error:** no data available');
             }
-            $characterID = urlencode($characterID);
 
-            //API call 2
-            $url = "https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID={$characterID}";
-            $xml = makeApiRequest($url);
-            foreach ($xml->result as $characterDetails) {
-                $corporationName = $characterDetails->corporation;
-                $corporationJoinDate = $characterDetails->corporationDate;
-                $allianceName = $characterDetails->alliance;
-                $securityStatus = $characterDetails->securityStatus;
-                $characterName = $characterDetails->characterName;
-            }
+            //Get details
+            $characterDetails = characterDetails($characterID);
+            $corporationID = $characterDetails['corporation_id'];
+            $corporationName = corpName($corporationID);
+            $corporationDetails = corpDetails($corporationID);
+            $allianceID = $corporationDetails['alliance_id'];
+            $allianceName = allianceName($allianceID);
+            $characterName = $characterDetails['name'];
+            $dateOfBirth = $characterDetails['birthday'];
 
-            if ($characterName == null || $characterName == '') {
+            if ($characterName === null || $characterName === '') {
                 return $this->message->reply('**Error:** No character found.');
             }
 
@@ -134,7 +107,7 @@ class charInfo
             }
             foreach ($xml->result->rowset->row as $kill) {
                 $lastSeenSystemID = $kill->attributes()->solarSystemID;
-                $lastSeenSystem = apiCharacterName($lastSeenSystemID);
+                $lastSeenSystem = systemName($lastSeenSystemID);
                 $lastSeenDate = $kill->attributes()->killTime;
             }
             foreach ($xml->result->rowset->row->rowset->row as $attacker) {
@@ -145,12 +118,11 @@ class charInfo
             }
             $url = "https://zkillboard.com/character/{$characterID}/";
 
-            $msg = "```Name: {$characterName}      
+            $msg = "```Name: {$characterName}
+DOB: {$dateOfBirth}
 			
 Corporation Name: {$corporationName}
-Joined Corporation On: {$corporationJoinDate}
 Alliance Name: {$allianceName}
-Security Status: {$securityStatus}
 
 Last Seen In System: {$lastSeenSystem}
 Last Seen Flying a: {$lastSeenShip}
@@ -167,17 +139,13 @@ For more info, visit: $url";
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'char',
             'trigger' => array($this->config['bot']['trigger'] . 'char'),
             'information' => 'Returns basic EVE Online data about a character. To use simply type !char character_name'
         );
-    }
-
-    function onMessageAdmin()
-    {
     }
 
 }
