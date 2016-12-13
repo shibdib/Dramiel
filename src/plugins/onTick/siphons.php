@@ -125,7 +125,7 @@ class siphons
                                 //Check for a multiple of 50 in the difference
                                 if ($gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($silo->attributes()->typeID);
-                                    $systemName = apiCharacterName($structures->attributes()->locationID);
+                                    $systemName = systemName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
                                     $msg .= "**POSSIBLE SIPHON**\n";
                                     $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a silo.\n";
@@ -157,7 +157,7 @@ class siphons
                                 //Check for a multiple of 50 in the difference
                                 if ($gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($coupling->attributes()->typeID);
-                                    $systemName = apiCharacterName($structures->attributes()->locationID);
+                                    $systemName = systemName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
                                     $msg .= "**POSSIBLE SIPHON**\n";
                                     $msg .= "**System: **{$systemName} has a possible siphon stealing {$gooType} from a coupling array.\n";

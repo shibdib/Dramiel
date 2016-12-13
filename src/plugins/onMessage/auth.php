@@ -29,39 +29,26 @@ use discord\discord;
  */
 class auth
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    var $solarSystems;
-    var $triggers = array();
-    var $excludeChannel;
-    var $nameEnforce;
-    public $guildID;
-    public $db;
-    public $dbUser;
-    public $dbPass;
-    public $dbName;
-    public $ssoUrl;
-    public $allianceTickers;
-    public $corpTickers;
-    public $authGroups;
-    public $guild;
+    public $config;
+    public $discord;
+    public $logger;
+    private $excludeChannel;
+    private $nameEnforce;
+    private $db;
+    private $dbUser;
+    private $dbPass;
+    private $dbName;
+    private $ssoUrl;
+    private $corpTickers;
+    private $authGroups;
+    private $guild;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -79,18 +66,11 @@ class auth
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $channelID = (int) $msgData['message']['channelID'];
 
@@ -135,97 +115,76 @@ class auth
                 //If corp is new store in DB
                 $corpInfo = getCorpInfo($corpID);
                 if (null === $corpInfo) {
-                    $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$corpID}";
-                    $xml = makeApiRequest($url);
-                    foreach ($xml->result as $corporation) {
-                        $corpTicker = $corporation->ticker;
-                        $corpName = $corporation->corporationName;
-                    }
+                    $corpDetails = corpDetails($corpID);
+                    $corpTicker = $corpDetails['ticker'];
+                    $corpName = corpName($corpID);
                     addCorpInfo($corpID, $corpTicker, $corpName);
                 } else {
                     $corpTicker = $corpInfo['corpTicker'];
                 }
 
-                $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids=$charID";
-                $xmlCharacter = makeApiRequest($url);
-
-
-                // We have an error, show it it
-                if ($xmlCharacter->error) {
-                    $this->message->reply('**Failure:** Eve API error, please try again in a little while.');
-                    return null;
-                }
-
-                // Check that the api is working
-                if (!isset($xmlCharacter->result->rowset->row)) {
-                    $this->message->reply('**Failure:** Eve API error, please try again in a little while.');
-                    return null;
-                }
-
                 //Add corp ticker to name
-                if ($this->corpTickers == 'true') {
+                if ($this->corpTickers === 'true') {
                     $setTicker = 1;
                 }
 
                 //Set eve name if nameCheck is true
-                if ($this->nameEnforce == 'true') {
+                if ($this->nameEnforce === 'true') {
                     $nameEnforce = 1;
                 }
 
                 $allianceRoleSet = 0;
                 $corpRoleSet = 0;
 
-                foreach ($xmlCharacter->result->rowset->row as $character) {
-                    $roles = @$this->message->channel->guild->roles;
-                    $member = @$this->message->channel->guild->members->get('id', $userID);
-                    $eveName = $character->attributes()->name;
-                    foreach ($this->authGroups as $authGroup) {
-                        //Check if corpID matches
-                        if ($corpID === $authGroup['corpID']) {
-                            foreach ($roles as $role) {
-                                if ($role->name == $authGroup['corpMemberRole']) {
-                                    $member->addRole($role);
-                                    $corpRoleSet = 1;
-                                }
+                $roles = @$this->message->channel->guild->roles;
+                $member = @$this->message->channel->guild->members->get('id', $userID);
+                $eveName = characterName($charID);
+                foreach ($this->authGroups as $authGroup) {
+                    //Check if corpID matches
+                    if ($corpID === $authGroup['corpID']) {
+                        foreach ($roles as $role) {
+                            if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
+                                $member->addRole($role);
+                                $corpRoleSet = 1;
                             }
-                        }
-                        //Check if allianceID matches
-                        if ($allianceID === $authGroup['allianceID'] && $authGroup['allianceID'] != 0) {
-                            foreach ($roles as $role) {
-                                if ($role->name == $authGroup['allyMemberRole']) {
-                                    $member->addRole($role);
-                                    $allianceRoleSet = 1;
-                                }
-                            }
-                        }
-                        if ($allianceRoleSet === 1 || $corpRoleSet === 1) {
-                            $guild = $this->discord->guilds->get('id', $guildID);
-                            insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'corp');
-                            disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                            $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
-                            $this->logger->addInfo("auth: {$eveName} authed");
-                            $this->message->reply($msg);
-                            //Add ticker if set and change name if nameEnforce is on
-                            if (isset($setTicker) || isset($nameEnforce)) {
-                                if (isset($setTicker) && isset($nameEnforce)) {
-                                    $nick = "[{$corpTicker}] {$eveName}";
-                                } elseif (!isset($setTicker) && isset($nameEnforce)) {
-                                    $nick = "{$eveName}";
-                                } elseif (isset($setTicker) && !isset($nameEnforce)) {
-                                    $nick = "[{$corpTicker}] {$userName}";
-                                }
-                            }
-                            if (isset($nick)) {
-                                queueRename($userID, $nick, $this->guild);
-                            }
-                            $guild->members->save($member);
-                            return null;
                         }
                     }
-                    $this->message->reply('**Failure:** There are no roles available for your corp/alliance.');
-                    $this->logger->addInfo('Auth: User was denied due to not being in the correct corp or alliance ' . $eveName);
-                    return null;
+                    //Check if allianceID matches
+                    if ($allianceID === $authGroup['allianceID'] && $authGroup['allianceID'] != 0) {
+                        foreach ($roles as $role) {
+                            if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
+                                $member->addRole($role);
+                                $allianceRoleSet = 1;
+                            }
+                        }
+                    }
+                    if ($allianceRoleSet === 1 || $corpRoleSet === 1) {
+                        $guild = $this->discord->guilds->get('id', $guildID);
+                        insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'corp');
+                        disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
+                        $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
+                        $this->logger->addInfo("auth: {$eveName} authed");
+                        $this->message->reply($msg);
+                        //Add ticker if set and change name if nameEnforce is on
+                        if (isset($setTicker) || isset($nameEnforce)) {
+                            if (isset($setTicker) && isset($nameEnforce)) {
+                                $nick = "[{$corpTicker}] {$eveName}";
+                            } elseif (null === $setTicker && isset($nameEnforce)) {
+                                $nick = "{$eveName}";
+                            } elseif (isset($setTicker) && !isset($nameEnforce)) {
+                                $nick = "[{$corpTicker}] {$userName}";
+                            }
+                        }
+                        if (null !== $nick) {
+                            queueRename($userID, $nick, $this->guild);
+                        }
+                        $guild->members->save($member);
+                        return null;
+                    }
                 }
+                $this->message->reply('**Failure:** There are no roles available for your corp/alliance.');
+                $this->logger->addInfo('Auth: User was denied due to not being in the correct corp or alliance ' . $eveName);
+                return null;
             }
             $this->message->reply('**Failure:** There was an issue with your code.');
             $this->logger->addInfo('Auth: User was denied due to the code being invalid ' . $userName);
@@ -237,16 +196,12 @@ class auth
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'auth',
             'trigger' => array($this->config['bot']['trigger'] . 'auth'),
             'information' => 'SSO based auth system. ' . $this->ssoUrl . ' Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat.'
         );
-    }
-
-    function onMessageAdmin()
-    {
     }
 }

@@ -172,26 +172,17 @@ class authCheck
                     continue;
                 }
 
-                //Get ingame affiliations
-                $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
-                $xml = makeApiRequest($url);
-                // Stop the process if the api is throwing an error
-                if (null === $xml) {
-                    $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
-                    return null;
-                }
-
                 //Auth things
-                if ($xml->result->rowset->row[0]) {
-                    foreach ($xml->result->rowset->row as $character) {
-                        if (!in_array((int)$character->attributes()->allianceID, $allianceArray) && !in_array((int)$character->attributes()->corporationID, $corpArray)) {
-                            // Deactivate user in database
-                            $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-                            $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
-                            $conn->query($sql);
-                            continue;
-                        }
-                    }
+                $character = characterDetails($charID);
+                $corporationID = $character['corporation_id'];
+                $corporationDetails = corpDetails($corporationID);
+                $allianceID = $corporationDetails['alliance_id'];
+                if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray)) {
+                    // Deactivate user in database
+                    $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+                    $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
+                    $conn->query($sql);
+                    continue;
                 }
             }
             $nextCheck = time() + 10800;
@@ -332,46 +323,32 @@ class authCheck
                 $nickName = $member->nick;
                 $userName = $member->user->username;
                 //If nick isn't set than make it username
-                if ($nickName == '' || null === $nickName) {
+                if ($nickName === '' || null === $nickName) {
                     $nickName = $userName;
                 }
 
                 //Get ingame affiliations
                 if ($this->corpTickers === 'true') {
-                    $url = "https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids=$charID";
-                    $xml = makeApiRequest($url);
-                    // Stop the process if the api is throwing an error
-                    if (null === $xml) {
-                        $this->logger->addInfo("{$eveName} cannot be authed, API issues detected.");
-                        return null;
-                    }
-                    if ($xml->result->rowset->row[0]) {
-                        foreach ($xml->result->rowset->row as $character) {
-                            $corpInfo = getCorpInfo($character->attributes()->corporationID);
-                            if (null !== $corpInfo) {
-                                $corpTicker = (string)$corpInfo['corpTicker'];
+                    $character = characterDetails($charID);
+                    $corporationID = $character['corporation_id'];
+                    $corporationDetails = corpDetails($corporationID);
+                    $corpTicker = (string)$corporationDetails['corpTicker'];
+                    $corpName = (string)$corporationDetails['corporation_name'];
+                    if (null !== $corporationDetails) {
                                 if ($this->nameEnforce === 'true') {
                                     $nick = "[{$corpTicker}] {$eveName}";
                                 } elseif ((string)$nickName === "[{$corpTicker}]") {
                                     $nick = "[{$corpTicker}] {$userName}";
-                                } elseif (strpos($nickName, $corpTicker) == false) {
+                                } elseif (strpos($nickName, $corpTicker) === false) {
                                     $nick = "[{$corpTicker}] {$nickName}";
                                 } elseif (strpos($nickName, $corpTicker) !== false) {
                                     $nick = "{$nickName}";
                                     continue;
                                 }
-                                if ($nick != $nickName) {
+                        if ($nick !== $nickName) {
                                     queueRename($discordID, $nick, $this->guildID);
                                 }
                                 continue;
-                            }
-                            $url = "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID={$character->attributes()->corporationID}";
-                            $xml = makeApiRequest($url);
-                            $corpTicker = '';
-                            $corpName = '';
-                            foreach ($xml->result as $corporation) {
-                                $corpTicker = $corporation->ticker;
-                                $corpName = $corporation->corporationName;
                             }
                             if ($this->nameEnforce === 'true') {
                                 $nick = "[{$corpTicker}] {$eveName}";
@@ -388,8 +365,6 @@ class authCheck
                             }
                             addCorpInfo($character->attributes()->corporationID, $corpTicker, $corpName);
                             continue;
-                        }
-                    }
                 }
                 $nick = "{$eveName}";
                 if ($nick !== $nickName && $this->corpTickers !== 'true') {

@@ -82,7 +82,7 @@ function serverStatus()
 
         $true = 'true';
         //If server is down return false
-        if ($data->serverOpen != 'True') {
+        if ($data->serverOpen !== 'True') {
             return FALSE;
         }
         //If server is up return true
@@ -94,19 +94,16 @@ function serverStatus()
 }
 
 /**
- * @param string $typeID
+ * @param string $characterID
  * @return mixed
  */
-////Char/Object ID to name via CCP
-function apiCharacterName($typeID)
+////Char ID to name via CCP
+function characterName($characterID)
 {
-    $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?IDs={$typeID}";
-    $xml = makeApiRequest($url);
-    foreach ($xml->result->rowset->row as $entity) {
-        $name = $entity->attributes()->name;
-    }
+    $character = characterDetails($characterID);
+    $name = (string)$character['name'];
 
-    if (!isset($name)) { // Make sure it's always set.
+    if (null === $name) { // Make sure it's always set.
         $name = 'Unknown';
     }
 
@@ -114,23 +111,155 @@ function apiCharacterName($typeID)
 }
 
 /**
- * @param string $typeName
+ * @param string $characterName
  * @return mixed
  */
-////Char/object name to ID via CCP
-function apiCharacterID($typeName)
+////Character name to ID
+function characterID($characterName)
 {
-    $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$typeName}";
-    $xml = makeApiRequest($url);
-    foreach ($xml->result->rowset->row as $entity) {
-        $ID = $entity->attributes()->characterID;
+    $characterName = urlencode($characterName);
+    $url = "https://esi.tech.ccp.is/latest/search/?search={$characterName}&categories=character&language=en-us&strict=true&datasource=tranquility";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+    $id = (int)$data['character'][0];
+
+    if (null === $id) { // Make sure it's always set.
+        $id = 'Unknown';
     }
 
-    if (!isset($ID)) { // Make sure it's always set.
-        $ID = 'Unknown';
+    return $id;
+}
+
+/**
+ * @param string $characterID
+ * @return mixed
+ */
+////Char ID to char data via CCP
+function characterDetails($characterID)
+{
+    $url = "https://esi.tech.ccp.is/latest/characters/{$characterID}/";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+
+    if (null === $data) { // Make sure it's always set.
+        $data = 'Unknown';
     }
 
-    return $ID;
+    return $data;
+}
+
+/**
+ * @param string $systemID
+ * @return mixed
+ */
+////System ID to name via CCP
+function systemName($systemID)
+{
+    $url = "https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+    $name = (string)$data['solar_system_name'];
+
+    if (null === $name) { // Make sure it's always set.
+        $name = 'Unknown';
+    }
+
+    return $name;
+}
+
+/**
+ * @param string $corpName
+ * @return mixed
+ */
+////Corp name to ID
+function corpID($corpName)
+{
+    $corpName = urlencode($corpName);
+    $url = "https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+    $id = (int)$data['corporation'][0];
+
+    if (null === $id) { // Make sure it's always set.
+        $id = 'Unknown';
+    }
+
+    return $id;
+}
+
+
+/**
+ * @param string $corpID
+ * @return mixed
+ */
+////Corp ID to name via CCP
+function corpName($corpID)
+{
+    $corporation = corpDetails($corpID);
+    $name = (string)$corporation['corporation_name'];
+
+    if (null === $name) { // Make sure it's always set.
+        $name = 'Unknown';
+    }
+
+    return $name;
+}
+
+/**
+ * @param string $corpID
+ * @return mixed
+ */
+////Corp ID to corp data via CCP
+function corpDetails($corpID)
+{
+    $url = "https://esi.tech.ccp.is/latest/corporations/{$corpID}/";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+
+    if (null === $data) { // Make sure it's always set.
+        $data = 'Unknown';
+    }
+
+    return $data;
+}
+
+/**
+ * @param string $allianceID
+ * @return mixed
+ */
+////Alliance ID to name via CCP
+function allianceName($allianceID)
+{
+    $url = "https://esi.tech.ccp.is/latest/alliances/{$allianceID}/";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+    $name = (string)$data['alliance_name'];
+
+    if (null === $name) { // Make sure it's always set.
+        $name = 'Unknown';
+    }
+
+    return $name;
+}
+
+/**
+ * @param string $systemName
+ * @return mixed
+ */
+////System name to ID
+function systemID($systemName)
+{
+    $systemName = urlencode($systemName);
+    $url = "https://esi.tech.ccp.is/latest/search/?search={$systemName}&categories=solarsystem&language=en-us&strict=true&datasource=tranquility";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+    $id = (int)$data['solarsystem'][0];
+
+    if (null === $id) { // Make sure it's always set.
+        $id = 'Unknown';
+    }
+
+    return $id;
 }
 
 /**
@@ -140,13 +269,12 @@ function apiCharacterID($typeName)
 ////TypeID to TypeName via CCP
 function apiTypeName($typeID)
 {
-    $url = "https://api.eveonline.com/eve/TypeName.xml.aspx?IDs={$typeID}";
-    $xml = makeApiRequest($url);
-    foreach ($xml->result->rowset->row as $entity) {
-        $name = $entity->attributes()->typeName;
-    }
+    $url = "https://esi.tech.ccp.is/latest/universe/types/{$typeID}/";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+    $name = (string)$data['type_name'];
 
-    if (!isset($name)) { // Make sure it's always set.
+    if (null === $name) { // Make sure it's always set.
         $name = 'Unknown';
     }
 
@@ -157,18 +285,33 @@ function apiTypeName($typeID)
  * @param string $typeName
  * @return mixed
  */
-////TypeID to TypeName via fuzz
+////TypeName to TypeID via fuzz
 function apiTypeID($typeName)
 {
-    $url = "https://www.fuzzwork.co.uk/api/typeid.php?typename={$typeName}&format=xml";
+    $typeName = urlencode($typeName);
+    $url = "https://www.fuzzwork.co.uk/api/typeid.php?typename={$typeName}";
+    $json = file_get_contents($url);
+    $data = json_decode($json, TRUE);
+    $id = (int)$data['typeID'];
+
+    if (null === $id) { // Make sure it's always set.
+        $id = 'Unknown';
+    }
+
+    return $id;
+}
+
+////Char/Object ID to name via CCP
+function apiMoonName($moonID)
+{
+    $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?IDs={$moonID}";
     $xml = makeApiRequest($url);
+    $name = null;
     foreach ($xml->result->rowset->row as $entity) {
-        $ID = $entity->attributes()->typeID;
+        $name = $entity->attributes()->name;
     }
-
-    if (!isset($ID)) { // Make sure it's always set.
-        $ID = 'Unknown';
+    if (null === $name) { // Make sure it's always set.
+        $name = 'Unknown';
     }
-
-    return $ID;
+    return $name;
 }
