@@ -110,3 +110,12 @@ function getCorpInfo($corpID)
 {
     return dbQueryRow('SELECT * FROM corpCache WHERE `corpID` = :corpID', array(':corpID' => $corpID));
 }
+
+//Remove old DB's
+function dbPrune()
+{
+    $oldDatabases = array('corpIDs', 'users', 'usersSeen');
+    foreach ($oldDatabases as $db) {
+        dbExecute('DROP TABLE IF EXISTS :db', array(':db' => $db));
+    }
+}
