@@ -257,7 +257,9 @@ class authCheck
                         $member->removeRole($role);
                         $guild->members->save($member);
                         // Add users name to array
-                        $removedRoles[] = $username;
+                        if (!in_array($username, $removedRoles)) {
+                            $removedRoles[] = $username;
+                        }
                     }
                 }
             }
