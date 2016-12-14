@@ -98,7 +98,7 @@ class twitterOutput
                 //$this->logger->err("Twitter Error: " . $e->getMessage()); // Don't show there was an error, it's most likely just a rate limit
             }
 
-            if ($continue == true) {
+            if ($continue === true) {
                 ksort($messages);
 
                 foreach ($messages as $id => $msg) {

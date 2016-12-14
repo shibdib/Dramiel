@@ -50,7 +50,7 @@ class rssReader
         $this->rssFeeds = $config['plugins']['rssReader']['rssFeeds'];
         $this->toDiscordChannel = $config['plugins']['rssReader']['channelID'];
         $lastCheck = getPermCache('rssLastChecked');
-        if ($lastCheck == NULL) {
+        if ($lastCheck === NULL) {
             // Schedule it for right now if first run
             setPermCache('rssLastChecked', time() - 5);
         }
@@ -77,7 +77,7 @@ class rssReader
     {
         foreach ($feeds as $rssUrl) {
             //Check that url is set
-            if (!isset($rssUrl) || $rssUrl == '') {
+            if (!isset($rssUrl) || $rssUrl === '') {
                 continue;
             }
 
@@ -86,7 +86,7 @@ class rssReader
             $latestTopicDate = getPermCache("rssFeed{$feedLink}");
 
             //Check if feed has been checked before
-            if ($latestTopicDate == NULL) {
+            if ($latestTopicDate === NULL) {
                 // Set date to now to avoid posting old articles
                 setPermCache("rssFeed{$feedLink}", time());
                 continue;
@@ -98,7 +98,7 @@ class rssReader
             $itemDate = strtotime($rss->channel->item->pubDate);
 
             //Check to see if feed is formatted correctly
-            if ($itemTitle == NULL || $itemUrl == NULL || $itemDate == NULL) {
+            if ($itemTitle === NULL || $itemUrl === NULL || $itemDate === NULL) {
                 $this->logger->addInfo("rssReader: {$rssUrl} is not a properly formatted RSS feed.");
                 continue;
             }

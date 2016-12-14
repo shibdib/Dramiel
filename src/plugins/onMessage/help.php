@@ -85,7 +85,7 @@ class help
                 $this->logger->addInfo("Help: Sending help info to {$user}");
             } else {
                 foreach ($plugins as $plugin) {
-                    if ($messageString == $plugin->information()['name']) {
+                    if ($messageString === $plugin->information()['name']) {
                         $this->message->reply($plugin->information()['information']);
                     }
                 }

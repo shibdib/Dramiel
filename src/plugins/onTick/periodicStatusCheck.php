@@ -69,7 +69,7 @@ class periodicStatusCheck
 
     private function checkStatus()
     {
-        if ($this->toDiscordChannel == 0) {
+        if ($this->toDiscordChannel === 0) {
             setPermCache('statusLastChecked', time() + 300);
             $this->logger->addInfo('statusCheck: TQ Status Check Failed - Add a channel ID to the notifications section in the config.');
             return null;
@@ -94,7 +94,7 @@ class periodicStatusCheck
 
         foreach ($xml->result as $info) {
             $apiStatus = $info->serverOpen;
-            if ($apiStatus == 'True') {
+            if ($apiStatus === 'True') {
                 $apiStatus = 'online';
             } else {
                 $apiStatus = 'offline';
@@ -110,12 +110,12 @@ class periodicStatusCheck
         } else {
             $crestHolder = 'online';
         }
-        if ($crestHolder != $apiStatus) {
+        if ($crestHolder !== $apiStatus) {
             $this->logger->addInfo('statusCheck: TQ Status check canceled, CREST and API different.');
             setPermCache('statusLastChecked', time() + 300);
             return null;
         }
-        if ($lastStatus == $crestStatus) {
+        if ($lastStatus === $crestStatus) {
             // No change
             setPermCache('statusLastChecked', time() + 300);
             return null;
@@ -124,7 +124,7 @@ class periodicStatusCheck
         $channelID = $this->toDiscordChannel;
         priorityQueueMessage($msg, $channelID, $this->guild);
         setPermCache('statusLastState', $crestStatus);
-        if ($crestStatus == 'online') {
+        if ($crestStatus === 'online') {
             setPermCache('serverState', $crestStatus);
             setPermCache('statusLastChecked', time() + 300);
             $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");
