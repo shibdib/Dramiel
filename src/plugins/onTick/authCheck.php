@@ -327,12 +327,12 @@ class authCheck
                     $nickName = $userName;
                 }
 
-                //Get ingame affiliations
+                //corp ticker
                 if ($this->corpTickers === 'true') {
                     $character = characterDetails($charID);
                     $corporationID = $character['corporation_id'];
                     $corporationDetails = corpDetails($corporationID);
-                    $corpTicker = (string)$corporationDetails['corpTicker'];
+                    $corpTicker = (string)$corporationDetails['ticker'];
                     $corpName = (string)$corporationDetails['corporation_name'];
                     if (null !== $corporationDetails) {
                                 if ($this->nameEnforce === 'true') {
