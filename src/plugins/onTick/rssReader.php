@@ -30,30 +30,10 @@ use discord\discord;
  */
 class rssReader
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $db;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $channelConfig;
-    /**
-     * @var int
-     */
-    var $lastCheck = 0;
-    /**
-     * @var
-     */
-    var $logger;
+    public $config;
+    public $db;
+    public $discord;
+    public $logger;
     public $guild;
 
     /**
@@ -61,7 +41,7 @@ class rssReader
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -70,7 +50,7 @@ class rssReader
         $this->rssFeeds = $config['plugins']['rssReader']['rssFeeds'];
         $this->toDiscordChannel = $config['plugins']['rssReader']['channelID'];
         $lastCheck = getPermCache('rssLastChecked');
-        if ($lastCheck == NULL) {
+        if ($lastCheck === NULL) {
             // Schedule it for right now if first run
             setPermCache('rssLastChecked', time() - 5);
         }
@@ -79,7 +59,7 @@ class rssReader
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         $lastCheck = getPermCache('rssLastChecked');
         $feeds = $this->rssFeeds;
@@ -93,11 +73,11 @@ class rssReader
         }
     }
 
-    function getRss($feeds, $toChannel)
+    private function getRss($feeds, $toChannel)
     {
         foreach ($feeds as $rssUrl) {
             //Check that url is set
-            if (!isset($rssUrl) || $rssUrl == '') {
+            if (!isset($rssUrl) || $rssUrl === '') {
                 continue;
             }
 
@@ -106,7 +86,7 @@ class rssReader
             $latestTopicDate = getPermCache("rssFeed{$feedLink}");
 
             //Check if feed has been checked before
-            if ($latestTopicDate == NULL) {
+            if ($latestTopicDate === NULL) {
                 // Set date to now to avoid posting old articles
                 setPermCache("rssFeed{$feedLink}", time());
                 continue;
@@ -118,7 +98,7 @@ class rssReader
             $itemDate = strtotime($rss->channel->item->pubDate);
 
             //Check to see if feed is formatted correctly
-            if ($itemTitle == NULL || $itemUrl == NULL || $itemDate == NULL) {
+            if ($itemTitle === NULL || $itemUrl === NULL || $itemDate === NULL) {
                 $this->logger->addInfo("rssReader: {$rssUrl} is not a properly formatted RSS feed.");
                 continue;
             }

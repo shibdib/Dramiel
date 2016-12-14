@@ -37,34 +37,25 @@ use discord\discord;
  */
 class fleetUpOps
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    public $userID;
-    public $groupID;
-    public $apiKey;
-    public $guild;
-    public $excludeChannel;
-    public $message;
+    public $config;
+    public $discord;
+    public $logger;
     protected $keyID;
     protected $vCode;
     protected $prefix;
+    private $userID;
+    private $groupID;
+    private $apiKey;
+    private $guild;
+    private $excludeChannel;
+    private $message;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -77,19 +68,11 @@ class fleetUpOps
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $channelID = (int) $msgData['message']['channelID'];
 
@@ -140,7 +123,7 @@ Link - {$link}");
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'ops',

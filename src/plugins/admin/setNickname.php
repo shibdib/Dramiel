@@ -28,19 +28,9 @@
  */
 class setNickname
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-
+    public $config;
+    public $discord;
+    public $logger;
     public $message;
 
     /**
@@ -48,7 +38,7 @@ class setNickname
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -56,18 +46,11 @@ class setNickname
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
 
@@ -107,7 +90,7 @@ class setNickname
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'nickname',

@@ -156,7 +156,7 @@ class price
     /**
      * @return array
      */
-    Public function information()
+    public function information()
     {
         return array(
             'name' => 'pc',

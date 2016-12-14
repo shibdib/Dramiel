@@ -31,34 +31,22 @@ use discord\discord;
  */
 class siloFull
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
-    public $guild;
-    public $towerRace;
+    public $config;
+    public $discord;
+    public $logger;
     protected $keyID;
     protected $vCode;
     protected $prefix;
+    private $toDiscordChannel;
+    private $guild;
+    private $towerRace;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -69,7 +57,7 @@ class siloFull
         $this->vCode = $config['plugins']['siloFull']['vCode'];
         $this->towerRace = $config['plugins']['siloFull']['towerRace'];
         $lastCheck = getPermCache("siloLastChecked{$this->keyID}");
-        if ($lastCheck == NULL) {
+        if ($lastCheck === NULL) {
             // Schedule it for right now if first run
             setPermCache("siloLastChecked{$this->keyID}", time() - 5);
         }
@@ -78,11 +66,11 @@ class siloFull
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
-        if ($lastStatus == 'online') {
+        if ($lastStatus === 'online') {
             $lastChecked = getPermCache("siloLastChecked{$this->keyID}");
             $keyID = $this->keyID;
             $vCode = $this->vCode;
@@ -93,7 +81,7 @@ class siloFull
         }
     }
 
-    function checkTowers($keyID, $vCode)
+    private function checkTowers($keyID, $vCode)
     {
 
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
@@ -102,12 +90,12 @@ class siloFull
         $towerMulti = 0;
         $towerFull = 20000;
         $cleanFull = number_format($towerFull);
-        if ($this->towerRace == 1) {
+        if ($this->towerRace === 1) {
             $towerMulti = 0.50;
             $towerFull = 30000;
             $cleanFull = number_format($towerFull);
         }
-        if ($this->towerRace == 2) {
+        if ($this->towerRace === 2) {
             $towerMulti = 1;
             $towerFull = 40000;
             $cleanFull = number_format($towerFull);
@@ -137,9 +125,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -172,9 +160,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -207,9 +195,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -242,9 +230,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -277,9 +265,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -312,9 +300,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -347,9 +335,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -382,9 +370,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -417,9 +405,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -452,9 +440,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -487,9 +475,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -522,9 +510,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -557,9 +545,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -592,9 +580,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -627,9 +615,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -662,9 +650,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -697,9 +685,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -732,9 +720,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -767,9 +755,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -802,9 +790,9 @@ class siloFull
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
-                                    if ($gooCurrent == $towerFull && $lastAmount == $gooCurrent) {
+                                    if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
                                         $msg = "**{$typeName} Silo Full**\n";
-                                    } elseif ($gooCurrent == $towerFull && $lastAmount != $gooCurrent) {
+                                    } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
                                         continue 2;
                                     }
@@ -837,17 +825,5 @@ class siloFull
         }
         $this->logger->addInfo("siloFull: Silo Check Complete Next Check At {$cacheTimer}");
         return null;
-
-        /**
-         * @return array
-         */
-        function information()
-        {
-            return array(
-                'name' => '',
-                'trigger' => array(''),
-                'information' => ''
-            );
-        }
     }
 }

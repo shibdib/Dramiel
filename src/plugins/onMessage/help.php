@@ -28,27 +28,18 @@
  */
 class help
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    var $excludeChannel;
-    public $message;
+    public $config;
+    public $discord;
+    public $logger;
+    private $excludeChannel;
+    private $message;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -57,18 +48,11 @@ class help
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $channelID = (int) $msgData['message']['channelID'];
 
@@ -101,7 +85,7 @@ class help
                 $this->logger->addInfo("Help: Sending help info to {$user}");
             } else {
                 foreach ($plugins as $plugin) {
-                    if ($messageString == $plugin->information()['name']) {
+                    if ($messageString === $plugin->information()['name']) {
                         $this->message->reply($plugin->information()['information']);
                     }
                 }
@@ -112,7 +96,7 @@ class help
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'help',

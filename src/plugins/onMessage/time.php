@@ -29,27 +29,18 @@
  */
 class time
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    var $excludeChannel;
+    public $config;
+    public $discord;
+    public $logger;
     public $message;
+    private $excludeChannel;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -58,19 +49,11 @@ class time
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $channelID = (int) $msgData['message']['channelID'];
 
@@ -110,7 +93,7 @@ class time
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'time',
