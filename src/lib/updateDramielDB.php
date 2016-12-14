@@ -26,7 +26,7 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array('users', 'usersSeen', 'storage', 'messageQueue', 'renameQueue', 'corpIDs');
+    $tables = array('users', 'usersSeen', 'storage', 'messageQueue', 'renameQueue', 'corpCache');
 
     $tableCreateCode = array(
         'users' => '
@@ -87,11 +87,11 @@ function updateDramielDB($logger)
                 `guild` VARCHAR(255) NOT NULL
             );
             COMMIT;',
-        'corpIDs' => '
+        'corpCache' => '
             BEGIN;
-            CREATE TABLE IF NOT EXISTS `corpIDs` (
+            CREATE TABLE IF NOT EXISTS `corpCache` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                `corpID` VARCHAR(255) NOT NULL,
+                `corpID` VARCHAR(255) NOT NULL UNIQUE,
                 `corpTicker` VARCHAR(255) NOT NULL,
                 `corpName` VARCHAR(255) NOT NULL
             );
