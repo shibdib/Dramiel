@@ -289,8 +289,8 @@ class authCheck
         $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
         $sql = "SELECT id FROM authUsers WHERE active='yes'";
         $count = $conn->query($sql);
-        $rowAmount = $count->num_rows / 2;
-        if ($x == 1) {
+        $rowAmount = round($count->num_rows / 2);
+        if ($x === 1) {
             $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$rowAmount} OFFSET {$rowAmount}";
             setPermCache('nameQueueState', 0);
         } else {
@@ -356,7 +356,7 @@ class authCheck
                     $corporationDetails = corpDetails($character['corporation_id']);
                     $corpTicker = $corporationDetails['ticker'];
                     $corpName = (string)$corporationDetails['corporation_name'];
-                    if (null !== $corporationDetails['ticker']) {
+                    if (null !== $corpTicker) {
                         if ($this->nameEnforce === 'true') {
                             $nick = "[{$corpTicker}] {$eveName}";
                         } elseif ((string)$nickName === "[{$corpTicker}]") {
@@ -368,9 +368,7 @@ class authCheck
                         }
                         if ($nick !== $nickName) {
                             queueRename($discordID, $nick, $this->guildID);
-                            if (null !== $corpTicker) {
-                                addCorpInfo($character['corporation_id'], $corpTicker, $corpName);
-                            }
+                            addCorpInfo($character['corporation_id'], $corpTicker, $corpName);
                         }
                         continue;
                     }
