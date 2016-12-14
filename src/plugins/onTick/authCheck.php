@@ -332,7 +332,7 @@ class authCheck
                     $character = characterDetails($charID);
                     $corpInfo = getCorpInfo($character['corporation_id']);
                     $nick = null;
-                    if (null !== @$corpInfo) {
+                    if (null !== @$corpInfo['corpTicker']) {
                         $corpTicker = (string)$corpInfo['corpTicker'];
                         if ($this->nameEnforce === 'true') {
                             $nick = "[{$corpTicker}] {$eveName}";
@@ -363,7 +363,9 @@ class authCheck
                         }
                         if ($nick !== $nickName) {
                             queueRename($discordID, $nick, $this->guildID);
-                            addCorpInfo($character['corporation_id'], $corpTicker, $corpName);
+                            if (null !== $corpTicker) {
+                                addCorpInfo($character['corporation_id'], $corpTicker, $corpName);
+                            }
                         }
                         continue;
                     }
