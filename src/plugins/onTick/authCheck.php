@@ -176,7 +176,7 @@ class authCheck
                 $character = characterDetails($charID);
                 $corporationID = $character['corporation_id'];
                 $corporationDetails = corpDetails($corporationID);
-                $allianceID = $corporationDetails['alliance_id'];
+                $allianceID = @$corporationDetails['alliance_id'];
                 if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray)) {
                     // Deactivate user in database
                     $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
