@@ -28,27 +28,18 @@
  */
 class eveStatus
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    var $excludeChannel;
+    public $config;
+    public $discord;
+    public $logger;
     public $message;
+    private $excludeChannel;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -57,18 +48,11 @@ class eveStatus
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $channelID = (int) $msgData['message']['channelID'];
 
@@ -99,17 +83,13 @@ class eveStatus
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'tq',
             'trigger' => array($this->config['bot']['trigger'] . 'tq', $this->config['bot']['trigger'] . 'status'),
             'information' => 'Shows the current status of Tranquility'
         );
-    }
-
-    function onMessageAdmin()
-    {
     }
 
 }

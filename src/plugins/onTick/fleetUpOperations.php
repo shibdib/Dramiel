@@ -33,36 +33,24 @@ use discord\discord;
  */
 class fleetUpOperations
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
-    public $userID;
-    public $groupID;
-    public $apiKey;
-    public $guild;
+    public $config;
+    public $discord;
+    public $logger;
     protected $keyID;
     protected $vCode;
     protected $prefix;
+    private $toDiscordChannel;
+    private $userID;
+    private $groupID;
+    private $apiKey;
+    private $guild;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -82,7 +70,7 @@ class fleetUpOperations
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         $lastChecked = getPermCache('fleetUpPostLastChecked');
 
@@ -92,10 +80,8 @@ class fleetUpOperations
         }
     }
 
-    function postFleetUp()
+    private function postFleetUp()
     {
-        $discord = $this->discord;
-
         date_default_timezone_set('UTC');
         $eveTime = time();
         //fleetUp post upcoming operations
@@ -133,9 +119,8 @@ Link - {$link}";
         setPermCache('fleetUpPostLastChecked', time() + 910);
     }
 
-    function checkFleetUp()
+    private function checkFleetUp()
     {
-        $discord = $this->discord;
         date_default_timezone_set('UTC');
         $eveTime = time();
 

@@ -28,34 +28,23 @@ use discord\discord;
 /**
  * Class periodicStatusCheck
  */
-class periodicStatusCheck {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
+class periodicStatusCheck
+{
+    public $config;
+    public $discord;
+    public $logger;
     public $guild;
     protected $keyID;
     protected $vCode;
     protected $prefix;
+    private $toDiscordChannel;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -69,7 +58,7 @@ class periodicStatusCheck {
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         $lastChecked = getPermCache('statusLastChecked');
 
@@ -78,10 +67,8 @@ class periodicStatusCheck {
         }
     }
 
-    function checkStatus()
+    private function checkStatus()
     {
-        $discord = $this->discord;
-
         if ($this->toDiscordChannel == 0) {
             setPermCache('statusLastChecked', time() + 300);
             $this->logger->addInfo('statusCheck: TQ Status Check Failed - Add a channel ID to the notifications section in the config.');
@@ -146,24 +133,5 @@ class periodicStatusCheck {
         setPermCache('statusLastChecked', time() + 90);
         $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");
         return null;
-    }
-
-    /**
-     *
-     */
-    function onMessage()
-    {
-    }
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            'name' => '',
-            'trigger' => array(''),
-            'information' => ''
-        );
     }
 }

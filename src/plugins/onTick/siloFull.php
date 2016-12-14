@@ -31,34 +31,22 @@ use discord\discord;
  */
 class siloFull
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
-    public $guild;
-    public $towerRace;
+    public $config;
+    public $discord;
+    public $logger;
     protected $keyID;
     protected $vCode;
     protected $prefix;
+    private $toDiscordChannel;
+    private $guild;
+    private $towerRace;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -78,7 +66,7 @@ class siloFull
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
@@ -93,7 +81,7 @@ class siloFull
         }
     }
 
-    function checkTowers($keyID, $vCode)
+    private function checkTowers($keyID, $vCode)
     {
 
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
@@ -837,17 +825,5 @@ class siloFull
         }
         $this->logger->addInfo("siloFull: Silo Check Complete Next Check At {$cacheTimer}");
         return null;
-
-        /**
-         * @return array
-         */
-        function information()
-        {
-            return array(
-                'name' => '',
-                'trigger' => array(''),
-                'information' => ''
-            );
-        }
     }
 }

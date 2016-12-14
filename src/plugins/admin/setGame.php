@@ -30,19 +30,9 @@ use Discord\Parts\User\Game;
  */
 class setGame
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-
+    public $config;
+    public $discord;
+    public $logger;
     public $message;
 
     /**
@@ -50,7 +40,7 @@ class setGame
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -58,18 +48,11 @@ class setGame
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
 
@@ -111,7 +94,7 @@ class setGame
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'game',

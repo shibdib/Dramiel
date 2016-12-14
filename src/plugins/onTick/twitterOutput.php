@@ -30,47 +30,22 @@ use discord\discord;
  */
 class twitterOutput
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-
-    /**
-     * @var
-     */
-    var $twitter;
-    /**
-     * @var
-     */
-    var $lastCheck;
-    /**
-     * @var
-     */
-    var $lastID;
-    /**
-     * @var
-     */
-    var $channelID;
-    /**
-     * @var
-     */
-    var $maxID;
+    public $config;
+    public $discord;
+    public $logger;
     public $guild;
+    private $twitter;
+    private $lastCheck;
+    private $lastID;
+    private $channelID;
+    private $maxID;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -85,10 +60,8 @@ class twitterOutput
     /**
      *
      */
-    function tick()
+    public function tick()
     {
-        $discord = $this->discord;
-
         $continue = false;
         $data = array();
         // If last check + 60 seconds is larger or equal to the current time(), we run
@@ -143,24 +116,8 @@ class twitterOutput
      * @param $url
      * @return string
      */
-    function shortenUrl($url)
+    public function shortenUrl($url)
     {
         return file_get_contents('http://is.gd/api.php?longurl=' . $url);
-    }
-
-    function onMessage()
-    {
-    }
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            'name' => '',
-            'trigger' => array(''),
-            'information' => ''
-        );
     }
 }

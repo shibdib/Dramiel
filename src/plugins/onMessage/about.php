@@ -28,23 +28,11 @@
  */
 class about
 {
-    /**
-     * @var
-     */
-    var $config;
-    var $excludeChannel;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $message;
+    public $config;
+    public $discord;
+    public $logger;
+    public $message;
+    private $excludeChannel;
 
     /**
      * @param $config
@@ -52,7 +40,7 @@ class about
      * @param $logger
      * @internal param $message
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -61,18 +49,11 @@ class about
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
         $info['guilds'] = $this->discord->guilds->count();
@@ -118,7 +99,7 @@ Memory Usage: ~' . round(memory_get_usage() / 1024 / 1024, 3) . 'MB```';
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
             'name' => 'about',

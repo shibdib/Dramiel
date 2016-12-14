@@ -30,38 +30,20 @@ use discord\discord;
  */
 class fileReader
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $db;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $channelConfig;
-    /**
-     * @var int
-     */
-    var $lastCheck = 0;
-    /**
-     * @var
-     */
-    var $logger;
+    public $config;
+    public $discord;
+    public $logger;
     public $guild;
+    private $db;
+    private $channelConfig;
+    private $lastCheck = 0;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -75,24 +57,10 @@ class fileReader
     }
 
     /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            'name' => '',
-            'trigger' => array(),
-            'information' => ''
-        );
-    }
-
-    /**
      *
      */
-    function tick()
+    public function tick()
     {
-        $discord = $this->discord;
-
         if (filemtime($this->db) >= $this->lastCheck) {
             $data = file($this->db);
             if ($data) {
@@ -139,9 +107,5 @@ class fileReader
         }
         clearstatcache();
         $this->lastCheck = time();
-    }
-
-    function onMessage()
-    {
     }
 }

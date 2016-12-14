@@ -30,30 +30,10 @@ use discord\discord;
  */
 class rssReader
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $db;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $channelConfig;
-    /**
-     * @var int
-     */
-    var $lastCheck = 0;
-    /**
-     * @var
-     */
-    var $logger;
+    public $config;
+    public $db;
+    public $discord;
+    public $logger;
     public $guild;
 
     /**
@@ -61,7 +41,7 @@ class rssReader
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -79,7 +59,7 @@ class rssReader
     /**
      *
      */
-    function tick()
+    public function tick()
     {
         $lastCheck = getPermCache('rssLastChecked');
         $feeds = $this->rssFeeds;
@@ -93,7 +73,7 @@ class rssReader
         }
     }
 
-    function getRss($feeds, $toChannel)
+    private function getRss($feeds, $toChannel)
     {
         foreach ($feeds as $rssUrl) {
             //Check that url is set
