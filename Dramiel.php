@@ -133,6 +133,9 @@ setPermCache('serverState', $crestStatus);
 setPermCache('statusLastState', $crestStatus);
 $logger->addInfo("serverState: EVE is currently {$crestStatus}");
 
+//Clean up any outdated databases
+dbPrune();
+
 $discord->on(
     'ready',
     function($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {

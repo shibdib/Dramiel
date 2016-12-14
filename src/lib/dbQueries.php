@@ -103,10 +103,19 @@ function clearAllMessageQueue()
 //CORP INFO
 function addCorpInfo($corpID, $corpTicker, $corpName)
 {
-    dbExecute('REPLACE INTO corpIDs (`corpID`, `corpTicker`, `corpName`) VALUES (:corpID,:corpTicker,:corpName)', array(':corpID' => $corpID, ':corpTicker' => $corpTicker, ':corpName' => $corpName));
+    dbExecute('REPLACE INTO corpCache (`corpID`, `corpTicker`, `corpName`) VALUES (:corpID,:corpTicker,:corpName)', array(':corpID' => $corpID, ':corpTicker' => $corpTicker, ':corpName' => $corpName));
 }
 
 function getCorpInfo($corpID)
 {
-    return dbQueryRow('SELECT * FROM corpIDs WHERE `corpID` = :corpID', array(':corpID' => $corpID));
+    return dbQueryRow('SELECT * FROM corpCache WHERE `corpID` = :corpID', array(':corpID' => $corpID));
+}
+
+//Remove old DB's
+function dbPrune()
+{
+    $oldDatabases = array('corpIDs', 'users', 'usersSeen');
+    foreach ($oldDatabases as $db) {
+        dbExecute("DROP TABLE IF EXISTS $db");
+    }
 }
