@@ -330,6 +330,9 @@ class authCheck
                 //corp ticker
                 if ($this->corpTickers === 'true') {
                     $character = characterDetails($charID);
+                    if (null === $character['corporation_id']) {
+                        continue;
+                    }
                     $corpInfo = getCorpInfo($character['corporation_id']);
                     $nick = null;
                     if (null !== @$corpInfo['corpTicker']) {
