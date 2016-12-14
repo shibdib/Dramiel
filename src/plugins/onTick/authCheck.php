@@ -332,27 +332,8 @@ class authCheck
                     $character = characterDetails($charID);
                     $corpInfo = getCorpInfo($character['corporation_id']);
                     $nick = null;
-                    if (null !== $corpInfo) {
+                    if (null !== @$corpInfo) {
                         $corpTicker = (string)$corpInfo['corpTicker'];
-                        if ($this->nameEnforce === 'true') {
-                            $nick = "[{$corpTicker}] {$eveName}";
-                        } elseif ((string)$nickName === "[{$corpTicker}]") {
-                            $nick = "[{$corpTicker}] {$userName}";
-                        } elseif (strpos($nickName, $corpTicker) == false) {
-                            $nick = "[{$corpTicker}] {$nickName}";
-                        } elseif (strpos($nickName, $corpTicker) !== false) {
-                            continue;
-                        }
-                        if ($nick !== $nickName) {
-                            queueRename($discordID, $nick, $this->guildID);
-                        }
-                        continue;
-                    }
-                    $corporationID = $character['corporation_id'];
-                    $corporationDetails = corpDetails($corporationID);
-                    $corpTicker = $corporationDetails['ticker'];
-                    $corpName = (string)$corporationDetails['corporation_name'];
-                    if (null !== $corporationDetails) {
                         if ($this->nameEnforce === 'true') {
                             $nick = "[{$corpTicker}] {$eveName}";
                         } elseif ((string)$nickName === "[{$corpTicker}]") {
@@ -367,14 +348,29 @@ class authCheck
                         }
                         continue;
                     }
-                    if ($nick !== $nickName) {
-                        queueRename($discordID, $nick, $this->guildID);
+                    $corporationDetails = corpDetails($character['corporation_id']);
+                    $corpTicker = $corporationDetails['ticker'];
+                    $corpName = (string)$corporationDetails['corporation_name'];
+                    if (null !== $corporationDetails['ticker']) {
+                        if ($this->nameEnforce === 'true') {
+                            $nick = "[{$corpTicker}] {$eveName}";
+                        } elseif ((string)$nickName === "[{$corpTicker}]") {
+                            $nick = "[{$corpTicker}] {$userName}";
+                        } elseif (strpos($nickName, $corpTicker) === false) {
+                            $nick = "[{$corpTicker}] {$nickName}";
+                        } elseif (strpos($nickName, $corpTicker) !== false) {
+                            continue;
+                        }
+                        if ($nick !== $nickName) {
+                            queueRename($discordID, $nick, $this->guildID);
+                            addCorpInfo($character['corporation_id'], $corpTicker, $corpName);
+                        }
+                        continue;
                     }
-                    addCorpInfo($character->attributes()->corporationID, $corpTicker, $corpName);
                     continue;
                 }
                 $nick = "{$eveName}";
-                if ($nick !== $nickName && $this->corpTickers !== 'true') {
+                if ($nick !== $nickName) {
                     queueRename($discordID, $nick, $this->guildID);
                 }
                 continue;
