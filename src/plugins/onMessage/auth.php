@@ -117,8 +117,10 @@ class auth
                 if (null === $corpInfo) {
                     $corpDetails = corpDetails($corpID);
                     $corpTicker = $corpDetails['ticker'];
-                    $corpName = corpName($corpID);
-                    addCorpInfo($corpID, $corpTicker, $corpName);
+                    $corpName = (string)$corpDetails['corporation_name'];
+                    if (null !== $corpTicker) {
+                        addCorpInfo($corpID, $corpTicker, $corpName);
+                    }
                 } else {
                     $corpTicker = $corpInfo['corpTicker'];
                 }
