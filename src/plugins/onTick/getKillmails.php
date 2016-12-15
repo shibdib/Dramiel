@@ -91,7 +91,7 @@ class getKillmails
             }
 
             //Check if mail is a big kill
-            if (@$kill['killmail']['zkb']['totalValue'] >= 10000000000 && @$this->config['plugins']['getKillmails']['bigKills']['shareBigKills'] === 'true') {
+            if (@$kill['zkb']['totalValue'] >= 10000000000 && @$this->config['plugins']['getKillmails']['bigKills']['shareBigKills'] === 'true') {
                 $killID = getPermCache('bigKillNewestKillmailID');
                 if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID) {
                     $killID = $this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'];
@@ -107,7 +107,7 @@ class getKillmails
                 $victimName = $kill['killmail']['victim']['character']['name'];
                 $victimCorpName = @$kill['killmail']['victim']['corporation']['name'];
                 $shipName = $kill['killmail']['victim']['shipType']['name'];
-                $totalValue = number_format($kill['killmail']['zkb']['totalValue']);
+                $totalValue = number_format($kill['zkb']['totalValue']);
                 // Check if it's a structure
                 if ($victimName !== '') {
                     $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
@@ -179,7 +179,7 @@ class getKillmails
                 $victimName = $kill['killmail']['victim']['character']['name'];
                 $victimCorpName = @$kill['killmail']['victim']['corporation']['name'];
                 $shipName = $kill['killmail']['victim']['shipType']['name'];
-                $rawValue = $kill['killmail']['zkb']['totalValue'];
+                $rawValue = $kill['zkb']['totalValue'];
                 //Check if killmail meets minimum value
                 if (isset($kmGroup['minimumValue'])) {
                     if ($rawValue < $kmGroup['minimumValue']) {
