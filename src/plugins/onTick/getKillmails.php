@@ -81,7 +81,7 @@ class getKillmails
     private function getKM()
     {
         $i = 0;
-        while ($i < 30) {
+        while ($i < 25) {
             $kill = zKillRedis();
             $i++;
 
@@ -91,7 +91,7 @@ class getKillmails
             }
 
             //Check if mail is a big kill
-            if ($kill['killmail']['zkb']['totalValue'] >= 10000000000 && @$this->config['plugins']['getKillmails']['bigKills']['shareBigKills'] === 'true') {
+            if (@$kill['killmail']['zkb']['totalValue'] >= 10000000000 && @$this->config['plugins']['getKillmails']['bigKills']['shareBigKills'] === 'true') {
                 $killID = getPermCache('bigKillNewestKillmailID');
                 if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID) {
                     $killID = $this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'];
@@ -103,9 +103,9 @@ class getKillmails
                 $killID = $kill['killmail']['killID'];
                 $systemName = $kill['killmail']['solarSystem']['name'];
                 $killTime = $kill['killmail']['killTime'];
-                $victimAllianceName = $kill['killmail']['victim']['alliance']['name'];
+                $victimAllianceName = @$kill['killmail']['victim']['alliance']['name'];
                 $victimName = $kill['killmail']['victim']['character']['name'];
-                $victimCorpName = $kill['killmail']['victim']['corporation']['name'];
+                $victimCorpName = @$kill['killmail']['victim']['corporation']['name'];
                 $shipName = $kill['killmail']['victim']['shipType']['name'];
                 $totalValue = number_format($kill['killmail']['zkb']['totalValue']);
                 // Check if it's a structure
@@ -141,13 +141,13 @@ class getKillmails
                 $attackerAllianceArray = array();
 
                 foreach ($kill['killmail']['attackers'] as $attacker) {
-                    $attackerCorpArray[] = (int)$attacker['corporation']['id'];
-                    $attackerAllianceArray[] = (int)$attacker['alliance']['id'];
+                    $attackerCorpArray[] = (int)@$attacker['corporation']['id'];
+                    $attackerAllianceArray[] = (int)@$attacker['alliance']['id'];
                 }
 
-                if ((int)$kill['killmail']['victim']['corporation']['id'] === $kmGroup['corpID'] && (int)$kmGroup['corpID'] !== 0) {
+                if ((int)@$kill['killmail']['victim']['corporation']['id'] === $kmGroup['corpID'] && (int)$kmGroup['corpID'] !== 0) {
                     $corpLoss = true;
-                } elseif ((int)$kill['killmail']['victim']['alliance']['id'] === $kmGroup['allianceID'] && (int)$kmGroup['allianceID'] !== 0) {
+                } elseif ((int)@$kill['killmail']['victim']['alliance']['id'] === $kmGroup['allianceID'] && (int)$kmGroup['allianceID'] !== 0) {
                     $allianceLoss = true;
                 } elseif (in_array((int)$kmGroup['corpID'], $attackerCorpArray) && (int)$kmGroup['corpID'] !== 0) {
                     $corpKill = true;
@@ -175,9 +175,9 @@ class getKillmails
                 $channelID = $kmGroup['channel'];
                 $systemName = $kill['killmail']['solarSystem']['name'];
                 $killTime = $kill['killmail']['killTime'];
-                $victimAllianceName = $kill['killmail']['victim']['alliance']['name'];
+                $victimAllianceName = @$kill['killmail']['victim']['alliance']['name'];
                 $victimName = $kill['killmail']['victim']['character']['name'];
-                $victimCorpName = $kill['killmail']['victim']['corporation']['name'];
+                $victimCorpName = @$kill['killmail']['victim']['corporation']['name'];
                 $shipName = $kill['killmail']['victim']['shipType']['name'];
                 $rawValue = $kill['killmail']['zkb']['totalValue'];
                 //Check if killmail meets minimum value
