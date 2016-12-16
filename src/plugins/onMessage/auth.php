@@ -45,18 +45,19 @@ class auth
 
     /**
      * @param $config
+     * @param $primary
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    public function init($config, $primary, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->db = $config['database']['host'];
-        $this->dbUser = $config['database']['user'];
-        $this->dbPass = $config['database']['pass'];
-        $this->dbName = $config['database']['database'];
+        $this->db = $primary['database']['host'];
+        $this->dbUser = $primary['database']['user'];
+        $this->dbPass = $primary['database']['pass'];
+        $this->dbName = $primary['database']['database'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
         $this->ssoUrl = $config['plugins']['auth']['url'];

@@ -52,10 +52,11 @@ class fleetUpOps
 
     /**
      * @param $config
+     * @param $primary
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    public function init($config, $primary, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;

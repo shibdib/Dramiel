@@ -62,10 +62,10 @@ if (file_exists('config/config.php')) {
     $logger->error('config.php not found (you might wanna start by editing and renaming config_new.php)');
     die();
 }
+require_once 'config/primary.php';
 
 // Load the library files (Probably a prettier way to do this that i haven't thought up yet)
 foreach (glob(__DIR__ . '/src/lib/*.php') as $lib) {
-    /** @noinspection PhpIncludeInspection */
     require_once $lib;
 }
 
@@ -73,7 +73,7 @@ foreach (glob(__DIR__ . '/src/lib/*.php') as $lib) {
 updateDramielDB($logger);
 
 // Init Discord
-$discord = new Discord(['token' => $config['bot']['token']]);
+$discord = new Discord(['token' => $primary['bot']['token']]);
 
 // Load tick plugins
 $pluginDirs = array('src/plugins/onTick/*.php');
@@ -90,7 +90,7 @@ foreach ($pluginDirs as $dir) {
         require_once $plugin;
         $fileName = str_replace('.php', '', basename($plugin));
         $p = new $fileName();
-        $p->init($config, $discord, $logger);
+        $p->init($config, $primary, $discord, $logger);
         $pluginsT[] = $p;
     }
 }
@@ -138,7 +138,7 @@ dbPrune();
 
 $discord->on(
     'ready',
-    function($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {
+    function ($discord) use ($logger, $config, $primary, $plugins, $pluginsT, $discord) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -239,7 +239,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function($message) use ($logger, $config, $plugins) {
+            function ($message) use ($logger, $config, $primary, $plugins) {
 
                 $msgData = array(
                     'message' => array(
