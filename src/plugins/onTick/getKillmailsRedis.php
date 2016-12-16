@@ -96,9 +96,6 @@ class getKillmailsRedis
                 if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID) {
                     $killID = $this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'];
                 }
-                if ($killID > $kill['killmail']['killID']) {
-                    continue;
-                }
                 $channelID = $this->config['plugins']['getKillmails']['bigKills']['bigKillChannel'];
                 $killID = $kill['killmail']['killID'];
                 $systemName = $kill['killmail']['solarSystem']['name'];
@@ -159,11 +156,6 @@ class getKillmailsRedis
 
                 //Check if it's a lossmail and lossmails are turned off
                 if (($corpLoss === true || $allianceLoss === true) && $kmGroup['lossMails'] === 'false') {
-                    break;
-                }
-
-                //Check if it's an old kill
-                if ($killID > $kill['killmail']['killID']) {
                     break;
                 }
 
