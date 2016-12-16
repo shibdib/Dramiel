@@ -102,7 +102,7 @@ $config['plugins'] = array(
         'channelID' => 0 // what channel id like these to post too
     ),
     'fileReader' => array(
-        'db' => '/tmp/discord.db',
+        'db' => '/../../jabberPings.db',
         'channelConfig' => array(
             'pings' => array(
                 'default' => true,
