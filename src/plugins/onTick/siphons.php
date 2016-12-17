@@ -112,18 +112,18 @@ class siphons
                     if (isset($structures->rowset->row)) {
                         foreach ($structures->rowset->row as $silo) {
                             //Avoid reporting empty silos
-                            if ($silo->attributes()->quantity !== 0 && in_array($silo->attributes()->typeID, $rawGoo)) {
+                            if ($silo->attributes()->quantity !== 0 && in_array($silo->attributes()->typeID, $rawGoo, false)) {
                                 $siloID = $structures->attributes()->itemID;
                                 $lastAmount = getPermCache("silo{$siloID}Amount");
                                 $gooAmount = $silo->attributes()->quantity;
-                                $gooDifference = $gooAmount - $lastAmount;
+                                $gooDifference = (int)$gooAmount - (int)$lastAmount;
                                 //Check if silo has been checked before
-                                if (!isset($lastAmount) || $gooDifference < 0) {
+                                if (null === $lastAmount || $gooDifference < 0) {
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     continue;
                                 }
                                 //Check for a multiple of 50 in the difference
-                                if ($gooDifference % 50 !== 0) {
+                                if ((int)$gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($silo->attributes()->typeID);
                                     $systemName = systemName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
@@ -144,18 +144,18 @@ class siphons
                     if (isset($structures->rowset->row)) {
                         foreach ($structures->rowset->row as $coupling) {
                             //Avoid reporting empty coupling arrays
-                            if ($coupling->attributes()->quantity !== 0 && in_array($coupling->attributes()->typeID, $rawGoo)) {
+                            if ($coupling->attributes()->quantity !== 0 && in_array($coupling->attributes()->typeID, $rawGoo, false)) {
                                 $couplingID = $structures->attributes()->itemID;
                                 $lastAmount = getPermCache("couplingArray{$couplingID}Amount");
                                 $gooAmount = $coupling->attributes()->quantity;
-                                $gooDifference = $gooAmount - $lastAmount;
+                                $gooDifference = (int)$gooAmount - (int)$lastAmount;
                                 //Check if silo has been checked before
-                                if (!isset($lastAmount) || $gooDifference < 0) {
+                                if (null === $lastAmount || $gooDifference < 0) {
                                     setPermCache("couplingArray{$couplingID}Amount", $gooAmount);
                                     continue;
                                 }
                                 //Check for a multiple of 50 in the difference
-                                if ($gooDifference % 50 !== 0) {
+                                if ((int)$gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($coupling->attributes()->typeID);
                                     $systemName = systemName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
