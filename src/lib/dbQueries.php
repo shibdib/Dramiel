@@ -111,6 +111,11 @@ function getCorpInfo($corpID)
     return dbQueryRow('SELECT * FROM corpCache WHERE `corpID` = :corpID', array(':corpID' => $corpID));
 }
 
+function deleteCorpInfo($corpID)
+{
+    return dbQueryRow('DELETE from corpCache WHERE `corpID` = :corpID', array(':corpID' => $corpID));
+}
+
 //Remove old DB's
 function dbPrune()
 {
