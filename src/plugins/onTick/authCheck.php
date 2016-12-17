@@ -329,6 +329,13 @@ class authCheck
                     $nickName = $userName;
                 }
 
+                //Check for bad tickers
+                if (strpos($nickName, '[U]') !== false) {
+                    $nickName = str_replace('[U]', '', $nickName);
+                    queueRename($discordID, $nickName, $this->guildID);
+                    continue;
+                }
+
                 //corp ticker
                 if ($this->corpTickers === 'true') {
                     $character = characterDetails($charID);
@@ -336,6 +343,10 @@ class authCheck
                         continue;
                     }
                     $corpInfo = getCorpInfo($character['corporation_id']);
+                    //Clean bad entries
+                    if (@$corpInfo['corpTicker'] === 'U') {
+                        deleteCorpInfo(@$corpInfo['corpID']);
+                    }
                     $nick = null;
                     if (null !== @$corpInfo['corpTicker']) {
                         $corpTicker = (string)$corpInfo['corpTicker'];
@@ -355,6 +366,10 @@ class authCheck
                     }
                     $corporationDetails = corpDetails($character['corporation_id']);
                     $corpTicker = $corporationDetails['ticker'];
+                    //Check for bad tickers (ESI ERROR?)
+                    if (@$corpTicker === 'U') {
+                        continue;
+                    }
                     $corpName = (string)$corporationDetails['corporation_name'];
                     if (null !== $corpTicker) {
                         if ($this->nameEnforce === 'true') {
