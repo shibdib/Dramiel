@@ -114,7 +114,7 @@ if ($config['bot']['silentMode'] == 'false' || !isset($config['bot']['silentMode
             require_once $plugin;
             $fileName = str_replace('.php', '', basename($plugin));
             $p = new $fileName();
-            $p->init($config, $discord, $logger);
+            $p->init($config, $primary, $discord, $logger);
             $plugins[] = $p;
         }
     }
