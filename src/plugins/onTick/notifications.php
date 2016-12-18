@@ -377,10 +377,31 @@ class notifications
                         case 111: // Bounty
                             $msg = 'skip';
                             break;
+                        case 112: // Bounty
+                            $msg = 'skip';
+                            break;
                         case 113: // Bounty
                             $msg = 'skip';
                             break;
+                        case 114: // Bounty
+                            $msg = 'skip';
+                            break;
+                        case 115: // Kill right
+                            $msg = 'skip';
+                            break;
                         case 116: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 117: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 118: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 119: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 120: // Kill right
                             $msg = 'skip';
                             break;
                         case 128: // Corp App
@@ -396,6 +417,9 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 138: // Clone activation
+                            $msg = 'skip';
+                            break;
+                        case 139: // Clone activation
                             $msg = 'skip';
                             break;
                         case 140: // Kill report
