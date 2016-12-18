@@ -101,7 +101,7 @@ class getKillmailsRedis
                 $systemName = $kill['killmail']['solarSystem']['name'];
                 $killTime = $kill['killmail']['killTime'];
                 $victimAllianceName = @$kill['killmail']['victim']['alliance']['name'];
-                $victimName = $kill['killmail']['victim']['character']['name'];
+                $victimName = @$kill['killmail']['victim']['character']['name'];
                 $victimCorpName = @$kill['killmail']['victim']['corporation']['name'];
                 $shipName = $kill['killmail']['victim']['shipType']['name'];
                 $totalValue = number_format($kill['zkb']['totalValue']);
@@ -168,9 +168,9 @@ class getKillmailsRedis
                 $systemName = $kill['killmail']['solarSystem']['name'];
                 $killTime = $kill['killmail']['killTime'];
                 $victimAllianceName = @$kill['killmail']['victim']['alliance']['name'];
-                $victimName = $kill['killmail']['victim']['character']['name'];
+                $victimName = @$kill['killmail']['victim']['character']['name'];
                 $victimCorpName = @$kill['killmail']['victim']['corporation']['name'];
-                $shipName = $kill['killmail']['victim']['shipType']['name'];
+                $shipName = @$kill['killmail']['victim']['shipType']['name'];
                 $rawValue = $kill['zkb']['totalValue'];
                 //Check if killmail meets minimum value
                 if (isset($kmGroup['minimumValue'])) {
