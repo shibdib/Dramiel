@@ -519,7 +519,7 @@ class notifications
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
                             break;
                         case 198: // citadel out of fuel
-                            $solarSystemID = trim(explode(': ', $notificationString[1])[1]);
+                            $solarSystemID = trim(explode(': ', $notificationString[3])[1]);
                             $systemName = systemName($solarSystemID);
                             $msg = "Citadel in **{$systemName}** has run out of fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
