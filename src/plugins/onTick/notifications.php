@@ -378,10 +378,31 @@ class notifications
                         case 111: // Bounty
                             $msg = 'skip';
                             break;
+                        case 112: // Bounty
+                            $msg = 'skip';
+                            break;
                         case 113: // Bounty
                             $msg = 'skip';
                             break;
+                        case 114: // Bounty
+                            $msg = 'skip';
+                            break;
+                        case 115: // Kill right
+                            $msg = 'skip';
+                            break;
                         case 116: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 117: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 118: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 119: // Kill right
+                            $msg = 'skip';
+                            break;
+                        case 120: // Kill right
                             $msg = 'skip';
                             break;
                         case 128: // Corp App
@@ -397,6 +418,9 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 138: // Clone activation
+                            $msg = 'skip';
+                            break;
+                        case 139: // Clone activation
                             $msg = 'skip';
                             break;
                         case 140: // Kill report
@@ -496,7 +520,7 @@ class notifications
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
                             break;
                         case 198: // citadel out of fuel
-                            $solarSystemID = trim(explode(': ', $notificationString[1])[1]);
+                            $solarSystemID = trim(explode(': ', $notificationString[3])[1]);
                             $systemName = systemName($solarSystemID);
                             $msg = "Citadel in **{$systemName}** has run out of fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {

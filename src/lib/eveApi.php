@@ -101,11 +101,11 @@ function serverStatus()
 function characterName($characterID)
 {
     $character = characterDetails($characterID);
-    $name = (string)$character['name'];
 
-    if (null === $name) { // Make sure it's always set.
-        $name = 'Unknown';
+    if (null === $character) { // Make sure it's always set.
+        return null;
     }
+    $name = (string)$character['name'];
 
     return $name;
 }
@@ -117,14 +117,19 @@ function characterName($characterID)
 ////Character name to ID
 function characterID($characterName)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $characterName = urlencode($characterName);
     $url = "https://esi.tech.ccp.is/latest/search/?search={$characterName}&categories=character&language=en-us&strict=true&datasource=tranquility";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
-    $id = (int)$data['character'][0];
 
-    if (null === $id) { // Make sure it's always set.
-        $id = 'Unknown';
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+        $id = (int)$data['character'][0];
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
     }
 
     return $id;
@@ -137,12 +142,17 @@ function characterID($characterName)
 ////Char ID to char data via CCP
 function characterDetails($characterID)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $url = "https://esi.tech.ccp.is/latest/characters/{$characterID}/";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
 
-    if (null === $data) { // Make sure it's always set.
-        $data = 'Unknown';
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
     }
 
     return $data;
@@ -155,13 +165,18 @@ function characterDetails($characterID)
 ////System ID to name via CCP
 function systemName($systemID)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $url = "https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
-    $name = (string)$data['solar_system_name'];
 
-    if (null === $name) { // Make sure it's always set.
-        $name = 'Unknown';
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+        $name = (string)$data['solar_system_name'];
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
     }
 
     return $name;
@@ -174,14 +189,19 @@ function systemName($systemID)
 ////Corp name to ID
 function corpID($corpName)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $corpName = urlencode($corpName);
     $url = "https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
-    $id = (int)$data['corporation'][0];
 
-    if (null === $id) { // Make sure it's always set.
-        $id = 'Unknown';
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+        $id = (int)$data['corporation'][0];
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
     }
 
     return $id;
@@ -198,8 +218,8 @@ function corpName($corpID)
     $corporation = corpDetails($corpID);
     $name = (string)$corporation['corporation_name'];
 
-    if (null === $name) { // Make sure it's always set.
-        $name = 'Unknown';
+    if (null === $corporation) { // Make sure it's always set.
+        return null;
     }
 
     return $name;
@@ -212,12 +232,17 @@ function corpName($corpID)
 ////Corp ID to corp data via CCP
 function corpDetails($corpID)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $url = "https://esi.tech.ccp.is/latest/corporations/{$corpID}/";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
 
-    if (null === $data) { // Make sure it's always set.
-        $data = 'Unknown';
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
     }
 
     return $data;

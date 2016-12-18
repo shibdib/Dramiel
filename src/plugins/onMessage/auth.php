@@ -117,6 +117,10 @@ class auth
                 $corpInfo = getCorpInfo($corpID);
                 if (null === $corpInfo) {
                     $corpDetails = corpDetails($corpID);
+                    if (null === $corpDetails) { // Make sure it's always set.
+                        $this->message->reply('**Failure:** Unable to auth at this time, ESI is down. Please try again later.');
+                        return null;
+                    }
                     $corpTicker = $corpDetails['ticker'];
                     $corpName = (string)$corpDetails['corporation_name'];
                     if (null !== $corpTicker) {
@@ -142,6 +146,10 @@ class auth
                 $roles = @$this->message->channel->guild->roles;
                 $member = @$this->message->channel->guild->members->get('id', $userID);
                 $eveName = characterName($charID);
+                if (null === $eveName) {
+                    $this->message->reply('**Failure:** Unable to auth at this time, ESI is down. Please try again later.');
+                    return null;
+                }
                 foreach ($this->authGroups as $authGroup) {
                     //Check if corpID matches
                     if ($corpID === $authGroup['corpID']) {

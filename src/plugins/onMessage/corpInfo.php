@@ -78,6 +78,9 @@ class corpInfo
             }
 
             $corporation = corpDetails($corpID);
+            if (null === $corporation) {
+                return $this->message->reply('**Error:** ESI is down. Try again later.');
+            }
             $corporationName = $corporation['corporation_name'];
             $allianceID = $corporation['alliance_id'];
             $allianceName = allianceName($allianceID);

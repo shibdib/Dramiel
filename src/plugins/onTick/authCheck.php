@@ -174,8 +174,15 @@ class authCheck
 
                 //Auth things
                 $character = characterDetails($charID);
+                //if issue with esi, skip
+                if (null === $character) {
+                    continue;
+                }
                 $corporationID = $character['corporation_id'];
                 $corporationDetails = corpDetails($corporationID);
+                if (null === $corporationDetails) {
+                    continue;
+                }
                 $allianceID = @$corporationDetails['alliance_id'];
                 if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray)) {
                     // Deactivate user in database
@@ -329,6 +336,13 @@ class authCheck
                     $nickName = $userName;
                 }
 
+                //Check for bad tickers
+                if (strpos($nickName, '[U]') !== false) {
+                    $nickName = str_replace('[U]', '', $nickName);
+                    queueRename($discordID, $nickName, $this->guildID);
+                    continue;
+                }
+
                 //corp ticker
                 if ($this->corpTickers === 'true') {
                     $character = characterDetails($charID);
@@ -336,6 +350,10 @@ class authCheck
                         continue;
                     }
                     $corpInfo = getCorpInfo($character['corporation_id']);
+                    //Clean bad entries
+                    if (@$corpInfo['corpTicker'] === 'U') {
+                        deleteCorpInfo(@$corpInfo['corpID']);
+                    }
                     $nick = null;
                     if (null !== @$corpInfo['corpTicker']) {
                         $corpTicker = (string)$corpInfo['corpTicker'];
@@ -354,7 +372,14 @@ class authCheck
                         continue;
                     }
                     $corporationDetails = corpDetails($character['corporation_id']);
+                    if (null === $corporationDetails) {
+                        continue;
+                    }
                     $corpTicker = $corporationDetails['ticker'];
+                    //Check for bad tickers (ESI ERROR?)
+                    if (@$corpTicker === 'U') {
+                        continue;
+                    }
                     $corpName = (string)$corporationDetails['corporation_name'];
                     if (null !== $corpTicker) {
                         if ($this->nameEnforce === 'true') {
