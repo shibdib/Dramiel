@@ -123,7 +123,7 @@ class siphons
                                     continue;
                                 }
                                 //Check for a multiple of 50 in the difference
-                                if ((int)$gooDifference % 50 !== 0) {
+                                if ($gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($silo->attributes()->typeID);
                                     $systemName = systemName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
@@ -155,7 +155,7 @@ class siphons
                                     continue;
                                 }
                                 //Check for a multiple of 50 in the difference
-                                if ((int)$gooDifference % 50 !== 0) {
+                                if ($gooDifference % 50 !== 0) {
                                     $gooType = apiTypeName($coupling->attributes()->typeID);
                                     $systemName = systemName($structures->attributes()->locationID);
                                     $msg = "{$siphonCorp['prefix']}";
