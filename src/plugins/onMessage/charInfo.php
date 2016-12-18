@@ -87,8 +87,14 @@ class charInfo
 
             //Get details
             $characterDetails = characterDetails($characterID);
+            if (null === $characterDetails) {
+                return $this->message->reply('**Error:** ESI is down. Try again later.');
+            }
             $corporationID = $characterDetails['corporation_id'];
             $corporationName = corpName($corporationID);
+            if (null === $corporationName) {
+                return $this->message->reply('**Error:** ESI is down. Try again later.');
+            }
             $corporationDetails = corpDetails($corporationID);
             $allianceID = $corporationDetails['alliance_id'];
             $allianceName = allianceName($allianceID);

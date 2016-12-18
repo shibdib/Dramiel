@@ -174,8 +174,15 @@ class authCheck
 
                 //Auth things
                 $character = characterDetails($charID);
+                //if issue with esi, skip
+                if (null === $character) {
+                    continue;
+                }
                 $corporationID = $character['corporation_id'];
                 $corporationDetails = corpDetails($corporationID);
+                if (null === $corporationDetails) {
+                    continue;
+                }
                 $allianceID = @$corporationDetails['alliance_id'];
                 if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray)) {
                     // Deactivate user in database
@@ -365,6 +372,9 @@ class authCheck
                         continue;
                     }
                     $corporationDetails = corpDetails($character['corporation_id']);
+                    if (null === $corporationDetails) {
+                        continue;
+                    }
                     $corpTicker = $corporationDetails['ticker'];
                     //Check for bad tickers (ESI ERROR?)
                     if (@$corpTicker === 'U') {
