@@ -56,7 +56,6 @@ class about
     public function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $info['guilds'] = $this->discord->guilds->count();
         $channelID = (int) $msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true))
@@ -88,7 +87,6 @@ Current Branch: ' . $gitBranch . "
 Github Repo: https://github.com/shibdib/Dramiel
 
 Statistics:
-Currently on {$info['guilds']} different discord servers.
 Up-time: " . $interval->y . ' Year(s), ' . $interval->m . ' Month(s), ' . $interval->d . ' Days, ' . $interval->h . ' Hours, ' . $interval->i . ' Minutes, ' . $interval->s . ' seconds.
 Memory Usage: ~' . round(memory_get_usage() / 1024 / 1024, 3) . 'MB```';
             $this->logger->addInfo("About: Sending about info to {$user}");
