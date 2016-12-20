@@ -55,9 +55,9 @@ $logger->addInfo('Logger Initiated');
 GLOBAL $logger;
 
 // Require the config
-if (file_exists('config/config.php')) {
+if (file_exists('../config/config.php')) {
     /** @noinspection PhpIncludeInspection */
-    require_once 'config/config.php';
+    require_once '../config/config.php';
 } else {
     $logger->error('config.php not found (you might wanna start by editing and renaming config_new.php)');
     die();
