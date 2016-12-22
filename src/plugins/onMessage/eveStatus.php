@@ -33,6 +33,7 @@ class eveStatus
     public $logger;
     public $message;
     private $excludeChannel;
+    private $triggers;
 
     /**
      * @param $config
@@ -45,6 +46,10 @@ class eveStatus
         $this->discord = $discord;
         $this->logger = $logger;
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'tq';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Tq';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'status';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Status';
     }
 
     /**
@@ -87,7 +92,7 @@ class eveStatus
     {
         return array(
             'name' => 'tq',
-            'trigger' => array($this->config['bot']['trigger'] . 'tq', $this->config['bot']['trigger'] . 'status'),
+            'trigger' => $this->triggers,
             'information' => 'Shows the current status of Tranquility'
         );
     }

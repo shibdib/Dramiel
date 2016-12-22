@@ -33,6 +33,7 @@ class corpInfo
     public $logger;
     private $excludeChannel;
     private $message;
+    private $triggers;
 
     /**
      * @param $config
@@ -45,6 +46,8 @@ class corpInfo
         $this->discord = $discord;
         $this->logger = $logger;
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'corp';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Corp';
     }
 
     /**
@@ -115,7 +118,7 @@ For more info, visit: $url";
     {
         return array(
             'name' => 'corp',
-            'trigger' => array($this->config['bot']['trigger'] . 'corp'),
+            'trigger' => $this->triggers,
             'information' => 'Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name'
         );
     }
