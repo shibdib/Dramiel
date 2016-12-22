@@ -105,9 +105,7 @@ function characterName($characterID)
     if (null === $character) { // Make sure it's always set.
         return null;
     }
-    $name = (string)$character['name'];
-
-    return $name;
+    return (string)$character['name'];
 }
 
 /**
