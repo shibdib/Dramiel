@@ -51,7 +51,7 @@ class fileReader
         $this->logger = $logger;
         $this->guild = $config['bot']['guild'];
         $this->channelConfig = $config['plugins']['fileReader']['channelConfig'];
-        $this->db = $config['plugins']['fileReader']['db'];
+        $this->db = $primary['plugins']['fileReader']['db'];
         if (!is_file($this->db)) {
             touch($this->db);
         }

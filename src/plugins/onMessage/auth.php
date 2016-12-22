@@ -60,7 +60,7 @@ class auth
         $this->dbName = $primary['database']['database'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
-        $this->ssoUrl = $config['plugins']['auth']['url'];
+        $this->ssoUrl = $primary['plugins']['auth']['url'];
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
         $this->guild = $config['bot']['guild'];
