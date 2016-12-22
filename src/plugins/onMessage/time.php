@@ -34,6 +34,7 @@ class time
     public $logger;
     public $message;
     private $excludeChannel;
+    private $triggers;
 
     /**
      * @param $config
@@ -47,6 +48,8 @@ class time
         $this->discord = $discord;
         $this->logger = $logger;
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'time';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Time';
     }
 
     /**
@@ -98,7 +101,7 @@ class time
     {
         return array(
             'name' => 'time',
-            'trigger' => array($this->config['bot']['trigger'] . 'time'),
+            'trigger' => $this->triggers,
             'information' => 'This shows the time for various timezones compared to EVE Time. To use simply type <!time>'
         );
     }

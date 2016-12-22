@@ -35,6 +35,7 @@ class charInfo
     public $logger;
     private $excludeChannel;
     private $message;
+    private $triggers;
 
     /**
      * @param $config
@@ -48,6 +49,8 @@ class charInfo
         $this->discord = $discord;
         $this->logger = $logger;
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'char';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Char';
     }
 
     /**
@@ -150,7 +153,7 @@ For more info, visit: $url";
     {
         return array(
             'name' => 'char',
-            'trigger' => array($this->config['bot']['trigger'] . 'char'),
+            'trigger' => $this->triggers,
             'information' => 'Returns basic EVE Online data about a character. To use simply type !char character_name'
         );
     }

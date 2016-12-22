@@ -42,6 +42,7 @@ class auth
     private $corpTickers;
     private $authGroups;
     private $guild;
+    private $triggers;
 
     /**
      * @param $config
@@ -64,6 +65,8 @@ class auth
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
         $this->guild = $config['bot']['guild'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'auth';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Auth';
     }
 
     /**
@@ -211,7 +214,7 @@ class auth
     {
         return array(
             'name' => 'auth',
-            'trigger' => array($this->config['bot']['trigger'] . 'auth'),
+            'trigger' => $this->triggers,
             'information' => 'SSO based auth system. ' . $this->ssoUrl . ' Visit the link and login with your main EVE account, select the correct character, and put the !auth <string> you receive in chat.'
         );
     }

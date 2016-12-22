@@ -49,6 +49,7 @@ class fleetUpOps
     private $guild;
     private $excludeChannel;
     private $message;
+    private $triggers;
 
     /**
      * @param $config
@@ -66,6 +67,8 @@ class fleetUpOps
         $this->apiKey = $config['plugins']['fleetUpOps']['apiKey'];
         $this->guild = $config['bot']['guild'];
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'auth';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Auth';
     }
 
     /**
@@ -128,7 +131,7 @@ Link - {$link}");
     {
         return array(
             'name' => 'ops',
-            'trigger' => array($this->config['bot']['trigger'] . 'ops'),
+            'trigger' => $this->triggers,
             'information' => 'This shows the upcoming operations. To use simply type <!ops>'
         );
     }

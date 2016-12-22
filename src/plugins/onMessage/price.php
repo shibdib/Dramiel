@@ -54,6 +54,11 @@ class price
         $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Amarr');
         $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Rens');
         $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Dodixie');
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Pc';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Jita';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Amarr';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Rens';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Dodixie';
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
     }
 

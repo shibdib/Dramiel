@@ -33,6 +33,7 @@ class help
     public $logger;
     private $excludeChannel;
     private $message;
+    private $triggers;
 
     /**
      * @param $config
@@ -46,6 +47,8 @@ class help
         $this->discord = $discord;
         $this->logger = $logger;
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'auth';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Auth';
     }
 
     /**
@@ -101,7 +104,7 @@ class help
     {
         return array(
             'name' => 'help',
-            'trigger' => array($this->config['bot']['trigger'] . 'help'),
+            'trigger' => $this->triggers,
             'information' => 'Shows help for a plugin, or all the plugins available. Example: **!help pc**'
         );
     }

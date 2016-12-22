@@ -33,6 +33,7 @@ class about
     public $logger;
     public $message;
     private $excludeChannel;
+    private $triggers;
 
     /**
      * @param $config
@@ -46,6 +47,8 @@ class about
         $this->discord = $discord;
         $this->logger = $logger;
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'about';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'About';
     }
 
     /**
@@ -103,7 +106,7 @@ Memory Usage: ~' . round(memory_get_usage() / 1024 / 1024, 3) . 'MB```';
     {
         return array(
             'name' => 'about',
-            'trigger' => array($this->config['bot']['trigger'] . 'about'),
+            'trigger' => $this->triggers,
             'information' => "Shows information on the bot, who created it, what library it's using, revision, and other stats. Example: !about"
         );
     }
