@@ -54,6 +54,7 @@ class authCheck
      * @param $config
      * @param $discord
      * @param $logger
+     * @param $primary
      */
     public function init($config, $primary, $discord, $logger)
     {
