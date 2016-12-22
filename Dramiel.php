@@ -62,7 +62,7 @@ if (file_exists('../config/config.php')) {
     $logger->error('config.php not found (you might wanna start by editing and renaming config_new.php)');
     die();
 }
-require_once 'config/primary.new.php';
+require_once 'config/primary.php';
 
 // Load the library files (Probably a prettier way to do this that i haven't thought up yet)
 foreach (glob(__DIR__ . '/src/lib/*.php') as $lib) {
