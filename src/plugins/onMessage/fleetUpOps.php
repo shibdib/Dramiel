@@ -66,8 +66,8 @@ class fleetUpOps
         $this->apiKey = $config['plugins']['fleetUpOps']['apiKey'];
         $this->guild = $config['bot']['guild'];
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
-        $this->triggers[] = $this->config['bot']['trigger'] . 'auth';
-        $this->triggers[] = $this->config['bot']['trigger'] . 'Auth';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'ops';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Ops';
     }
 
     /**

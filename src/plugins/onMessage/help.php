@@ -46,8 +46,8 @@ class help
         $this->discord = $discord;
         $this->logger = $logger;
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
-        $this->triggers[] = $this->config['bot']['trigger'] . 'auth';
-        $this->triggers[] = $this->config['bot']['trigger'] . 'Auth';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'help';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Help';
     }
 
     /**
