@@ -7,7 +7,7 @@
   "require": {
     "php": ">=5.6.0",
     "dg/twitter-php": "*",
-    "team-reflex/discord-php": "dev-develop",
+    "team-reflex/discord-php": "*",
     "monolog/monolog": "*",
     "ratchet/pawl": "*"
   }
