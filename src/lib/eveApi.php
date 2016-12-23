@@ -102,7 +102,7 @@ function characterName($characterID)
 {
     $character = characterDetails($characterID);
 
-    if (null === $character) { // Make sure it's always set.
+    if (null === $character['name']) { // Make sure it's always set.
         return null;
     }
     return (string)$character['name'];
@@ -124,6 +124,10 @@ function characterID($characterName)
         $json = file_get_contents($url);
         $data = json_decode($json, TRUE);
         $id = (int)$data['character'][0];
+
+        if (null === $id) { // Make sure it's always set.
+            return null;
+        }
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -172,6 +176,10 @@ function systemName($systemID)
         $data = json_decode($json, TRUE);
         $name = (string)$data['solar_system_name'];
 
+        if (null === $name) { // Make sure it's always set.
+            return null;
+        }
+
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
         return null;
@@ -197,6 +205,10 @@ function corpID($corpName)
         $data = json_decode($json, TRUE);
         $id = (int)$data['corporation'][0];
 
+        if (null === $id) { // Make sure it's always set.
+            return null;
+        }
+
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
         return null;
@@ -216,7 +228,7 @@ function corpName($corpID)
     $corporation = corpDetails($corpID);
     $name = (string)$corporation['corporation_name'];
 
-    if (null === $corporation) { // Make sure it's always set.
+    if (null === $name) { // Make sure it's always set.
         return null;
     }
 
