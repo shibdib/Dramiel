@@ -108,11 +108,11 @@ class siphons
             $rawGoo = array(16634, 16643, 16647, 16641, 16640, 16635, 16648, 16633, 16646, 16651, 16650, 16644, 16652, 16639, 16636, 16649, 16653, 16638, 16637, 16642);
             foreach ($xml->result->rowset->row as $structures) {
                 //Check silos
-                if ($structures->attributes()->typeID === 14343) {
+                if ((int)$structures->attributes()->typeID === 14343) {
                     if (isset($structures->rowset->row)) {
                         foreach ($structures->rowset->row as $silo) {
                             //Avoid reporting empty silos
-                            if ($silo->attributes()->quantity !== 0 && in_array($silo->attributes()->typeID, $rawGoo, false)) {
+                            if ((int)$silo->attributes()->quantity !== 0 && in_array($silo->attributes()->typeID, $rawGoo, false)) {
                                 $siloID = $structures->attributes()->itemID;
                                 $lastAmount = getPermCache("silo{$siloID}Amount");
                                 $gooAmount = $silo->attributes()->quantity;
@@ -140,11 +140,11 @@ class siphons
                         }
                     }
                 }
-                if ($structures->attributes()->typeID === 17982) {
+                if ((int)$structures->attributes()->typeID === 17982) {
                     if (isset($structures->rowset->row)) {
                         foreach ($structures->rowset->row as $coupling) {
                             //Avoid reporting empty coupling arrays
-                            if ($coupling->attributes()->quantity !== 0 && in_array($coupling->attributes()->typeID, $rawGoo, false)) {
+                            if ((int)$coupling->attributes()->quantity !== 0 && in_array($coupling->attributes()->typeID, $rawGoo, false)) {
                                 $couplingID = $structures->attributes()->itemID;
                                 $lastAmount = getPermCache("couplingArray{$couplingID}Amount");
                                 $gooAmount = $coupling->attributes()->quantity;
