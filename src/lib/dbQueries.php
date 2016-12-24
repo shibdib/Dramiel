@@ -147,12 +147,12 @@ function getPendingUser($code)
     return dbQueryRow('SELECT * FROM pendingUsers WHERE `authString` = :authString AND `active` = :active', array(':authString' => $code, ':active' => $active), $db);
 }
 
-function insertNewUser($userID, $charID, $eveName, $authString, $role = 'corp')
+function insertNewUser($userID, $charID, $eveName, $id, $role = 'corp')
 {
     $active = 'yes';
     $db = '1';
     dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => $eveName, ':active' => $active, ':role' => $role), $db);
-    dbExecute('REPLACE into pendingUsers (`active`) VALUES (:active) WHERE `authString` = :authString ', array(':active' => $active, ':authString' => $authString), $db);
+    dbExecute('DELETE from pendingUsers WHERE `id` = :id', array(':id' => $id), $db);
 }
 
 function disableUser($discordID)

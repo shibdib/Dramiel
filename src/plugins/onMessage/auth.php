@@ -109,6 +109,7 @@ class auth
 
             while ($rows = $result) {
                 $charID = (int) $rows['characterID'];
+                $id = (int)$rows['id'];
                 $corpID = (int) $rows['corporationID'];
                 $allianceID = (int) $rows['allianceID'];
 
@@ -173,9 +174,10 @@ class auth
                         /** @noinspection NotOptimalIfConditionsInspection */
                         if ($allianceRoleSet === 1) {
                             $group = 'alliance';
-                            insertNewUser($userID, $charID, $eveName, $code, $group);
+                            insertNewUser($userID, $charID, $eveName, $id, $group);
                         } else {
-                            insertNewUser($userID, $charID, $eveName, $code);
+                            $group = 'corp';
+                            insertNewUser($userID, $charID, $eveName, $id, $group);
                         }
                         $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
                         $this->logger->addInfo("auth: {$eveName} authed");
