@@ -35,11 +35,6 @@ class authCheck
      * @var
      */
     private $config;
-    private $db;
-    private $dbUser;
-    private $dbPass;
-    private $dbName;
-    private $mysql;
     private $guildID;
     private $corpTickers;
     private $authGroups;
@@ -56,7 +51,7 @@ class authCheck
      * @param $discord
      * @param $logger
      */
-    public function init($config, $discord, $logger)
+    public function init($config, $primary, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -155,11 +150,10 @@ class authCheck
         }
 
         if (count($result) >= 1) {
-            while ($rows = $result) {
+            foreach ($result as $rows) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get('id', $discordID);
-                $eveName = $rows['eveName'];
                 //Check if member has roles
                 if (null === @$member->roles) {
                     continue;
@@ -212,9 +206,6 @@ class authCheck
             setPermCache('authStateLastChecked', $nextCheck);
             return null;
         }
-
-        //Establish connection to mysql
-        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
 
         //get bot ID so we don't remove out own roles
         $botID = $this->discord->id;
@@ -291,7 +282,7 @@ class authCheck
         }
 
         if (count($result) >= 1) {
-            while ($rows = $result) {
+            foreach ($result as $rows) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get('id', $discordID);
