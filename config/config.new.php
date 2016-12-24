@@ -143,7 +143,7 @@ $config['plugins'] = array(
     //SSO Auth
     'auth' => array(
         'url' => 'http://.....', // put a url here if using sso auth for ur sso page.
-        'exempt' => array('', ''), // role names that are exempt from auth checks (wont be removed by the bot)
+        'exempt' => array('admin', 'bot'), // role names that are exempt from auth checks (wont be removed by the bot)
         'alertChannel' => 0, // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
         'corpTickers' => 'false', // if "true" bot will automatically add corp tickers to the front of users names at auth.
         'nameEnforce' => 'false', // if "true" bot will automatically rename users to match their ingame name, can be used in conjunction with corpTickers.

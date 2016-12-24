@@ -39,6 +39,7 @@ class authCheck
     private $dbUser;
     private $dbPass;
     private $dbName;
+    private $mysql;
     private $guildID;
     private $corpTickers;
     private $authGroups;
@@ -54,17 +55,12 @@ class authCheck
      * @param $config
      * @param $discord
      * @param $logger
-     * @param $primary
      */
-    public function init($config, $primary, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->db = $primary['database']['host'];
-        $this->dbUser = $primary['database']['user'];
-        $this->dbPass = $primary['database']['pass'];
-        $this->dbName = $primary['database']['database'];
         $this->guildID = $config['bot']['guild'];
         $this->exempt = $config['plugins']['auth']['exempt'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
@@ -132,12 +128,8 @@ class authCheck
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
-        //Establish connection to mysql
-        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
-
-        $sql = "SELECT characterID, discordID, eveName FROM authUsers WHERE active='yes'";
-
-        $result = $conn->query($sql);
+        //get auth users
+        $result = getAuthUsers();
 
         //Set empty arrays
         $corpArray = array();
@@ -162,8 +154,8 @@ class authCheck
             }
         }
 
-        if ($result->num_rows >= 1) {
-            while ($rows = $result->fetch_assoc()) {
+        if (count($result) >= 1) {
+            while ($rows = $result) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get('id', $discordID);
@@ -187,9 +179,7 @@ class authCheck
                 $allianceID = @$corporationDetails['alliance_id'];
                 if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray)) {
                     // Deactivate user in database
-                    $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-                    $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
-                    $conn->query($sql);
+                    disableUser($discordID);
                     continue;
                 }
             }
@@ -254,11 +244,10 @@ class authCheck
             if (null === $roles) {
                 continue;
             }
-            $sql = "SELECT * FROM authUsers WHERE discordID='$id' AND active='yes'";
-            $result = $conn->query($sql);
+            $result = getAuthUser($id);
 
             //If they are NOT active in the db, check for roles to remove
-            if ($result->num_rows === 0) {
+            if (null === $result) {
                 $userCount++;
                 foreach ($roles as $role) {
                     if ($id !== $botID && !in_array($role->name, $this->exempt, true)) {
@@ -290,22 +279,7 @@ class authCheck
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
-        //Get name queue status
-        $x = (int)getPermCache('nameQueueState');
-
-        //Establish connection to mysql
-        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
-        $sql = "SELECT id FROM authUsers WHERE active='yes'";
-        $count = $conn->query($sql);
-        $rowAmount = round($count->num_rows / 2);
-        if ($x === 1) {
-            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$rowAmount} OFFSET {$rowAmount}";
-            setPermCache('nameQueueState', 0);
-        } else {
-            $sql = "SELECT characterID, discordID, eveName  FROM authUsers WHERE active='yes' ORDER BY id ASC LIMIT {$rowAmount}";
-            setPermCache('nameQueueState', 1);
-        }
-        $result = $conn->query($sql);
+        $result = getAuthUsers();
 
         // If config is outdated
         if (null === $this->authGroups) {
@@ -316,8 +290,8 @@ class authCheck
             return null;
         }
 
-        if (@$result->num_rows >= 1) {
-            while ($rows = $result->fetch_assoc()) {
+        if (count($result) >= 1) {
+            while ($rows = $result) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get('id', $discordID);

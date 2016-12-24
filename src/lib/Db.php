@@ -27,14 +27,19 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 /**
+ * @param int $db
  * @return null|PDO
  * @internal param null|string $db
  */
-function openDB()
+function openDB($db = null)
 {
     $logger = new Logger('Db');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
-    $db = __DIR__ . '/../../database/dramiel.sqlite';
+    if (null !== $db) {
+        $db = __DIR__ . '/../../database/authDB.sqlite';
+    } else {
+        $db = __DIR__ . '/../../database/dramiel.sqlite';
+    }
 
     $dsn = "sqlite:$db";
     try {
@@ -57,13 +62,14 @@ function openDB()
  * @param string $query
  * @param string $field
  * @param array $params
+ * @param null $db
  * @return string
  * @internal param string $db
  */
-function dbQueryField($query, $field, array $params = array())
+function dbQueryField($query, $field, array $params = array(), $db = null)
 {
-    $pdo = openDB();
-    if ($pdo == NULL) {
+    $pdo = openDB($db);
+    if ($pdo === NULL) {
         return null;
     }
 
@@ -84,13 +90,14 @@ function dbQueryField($query, $field, array $params = array())
 /**
  * @param string $query
  * @param array $params
+ * @param null $db
  * @return null|void
  * @internal param string $db
  */
-function dbQueryRow($query, array $params = array())
+function dbQueryRow($query, array $params = array(), $db = null)
 {
-    $pdo = openDB();
-    if ($pdo == NULL) {
+    $pdo = openDB($db);
+    if ($pdo === NULL) {
         return null;
     }
 
@@ -103,19 +110,25 @@ function dbQueryRow($query, array $params = array())
     if (count($result) >= 1) {
         return $result[0];
     }
+
+    if (count($result) === 0) {
+        return null;
+    }
+
     return null;
 }
 
 /**
  * @param string $query
  * @param array $params
+ * @param null $db
  * @return array|void
  * @internal param string $db
  */
-function dbQuery($query, array $params = array())
+function dbQuery($query, array $params = array(), $db = null)
 {
-    $pdo = openDB();
-    if ($pdo == NULL) {
+    $pdo = openDB($db);
+    if ($pdo === NULL) {
         return null;
     }
 
@@ -131,12 +144,13 @@ function dbQuery($query, array $params = array())
 /**
  * @param string $query
  * @param array $params
+ * @param null $db
  * @internal param string $db
  */
-function dbExecute($query, array $params = array())
+function dbExecute($query, array $params = array(), $db = null)
 {
-    $pdo = openDB();
-    if ($pdo == NULL) {
+    $pdo = openDB($db);
+    if ($pdo === NULL) {
         return;
     }
 

@@ -55,10 +55,6 @@ class auth
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->db = $primary['database']['host'];
-        $this->dbUser = $primary['database']['user'];
-        $this->dbPass = $primary['database']['pass'];
-        $this->dbName = $primary['database']['database'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
         $this->ssoUrl = $primary['plugins']['auth']['url'];
@@ -104,14 +100,14 @@ class auth
             }
 
             $code = $data['messageString'];
-            $result = selectPending($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
+            $result = getPendingUser($code);
 
             if (strlen($code) < 12) {
                 $this->message->reply('Invalid Code, check ' . $this->config['bot']['trigger'] . 'help auth for more info.');
                 return null;
             }
 
-            while ($rows = $result->fetch_assoc()) {
+            while ($rows = $result) {
                 $charID = (int) $rows['characterID'];
                 $corpID = (int) $rows['corporationID'];
                 $allianceID = (int) $rows['allianceID'];
@@ -174,8 +170,13 @@ class auth
                     }
                     if ($allianceRoleSet === 1 || $corpRoleSet === 1) {
                         $guild = $this->discord->guilds->get('id', $guildID);
-                        insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'corp');
-                        disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
+                        /** @noinspection NotOptimalIfConditionsInspection */
+                        if ($allianceRoleSet === 1) {
+                            $group = 'alliance';
+                            insertNewUser($userID, $charID, $eveName, $code, $group);
+                        } else {
+                            insertNewUser($userID, $charID, $eveName, $code);
+                        }
                         $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
                         $this->logger->addInfo("auth: {$eveName} authed");
                         $this->message->reply($msg);
