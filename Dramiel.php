@@ -71,6 +71,7 @@ foreach (glob(__DIR__ . '/src/lib/*.php') as $lib) {
 
 //Startup DB Check
 updateDramielDB($logger);
+authDB($logger);
 
 // Init Discord
 $discord = new Discord(['token' => $primary['bot']['token']]);

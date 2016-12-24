@@ -39,7 +39,8 @@ function authDB($logger)
                 `characterID` VARCHAR(255) NOT NULL UNIQUE,
                 `discordID` VARCHAR(255) NOT NULL,
                 `role` VARCHAR(255) NOT NULL,
-                `active` VARCHAR(255) NOT NULL DEFAULT \'yes\'
+                `active` VARCHAR(255) NOT NULL DEFAULT \'yes\',
+	            `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             COMMIT;',
         'pendingUsers' => '
@@ -50,7 +51,8 @@ function authDB($logger)
                 `corporationID` VARCHAR(255) NOT NULL,
                 `allianceID` VARCHAR(255) NOT NULL,
                 `authString` VARCHAR(255) NOT NULL,
-                `active` VARCHAR(255) NOT NULL
+                `active` VARCHAR(255) NOT NULL,
+	            `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             COMMIT;',
     );
