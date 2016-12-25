@@ -34,31 +34,32 @@ function authDB($logger)
         'authUsers' => '
             BEGIN;
             CREATE TABLE IF NOT EXISTS `authUsers` (
-                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                `eveName` VARCHAR(255) NOT NULL,
-                `characterID` VARCHAR(255) NOT NULL UNIQUE,
-                `discordID` VARCHAR(255) NOT NULL,
-                `role` VARCHAR(255) NOT NULL,
-                `active` VARCHAR(255) NOT NULL DEFAULT \'yes\',
-	            `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+	            `id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	            `eveName`	varchar(365) NOT NULL,
+	            `characterID`	varchar(64) NOT NULL,
+	            `discordID`	varchar(64) NOT NULL,
+	            `role`	varchar(64) NOT NULL,
+	            `active`	varchar(10) NOT NULL DEFAULT \'yes\',
+	            `addedOn`	timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             COMMIT;',
         'pendingUsers' => '
             BEGIN;
             CREATE TABLE IF NOT EXISTS `pendingUsers` (
-                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                `characterID` VARCHAR(255) NOT NULL,
-                `corporationID` VARCHAR(255) NOT NULL,
-                `allianceID` VARCHAR(255) NOT NULL,
-                `authString` VARCHAR(255) NOT NULL,
-                `active` VARCHAR(255) NOT NULL,
-	            `addedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+	            `id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	            `characterID`	varchar(128) NOT NULL,
+	            `corporationID`	varchar(128) NOT NULL,
+	            `allianceID`	varchar(128) NOT NULL,
+	            `authString`	varchar(128) NOT NULL,
+	            `active`	varchar(128) NOT NULL,
+	            `dateCreated`	timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             COMMIT;',
     );
 
     if (!file_exists(__DIR__ . '/../../database/authDB.sqlite')) {
         touch(__DIR__ . '/../../database/authDB.sqlite');
+        $logger->addInfo('Creating authDB.sqlite, since it does not exist');
     }
 
     // Create table if not exists
@@ -66,7 +67,7 @@ function authDB($logger)
         $exists = dbQueryField("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :name", 'name', array(':name' => $table));
         if (!$exists) {
             $logger->addInfo("Creating {$table} in authDB.sqlite, since it does not exist");
-            dbExecute(trim($tableCreateCode[$table]));
+            dbExecute(trim($tableCreateCode[$table]), array(), '1');
         }
     }
 }
