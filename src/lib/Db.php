@@ -115,7 +115,7 @@ function dbQueryRow($query, array $params = array())
 function dbQuery($query, array $params = array())
 {
     $pdo = openDB();
-    if ($pdo == NULL) {
+    if ($pdo === NULL) {
         return null;
     }
 
@@ -136,7 +136,7 @@ function dbQuery($query, array $params = array())
 function dbExecute($query, array $params = array())
 {
     $pdo = openDB();
-    if ($pdo == NULL) {
+    if ($pdo === NULL) {
         return;
     }
 
@@ -255,4 +255,10 @@ function dbPrune()
 function addContactInfo($contactID, $contactName, $standing)
 {
     dbExecute('REPLACE INTO contactList (`contactID`, `contactName`, `standing`) VALUES (:contactID,:contactName,:standing)', array(':contactID' => $contactID, ':contactName' => $contactName, ':standing' => $standing));
+}
+
+//Get Contacts
+function getContacts($contactID)
+{
+    return dbQueryRow('SELECT * FROM contactList WHERE `contactID` = :contactID', array(':contactID' => $contactID));
 }
