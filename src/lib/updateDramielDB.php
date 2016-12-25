@@ -26,7 +26,7 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array('storage', 'messageQueue', 'renameQueue', 'corpCache');
+    $tables = array('storage', 'messageQueue', 'renameQueue', 'corpCache', 'contactList');
 
     $tableCreateCode = array(
         'storage' => '
@@ -63,6 +63,15 @@ function updateDramielDB($logger)
                 `corpID` VARCHAR(255) NOT NULL UNIQUE,
                 `corpTicker` VARCHAR(255) NOT NULL,
                 `corpName` VARCHAR(255) NOT NULL
+            );
+            COMMIT;',
+        'contactList' => '
+            BEGIN;
+            CREATE TABLE IF NOT EXISTS `contactList` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                `contactID` VARCHAR(255) NOT NULL UNIQUE,
+                `contactName` VARCHAR(255) NOT NULL,
+                `standing` VARCHAR(255) NOT NULL
             );
             COMMIT;',
     );

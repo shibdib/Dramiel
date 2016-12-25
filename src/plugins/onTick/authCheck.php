@@ -42,7 +42,9 @@ class authCheck
     private $alertChannel;
     private $guild;
     private $nameEnforce;
+    private $standingsBased;
     private $nameCheck;
+    private $apiKey;
     private $discord;
     private $logger;
 
@@ -60,6 +62,8 @@ class authCheck
         $this->exempt = $config['plugins']['auth']['exempt'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
+        $this->standingsBased = $config['plugins']['auth']['standings']['enabled'];
+        $this->apiKey = $config['eve']['apiKeys'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
         $this->alertChannel = $config['plugins']['auth']['alertChannel'];
         $this->guild = $config['bot']['guild'];
@@ -92,6 +96,7 @@ class authCheck
             $permsChecked = getPermCache('permsLastChecked');
             $stateChecked = getPermCache('authStateLastChecked');
             $namesChecked = getPermCache('nextRename');
+            $standingsChecked = getPermCache('nextStandingsCheck');
 
             if ($permsChecked <= time()) {
                 $this->logger->addInfo('AuthCheck: Checking for users who have left corp/alliance....');
@@ -109,6 +114,12 @@ class authCheck
                 $this->logger->addInfo('AuthCheck: Resetting player names....');
                 $this->nameReset();
                 $this->logger->addInfo('AuthCheck: Names reset.');
+            }
+
+            if ($this->standingsBased === 'true' && $standingsChecked <= time()) {
+                $this->logger->addInfo('AuthCheck: Updating Standings');
+                $this->standingsUpdate();
+                $this->logger->addInfo('AuthCheck: Standings Updated');
             }
         }
     }
@@ -153,6 +164,7 @@ class authCheck
             foreach ($result as $rows) {
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
+                $role = $rows['role'];
                 $member = $guild->members->get('id', $discordID);
                 //Check if member has roles
                 if (null === @$member->roles) {
@@ -171,7 +183,23 @@ class authCheck
                     continue;
                 }
                 $allianceID = @$corporationDetails['alliance_id'];
-                if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray)) {
+
+                //check if user authed based on standings
+                $standings = null;
+                if ($role === 'blue' || 'neut' || 'red') {
+                    $allianceContacts = getContacts($allianceID);
+                    $corpContacts = getContacts($corporationID);
+                    if ($role === 'blue' && ($allianceContacts['standings'] || $corpContacts['standings'] === 5 || 10)) {
+                        $standings = 1;
+                    }
+                    if ($role === 'red' && ($allianceContacts['standings'] || $corpContacts['standings'] === -5 || -10)) {
+                        $standings = 1;
+                    }
+                    if ($role === 'neut' && ($allianceContacts['standings'] || $corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || ''))) {
+                        $standings = 1;
+                    }
+                }
+                if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray) && null === $standings) {
                     // Deactivate user in database
                     disableUser($discordID);
                     continue;
@@ -379,5 +407,27 @@ class authCheck
         setPermCache('nextRename', $nextCheck);
         return null;
 
+    }
+
+    private function standingsUpdate()
+    {
+        foreach ($this->apiKey as $apiKey) {
+            if ($apiKey['keyID'] === $this->config['plugins']['auth']['standings']['apiKey']) {
+                $url = "https://api.eveonline.com/char/ContactList.xml.aspx?keyID={$apiKey['keyID']}&vCode={$apiKey['vCode']}&characterID={$apiKey['characterID']}";
+                $xml = makeApiRequest($url);
+                if (empty($xml)) {
+                    return null;
+                }
+                foreach ($xml->result->rowset as $contactType) {
+                    if ((string)$contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
+                        foreach ($contactType->row as $contact) {
+                            addContactInfo($contact['contactID'], $contact['contactName'], $contact['standing']);
+                        }
+                    }
+                }
+            }
+        }
+        $nextCheck = time() + 86400;
+        setPermCache('nextStandingsCheck', $nextCheck);
     }
 }
