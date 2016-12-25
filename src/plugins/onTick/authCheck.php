@@ -446,7 +446,7 @@ class authCheck
     private function standingsUpdate()
     {
         foreach ($this->apiKey as $apiKey) {
-            if ($apiKey['keyID'] === $this->config['plugins']['auth']['standings']['apiKey']) {
+            if ((string)$apiKey['keyID'] === (string)$this->config['plugins']['auth']['standings']['apiKey']) {
                 $url = "https://api.eveonline.com/char/ContactList.xml.aspx?keyID={$apiKey['keyID']}&vCode={$apiKey['vCode']}&characterID={$apiKey['characterID']}";
                 $xml = makeApiRequest($url);
                 if (empty($xml)) {
@@ -455,7 +455,9 @@ class authCheck
                 foreach ($xml->result->rowset as $contactType) {
                     if ((string)$contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
                         foreach ($contactType->row as $contact) {
-                            addContactInfo($contact['contactID'], $contact['contactName'], $contact['standing']);
+                            if (null !== $contact['contactID'] && $contact['contactName'] && $contact['standing']) {
+                                addContactInfo($contact['contactID'], $contact['contactName'], $contact['standing']);
+                            }
                         }
                     }
                 }
