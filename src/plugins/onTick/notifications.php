@@ -174,10 +174,22 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 5: // War Declared
-                            $defAllianceID = trim(explode(': ', $notificationString[0])[1]);
-                            $aggAllianceID = trim(explode(': ', $notificationString[2])[1]);
-                            $defAllianceName = allianceName($defAllianceID);
-                            $aggAllianceName = allianceName($aggAllianceID);
+                            $aggAllianceName = 'Unknown';
+                            $defAllianceName = 'Unknown';
+                            if (preg_match('/againstID: (\d+)/', implode(" ", $notificationString), $matches)) {
+                                $defAllianceID = $matches[1];
+                                $defAllianceName = allianceName($defAllianceID);
+                                if ($defAllianceName === 'Unknown') {
+                                    $defAllianceName = corpName($defAllianceID);
+                                }
+                            }
+                            if (preg_match('/declaredByID: (\d+)/', implode(" ", $notificationString), $matches)) {
+                                $aggAllianceID = $matches[1];
+                                $aggAllianceName = allianceName($aggAllianceID);
+                                if ($aggAllianceName === 'Unknown') {
+                                    $aggAllianceName = corpName($aggAllianceID);
+                                }
+                            }
                             $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 6: // Corp joins war (Not enough info in api to say who the 3rd party is)
@@ -368,6 +380,33 @@ class notifications
                             $aggCorpName = corpName($aggCorpID);
                             $defCorpName = corpName($defCorpID);
                             $msg = "{$aggCorpName} has joined the war against {$defCorpName}.";
+                            break;
+                        case 101: // corp joins war
+                            $aggCorpName = 'Unknown';
+                            $thirdCorpName = 'Unknown';
+                            $defCorpName = 'Unknown';
+                            if (preg_match('/defenderID: (\d+)/', implode(" ", $notificationString), $matches)) {
+                                $defCorpID = $matches[1];
+                                $defCorpName = allianceName($defCorpID);
+                                if ($defCorpName === 'Unknown') {
+                                    $defCorpName = corpName($defCorpID);
+                                }
+                            }
+                            if (preg_match('/aggressorID: (\d+)/', implode(" ", $notificationString), $matches)) {
+                                $aggCorpID = $matches[1];
+                                $aggCorpName = allianceName($aggCorpID);
+                                if ($aggCorpName === 'Unknown') {
+                                    $aggCorpName = corpName($aggCorpID);
+                                }
+                            }
+                            if (preg_match('/allyID: (\d+)/', implode(" ", $notificationString), $matches)) {
+                                $thirdCorpID = $matches[1];
+                                $thirdCorpName = allianceName($thirdCorpID);
+                                if ($thirdCorpName === 'Unknown') {
+                                    $thirdCorpName = corpName($thirdCorpID);
+                                }
+                            }
+                            $msg = "{$thirdCorpName} has joined the war involving {$defCorpName} and {$aggCorpName}.";
                             break;
                         case 102: // War support offer? I think?
                             $msg = 'skip';
