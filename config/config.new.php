@@ -161,7 +161,16 @@ $config['plugins'] = array(
                 'corpMemberRole' => '', // The name of the role your CORP members will be assigned too if the auth plugin is active.
                 'allyMemberRole' => '', // The name of the role your ALLIANCE members will be assigned too if the auth plugin is active.
             )
-        )
+        ),
+        'standings' => array(
+            'enabled' => 'false',
+            'apiKey' => 'user1',
+            'plus10Role' => '',
+            'plus5Role' => '',
+            'neutralRole' => '',
+            'minus10Role' => '',
+            'minus5Role' => '',
+        ),
     ),
     //Killmail posting
     'getKillmails' => array(

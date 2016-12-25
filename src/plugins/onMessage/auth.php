@@ -41,6 +41,7 @@ class auth
     private $ssoUrl;
     private $corpTickers;
     private $authGroups;
+    private $standingsBased;
     private $guild;
     private $triggers;
 
@@ -63,6 +64,7 @@ class auth
         $this->ssoUrl = $config['plugins']['auth']['url'];
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
+        $this->standingsBased = $config['plugins']['auth']['standings']['enabled'];
         $this->guild = $config['bot']['guild'];
         $this->triggers[] = $this->config['bot']['trigger'] . 'auth';
         $this->triggers[] = $this->config['bot']['trigger'] . 'Auth';
@@ -141,9 +143,7 @@ class auth
                 if ($this->nameEnforce === 'true') {
                     $nameEnforce = 1;
                 }
-
-                $allianceRoleSet = 0;
-                $corpRoleSet = 0;
+                $role = null;
 
                 $roles = @$this->message->channel->guild->roles;
                 $member = @$this->message->channel->guild->members->get('id', $userID);
@@ -158,7 +158,7 @@ class auth
                         foreach ($roles as $role) {
                             if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
                                 $member->addRole($role);
-                                $corpRoleSet = 1;
+                                $role = 'corp';
                             }
                         }
                     }
@@ -167,13 +167,40 @@ class auth
                         foreach ($roles as $role) {
                             if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
                                 $member->addRole($role);
-                                $allianceRoleSet = 1;
+                                $role = 'ally';
                             }
                         }
                     }
-                    if ($allianceRoleSet === 1 || $corpRoleSet === 1) {
+                    //check for standings based roles
+                    if ($this->standingsBased === 'true' && $role === null) {
+                        $allianceContacts = getContacts($allianceID);
+                        $corpContacts = getContacts($corpID);
+                        foreach ($roles as $role) {
+                            if ((@(int)$allianceContacts['standings'] === 5 || @(int)$corpContacts['standings'] === 5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus5Role']) {
+                                $member->addRole($role);
+                                $role = 'blue';
+                            }
+                            if ((@(int)$allianceContacts['standings'] === 10 || @(int)$corpContacts['standings'] === 10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus10Role']) {
+                                $member->addRole($role);
+                                $role = 'blue';
+                            }
+                            if ((@(int)$allianceContacts['standings'] === 0 || @(int)$corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || '')) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
+                                $member->addRole($role);
+                                $role = 'neut';
+                            }
+                            if ((@(int)$allianceContacts['standings'] === -5 || @(int)$corpContacts['standings'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
+                                $member->addRole($role);
+                                $role = 'red';
+                            }
+                            if ((@(int)$allianceContacts['standings'] === -10 || @(int)$corpContacts['standings'] === -10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus10Role']) {
+                                $member->addRole($role);
+                                $role = 'red';
+                            }
+                        }
+                    }
+                    if (null !== $role) {
                         $guild = $this->discord->guilds->get('id', $guildID);
-                        insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, 'corp');
+                        insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, $role);
                         disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                         $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
                         $this->logger->addInfo("auth: {$eveName} authed");
