@@ -276,3 +276,40 @@ function getContacts($contactID)
 {
     return dbQueryRow('SELECT * FROM contactList WHERE `contactID` = :contactID', array(':contactID' => $contactID));
 }
+
+//AUTH
+function getAuthUsers()
+{
+    $active = 'yes';
+    $db = '1';
+    return dbQuery('SELECT * FROM authUsers WHERE `active` = :active', array(':active' => $active), $db);
+}
+
+function getAuthUser($discordID)
+{
+    $active = 'yes';
+    $db = '1';
+    return dbQueryRow('SELECT * FROM authUsers WHERE `discordID` = :discordID AND `active` = :active', array(':discordID' => $discordID, ':active' => $active), $db);
+}
+
+function getPendingUser($code)
+{
+    $active = '1';
+    $db = '1';
+    return dbQueryRow('SELECT * FROM pendingUsers WHERE `authString` = :authString AND `active` = :active', array(':authString' => $code, ':active' => $active), $db);
+}
+
+function insertNewUser($userID, $charID, $eveName, $id, $role = 'corp')
+{
+    $active = 'yes';
+    $db = '1';
+    dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => $eveName, ':active' => $active, ':role' => $role), $db);
+    dbExecute('DELETE from pendingUsers WHERE `id` = :id', array(':id' => $id), $db);
+}
+
+function disableUser($discordID)
+{
+    $active = 'no';
+    $db = '1';
+    dbExecute('REPLACE INTO authUsers (`active`)  VALUES (:active) WHERE `discordID` = :active', array(':active' => $active, ':discordID' => $discordID), $db);
+}

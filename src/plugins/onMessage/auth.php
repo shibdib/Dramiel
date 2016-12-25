@@ -56,10 +56,6 @@ class auth
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->db = $config['database']['host'];
-        $this->dbUser = $config['database']['user'];
-        $this->dbPass = $config['database']['pass'];
-        $this->dbName = $config['database']['database'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
         $this->ssoUrl = $primary['plugins']['auth']['url'];
@@ -202,14 +198,7 @@ class auth
                     }
                     if (null !== $role) {
                         $guild = $this->discord->guilds->get('id', $guildID);
-                        /** @noinspection NotOptimalIfConditionsInspection */
-                        if ($allianceRoleSet === 1) {
-                            $group = 'alliance';
-                            insertNewUser($userID, $charID, $eveName, $id, $group);
-                        } else {
-                            $group = 'corp';
-                            insertNewUser($userID, $charID, $eveName, $id, $group);
-                        }
+                        insertNewUser($userID, $charID, $eveName, $id, $role);
                         $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
                         $this->logger->addInfo("auth: {$eveName} authed");
                         $this->message->reply($msg);
