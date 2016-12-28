@@ -172,6 +172,10 @@ class getKillmailsRedis
                 $victimCorpName = @$kill['killmail']['victim']['corporation']['name'];
                 $shipName = @$kill['killmail']['victim']['shipType']['name'];
                 $rawValue = $kill['zkb']['totalValue'];
+                //Check if killmail is older than 2 days
+                if ((time() - (60 * 60 * 48)) > strtotime($killTime)) {
+                    continue;
+                }
                 //Check if killmail meets minimum value
                 if (isset($kmGroup['minimumValue'])) {
                     if ($rawValue < $kmGroup['minimumValue']) {
