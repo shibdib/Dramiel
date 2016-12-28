@@ -173,7 +173,7 @@ class getKillmailsRedis
                 $shipName = @$kill['killmail']['victim']['shipType']['name'];
                 $rawValue = $kill['zkb']['totalValue'];
                 //Check if killmail is older than 2 days
-                if ((time() - (60 * 60 * 48)) > strtotime($killTime)) {
+                if ((time() - (60 * 60 * 48)) > DateTime::createFromFormat('Y.m.d H:i:s', $killTime)->getTimestamp()) {
                     continue;
                 }
                 //Check if killmail meets minimum value
