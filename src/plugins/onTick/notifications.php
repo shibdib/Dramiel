@@ -174,21 +174,23 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 5: // War Declared
-                            $aggAllianceName = 'Unknown';
-                            $defAllianceName = 'Unknown';
-                            if (preg_match('/againstID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $defAllianceID = $matches[1];
-                                $defAllianceName = allianceName($defAllianceID);
-                                if ($defAllianceName === 'Unknown') {
-                                    $defAllianceName = corpName($defAllianceID);
-                                }
+                            $result = preg_split('/againstID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $defAllianceID = $result_split[1];
                             }
-                            if (preg_match('/declaredByID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $aggAllianceID = $matches[1];
-                                $aggAllianceName = allianceName($aggAllianceID);
-                                if ($aggAllianceName === 'Unknown') {
-                                    $aggAllianceName = corpName($aggAllianceID);
-                                }
+                            $defAllianceName = allianceName($defAllianceID);
+                            if ($defAllianceName === 'Unknown') {
+                                $defAllianceName = corpName($defAllianceID);
+                            }
+                            $result = preg_split('/declaredByID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $aggAllianceID = $result_split[1];
+                            }
+                            $aggAllianceName = allianceName($aggAllianceID);
+                            if ($aggAllianceName === 'Unknown') {
+                                $aggAllianceName = corpName($aggAllianceID);
                             }
                             $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
                             break;
@@ -207,21 +209,23 @@ class notifications
                             $msg = "@everyone | War declared by {$aggCorpName} against {$defCorpName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 8: // Alliance war invalidated by CONCORD
-                            $aggAllianceName = 'Unknown';
-                            $defAllianceName = 'Unknown';
-                            if (preg_match('/againstID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $defAllianceID = $matches[1];
-                                $defAllianceName = allianceName($defAllianceID);
-                                if ($defAllianceName === 'Unknown') {
-                                    $defAllianceName = corpName($defAllianceID);
-                                }
+                            $result = preg_split('/againstID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $defAllianceID = $result_split[1];
                             }
-                            if (preg_match('/declaredByID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $aggAllianceID = $matches[1];
-                                $aggAllianceName = allianceName($aggAllianceID);
-                                if ($aggAllianceName === 'Unknown') {
-                                    $aggAllianceName = corpName($aggAllianceID);
-                                }
+                            $defAllianceName = allianceName($defAllianceID);
+                            if ($defAllianceName === 'Unknown') {
+                                $defAllianceName = corpName($defAllianceID);
+                            }
+                            $result = preg_split('/declaredByID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $aggAllianceID = $result_split[1];
+                            }
+                            $aggAllianceName = allianceName($aggAllianceID);
+                            if ($aggAllianceName === 'Unknown') {
+                                $aggAllianceName = corpName($aggAllianceID);
                             }
                             $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
                             break;
@@ -396,29 +400,32 @@ class notifications
                             $msg = "{$aggCorpName} has joined the war against {$defCorpName}.";
                             break;
                         case 101: // corp joins war
-                            $aggCorpName = 'Unknown';
-                            $thirdCorpName = 'Unknown';
-                            $defCorpName = 'Unknown';
-                            if (preg_match('/defenderID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $defCorpID = $matches[1];
-                                $defCorpName = allianceName($defCorpID);
-                                if ($defCorpName === 'Unknown') {
-                                    $defCorpName = corpName($defCorpID);
-                                }
+                            $result = preg_split('/defenderID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $defCorpID = $result_split[1];
                             }
-                            if (preg_match('/aggressorID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $aggCorpID = $matches[1];
-                                $aggCorpName = allianceName($aggCorpID);
-                                if ($aggCorpName === 'Unknown') {
-                                    $aggCorpName = corpName($aggCorpID);
-                                }
+                            $defCorpName = allianceName($defCorpID);
+                            if ($defCorpName === 'Unknown') {
+                                $defCorpName = corpName($defCorpID);
                             }
-                            if (preg_match('/allyID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $thirdCorpID = $matches[1];
-                                $thirdCorpName = allianceName($thirdCorpID);
-                                if ($thirdCorpName === 'Unknown') {
-                                    $thirdCorpName = corpName($thirdCorpID);
-                                }
+                            $result = preg_split('/aggressorID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $aggCorpID = $result_split[1];
+                            }
+                            $aggCorpName = allianceName($aggCorpID);
+                            if ($aggCorpName === 'Unknown') {
+                                $aggCorpName = corpName($aggCorpID);
+                            }
+                            $result = preg_split('/allyID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $thirdCorpID = $result_split[1];
+                            }
+                            $thirdCorpName = allianceName($thirdCorpID);
+                            if ($thirdCorpName === 'Unknown') {
+                                $thirdCorpName = corpName($thirdCorpID);
                             }
                             $msg = "{$thirdCorpName} has joined the war involving {$defCorpName} and {$aggCorpName}.";
                             break;
@@ -573,12 +580,12 @@ class notifications
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
                             break;
                         case 198: // citadel out of fuel
-                            if (preg_match('/solarsystemID: (\d+)/', implode(" ", $notificationString), $matches)) {
-                                $solarSystemID = $matches[1];
-                                $systemName = systemName($solarSystemID);
-                            } else {
-                                $systemName = 'Unknown System';
+                            $result = preg_split('/solarsystemID:/', $notificationString);
+                            if (count($result) > 1) {
+                                $result_split = explode(' ', $result[1]);
+                                $solarSystemID = $result_split[1];
                             }
+                            $systemName = systemName($solarSystemID);
                             $msg = "Citadel in **{$systemName}** has run out of fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';
