@@ -77,7 +77,7 @@ class auth
      */
     public function onMessage($msgData, $message)
     {
-        $channelID = (int) $msgData['message']['channelID'];
+        $channelID = (int)$msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true)) {
             return null;
@@ -113,9 +113,9 @@ class auth
             }
 
             while ($rows = $result->fetch_assoc()) {
-                $charID = (int) $rows['characterID'];
-                $corpID = (int) $rows['corporationID'];
-                $allianceID = (int) $rows['allianceID'];
+                $charID = (int)$rows['characterID'];
+                $corpID = (int)$rows['corporationID'];
+                $allianceID = (int)$rows['allianceID'];
 
                 //If corp is new store in DB
                 $corpInfo = getCorpInfo($corpID);
@@ -153,74 +153,93 @@ class auth
                     return null;
                 }
                 foreach ($this->authGroups as $authGroup) {
-                    //Check if corpID matches
-                    if ($corpID === $authGroup['corpID']) {
-                        foreach ($roles as $role) {
-                            if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
-                                $member->addRole($role);
-                                $role = 'corp';
+                    //Check if it's set to match corp and alliance
+                    if ($authGroup['corpID'] !== 0 && $authGroup['allianceID'] !== 0) {
+                        //Check if corpID matches
+                        if ($corpID === $authGroup['corpID'] && $allianceID === $authGroup['allianceID']) {
+                            foreach ($roles as $role) {
+                                if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
+                                    $member->addRole($role);
+                                }
+                                if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
+                                    $member->addRole($role);
+                                    $role = 'corp/ally';
+                                }
                             }
+                            break;
+                        }
+                    } else {
+                        //Check if corpID matches
+                        if ($corpID === $authGroup['corpID']) {
+                            foreach ($roles as $role) {
+                                if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
+                                    $member->addRole($role);
+                                    $role = 'corp';
+                                }
+                            }
+                            break;
+                        }
+                        //Check if allianceID matches
+                        if ($allianceID === $authGroup['allianceID'] && $authGroup['allianceID'] !== 0) {
+                            foreach ($roles as $role) {
+                                if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
+                                    $member->addRole($role);
+                                    $role = 'ally';
+                                }
+                            }
+                            break;
                         }
                     }
-                    //Check if allianceID matches
-                    if ($allianceID === $authGroup['allianceID'] && $authGroup['allianceID'] != 0) {
-                        foreach ($roles as $role) {
-                            if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
-                                $member->addRole($role);
-                                $role = 'ally';
-                            }
+                }
+                //check for standings based roles
+                if ($this->standingsBased === 'true' && $role === null) {
+                    $allianceContacts = getContacts($allianceID);
+                    $corpContacts = getContacts($corpID);
+                    foreach ($roles as $role) {
+                        if ((@(int)$allianceContacts['standings'] === 5 || @(int)$corpContacts['standings'] === 5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus5Role']) {
+                            $member->addRole($role);
+                            $role = 'blue';
+                        }
+                        if ((@(int)$allianceContacts['standings'] === 10 || @(int)$corpContacts['standings'] === 10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus10Role']) {
+                            $member->addRole($role);
+                            $role = 'blue';
+                        }
+                        if ((@(int)$allianceContacts['standings'] === 0 || @(int)$corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || '')) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
+                            $member->addRole($role);
+                            $role = 'neut';
+                        }
+                        if ((@(int)$allianceContacts['standings'] === -5 || @(int)$corpContacts['standings'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
+                            $member->addRole($role);
+                            $role = 'red';
+                        }
+                        if ((@(int)$allianceContacts['standings'] === -10 || @(int)$corpContacts['standings'] === -10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus10Role']) {
+                            $member->addRole($role);
+                            $role = 'red';
                         }
                     }
-                    //check for standings based roles
-                    if ($this->standingsBased === 'true' && $role === null) {
-                        $allianceContacts = getContacts($allianceID);
-                        $corpContacts = getContacts($corpID);
-                        foreach ($roles as $role) {
-                            if ((@(int)$allianceContacts['standings'] === 5 || @(int)$corpContacts['standings'] === 5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus5Role']) {
-                                $member->addRole($role);
-                                $role = 'blue';
-                            }
-                            if ((@(int)$allianceContacts['standings'] === 10 || @(int)$corpContacts['standings'] === 10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus10Role']) {
-                                $member->addRole($role);
-                                $role = 'blue';
-                            }
-                            if ((@(int)$allianceContacts['standings'] === 0 || @(int)$corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || '')) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
-                                $member->addRole($role);
-                                $role = 'neut';
-                            }
-                            if ((@(int)$allianceContacts['standings'] === -5 || @(int)$corpContacts['standings'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
-                                $member->addRole($role);
-                                $role = 'red';
-                            }
-                            if ((@(int)$allianceContacts['standings'] === -10 || @(int)$corpContacts['standings'] === -10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus10Role']) {
-                                $member->addRole($role);
-                                $role = 'red';
-                            }
+                }
+                if (null !== $role) {
+                    $guild = $this->discord->guilds->get('id', $guildID);
+                    insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, $role);
+                    disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
+                    $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
+                    $this->logger->addInfo("auth: {$eveName} authed");
+                    $this->message->reply($msg);
+                    //Add ticker if set and change name if nameEnforce is on
+                    if (isset($setTicker) || isset($nameEnforce)) {
+                        if (isset($setTicker) && isset($nameEnforce)) {
+                            $nick = "[{$corpTicker}] {$eveName}";
+                        } elseif (null === $setTicker && isset($nameEnforce)) {
+                            $nick = "{$eveName}";
+                        } elseif (isset($setTicker) && !isset($nameEnforce)) {
+                            $nick = "[{$corpTicker}] {$userName}";
                         }
                     }
-                    if (null !== $role) {
-                        $guild = $this->discord->guilds->get('id', $guildID);
-                        insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, $role);
-                        disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                        $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
-                        $this->logger->addInfo("auth: {$eveName} authed");
-                        $this->message->reply($msg);
-                        //Add ticker if set and change name if nameEnforce is on
-                        if (isset($setTicker) || isset($nameEnforce)) {
-                            if (isset($setTicker) && isset($nameEnforce)) {
-                                $nick = "[{$corpTicker}] {$eveName}";
-                            } elseif (null === $setTicker && isset($nameEnforce)) {
-                                $nick = "{$eveName}";
-                            } elseif (isset($setTicker) && !isset($nameEnforce)) {
-                                $nick = "[{$corpTicker}] {$userName}";
-                            }
-                        }
-                        if (null !== $nick) {
-                            queueRename($userID, $nick, $this->guild);
-                        }
-                        $guild->members->save($member);
-                        return null;
+                    if (null !== $nick) {
+                        queueRename($userID, $nick, $this->guild);
                     }
+                    $guild->members->save($member);
+                    return null;
                 }
                 $this->message->reply('**Failure:** There are no roles available for your corp/alliance.');
                 $this->logger->addInfo('Auth: User was denied due to not being in the correct corp or alliance ' . $eveName);
