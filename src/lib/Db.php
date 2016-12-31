@@ -227,6 +227,9 @@ function clearAllMessageQueue()
 }
 
 //CORP INFO
+/**
+ * @param string $corpName
+ */
 function addCorpInfo($corpID, $corpTicker, $corpName)
 {
     dbExecute('REPLACE INTO corpCache (`corpID`, `corpTicker`, `corpName`) VALUES (:corpID,:corpTicker,:corpName)', array(':corpID' => $corpID, ':corpTicker' => $corpTicker, ':corpName' => $corpName));

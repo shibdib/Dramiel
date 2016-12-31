@@ -138,17 +138,17 @@ class getKillmailsRedis
                 $attackerAllianceArray = array();
 
                 foreach ($kill['killmail']['attackers'] as $attacker) {
-                    $attackerCorpArray[] = (int)@$attacker['corporation']['id'];
-                    $attackerAllianceArray[] = (int)@$attacker['alliance']['id'];
+                    $attackerCorpArray[] = (int) @$attacker['corporation']['id'];
+                    $attackerAllianceArray[] = (int) @$attacker['alliance']['id'];
                 }
 
-                if ((int)@$kill['killmail']['victim']['corporation']['id'] === $kmGroup['corpID'] && (int)$kmGroup['corpID'] !== 0) {
+                if ((int) @$kill['killmail']['victim']['corporation']['id'] === $kmGroup['corpID'] && (int) $kmGroup['corpID'] !== 0) {
                     $corpLoss = true;
-                } elseif ((int)@$kill['killmail']['victim']['alliance']['id'] === $kmGroup['allianceID'] && (int)$kmGroup['allianceID'] !== 0) {
+                } elseif ((int) @$kill['killmail']['victim']['alliance']['id'] === $kmGroup['allianceID'] && (int) $kmGroup['allianceID'] !== 0) {
                     $allianceLoss = true;
-                } elseif (in_array((int)$kmGroup['corpID'], $attackerCorpArray) && (int)$kmGroup['corpID'] !== 0) {
+                } elseif (in_array((int) $kmGroup['corpID'], $attackerCorpArray) && (int) $kmGroup['corpID'] !== 0) {
                     $corpKill = true;
-                } elseif (in_array((int)$kmGroup['allianceID'], $attackerAllianceArray) && (int)$kmGroup['allianceID'] !== 0) {
+                } elseif (in_array((int) $kmGroup['allianceID'], $attackerAllianceArray) && (int) $kmGroup['allianceID'] !== 0) {
                     $allianceKill = true;
                 } else {
                     break;

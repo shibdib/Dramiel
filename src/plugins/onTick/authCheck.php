@@ -165,10 +165,10 @@ class authCheck
         //Set corp/ally id arrays
         foreach ($this->authGroups as $authGroup) {
             if ($authGroup['corpID'] !== 0) {
-                $corpArray[] = (int)$authGroup['corpID'];
+                $corpArray[] = (int) $authGroup['corpID'];
             }
             if ($authGroup['allianceID'] !== 0) {
-                $allianceArray[] = (int)$authGroup['allianceID'];
+                $allianceArray[] = (int) $authGroup['allianceID'];
             }
         }
 
@@ -318,7 +318,7 @@ class authCheck
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
         //Get name queue status
-        $x = (int)getPermCache('nameQueueState');
+        $x = (int) getPermCache('nameQueueState');
 
         //Establish connection to mysql
         $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
@@ -384,10 +384,10 @@ class authCheck
                     }
                     $nick = null;
                     if (null !== @$corpInfo['corpTicker']) {
-                        $corpTicker = (string)$corpInfo['corpTicker'];
+                        $corpTicker = (string) $corpInfo['corpTicker'];
                         if ($this->nameEnforce === 'true') {
                             $nick = "[{$corpTicker}] {$eveName}";
-                        } elseif ((string)$nickName === "[{$corpTicker}]") {
+                        } elseif ((string) $nickName === "[{$corpTicker}]") {
                             $nick = "[{$corpTicker}] {$userName}";
                         } elseif (strpos($nickName, $corpTicker) === false) {
                             $nick = "[{$corpTicker}] {$nickName}";
@@ -408,11 +408,11 @@ class authCheck
                     if (@$corpTicker === 'U') {
                         continue;
                     }
-                    $corpName = (string)$corporationDetails['corporation_name'];
+                    $corpName = (string) $corporationDetails['corporation_name'];
                     if (null !== $corpTicker) {
                         if ($this->nameEnforce === 'true') {
                             $nick = "[{$corpTicker}] {$eveName}";
-                        } elseif ((string)$nickName === "[{$corpTicker}]") {
+                        } elseif ((string) $nickName === "[{$corpTicker}]") {
                             $nick = "[{$corpTicker}] {$userName}";
                         } elseif (strpos($nickName, $corpTicker) === false) {
                             $nick = "[{$corpTicker}] {$nickName}";
@@ -446,14 +446,14 @@ class authCheck
     private function standingsUpdate()
     {
         foreach ($this->apiKey as $apiKey) {
-            if ((string)$apiKey['keyID'] === (string)$this->config['plugins']['auth']['standings']['apiKey']) {
+            if ((string) $apiKey['keyID'] === (string) $this->config['plugins']['auth']['standings']['apiKey']) {
                 $url = "https://api.eveonline.com/char/ContactList.xml.aspx?keyID={$apiKey['keyID']}&vCode={$apiKey['vCode']}&characterID={$apiKey['characterID']}";
                 $xml = makeApiRequest($url);
                 if (empty($xml)) {
                     return null;
                 }
                 foreach ($xml->result->rowset as $contactType) {
-                    if ((string)$contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
+                    if ((string) $contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
                         foreach ($contactType->row as $contact) {
                             if (null !== $contact['contactID'] && $contact['contactName'] && $contact['standing']) {
                                 addContactInfo($contact['contactID'], $contact['contactName'], $contact['standing']);
