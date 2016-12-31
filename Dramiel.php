@@ -161,21 +161,21 @@ $discord->on(
         $discord->updatePresence($game);
 
         // Server Status Check (tick plugins will not run if eve is offline)
-        $discord->loop->addPeriodicTimer(60, function () use ($logger) {
+        $discord->loop->addPeriodicTimer(60, function() use ($logger) {
             $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
             $crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
             setPermCache('serverState', $crestStatus);
         });
 
         // Run the Tick plugins
-        $discord->loop->addPeriodicTimer(3, function () use ($pluginsT) {
+        $discord->loop->addPeriodicTimer(3, function() use ($pluginsT) {
             foreach ($pluginsT as $plugin) {
                 $plugin->tick();
             }
         });
 
         // Message queue
-        $discord->loop->addPeriodicTimer(7, function () use ($discord, $logger) {
+        $discord->loop->addPeriodicTimer(7, function() use ($discord, $logger) {
             $x = 0;
             while ($x < 3) {
                 $id = getOldestMessage();
@@ -231,7 +231,7 @@ $discord->on(
         });
 
         // Mem cleanup every 30 minutes
-        $discord->loop->addPeriodicTimer(1800, function () use ($logger) {
+        $discord->loop->addPeriodicTimer(1800, function() use ($logger) {
             $logger->addInfo('Memory in use: ' . memory_get_usage() / 1024 / 1024 . 'MB');
             gc_collect_cycles(); // Collect garbage
             $logger->addInfo('Memory in use after garbage collection: ' . memory_get_usage() / 1024 / 1024 . 'MB');
