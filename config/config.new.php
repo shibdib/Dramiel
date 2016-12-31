@@ -163,8 +163,8 @@ $config['plugins'] = array(
             )
         ),
         'standings' => array(
-            'enabled' => 'false',//set to true if you want to allow people to auth based off of corp/alliance standings
-            'apiKey' => 'user1',//enter the KEYID for whatever above api you'd like to base standings off of
+            'enabled' => 'false', //set to true if you want to allow people to auth based off of corp/alliance standings
+            'apiKey' => 'user1', //enter the KEYID for whatever above api you'd like to base standings off of
             'plus10Role' => '',
             'plus5Role' => '',
             'neutralRole' => '',
