@@ -168,7 +168,7 @@ class auth
                             }
                             break;
                         }
-                    } else {
+                    } elseif ($authGroup['corpID'] !== 0 || $authGroup['allianceID'] !== 0) {
                         //Check if corpID matches
                         if ($corpID === $authGroup['corpID']) {
                             foreach ($roles as $role) {
@@ -199,27 +199,33 @@ class auth
                         if ((@(int)$allianceContacts['standings'] === 5 || @(int)$corpContacts['standings'] === 5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus5Role']) {
                             $member->addRole($role);
                             $role = 'blue';
+                            break;
                         }
                         if ((@(int)$allianceContacts['standings'] === 10 || @(int)$corpContacts['standings'] === 10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus10Role']) {
                             $member->addRole($role);
                             $role = 'blue';
+                            break;
                         }
                         if ((@(int)$allianceContacts['standings'] === 0 || @(int)$corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || '')) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
                             $member->addRole($role);
                             $role = 'neut';
+                            break;
                         }
                         if ((@(int)$allianceContacts['standings'] === -5 || @(int)$corpContacts['standings'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
                             $member->addRole($role);
                             $role = 'red';
+                            break;
                         }
                         if ((@(int)$allianceContacts['standings'] === -10 || @(int)$corpContacts['standings'] === -10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus10Role']) {
                             $member->addRole($role);
                             $role = 'red';
+                            break;
                         }
                     }
                 }
                 if (null !== $role) {
                     $guild = $this->discord->guilds->get('id', $guildID);
+                    $guild->members->save($member);
                     insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, $role);
                     disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
                     $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
@@ -238,7 +244,6 @@ class auth
                     if (null !== $nick) {
                         queueRename($userID, $nick, $this->guild);
                     }
-                    $guild->members->save($member);
                     return null;
                 }
                 $this->message->reply('**Failure:** There are no roles available for your corp/alliance.');
