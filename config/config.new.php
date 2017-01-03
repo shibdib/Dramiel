@@ -246,13 +246,6 @@ $config['plugins'] = array(
         'groupID' => 0, //fleet up group id
         'apiKey' => 'xxxxx', //fleet up api code, link to application Dramiel Bot
     ),
-    //shows upcoming fleet up operations
-    'ops' => array(
-        'userID' => 0, //fleet up user id
-        'groupID' => 0, //fleet up group id
-        'apiKey' => '', //fleet up api code, link to application Dramiel Bot
-        'channelID' => 0, //If you want to restrict upcoming ops from working in a channel, put that channel's ID here.
-    ),
     //Post well formatted rss feed links to a channel
     'rssReader' => array(
         'channelID' => 0, //channel id to post rss links
