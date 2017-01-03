@@ -314,6 +314,9 @@ class notifications
                         case 57: // jump clone destruction
                             $msg = 'skip';
                             break;
+                        case 69: // agent info
+                            $msg = 'skip';
+                            break;
                         case 71: // Mission Expiration
                             $msg = 'skip';
                             break;
