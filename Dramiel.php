@@ -79,6 +79,7 @@ $discord = new Discord(['token' => $config['bot']['token']]);
 $pluginDirs = array('src/plugins/onTick/*.php');
 $logger->info('Loading background plugins');
 $plugins = array();
+$pluginsT = array();
 foreach ($pluginDirs as $dir) {
     foreach (glob($dir) as $plugin) {
         // Only load the plugins we want to load, according to the config
