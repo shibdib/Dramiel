@@ -46,11 +46,10 @@ class notifications
 
     /**
      * @param $config
-     * @param $primary
      * @param $discord
      * @param $logger
      */
-    public function init($config, $primary, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -313,6 +312,9 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 57: // jump clone destruction
+                            $msg = 'skip';
+                            break;
+                        case 69: // agent info
                             $msg = 'skip';
                             break;
                         case 71: // Mission Expiration
