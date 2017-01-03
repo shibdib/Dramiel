@@ -95,22 +95,25 @@ class fleetUpOps
         if (isset($data['trigger'])) {
 
             // Check if the channel is restricted
-            if ($channelID == $this->excludeChannel) {
+            if ($channelID === $this->excludeChannel) {
                 return $this->message->reply('**Upcoming Ops not allowed in this channel**');
             }
             //fleetUp post upcoming operations
             $ops = json_decode(downloadData("http://api.fleet-up.com/Api.svc/tlYgBRjmuXj2Yl1lEOyMhlDId/{$this->userID}/{$this->apiKey}/Operations/{$this->groupID}"), true);
+            if ($ops['Data'] === null) {
+                $this->message->reply('No upcoming operations detected.');
+                return null;
+            }
+            $this->logger->addInfo("Sending ops info to {$user}");
             foreach ($ops['Data'] as $operation) {
                 $name = $operation['Subject'];
                 $startTime = $operation['StartString'];
-                preg_match_all('!\d+!', $operation['Start'], $epochStart);
                 $desto = $operation['Location'];
                 $formUp = $operation['LocationInfo'];
                 $info = $operation['Details'];
                 $id = $operation['Id'];
                 $link = "https://fleet-up.com/Operation#{$id}\
 	    ";
-                $this->logger->addInfo("Sending ops info to {$user}");
                 $this->message->reply("
 **Upcoming Operation**.
 Title - {$name}.
@@ -120,6 +123,7 @@ Target System - {$desto}.
 Details - {$info}.
 Link - {$link}");
             }
+            return null;
         }
         return null;
     }
