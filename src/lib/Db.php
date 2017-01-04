@@ -311,5 +311,5 @@ function disableUser($discordID)
 {
     $active = 'no';
     $db = '1';
-    dbExecute('REPLACE INTO authUsers (`active`)  VALUES (:active) WHERE `discordID` = :active', array(':active' => $active, ':discordID' => $discordID), $db);
+    dbExecute('UPDATE authUsers SET `active`=:active WHERE `discordID` = :discordID', array(':active' => $active, ':discordID' => $discordID), $db);
 }
