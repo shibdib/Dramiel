@@ -62,9 +62,9 @@ class fleetUpOps
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->userID = $config['plugins']['fleetUpOps']['userID'];
-        $this->groupID = $config['plugins']['fleetUpOps']['groupID'];
-        $this->apiKey = $config['plugins']['fleetUpOps']['apiKey'];
+        $this->userID = $config['plugins']['fleetUp']['userID'];
+        $this->groupID = $config['plugins']['fleetUp']['groupID'];
+        $this->apiKey = $config['plugins']['fleetUp']['apiKey'];
         $this->guild = $config['bot']['guild'];
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
         $this->triggers[] = $this->config['bot']['trigger'] . 'ops';
