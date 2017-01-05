@@ -34,10 +34,6 @@ class auth
     public $logger;
     private $excludeChannel;
     private $nameEnforce;
-    private $db;
-    private $dbUser;
-    private $dbPass;
-    private $dbName;
     private $ssoUrl;
     private $corpTickers;
     private $authGroups;
