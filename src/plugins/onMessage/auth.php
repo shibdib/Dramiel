@@ -158,6 +158,7 @@ class auth
                             foreach ($roles as $role) {
                                 if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
                                     $member->addRole($role);
+                                    $role = 'corp/ally';
                                 }
                                 if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
                                     $member->addRole($role);
@@ -219,6 +220,7 @@ class auth
                 if (null !== $role) {
                     $guild = $this->discord->guilds->get('id', $guildID);
                     insertNewUser($userID, $charID, $eveName, $id, $role);
+                    $guild->members->save($member);
                     $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
                     $this->logger->addInfo("auth: {$eveName} authed");
                     $this->message->reply($msg);
@@ -235,7 +237,6 @@ class auth
                     if (null !== $nick) {
                         queueRename($userID, $nick, $this->guild);
                     }
-                    $guild->members->save($member);
                     return null;
                 }
                 $this->message->reply('**Failure:** There are no roles available for your corp/alliance.');

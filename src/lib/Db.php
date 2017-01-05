@@ -303,7 +303,7 @@ function insertNewUser($userID, $charID, $eveName, $id, $role = 'corp')
 {
     $active = 'yes';
     $db = '1';
-    dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => $eveName, ':active' => $active, ':role' => $role), $db);
+    dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => (string)$eveName, ':active' => $active, ':role' => (string)$role), $db);
     dbExecute('DELETE from pendingUsers WHERE `id` = :id', array(':id' => $id), $db);
 }
 
