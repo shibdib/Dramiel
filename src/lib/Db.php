@@ -35,8 +35,10 @@ function openDB($db = null)
 {
     $logger = new Logger('Db');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
-    if (null !== $db) {
+    if ($db === 'auth') {
         $db = __DIR__ . '/../../database/authDB.sqlite';
+    } elseif ($db === 'config') {
+        $db = __DIR__ . '/../../../config/botConfig.sqlite';
     } else {
         $db = __DIR__ . '/../../database/dramiel.sqlite';
     }
@@ -281,28 +283,28 @@ function getContacts($contactID)
 function getAuthUsers()
 {
     $active = 'yes';
-    $db = '1';
+    $db = 'auth';
     return dbQuery('SELECT * FROM authUsers WHERE `active` = :active', array(':active' => $active), $db);
 }
 
 function getAuthUser($discordID)
 {
     $active = 'yes';
-    $db = '1';
+    $db = 'auth';
     return dbQueryRow('SELECT * FROM authUsers WHERE `discordID` = :discordID AND `active` = :active', array(':discordID' => $discordID, ':active' => $active), $db);
 }
 
 function getPendingUser($code)
 {
     $active = '1';
-    $db = '1';
+    $db = 'auth';
     return dbQueryRow('SELECT * FROM pendingUsers WHERE `authString` = :authString AND `active` = :active', array(':authString' => $code, ':active' => $active), $db);
 }
 
 function insertNewUser($userID, $charID, $eveName, $id, $role = 'corp')
 {
     $active = 'yes';
-    $db = '1';
+    $db = 'auth';
     dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => (string)$eveName, ':active' => $active, ':role' => (string)$role), $db);
     dbExecute('DELETE from pendingUsers WHERE `id` = :id', array(':id' => $id), $db);
 }
@@ -310,6 +312,6 @@ function insertNewUser($userID, $charID, $eveName, $id, $role = 'corp')
 function disableUser($discordID)
 {
     $active = 'no';
-    $db = '1';
+    $db = 'auth';
     dbExecute('UPDATE authUsers SET `active`=:active WHERE `discordID` = :discordID', array(':active' => $active, ':discordID' => $discordID), $db);
 }

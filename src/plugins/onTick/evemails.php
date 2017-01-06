@@ -57,7 +57,7 @@ class evemails
         $this->discord = $discord;
         $this->logger = $logger;
         $this->toIDs = $config['plugins']['evemails']['fromIDs'];
-        $this->toDiscordChannel = $config['plugins']['evemails']['channelID'];
+        $this->toDiscordChannel = (int)$config['plugins']['evemails']['channelID'];
         $this->newestMailID = getPermCache('newestCorpMailID');
         $this->maxID = 0;
         $this->apiKey = $config['eve']['apiKeys'];

@@ -65,7 +65,7 @@ class authCheck
         $this->standingsBased = $config['plugins']['auth']['standings']['enabled'];
         $this->apiKey = $config['eve']['apiKeys'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
-        $this->alertChannel = $config['plugins']['auth']['alertChannel'];
+        $this->alertChannel = (int)$config['plugins']['auth']['alertChannel'];
         $this->guild = $config['bot']['guild'];
         $this->nextCheck = 0;
 

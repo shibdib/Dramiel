@@ -148,9 +148,9 @@ class auth
                 }
                 foreach ($this->authGroups as $authGroup) {
                     //Check if it's set to match corp and alliance
-                    if ($authGroup['corpID'] !== 0 && $authGroup['allianceID'] !== 0) {
+                    if ((int)$authGroup['corpID'] !== 0 && (int)$authGroup['allianceID'] !== 0) {
                         //Check if corpID matches
-                        if ($corpID === $authGroup['corpID'] && $allianceID === $authGroup['allianceID']) {
+                        if ((int)$corpID === (int)$authGroup['corpID'] && (int)$allianceID === (int)$authGroup['allianceID']) {
                             foreach ($roles as $role) {
                                 if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
                                     $member->addRole($role);
@@ -165,7 +165,7 @@ class auth
                         }
                     } else {
                         //Check if corpID matches
-                        if ($corpID === $authGroup['corpID']) {
+                        if ((int)$corpID === (int)$authGroup['corpID']) {
                             foreach ($roles as $role) {
                                 if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
                                     $member->addRole($role);
@@ -175,7 +175,7 @@ class auth
                             break;
                         }
                         //Check if allianceID matches
-                        if ($allianceID === $authGroup['allianceID'] && $authGroup['allianceID'] !== 0) {
+                        if ((int)$allianceID === (int)$authGroup['allianceID'] && (int)$authGroup['allianceID'] !== 0) {
                             foreach ($roles as $role) {
                                 if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
                                     $member->addRole($role);
