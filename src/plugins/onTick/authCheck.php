@@ -59,7 +59,7 @@ class authCheck
         $this->discord = $discord;
         $this->logger = $logger;
         $this->guildID = $config['bot']['guild'];
-        $this->exempt = $config['plugins']['auth']['exempt'];
+        $this->exempt[] = $config['plugins']['auth']['exempt'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
         $this->standingsBased = $config['plugins']['auth']['standings']['enabled'];
