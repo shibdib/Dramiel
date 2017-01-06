@@ -66,10 +66,10 @@ $config['eve'] = array(
 
 $enabled = dbQuery("SELECT * FROM config WHERE value = 'true' AND plugin = 'enabledPlugin'", array(), 'config');
 foreach ($enabled as $plugin) {
-    $enabled[] = (int)$plugin['variable'];
+    $enabledPlugins[] = $plugin['variable'];
 }
 
-$config['enabledPlugins'] = $enabled;
+$config['enabledPlugins'] = $enabledPlugins;
 
 
 $mailIDs = explode(',', str_replace(' ', '', dbQueryField("SELECT value FROM config WHERE variable = 'fromIDs'", 'value', array(), 'config')));
