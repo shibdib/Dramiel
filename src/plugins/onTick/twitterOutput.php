@@ -63,6 +63,7 @@ class twitterOutput
      */
     public function tick()
     {
+        return null;
         $continue = false;
         $data = array();
         // If last check + 60 seconds is larger or equal to the current time(), we run

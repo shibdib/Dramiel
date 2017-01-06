@@ -152,7 +152,7 @@ $discord->on(
 
 
         //Set Initial Game
-        $gameTitle = $config['bot']['game'];
+        $gameTitle = @$config['bot']['game'];
         if (null !== getPermCache('botGame')) {
             $gameTitle = getPermCache('botGame');
         }
