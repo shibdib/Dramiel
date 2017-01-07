@@ -78,7 +78,11 @@ class fileReader
                 // Remove |  from the line or whatever else is at the last two characters in the string
                 $message = trim(substr($ping, 0, -2));
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
-                    if ($chanConfig['searchString'] == false) { // If no match was found, and searchString is false, just use that
+                    //check that search string is set
+                    if ($chanConfig['searchString'] === null) {
+                        continue;
+                    }
+                    if ($chanConfig['searchString'] === 'all') { // If no match was found, and searchString is false, just use that
                         $message = $chanConfig['textStringPrepend'] . " \n " . $message . '  ' . $chanConfig['textStringAppend'];
                         $channelID = $chanConfig['channelID'];
                     } elseif (stristr($message, $chanConfig['searchString'])) {
