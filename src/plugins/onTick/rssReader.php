@@ -78,7 +78,7 @@ class rssReader
     {
         foreach ($feeds as $rssUrl) {
             //Check that url is set
-            if (!isset($rssUrl) || $rssUrl === '') {
+            if ($rssUrl === '' || '0' || 0 || null) {
                 continue;
             }
 

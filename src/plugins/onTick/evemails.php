@@ -68,7 +68,7 @@ class evemails
         $x = 0;
         foreach ($this->apiKey as $apiKey) {
             //Check if api is set
-            if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
+            if ($apiKey['keyID'] || $apiKey['vCode'] || $apiKey['characterID'] === '' || '0' || 0 || null) {
                 continue;
             }
             $x++;
@@ -86,7 +86,7 @@ class evemails
         if ($lastStatus == 'online') {
             foreach ($this->apiKey as $apiKey) {
                 //Check if api is set
-                if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
+                if ($apiKey['keyID'] || $apiKey['vCode'] || $apiKey['characterID'] === '' || '0' || 0 || null) {
                     continue;
                 }
                 //Get
