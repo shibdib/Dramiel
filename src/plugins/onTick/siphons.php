@@ -90,6 +90,11 @@ class siphons
                 }
 
                 if ($lastChecked <= time()) {
+                    if ($siphonCorp['keyID'] === 0 || '0') {
+                        $weirdTime = time() + 21700;
+                        setPermCache("siphonLastChecked{$siphonCorp['keyID']}", $weirdTime);
+                        return null;
+                    }
                     $this->logger->addInfo("Siphons: Checking keyID - {$siphonCorp['keyID']} for siphons");
                     $this->checkTowers();
                 }
