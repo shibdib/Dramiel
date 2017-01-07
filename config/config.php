@@ -136,6 +136,18 @@ $config['plugins'] = array(
                 'allianceID' => dbQueryField("SELECT value FROM config WHERE variable = 'authAllianceID3'", 'value', array(), 'config'), // If you'd like to auth based on ALLIANCE put the alliance ID here otherwise leave it as 0 (Can be used in conjunction with corp)
                 'corpMemberRole' => dbQueryField("SELECT value FROM config WHERE variable = 'authCorpRole3'", 'value', array(), 'config'), // The name of the role your CORP members will be assigned too if the auth plugin is active.
                 'allyMemberRole' => dbQueryField("SELECT value FROM config WHERE variable = 'authAllianceRole3'", 'value', array(), 'config'), // The name of the role your ALLIANCE members will be assigned too if the auth plugin is active.
+            ),
+            'group4' => array(
+                'corpID' => dbQueryField("SELECT value FROM config WHERE variable = 'authCorpID4'", 'value', array(), 'config'), // If you'd like to auth based on CORP put the corp ID here otherwise leave it as 0
+                'allianceID' => dbQueryField("SELECT value FROM config WHERE variable = 'authAllianceID4'", 'value', array(), 'config'), // If you'd like to auth based on ALLIANCE put the alliance ID here otherwise leave it as 0 (Can be used in conjunction with corp)
+                'corpMemberRole' => dbQueryField("SELECT value FROM config WHERE variable = 'authCorpRole4'", 'value', array(), 'config'), // The name of the role your CORP members will be assigned too if the auth plugin is active.
+                'allyMemberRole' => dbQueryField("SELECT value FROM config WHERE variable = 'authAllianceRole4'", 'value', array(), 'config'), // The name of the role your ALLIANCE members will be assigned too if the auth plugin is active.
+            ),
+            'group5' => array(
+                'corpID' => dbQueryField("SELECT value FROM config WHERE variable = 'authCorpID5'", 'value', array(), 'config'), // If you'd like to auth based on CORP put the corp ID here otherwise leave it as 0
+                'allianceID' => dbQueryField("SELECT value FROM config WHERE variable = 'authAllianceID5'", 'value', array(), 'config'), // If you'd like to auth based on ALLIANCE put the alliance ID here otherwise leave it as 0 (Can be used in conjunction with corp)
+                'corpMemberRole' => dbQueryField("SELECT value FROM config WHERE variable = 'authCorpRole5'", 'value', array(), 'config'), // The name of the role your CORP members will be assigned too if the auth plugin is active.
+                'allyMemberRole' => dbQueryField("SELECT value FROM config WHERE variable = 'authAllianceRole5'", 'value', array(), 'config'), // The name of the role your ALLIANCE members will be assigned too if the auth plugin is active.
             )
         ),
         'standings' => array(
