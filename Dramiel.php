@@ -193,9 +193,15 @@ $discord->on(
                         continue;
                     }
                     $guild = $discord->guilds->get('id', $queuedMessage['guild']);
+                    //Check if guild is bad
+                    if (null === $guild) {
+                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Guild provided is incorrect, removing it from the queue");
+                        clearQueuedMessages($id);
+                        continue;
+                    }
                     $channel = $guild->channels->get('id', (int)$queuedMessage['channel']);
                     //Check if channel is bad
-                    if (null === $channel || null === $guild) {
+                    if (null === $channel) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
                         clearQueuedMessages($id);
                         continue;
