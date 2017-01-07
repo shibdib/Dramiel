@@ -86,6 +86,10 @@ class getKillmails
     {
         foreach ($this->groupConfig as $kmGroup) {
             $killID = getPermCache("{$kmGroup['name']}newestKillmailID");
+            //Check if the corp/alliance is set
+            if (strlen($kmGroup['corpID']) < 5 && strlen($kmGroup['allianceID']) < 5) {
+                continue;
+            }
             //check if start id is greater than current id and if it is set
             if ($kmGroup['startMail'] > $killID || null === $killID) {
                 $killID = $kmGroup['startMail'];
