@@ -208,7 +208,7 @@ class authCheck
                     if ((string)$role === 'red' && ($allianceContacts['standings'] || $corpContacts['standings'] === -5 || -10 || '-5' || '-10')) {
                         $standings = 1;
                     }
-                    if ((string)$role === 'neut' && ($allianceContacts['standings'] || $corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || ''))) {
+                    if ((string)$role === 'neut' && ($allianceContacts['standings'] || $corpContacts['standings'] === 0 || '0' || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || ''))) {
                         $standings = 1;
                     }
                 }
