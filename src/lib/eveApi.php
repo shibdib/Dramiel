@@ -122,11 +122,22 @@ function characterID($characterName)
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $characterName = urlencode($characterName);
-    $url = "https://esi.tech.ccp.is/latest/search/?search={$characterName}&categories=character&language=en-us&strict=true&datasource=tranquility";
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$characterName}&categories=character&language=en-us&strict=true&datasource=tranquility");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
         $id = (int)$data['character'][0];
 
     } catch (Exception $e) {
@@ -150,11 +161,22 @@ function characterDetails($characterID)
 {
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
-    $url = "https://esi.tech.ccp.is/latest/characters/{$characterID}/";
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/characters/{$characterID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -173,11 +195,22 @@ function systemName($systemID)
 {
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
-    $url = "https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/";
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
         $name = (string)$data['solar_system_name'];
 
     } catch (Exception $e) {
@@ -202,11 +235,22 @@ function corpID($corpName)
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $corpName = urlencode($corpName);
-    $url = "https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility";
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
         $id = (int)$data['corporation'][0];
 
     } catch (Exception $e) {
@@ -251,11 +295,22 @@ function corpDetails($corpID)
 {
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
-    $url = "https://esi.tech.ccp.is/latest/corporations/{$corpID}/";
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/corporations/{$corpID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -272,14 +327,28 @@ function corpDetails($corpID)
 ////Alliance ID to name via CCP
 function allianceName($allianceID)
 {
-    $url = "https://esi.tech.ccp.is/latest/alliances/{$allianceID}/";
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/alliances/{$allianceID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
         $name = (string)$data['alliance_name'];
 
     } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$allianceID}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -297,12 +366,25 @@ function allianceName($allianceID)
 ////System name to ID
 function systemID($systemName)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $systemName = urlencode($systemName);
-    $url = "https://esi.tech.ccp.is/latest/search/?search={$systemName}&categories=solarsystem&language=en-us&strict=true&datasource=tranquility";
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$systemName}&categories=solarsystem&language=en-us&strict=true&datasource=tranquility");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
         $id = (int)$data['solarsystem'][0];
 
     } catch (Exception $e) {
@@ -324,11 +406,24 @@ function systemID($systemName)
 ////TypeID to TypeName via CCP
 function apiTypeName($typeID)
 {
-    $url = "https://esi.tech.ccp.is/latest/universe/types/{$typeID}/";
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
 
     try {
-        $json = file_get_contents($url);
-        $data = json_decode($json, TRUE);
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/types/{$typeID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
         $name = (string)$data['type_name'];
 
     } catch (Exception $e) {
@@ -350,10 +445,29 @@ function apiTypeName($typeID)
 ////TypeName to TypeID via fuzz
 function apiTypeID($typeName)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $typeName = urlencode($typeName);
-    $url = "https://www.fuzzwork.co.uk/api/typeid.php?typename={$typeName}";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
+    try {
+        // Initialize a new request for this URL
+        $ch = curl_init("https://www.fuzzwork.co.uk/api/typeid.php?typename={$typeName}");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
+
+    } catch (Exception $e) {
+        $logger->error('Fuzzwork Error: ' . $e->getMessage());
+        return null;
+    }
     $id = (int)$data['typeID'];
 
     if (null === $id) { // Make sure it's always set.
