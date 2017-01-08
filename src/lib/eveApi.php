@@ -129,13 +129,13 @@ function characterID($characterName)
         $data = json_decode($json, TRUE);
         $id = (int)$data['character'][0];
 
-        if (null === $id) { // Make sure it's always set.
-            return null;
-        }
-
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
-        return null;
+        $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$characterName}";
+        $xml = makeApiRequest($url);
+        foreach ($xml->result->rowset->row as $entity) {
+            $id = $entity->attributes()->characterID;
+        }
     }
 
     return $id;
@@ -179,16 +179,14 @@ function systemName($systemID)
         $json = file_get_contents($url);
         $data = json_decode($json, TRUE);
         $name = (string)$data['solar_system_name'];
-        if (null === $name || '' === $name) { // Make sure it's always set.
-            $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$systemID}";
-            $xml = makeApiRequest($url);
-            foreach ($xml->result->rowset->row as $entity) {
-                $name = $entity->attributes()->name;
-            }
-        }
+
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
-        return null;
+        $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$systemID}";
+        $xml = makeApiRequest($url);
+        foreach ($xml->result->rowset->row as $entity) {
+            $name = $entity->attributes()->name;
+        }
     }
 
     return $name;
@@ -211,13 +209,13 @@ function corpID($corpName)
         $data = json_decode($json, TRUE);
         $id = (int)$data['corporation'][0];
 
-        if (null === $id) { // Make sure it's always set.
-            return null;
-        }
-
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
-        return null;
+        $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$corpName}";
+        $xml = makeApiRequest($url);
+        foreach ($xml->result->rowset->row as $entity) {
+            $id = $entity->attributes()->characterID;
+        }
     }
 
     return $id;
@@ -275,10 +273,13 @@ function corpDetails($corpID)
 function allianceName($allianceID)
 {
     $url = "https://esi.tech.ccp.is/latest/alliances/{$allianceID}/";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
-    $name = (string)$data['alliance_name'];
-    if (null === $name || '' === $name) { // Make sure it's always set.
+
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+        $name = (string)$data['alliance_name'];
+
+    } catch (Exception $e) {
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$allianceID}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -298,12 +299,19 @@ function systemID($systemName)
 {
     $systemName = urlencode($systemName);
     $url = "https://esi.tech.ccp.is/latest/search/?search={$systemName}&categories=solarsystem&language=en-us&strict=true&datasource=tranquility";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
-    $id = (int)$data['solarsystem'][0];
 
-    if (null === $id) { // Make sure it's always set.
-        $id = 'Unknown';
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+        $id = (int)$data['solarsystem'][0];
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$systemName}";
+        $xml = makeApiRequest($url);
+        foreach ($xml->result->rowset->row as $entity) {
+            $id = $entity->attributes()->characterID;
+        }
     }
 
     return $id;
@@ -317,10 +325,14 @@ function systemID($systemName)
 function apiTypeName($typeID)
 {
     $url = "https://esi.tech.ccp.is/latest/universe/types/{$typeID}/";
-    $json = file_get_contents($url);
-    $data = json_decode($json, TRUE);
-    $name = (string)$data['type_name'];
-    if (null === $name || '' === $name) { // Make sure it's always set.
+
+    try {
+        $json = file_get_contents($url);
+        $data = json_decode($json, TRUE);
+        $name = (string)$data['type_name'];
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
         $url = "https://api.eveonline.com/eve/TypeName.xml.aspx?ids={$typeID}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
