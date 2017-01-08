@@ -73,7 +73,7 @@ class notifications
         $x = 0;
         foreach ($this->apiKey as $apiKey) {
             //Check if api is set
-            if ($apiKey['keyID'] || $apiKey['vCode'] || $apiKey['characterID'] === '' || '0' || 0 || null) {
+            if ($apiKey['keyID'] === '' || '0' || 0 || null || $apiKey['vCode'] === '' || '0' || 0 || null || $apiKey['characterID'] === '' || '0' || 0 || null) {
                 continue;
             }
             $x++;
@@ -91,7 +91,7 @@ class notifications
         if ($lastStatus === 'online') {
             foreach ($this->apiKey as $apiKey) {
                 //Check if api is set
-                if ($apiKey['keyID'] || $apiKey['vCode'] || $apiKey['characterID'] === '' || '0' || 0 || null) {
+                if ($apiKey['keyID'] === '' || '0' || 0 || null || $apiKey['vCode'] === '' || '0' || 0 || null || $apiKey['characterID'] === '' || '0' || 0 || null) {
                     continue;
                 }
                 //Get

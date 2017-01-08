@@ -189,13 +189,13 @@ class authCheck
                 if ($role === 'blue' || 'neut' || 'red') {
                     $allianceContacts = getContacts($allianceID);
                     $corpContacts = getContacts($corporationID);
-                    if ($role === 'blue' && ($allianceContacts['standings'] || $corpContacts['standings'] === 5 || 10 || '5' || '10')) {
+                    if ($role === 'blue' && ($allianceContacts['standings'] === 5 || 10 || '5' || '10' || $corpContacts['standings'] === 5 || 10 || '5' || '10')) {
                         $standings = 1;
                     }
-                    if ($role === 'red' && ($allianceContacts['standings'] || $corpContacts['standings'] === -5 || -10 || '-5' || '-10')) {
+                    if ($role === 'red' && ($allianceContacts['standings'] === -5 || -10 || '-5' || '-10' || $corpContacts['standings'] === -5 || -10 || '-5' || '-10')) {
                         $standings = 1;
                     }
-                    if ($role === 'neut' && ($allianceContacts['standings'] || $corpContacts['standings'] === 0 || '0' || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || ''))) {
+                    if ($role === 'neut' && ($allianceContacts['standings'] === 0 || '0' || $corpContacts['standings'] === 0 || '0' || (@(int)$allianceContacts['standings'] === null || '' && @(int)$corpContacts['standings'] === null || ''))) {
                         $standings = 1;
                     }
                 }
