@@ -85,25 +85,26 @@ class getKillmails
     private function getKM()
     {
         foreach ($this->groupConfig as $kmGroup) {
-            $killID = getPermCache("{$kmGroup['name']}newestKillmailID");
+            $killID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
             //Check if the corp/alliance is set
             if (strlen($kmGroup['corpID']) < 5 && strlen($kmGroup['allianceID']) < 5) {
                 continue;
             }
             //check if start id is greater than current id and if it is set
-            if ($kmGroup['startMail'] > $killID || null === $killID) {
+            if (null === $killID) {
+                getStartMail($kmGroup);
                 $killID = $kmGroup['startMail'];
             }
-            if ($kmGroup['allianceID'] == '0' & $kmGroup['lossMails'] === 'true') {
+            if ($kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup['corpID']}/";
             }
-            if ($kmGroup['allianceID'] == '0' & $kmGroup['lossMails'] === 'false') {
+            if ($kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup['corpID']}/";
             }
-            if ($kmGroup['allianceID'] != '0' & $kmGroup['lossMails'] === 'true') {
+            if ($kmGroup['allianceID'] !== '0' & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup['allianceID']}/";
             }
-            if ($kmGroup['allianceID'] != '0' & $kmGroup['lossMails'] === 'false') {
+            if ($kmGroup['allianceID'] !== '0' & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup['allianceID']}/";
             }
 
@@ -161,14 +162,14 @@ class getKillmails
 
                         $i++;
                     } else {
-                        $updatedID = getPermCache("{$kmGroup['name']}newestKillmailID");
+                        $updatedID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
                         $this->logger->addInfo("Killmails: Kill posting cap reached, newest kill id for {$kmGroup['name']} is {$updatedID}");
                         break;
                     }
                 }
-                setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
+                setPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID", $killID);
             }
-            $updatedID = getPermCache("{$kmGroup['name']}newestKillmailID");
+            $updatedID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
             $this->logger->addInfo("Killmails: All kills posted, newest kill id for {$kmGroup['name']} is {$updatedID}");
             continue;
         }

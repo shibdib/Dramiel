@@ -1,6 +1,12 @@
 <?php
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
 function zKillRedis()
 {
+    $logger = new Logger('zKill');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init("http://redisq.zkillboard.com/listen.php");
@@ -21,4 +27,38 @@ function zKillRedis()
         return null;
     }
     return $data['package'];
+}
+
+function getStartMail($kmGroup)
+{
+    $logger = new Logger('zKill');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
+
+    if ($kmGroup['allianceID'] === '0' && $kmGroup['lossMails'] === 'true' && $kmGroup['corpID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/corporationID/{$kmGroup['corpID']}/limit/1/";
+    }
+    if ($kmGroup['allianceID'] === '0' && $kmGroup['lossMails'] === 'false' && $kmGroup['corpID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/kills/corporationID/{$kmGroup['corpID']}/limit/1/";
+    }
+    if ($kmGroup['allianceID'] !== '0' && $kmGroup['lossMails'] === 'true' && $kmGroup['allianceID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/allianceID/{$kmGroup['allianceID']}/limit/1/";
+    }
+    if ($kmGroup['allianceID'] !== '0' && $kmGroup['lossMails'] === 'false' && $kmGroup['allianceID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/kills/allianceID/{$kmGroup['allianceID']}/limit/1/";
+    }
+
+    if (!isset($url)) { // Make sure it's always set.
+        $this->logger->addInfo('Killmails: ERROR - Ensure your config file is setup correctly for killmails.');
+        return null;
+    }
+
+    $kill = json_decode(downloadData($url), true);
+    if (null !== $kill) {
+        foreach ($kill as $mail) {
+            $killID = $mail['killID'];
+            setPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID", $killID);
+        }
+    }
+    $updatedID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
+    $this->logger->addInfo("Killmails: Initial KillID set at {$updatedID}");
 }
