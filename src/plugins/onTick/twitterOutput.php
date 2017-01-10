@@ -48,6 +48,7 @@ class twitterOutput
      */
     public function init($config, $primary, $discord, $logger)
     {
+        return null;
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
