@@ -94,10 +94,6 @@ class fileReader
                 if (!isset($channelID)) { // Make sure it's always set.
                     $channelID = null;
                 }
-                $begin = mb_substr($message, 0, 15);
-                if (strstr($begin, '#')) {
-                    $message = 'skip';
-                }
                 if ($channelID == '' || $channelID == null) {
                     $message = 'skip';
                 }
