@@ -192,7 +192,11 @@ class notifications
                             if ($aggAllianceName === 'Unknown') {
                                 $aggAllianceName = corpName($aggAllianceID);
                             }
-                            $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = '@everyone | War declared. Fighting begins in roughly 24 hours.';
+                            } else {
+                                $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
+                            }
                             break;
                         case 6: // Corp joins war (Not enough info in api to say who the 3rd party is)
                             $defAllianceID = trim(explode(': ', $notificationString[0])[1]);
@@ -227,7 +231,11 @@ class notifications
                             if ($aggAllianceName === 'Unknown') {
                                 $aggAllianceName = corpName($aggAllianceID);
                             }
-                            $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = 'The war has been invalidated. Fighting ends in roughly 24 hours.';
+                            } else {
+                                $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
+                            }
                             break;
                         case 9: // Pilot bill
                             $msg = 'skip';

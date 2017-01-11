@@ -327,8 +327,6 @@ function corpDetails($corpID)
 ////Alliance ID to name via CCP
 function allianceName($allianceID)
 {
-    $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -348,7 +346,13 @@ function allianceName($allianceID)
         $name = (string)$data['alliance_name'];
 
     } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$allianceID}";
+        $xml = makeApiRequest($url);
+        foreach ($xml->result->rowset->row as $entity) {
+            $name = $entity->attributes()->name;
+        }
+    }
+    if ($name === null || '') {
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$allianceID}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
