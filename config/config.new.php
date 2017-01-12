@@ -131,9 +131,9 @@ $config['plugins'] = array(
     ),
     //Pull MOTD of channel
 		'motd' => array(
-        'keyID' => '', //corp api keyID (Must have channel)
-        'vCode' => '', //corp api vCode
-        'characterID' => , //ID Of the character with mod rights to the channel
+        'keyID' => '', //char api keyID (Must have channel on api and mod rights on the char)
+        'vCode' => '', //char api vCode
+        'characterID' => , //ID Of the character with mod rights to the channel, can get this from zkill, look up your char and its /character/#### is your char ID
         'channelname' => '', //name of channel you are requesting, must be IDENTICAL
     ),
     // what channel for eve notifications/also the channel for tq status alerts
