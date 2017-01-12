@@ -101,7 +101,7 @@ $logger->info('Loaded: ' . count($pluginsT) . ' background plugins');
 if ($config['bot']['silentMode'] == 'false' || !isset($config['bot']['silentMode'])) {
 // Load chat plugins
     $pluginDirs = array('src/plugins/onMessage/*.php', 'src/plugins/admin/*.php');
-    $adminPlugins = array('setNickname', 'getLog', 'setGame');
+    $adminPlugins = array('setNickname', 'getLog', 'setGame', 'setAvatar');
     $logger->addInfo('Loading in chat plugins');
     $plugins = array();
     foreach ($pluginDirs as $dir) {
