@@ -71,12 +71,12 @@ class setAvatar
             $roles = $member->roles;
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
-                    $avatarURL = (string)$data['messageString'];
+                    $avatarURL = strtolower((string)$data['messageString']);
                     $ch = curl_init($avatarURL);
-                    if (substr($avatarURL, -3) === '.jpg' || '.JPG') {
+                    if (substr($avatarURL, -4) === '.jpg') {
                         $fp = fopen('/tmp/avatar.jpg', 'wb');
                         $dir = '/tmp/avatar.jpg';
-                    } elseif (substr($avatarURL, -3) === '.png' || '.PNG') {
+                    } elseif (substr($avatarURL, -4) === '.png') {
                         $fp = fopen('/tmp/avatar.png', 'wb');
                         $dir = '/tmp/avatar.png';
                     } else {
