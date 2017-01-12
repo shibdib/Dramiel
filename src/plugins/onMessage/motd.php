@@ -69,7 +69,7 @@
 					$channeln = $row["displayName"];
 					
 					if ($channeln == $channelname) {
-					//scrub that shit, then break it into 1900 chars or less. Limit is 2000 and want to leave room for the name of the person being replied too
+					//scrub the motd, then break it into 1900 chars or less. Limit is 2000 and want to leave room for the name of the person being replied too
 					$comment = $row["motd"];
           $comment = str_replace("<BR>", "\n", $comment);
           $comment = str_replace("<br>", "\n", $comment);
