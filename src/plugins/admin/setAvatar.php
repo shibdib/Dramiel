@@ -72,7 +72,23 @@ class setAvatar
             foreach ($roles as $role) {
                 if (in_array($role->name, $adminRoles, true)) {
                     $avatarURL = (string)$data['messageString'];
-                    $this->discord->setAvatar($avatarURL);
+                    $ch = curl_init($avatarURL);
+                    if (strpos($avatarURL, 'jpg') !== false) {
+                        $fp = fopen('/tmp/avatar.jpg', 'wb');
+                        $dir = '/tmp/avatar.jpg';
+                    } elseif (strpos($avatarURL, 'png') !== false) {
+                        $fp = fopen('/tmp/avatar.png', 'wb');
+                        $dir = '/tmp/avatar.png';
+                    } else {
+                        return $this->message->reply('Invalid URL. Make sure the URL links directly to a JPG or PNG.');
+                    }
+                    curl_setopt($ch, CURLOPT_FILE, $fp);
+                    curl_setopt($ch, CURLOPT_HEADER, 0);
+                    curl_exec($ch);
+                    curl_close($ch);
+                    fclose($fp);
+                    $this->discord->setAvatar($dir);
+                    $this->discord->save();
 
                     $msg = 'New avatar set';
                     $this->logger->addInfo("setGame: Bot avatar changed to {$avatarURL} by {$msgData['message']['from']}");
