@@ -73,10 +73,10 @@ class setAvatar
                 if (in_array($role->name, $adminRoles, true)) {
                     $avatarURL = (string)$data['messageString'];
                     $ch = curl_init($avatarURL);
-                    if (strpos($avatarURL, 'jpg') !== false) {
+                    if (substr($avatarURL, -3) === '.jpg' || '.JPG') {
                         $fp = fopen('/tmp/avatar.jpg', 'wb');
                         $dir = '/tmp/avatar.jpg';
-                    } elseif (strpos($avatarURL, 'png') !== false) {
+                    } elseif (substr($avatarURL, -3) === '.png' || '.PNG') {
                         $fp = fopen('/tmp/avatar.png', 'wb');
                         $dir = '/tmp/avatar.png';
                     } else {
