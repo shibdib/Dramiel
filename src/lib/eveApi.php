@@ -74,6 +74,7 @@ function serverStatus()
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
             CURLOPT_TIMEOUT => 8,
             CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+            CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
         ));
         // Fetch the data from the URL
         $data = curl_exec($ch);
@@ -122,26 +123,38 @@ function characterID($characterName)
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $characterName = urlencode($characterName);
+    $x = 0;
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$characterName}&categories=character&language=en-us&strict=true&datasource=tranquility");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
-        $id = (int)$data['character'][0];
+    while ($x < 3) {
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$characterName}&categories=character&language=en-us&strict=true&datasource=tranquility");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
+            $id = (int)$data['character'][0];
 
-    } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
+        }
+    }
+    if ($x > 2) {
         $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$characterName}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -161,25 +174,37 @@ function characterDetails($characterID)
 {
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $x = 0;
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/characters/{$characterID}/");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
+    while ($x < 3) {
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/characters/{$characterID}/");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
 
-    } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
+        }
+    }
+    if ($x > 2) {
         return null;
     }
 
@@ -195,26 +220,38 @@ function systemName($systemID)
 {
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $x = 0;
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
-        $name = (string)$data['solar_system_name'];
+    while ($x < 3) {
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
+            $name = (string)$data['solar_system_name'];
 
-    } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
+        }
+    }
+    if ($x > 2) {
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$systemID}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -235,26 +272,38 @@ function corpID($corpName)
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $corpName = urlencode($corpName);
+    $x = 0;
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
-        $id = (int)$data['corporation'][0];
+    while ($x < 3) {
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
+            $id = (int)$data['corporation'][0];
 
-    } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
+        }
+    }
+    if ($x > 2) {
         $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$corpName}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -295,25 +344,37 @@ function corpDetails($corpID)
 {
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $x = 0;
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/corporations/{$corpID}/");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
+    while ($x < 3) {
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/corporations/{$corpID}/");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
 
-    } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
+        }
+    }
+    if ($x > 2) {
         return null;
     }
 
@@ -327,32 +388,40 @@ function corpDetails($corpID)
 ////Alliance ID to name via CCP
 function allianceName($allianceID)
 {
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $x = 0;
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/alliances/{$allianceID}/");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
-        $name = (string)$data['alliance_name'];
+    while ($x < 3) {
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/alliances/{$allianceID}/");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
+            $name = (string)$data['alliance_name'];
 
-    } catch (Exception $e) {
-        $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$allianceID}";
-        $xml = makeApiRequest($url);
-        foreach ($xml->result->rowset->row as $entity) {
-            $name = $entity->attributes()->name;
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
         }
     }
-    if ($name === null || '') {
+    if ($x > 2) {
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$allianceID}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -374,25 +443,39 @@ function systemID($systemName)
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
     $systemName = urlencode($systemName);
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$systemName}&categories=solarsystem&language=en-us&strict=true&datasource=tranquility");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
-        $id = (int)$data['solarsystem'][0];
+    $x = 0;
 
-    } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+    while ($x < 3) {
+
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$systemName}&categories=solarsystem&language=en-us&strict=true&datasource=tranquility");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
+            $id = (int)$data['solarsystem'][0];
+
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
+        }
+    }
+    if ($x > 2) {
         $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$systemName}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -413,25 +496,38 @@ function apiTypeName($typeID)
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
 
-    try {
-        // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/types/{$typeID}/");
-        // Set the options for this request
-        curl_setopt_array($ch, array(
-            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
-            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
-            CURLOPT_TIMEOUT => 8,
-            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
-        ));
-        // Fetch the data from the URL
-        $data = curl_exec($ch);
-        // Close the connection
-        curl_close($ch);
-        $data = json_decode($data, TRUE);
-        $name = (string)$data['type_name'];
+    $x = 0;
 
-    } catch (Exception $e) {
-        $logger->error('EVE ESI Error: ' . $e->getMessage());
+    while ($x < 3) {
+        try {
+            // Initialize a new request for this URL
+            $ch = curl_init("https://esi.tech.ccp.is/latest/universe/types/{$typeID}/");
+            // Set the options for this request
+            curl_setopt_array($ch, array(
+                CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+                CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+                CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
+            ));
+            // Fetch the data from the URL
+            $data = curl_exec($ch);
+            // Close the connection
+            curl_close($ch);
+            $data = json_decode($data, TRUE);
+            $name = (string)$data['type_name'];
+
+        } catch (Exception $e) {
+            $logger->error('EVE ESI Error: ' . $e->getMessage() . ' - Attempting ESI again.');
+            $x++;
+            continue;
+        }
+        $x = 0;
+        if ($x === 0) {
+            break;
+        }
+    }
+    if ($x > 2) {
         $url = "https://api.eveonline.com/eve/TypeName.xml.aspx?ids={$typeID}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $entity) {
@@ -461,6 +557,7 @@ function apiTypeID($typeName)
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
             CURLOPT_TIMEOUT => 8,
             CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+            CURLOPT_USERAGENT => 'Dramiel Discord Bot - https://github.com/shibdib/Dramiel', // Useragent
         ));
         // Fetch the data from the URL
         $data = curl_exec($ch);
