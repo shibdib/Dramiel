@@ -373,6 +373,9 @@ class notifications
                         case 89: // Sov level?
                             $msg = 'skip';
                             break;
+                        case 90: // Sov level?
+                            $msg = 'skip';
+                            break;
                         case 93: // Customs office is being attacked
                             $aggAllianceID = trim(explode(': ', $notificationString[0])[1]);
                             $aggAllianceName = allianceName($aggAllianceID);
@@ -594,6 +597,9 @@ class notifications
                             }
                             break;
                         case 199: // citadel delivery
+                            $msg = 'skip';
+                            break;
+                        case 1030: // ??
                             $msg = 'skip';
                             break;
                         case 1031: // plex delivery
