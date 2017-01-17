@@ -80,8 +80,7 @@ class auth
         $userID = $msgData['message']['fromID'];
         $userName = $msgData['message']['from'];
         $message = $msgData['message']['message'];
-        $channelInfo = $this->message->channel;
-        $guildID = $channelInfo[@guild_id];
+        $guildID = $this->guild;
         $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
         if (isset($data['trigger'])) {
             if (isset($this->config['bot']['primary'])) {
