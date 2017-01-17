@@ -67,12 +67,13 @@ class getLog
             //Admin Check
             $userID = $msgData['message']['fromID'];
             $adminRoles = $this->config['bot']['adminRoles'];
+            $adminRoles = array_map('strtolower', $adminRoles);
             $id = $this->config['bot']['guild'];
             $guild = $this->discord->guilds->get('id', $id);
             $member = $guild->members->get('id', $userID);
             $roles = $member->roles;
             foreach ($roles as $role) {
-                if (in_array($role->name, $adminRoles, true)) {
+                if (in_array(strtolower($role->name), $adminRoles, true)) {
                     $logType = (string) $data['messageString'];
                     if ($logType === 'log') {
                         $filePath = __DIR__ . '/../../../log/dramielLog.log';
