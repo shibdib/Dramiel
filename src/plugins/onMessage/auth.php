@@ -206,11 +206,6 @@ class auth
                             $role = 'blue';
                             break;
                         }
-                        if ((@(int)$allianceContacts['standings'] === 0 || @(int)$corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || '')) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
-                            $member->addRole($role);
-                            $role = 'neut';
-                            break;
-                        }
                         if ((@(int)$allianceContacts['standings'] === -5 || @(int)$corpContacts['standings'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
                             $member->addRole($role);
                             $role = 'red';
@@ -220,6 +215,15 @@ class auth
                             $member->addRole($role);
                             $role = 'red';
                             break;
+                        }
+                    }
+                    if ($role === null) {
+                        foreach ($roles as $role) {
+                            if ((string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
+                                $member->addRole($role);
+                                $role = 'neut';
+                                break;
+                            }
                         }
                     }
                 }
