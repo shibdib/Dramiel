@@ -193,22 +193,31 @@ class auth
                         if ((@(int)$allianceContacts['standings'] === 5 || @(int)$corpContacts['standings'] === 5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus5Role']) {
                             $member->addRole($role);
                             $role = 'blue';
+                            break;
                         }
                         if ((@(int)$allianceContacts['standings'] === 10 || @(int)$corpContacts['standings'] === 10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus10Role']) {
                             $member->addRole($role);
                             $role = 'blue';
-                        }
-                        if ((@(int)$allianceContacts['standings'] === 0 || @(int)$corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || '')) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
-                            $member->addRole($role);
-                            $role = 'neut';
+                            break;
                         }
                         if ((@(int)$allianceContacts['standings'] === -5 || @(int)$corpContacts['standings'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
                             $member->addRole($role);
                             $role = 'red';
+                            break;
                         }
                         if ((@(int)$allianceContacts['standings'] === -10 || @(int)$corpContacts['standings'] === -10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus10Role']) {
                             $member->addRole($role);
                             $role = 'red';
+                            break;
+                        }
+                    }
+                    if ($role === null) {
+                        foreach ($roles as $role) {
+                            if ((string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
+                                $member->addRole($role);
+                                $role = 'neut';
+                                break;
+                            }
                         }
                     }
                 }
