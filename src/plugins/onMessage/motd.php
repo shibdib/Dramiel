@@ -98,7 +98,7 @@
 			}
 		}
 		public function information() {
-            return array('name' => 'motd', 'trigger' => $this->triggers, 'information' => 'Displays the BurntOutWebs MOTD, useful for seeing upcoming ops when not in-game.');
+            return array('name' => 'motd', 'trigger' => $this->triggers, 'information' => 'Displays the MOTD, useful for seeing information displayed there when not in-game.');
 		}
 	}
 ?>
