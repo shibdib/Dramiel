@@ -424,7 +424,7 @@ function apiTypeName($typeID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string)$data['type_name'];
+        $name = (string)$data['name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
