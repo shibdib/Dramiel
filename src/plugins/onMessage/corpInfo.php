@@ -120,7 +120,7 @@ For more info, visit: $url";
         return array(
             'name' => 'corp',
             'trigger' => $this->triggers,
-            'information' => 'Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name'
+            'information' => 'Returns basic EVE Online data about a corporation from CREST and ESI. To use simply type !corp corporation_name'
         );
     }
 }
