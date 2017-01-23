@@ -87,17 +87,11 @@ class auth
         $userID = $msgData['message']['fromID'];
         $userName = $msgData['message']['from'];
         $message = $msgData['message']['message'];
-        $channelInfo = $this->message->channel;
-        $guildID = $channelInfo[@guild_id];
+        $guildID = $this->guild;
+        $guild = $this->discord->guilds->get('id', $guildID);
         $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
         if (isset($data['trigger'])) {
-            if (isset($this->config['bot']['primary'])) {
-                if ($guildID != $this->config['bot']['primary']) {
-                    $this->message->reply('**Failure:** The auth code your attempting to use is for another discord server');
-                    return null;
-                }
 
-            }
             // If config is outdated
             if (null === $this->authGroups) {
                 $this->message->reply('**Failure:** Please update the bots config to the latest version.');
@@ -145,8 +139,12 @@ class auth
                 }
                 $role = null;
 
-                $roles = @$this->message->channel->guild->roles;
-                $member = @$this->message->channel->guild->members->get('id', $userID);
+                $roles = @$guild->roles;
+                $member = @$guild->members->get('id', $userID);
+                if (null === $member) {
+                    $this->message->reply("**Failure:** You're not a member of the correct guild.");
+                    return null;
+                }
                 $eveName = characterName($charID);
                 if (null === $eveName) {
                     $this->message->reply('**Failure:** Unable to auth at this time, ESI is down. Please try again later.');
@@ -228,7 +226,6 @@ class auth
                     }
                 }
                 if (null !== $role) {
-                    $guild = $this->discord->guilds->get('id', $guildID);
                     $guild->members->save($member);
                     insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, $role);
                     disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
