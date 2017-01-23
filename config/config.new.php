@@ -82,6 +82,7 @@ $config['enabledPlugins'] = array( // remove the slashes for the plugins you wan
     'help', // bot help program, will list active addons
     'price', // price check tool, works for all items and ships. Can either !pc <itemname> for general, or !<systemname> <item> for more specific
     'time', // global clock with eve time
+    //'motd', // shows the MOTD of a listed channel.
     //"evemails", // evemail updater, will post corp and alliance mails to a channel.
     //"fileReader", // Read advanced plugin config section of the wiki
     //"notifications", // eve notifications to a channel, good for warning users of an attack
@@ -127,6 +128,13 @@ $config['plugins'] = array(
                 'channelID' => 0
             )
         ),
+    ),
+    //Pull MOTD of channel
+		'motd' => array(
+        'keyID' => '', //char api keyID (Must have channel on api and mod rights on the char)
+        'vCode' => '', //char api vCode
+        'characterID' => , //ID Of the character with mod rights to the channel, can get this from zkill, look up your char and its /character/#### is your char ID
+        'channelname' => '', //name of channel you are requesting, must be IDENTICAL
     ),
     // what channel for eve notifications/also the channel for tq status alerts
     'notifications' => array(
