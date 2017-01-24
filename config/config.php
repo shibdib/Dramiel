@@ -113,7 +113,6 @@ $config['plugins'] = array(
     ),
     //SSO Auth
     'auth' => array(
-        'url' => 'http://.....', // put a url here if using sso auth for ur sso page.
         'exempt' => $exemptAuth, // role names that are exempt from auth checks (wont be removed by the bot)
         'alertChannel' => dbQueryField("SELECT value FROM config WHERE variable = 'alertChannel'", 'value', array(), 'config'), // if using periodic check put the channel you'd like the bot to log removing users in. (Recommended you don't use an active chat channel)
         'corpTickers' => dbQueryField("SELECT value FROM config WHERE variable = 'corpTickers'", 'value', array(), 'config'), // if "true" bot will automatically add corp tickers to the front of users names at auth.

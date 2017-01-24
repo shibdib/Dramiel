@@ -59,7 +59,7 @@ class authCheck
         $this->discord = $discord;
         $this->logger = $logger;
         $this->guildID = $config['bot']['guild'];
-        $this->exempt[] = $config['plugins']['auth']['exempt'];
+        $this->exempt = $config['plugins']['auth']['exempt'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
         $this->standingsBased = $config['plugins']['auth']['standings']['enabled'];
@@ -269,7 +269,7 @@ class authCheck
             if (null === $result) {
                 $userCount++;
                 foreach ($roles as $role) {
-                    if ($id !== $botID && !in_array($role->name, $this->exempt[0], true)) {
+                    if ($id !== $botID && !in_array($role->name, $this->exempt, true)) {
                         $member->removeRole($role);
                         $guild->members->save($member);
                         // Add users name to array
