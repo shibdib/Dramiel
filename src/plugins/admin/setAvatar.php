@@ -23,8 +23,6 @@
  * SOFTWARE.
  */
 
-use Discord\Parts\User\Client;
-
 /**
  * @property  message
  */

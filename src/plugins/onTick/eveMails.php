@@ -57,7 +57,7 @@ class evemails
         $this->discord = $discord;
         $this->logger = $logger;
         $this->toIDs = $config['plugins']['evemails']['fromIDs'];
-        $this->toDiscordChannel = (int)$config['plugins']['evemails']['channelID'];
+        $this->toDiscordChannel = (int) $config['plugins']['evemails']['channelID'];
         $this->newestMailID = getPermCache('newestCorpMailID');
         $this->maxID = 0;
         $this->apiKey = $config['eve']['apiKeys'];
@@ -113,7 +113,7 @@ class evemails
         $cacheClr = $baseUnix - 13500;
 
         //Set timer for next key based on number of keys
-        $nextKey = (1900 / (int)$this->numberOfKeys) + time();
+        $nextKey = (1900 / (int) $this->numberOfKeys) + time();
         $nextKeyTime = gmdate('Y-m-d H:i:s', $nextKey);
         setPermCache('mailLastChecked', $nextKey);
 

@@ -96,7 +96,7 @@ class siloFull
             $towerFull = 30000;
             $cleanFull = number_format($towerFull);
         }
-        if ($this->towerRace ==='2') {
+        if ($this->towerRace === '2') {
             $towerMulti = 1;
             $towerFull = 40000;
             $cleanFull = number_format($towerFull);

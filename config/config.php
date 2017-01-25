@@ -192,8 +192,8 @@ $config['plugins'] = array(
             )
         ),
         'standings' => array(
-            'enabled' => dbQueryField("SELECT value FROM config WHERE variable = 'standingsEnabled'", 'value', array(), 'config'),//set to true if you want to allow people to auth based off of corp/alliance standings
-            'apiKey' => dbQueryField("SELECT value FROM config WHERE variable = 'standingsApiKey'", 'value', array(), 'config'),//enter the KEYID for whatever above api you'd like to base standings off of
+            'enabled' => dbQueryField("SELECT value FROM config WHERE variable = 'standingsEnabled'", 'value', array(), 'config'), //set to true if you want to allow people to auth based off of corp/alliance standings
+            'apiKey' => dbQueryField("SELECT value FROM config WHERE variable = 'standingsApiKey'", 'value', array(), 'config'), //enter the KEYID for whatever above api you'd like to base standings off of
             'plus10Role' => dbQueryField("SELECT value FROM config WHERE variable = 'standingsPlus10'", 'value', array(), 'config'),
             'plus5Role' => dbQueryField("SELECT value FROM config WHERE variable = 'standingsPlus5'", 'value', array(), 'config'),
             'neutralRole' => dbQueryField("SELECT value FROM config WHERE variable = 'standingsNeutral'", 'value', array(), 'config'),
