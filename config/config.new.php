@@ -130,10 +130,10 @@ $config['plugins'] = array(
         ),
     ),
     //Pull MOTD of channel
-		'motd' => array(
+        'motd' => array(
         'keyID' => '', //char api keyID (Must have channel on api and mod rights on the char)
         'vCode' => '', //char api vCode
-        'characterID' => , //ID Of the character with mod rights to the channel, can get this from zkill, look up your char and its /character/#### is your char ID
+        'characterID' =>, //ID Of the character with mod rights to the channel, can get this from zkill, look up your char and its /character/#### is your char ID
         'channelname' => '', //name of channel you are requesting, must be IDENTICAL
     ),
     // what channel for eve notifications/also the channel for tq status alerts
@@ -196,7 +196,7 @@ $config['plugins'] = array(
                 'lossMails' => 'true', //set as true to post both kills and losses, false to post only kills.
                 'startMail' => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
                 'minimumValue' => 0, //Put the minimum isk value for killmails here (Do not put any commas just numbers)
-				'minimumlossValue' => 0, //Put the minimum isk loss value for killmails here (Do not put any commas just numbers)
+                'minimumlossValue' => 0, //Put the minimum isk loss value for killmails here (Do not put any commas just numbers)
                 'bigKill' => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
                 'bigKillChannel' => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
             ),
@@ -208,7 +208,7 @@ $config['plugins'] = array(
                 'lossMails' => 'true', //set as true to post both kills and losses, false to post only kills.
                 'startMail' => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
                 'minimumValue' => 0, //Put the minimum isk value for killmails here (Do not put any commas just numbers)
-				'minimumlossValue' => 0, //Put the minimum isk loss value for killmails here (Do not put any commas just numbers)
+                'minimumlossValue' => 0, //Put the minimum isk loss value for killmails here (Do not put any commas just numbers)
                 'bigKill' => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
                 'bigKillChannel' => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
             ),

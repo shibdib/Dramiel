@@ -202,17 +202,17 @@ class authCheck
                 if ($role === 'blue' || 'neut' || 'red') {
                     $allianceContacts = getContacts($allianceID);
                     $corpContacts = getContacts($corporationID);
-                    if ($role === 'blue' && ((int)$allianceContacts['standing'] === 5 || 10 || (int)$corpContacts['standing'] === 5 || 10)) {
+                    if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
                         $standings = 1;
                     }
-                    if ($role === 'red' && ((int)$allianceContacts['standing'] === -5 || -10 || (int)$corpContacts['standing'] === -5 || -10)) {
+                    if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
                         $standings = 1;
                     }
-                    if ($role === 'neut' && ((int)$allianceContacts['standing'] === 0 || (int)$corpContacts['standing'] === 0 || (@(int)$allianceContacts['standings'] === null || '' && @(int)$corpContacts['standings'] === null || ''))) {
+                    if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
                         $standings = 1;
                     }
                 }
-                if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray) && null === $standings) {
+                if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
                     // Deactivate user in database
                     $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
                     $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");

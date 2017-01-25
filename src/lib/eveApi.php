@@ -28,7 +28,7 @@ use Monolog\Logger;
 
 /**
  * @param $url
- * @return SimpleXMLElement|null|string
+ * @return SimpleXMLElement|null
  */
 function makeApiRequest($url)
 {
@@ -101,7 +101,7 @@ function serverStatus()
 function characterName($characterID)
 {
     $character = characterDetails($characterID);
-    $name = (string)$character['name'];
+    $name = (string) $character['name'];
     if (null === $name || '' === $name) { // Make sure it's always set.
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$characterID}";
         $xml = makeApiRequest($url);
@@ -117,6 +117,11 @@ function characterName($characterID)
  * @return mixed
  */
 ////Character name to ID
+/**
+ * @param string $characterName
+ *
+ * @return string
+ */
 function characterID($characterName)
 {
     $logger = new Logger('eveESI');
@@ -138,7 +143,7 @@ function characterID($characterName)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $id = (int)$data['character'][0];
+        $id = (int) $data['character'][0];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -211,7 +216,7 @@ function systemName($systemID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string)$data['solar_system_name'];
+        $name = (string) $data['solar_system_name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -230,6 +235,9 @@ function systemName($systemID)
  * @return mixed
  */
 ////Corp name to ID
+/**
+ * @param string $corpName
+ */
 function corpID($corpName)
 {
     $logger = new Logger('eveESI');
@@ -251,7 +259,7 @@ function corpID($corpName)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $id = (int)$data['corporation'][0];
+        $id = (int) $data['corporation'][0];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -274,7 +282,7 @@ function corpID($corpName)
 function corpName($corpID)
 {
     $corporation = corpDetails($corpID);
-    $name = (string)$corporation['corporation_name'];
+    $name = (string) $corporation['corporation_name'];
     if (null === $name || '' === $name) { // Make sure it's always set.
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$corpID}";
         $xml = makeApiRequest($url);
@@ -345,7 +353,7 @@ function allianceName($allianceID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string)$data['alliance_name'];
+        $name = (string) $data['alliance_name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -385,7 +393,7 @@ function systemID($systemName)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $id = (int)$data['solarsystem'][0];
+        $id = (int) $data['solarsystem'][0];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -424,7 +432,7 @@ function apiTypeName($typeID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string)$data['name'];
+        $name = (string) $data['name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -468,7 +476,7 @@ function apiTypeID($typeName)
         $logger->error('Fuzzwork Error: ' . $e->getMessage());
         return null;
     }
-    $id = (int)$data['typeID'];
+    $id = (int) $data['typeID'];
 
     if (null === $id) { // Make sure it's always set.
         $id = 'Unknown';
@@ -478,6 +486,9 @@ function apiTypeID($typeName)
 }
 
 ////Char/Object ID to name via CCP
+/**
+ * @param string $moonID
+ */
 function apiMoonName($moonID)
 {
     $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?IDs={$moonID}";
