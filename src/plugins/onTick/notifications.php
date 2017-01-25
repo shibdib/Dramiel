@@ -564,7 +564,7 @@ class notifications
                             $systemName = systemName($solarSystemID);
                             $msg = "TCU in **{$systemName}** has self destructed.";
                             break;
-                        case 182: // citadel low on fuel
+                        case 181: // citadel low on fuel
                             $result = preg_split('/solarsystemID:/', $notificationString);
                             if (count($result) > 1) {
                                 $result_split = explode(' ', $result[1]);
