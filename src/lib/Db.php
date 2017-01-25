@@ -92,7 +92,7 @@ function dbQueryField($query, $field, array $params = array(), $db = null)
 /**
  * @param string $query
  * @param array $params
- * @param null $db
+ * @param string $db
  * @return null|void
  * @internal param string $db
  */
@@ -123,7 +123,7 @@ function dbQueryRow($query, array $params = array(), $db = null)
 /**
  * @param string $query
  * @param array $params
- * @param null $db
+ * @param string $db
  * @return array|void
  * @internal param string $db
  */
@@ -146,7 +146,7 @@ function dbQuery($query, array $params = array(), $db = null)
 /**
  * @param string $query
  * @param array $params
- * @param null $db
+ * @param string $db
  * @internal param string $db
  */
 function dbExecute($query, array $params = array(), $db = null)
@@ -243,6 +243,9 @@ function clearAllMessageQueue()
 }
 
 //CORP INFO
+/**
+ * @param string $corpName
+ */
 function addCorpInfo($corpID, $corpTicker, $corpName)
 {
     dbExecute('REPLACE INTO corpCache (`corpID`, `corpTicker`, `corpName`) VALUES (:corpID,:corpTicker,:corpName)', array(':corpID' => $corpID, ':corpTicker' => $corpTicker, ':corpName' => $corpName));
@@ -301,11 +304,15 @@ function getPendingUser($code)
     return dbQueryRow('SELECT * FROM pendingUsers WHERE `authString` = :authString AND `active` = :active', array(':authString' => $code, ':active' => $active), $db);
 }
 
+/**
+ * @param integer $charID
+ * @param integer $id
+ */
 function insertNewUser($userID, $charID, $eveName, $id, $role = 'corp')
 {
     $active = 'yes';
     $db = 'auth';
-    dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => (string)$eveName, ':active' => $active, ':role' => (string)$role), $db);
+    dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => (string) $eveName, ':active' => $active, ':role' => (string) $role), $db);
     dbExecute('DELETE from pendingUsers WHERE `id` = :id', array(':id' => $id), $db);
 }
 

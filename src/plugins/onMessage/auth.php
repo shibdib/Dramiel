@@ -70,7 +70,7 @@ class auth
      */
     public function onMessage($msgData, $message)
     {
-        $channelID = (int)$msgData['message']['channelID'];
+        $channelID = (int) $msgData['message']['channelID'];
 
         if (in_array($channelID, $this->excludeChannel, true)) {
             return null;
@@ -106,10 +106,10 @@ class auth
             }
 
             while ($rows = $result) {
-                $charID = (int)$rows['characterID'];
-                $id = (int)$rows['id'];
-                $corpID = (int)$rows['corporationID'];
-                $allianceID = (int)$rows['allianceID'];
+                $charID = (int) $rows['characterID'];
+                $id = (int) $rows['id'];
+                $corpID = (int) $rows['corporationID'];
+                $allianceID = (int) $rows['allianceID'];
 
                 //If corp is new store in DB
                 $corpInfo = getCorpInfo($corpID);
@@ -120,7 +120,7 @@ class auth
                         return null;
                     }
                     $corpTicker = $corpDetails['ticker'];
-                    $corpName = (string)$corpDetails['corporation_name'];
+                    $corpName = (string) $corpDetails['corporation_name'];
                     if (null !== $corpTicker) {
                         addCorpInfo($corpID, $corpTicker, $corpName);
                     }
@@ -152,15 +152,15 @@ class auth
                 }
                 foreach ($this->authGroups as $authGroup) {
                     //Check if it's set to match corp and alliance
-                    if ((int)$authGroup['corpID'] !== 0 && (int)$authGroup['allianceID'] !== 0) {
+                    if ((int) $authGroup['corpID'] !== 0 && (int) $authGroup['allianceID'] !== 0) {
                         //Check if corpID matches
-                        if ((int)$corpID === (int)$authGroup['corpID'] && (int)$allianceID === (int)$authGroup['allianceID']) {
+                        if ((int) $corpID === (int) $authGroup['corpID'] && (int) $allianceID === (int) $authGroup['allianceID']) {
                             foreach ($roles as $role) {
-                                if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
+                                if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $member->addRole($role);
                                     $role = 'corp/ally';
                                 }
-                                if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
+                                if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $member->addRole($role);
                                     $role = 'corp/ally';
                                 }
@@ -169,9 +169,9 @@ class auth
                         }
                     } else {
                         //Check if corpID matches
-                        if ((int)$corpID === (int)$authGroup['corpID']) {
+                        if ((int) $corpID === (int) $authGroup['corpID']) {
                             foreach ($roles as $role) {
-                                if ((string)$role->name === (string)$authGroup['corpMemberRole']) {
+                                if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $member->addRole($role);
                                     $role = 'corp';
                                 }
@@ -179,9 +179,9 @@ class auth
                             break;
                         }
                         //Check if allianceID matches
-                        if ((int)$allianceID === (int)$authGroup['allianceID'] && (int)$authGroup['allianceID'] !== 0) {
+                        if ((int) $allianceID === (int) $authGroup['allianceID'] && (int) $authGroup['allianceID'] !== 0) {
                             foreach ($roles as $role) {
-                                if ((string)$role->name === (string)$authGroup['allyMemberRole']) {
+                                if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $member->addRole($role);
                                     $role = 'ally';
                                 }
@@ -195,22 +195,22 @@ class auth
                     $allianceContacts = getContacts($allianceID);
                     $corpContacts = getContacts($corpID);
                     foreach ($roles as $role) {
-                        if ((@(int)$allianceContacts['standing'] === 5 || @(int)$corpContacts['standing'] === 5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus5Role']) {
+                        if ((@(int) $allianceContacts['standing'] === 5 || @(int) $corpContacts['standing'] === 5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus5Role']) {
                             $member->addRole($role);
                             $role = 'blue';
                             break;
                         }
-                        if ((@(int)$allianceContacts['standing'] === 10 || @(int)$corpContacts['standing'] === 10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus10Role']) {
+                        if ((@(int) $allianceContacts['standing'] === 10 || @(int) $corpContacts['standing'] === 10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus10Role']) {
                             $member->addRole($role);
                             $role = 'blue';
                             break;
                         }
-                        if ((@(int)$allianceContacts['standing'] === -5 || @(int)$corpContacts['standing'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
+                        if ((@(int) $allianceContacts['standing'] === -5 || @(int) $corpContacts['standing'] === -5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus5Role']) {
                             $member->addRole($role);
                             $role = 'red';
                             break;
                         }
-                        if ((@(int)$allianceContacts['standing'] === -10 || @(int)$corpContacts['standing'] === -10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus10Role']) {
+                        if ((@(int) $allianceContacts['standing'] === -10 || @(int) $corpContacts['standing'] === -10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus10Role']) {
                             $member->addRole($role);
                             $role = 'red';
                             break;
@@ -218,7 +218,7 @@ class auth
                     }
                     if ($role === null) {
                         foreach ($roles as $role) {
-                            if ((string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
+                            if ((string) $role->name === (string) $this->config['plugins']['auth']['standings']['neutralRole']) {
                                 $member->addRole($role);
                                 $role = 'neut';
                                 break;

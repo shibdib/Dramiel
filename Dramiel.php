@@ -139,7 +139,7 @@ dbPrune();
 
 $discord->on(
     'ready',
-    function ($discord) use ($logger, $config, $primary, $plugins, $pluginsT) {
+    function($discord) use ($logger, $config, $primary, $plugins, $pluginsT) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -162,21 +162,21 @@ $discord->on(
         $discord->updatePresence($game);
 
         // Server Status Check (tick plugins will not run if eve is offline)
-        $discord->loop->addPeriodicTimer(60, function () use ($logger) {
+        $discord->loop->addPeriodicTimer(60, function() use ($logger) {
             $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
             $crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
             setPermCache('serverState', $crestStatus);
         });
 
         // Run the Tick plugins
-        $discord->loop->addPeriodicTimer(3, function () use ($pluginsT) {
+        $discord->loop->addPeriodicTimer(3, function() use ($pluginsT) {
             foreach ($pluginsT as $plugin) {
                 $plugin->tick();
             }
         });
 
         // Message queue
-        $discord->loop->addPeriodicTimer(7, function () use ($discord, $logger) {
+        $discord->loop->addPeriodicTimer(7, function() use ($discord, $logger) {
             $x = 0;
             while ($x < 3) {
                 $id = getOldestMessage();
@@ -199,7 +199,7 @@ $discord->on(
                         clearQueuedMessages($id);
                         continue;
                     }
-                    $channel = $guild->channels->get('id', (int)$queuedMessage['channel']);
+                    $channel = $guild->channels->get('id', (int) $queuedMessage['channel']);
                     //Check if channel is bad
                     if (null === $channel) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
@@ -240,7 +240,7 @@ $discord->on(
         });
 
         // Mem cleanup every 30 minutes
-        $discord->loop->addPeriodicTimer(1800, function () use ($logger) {
+        $discord->loop->addPeriodicTimer(1800, function() use ($logger) {
             $logger->addInfo('Memory in use: ' . memory_get_usage() / 1024 / 1024 . 'MB');
             gc_collect_cycles(); // Collect garbage
             $logger->addInfo('Memory in use after garbage collection: ' . memory_get_usage() / 1024 / 1024 . 'MB');
@@ -248,7 +248,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function ($message) use ($logger, $config, $primary, $plugins) {
+            function($message) use ($logger, $config, $primary, $plugins) {
 
                 $msgData = array(
                     'message' => array(
