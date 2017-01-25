@@ -139,7 +139,7 @@ dbPrune();
 
 $discord->on(
     'ready',
-    function ($discord) use ($logger, $config, $plugins, $pluginsT) {
+    function($discord) use ($logger, $config, $plugins, $pluginsT) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can

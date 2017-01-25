@@ -89,16 +89,16 @@ class getKillmails
             if ($kmGroup['startMail'] > $killID || null === $killID) {
                 $killID = $kmGroup['startMail'];
             }
-            if ((int)$kmGroup['allianceID'] === 0 & $kmGroup['lossMails'] === 'true') {
+            if ((int) $kmGroup['allianceID'] === 0 & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup['corpID']}/";
             }
-            if ((int)$kmGroup['allianceID'] === 0 & $kmGroup['lossMails'] === 'false') {
+            if ((int) $kmGroup['allianceID'] === 0 & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/corporationID/{$kmGroup['corpID']}/";
             }
-            if ((int)$kmGroup['allianceID'] !== 0 & $kmGroup['lossMails'] === 'true') {
+            if ((int) $kmGroup['allianceID'] !== 0 & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup['allianceID']}/";
             }
-            if ((int)$kmGroup['allianceID'] !== 0 & $kmGroup['lossMails'] === 'false') {
+            if ((int) $kmGroup['allianceID'] !== 0 & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/allianceID/{$kmGroup['allianceID']}/";
             }
 
@@ -129,16 +129,16 @@ class getKillmails
                         $rawValue = $kill['zkb']['totalValue'];
                         //Check if killmail meets minimum value and if it meets lost minimum value
                         if (isset($kmGroup['minimumValue']) && isset($kmGroup['minimumlossValue'])) {
-							if ($rawValue < $kmGroup['minimumValue']) {
+                            if ($rawValue < $kmGroup['minimumValue']) {
                                 if ($kill['victim']['corporationID'] == $kmGroup['corpID'] && $rawValue > $kmGroup['minimumlossValue'] ||
-								$kill['victim']['allianceID'] == $kmGroup['allianceID'] && $rawValue > $kmGroup['minimumlossValue'])
-								{
-									$this->logger->addInfo("Killmails: Mail {$killID} posted because it meet minimum loss value required.");
-								} else {
-									$this->logger->addInfo("Killmails: Mail {$killID} ignored for not meeting the minimum value required.");
-									setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
-									continue;
-								}
+                                $kill['victim']['allianceID'] == $kmGroup['allianceID'] && $rawValue > $kmGroup['minimumlossValue'])
+                                {
+                                    $this->logger->addInfo("Killmails: Mail {$killID} posted because it meet minimum loss value required.");
+                                } else {
+                                    $this->logger->addInfo("Killmails: Mail {$killID} ignored for not meeting the minimum value required.");
+                                    setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
+                                    continue;
+                                }
                             }
                         }
                         $totalValue = number_format($kill['zkb']['totalValue']);
