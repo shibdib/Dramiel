@@ -82,7 +82,7 @@ class evemails
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
-        if ($lastStatus == 'online') {
+        if ($lastStatus === 'online') {
             foreach ($this->apiKey as $apiKey) {
                 //Check if api is set
                 if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {

@@ -374,7 +374,7 @@ class authCheck
                 //corp ticker
                 if ($this->corpTickers === 'true') {
                     $character = characterDetails($charID);
-                    if (null === $character['corporation_id']) {
+                    if (!array_key_exists('corporation_id', $character)) {
                         continue;
                     }
                     $corpInfo = getCorpInfo($character['corporation_id']);
