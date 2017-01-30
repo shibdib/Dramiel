@@ -207,7 +207,7 @@ $discord->on(
                         continue;
                     }
                     $logger->addInfo("QueueProcessing - Completing queued item #{$id}");
-                    $channel->sendMessage($queuedMessage['message'], false);
+                    $channel->sendMessage($queuedMessage['message'], false, null);
                     clearQueuedMessages($id);
                 }
                 $x++;
