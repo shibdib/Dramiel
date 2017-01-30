@@ -190,13 +190,21 @@ $discord->on(
                     if (null === $queuedMessage['guild'] || null === $queuedMessage['channel'] || null === $queuedMessage['message']) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
                         clearQueuedMessages($id);
+                        continue;
                     }
                     $guild = $discord->guilds->get('id', $queuedMessage['guild']);
-                    $channel = $guild->channels->get('id', $queuedMessage['channel']);
+                    //Check if guild is bad
+                    if (null === $guild) {
+                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Guild provided is incorrect, removing it from the queue");
+                        clearQueuedMessages($id);
+                        continue;
+                    }
+                    $channel = $guild->channels->get('id', (int)$queuedMessage['channel']);
                     //Check if channel is bad
-                    if (null === $channel || null === $guild) {
+                    if (null === $channel) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
                         clearQueuedMessages($id);
+                        continue;
                     }
                     $logger->addInfo("QueueProcessing - Completing queued item #{$id}");
                     $channel->sendMessage($queuedMessage['message'], false, null);
