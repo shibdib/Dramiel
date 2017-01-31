@@ -322,3 +322,9 @@ function disableUser($discordID)
     $db = 'auth';
     dbExecute('UPDATE authUsers SET `active`=:active WHERE `discordID` = :discordID', array(':active' => $active, ':discordID' => $discordID), $db);
 }
+
+function fixRole($discordID, $role)
+{
+    $db = 'auth';
+    dbExecute('UPDATE authUsers SET `role`=:role WHERE `discordID` = :discordID', array(':role' => $role, ':discordID' => $discordID), $db);
+}

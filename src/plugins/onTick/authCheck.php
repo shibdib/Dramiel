@@ -165,6 +165,13 @@ class authCheck
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
                 $role = $rows['role'];
+
+                //Fix corrupt role
+                if (strpos($role, '<@&') !== false) {
+                    fixRole($discordID, 'fallback');
+                    continue;
+                }
+
                 $member = $guild->members->get('id', $discordID);
                 //Check if member has roles
                 if (null === @$member->roles) {
@@ -173,10 +180,12 @@ class authCheck
 
                 //Auth things
                 $character = characterDetails($charID);
+
                 //if issue with esi, skip
                 if (null === $character) {
                     continue;
                 }
+
                 $corporationID = $character['corporation_id'];
                 $corporationDetails = corpDetails($corporationID);
                 if (null === $corporationDetails) {
@@ -184,15 +193,31 @@ class authCheck
                 }
                 $allianceID = @$corporationDetails['alliance_id'];
 
+                //Fix role in db
+                if ($role === 'fallback') {
+                    if (in_array((int)$allianceID, $allianceArray) && in_array((int)$corporationID, $corpArray)) {
+                        fixRole($discordID, 'corp/ally');
+                        continue;
+                    } elseif (in_array((int)$allianceID, $allianceArray)) {
+                        fixRole($discordID, 'ally');
+                        continue;
+                    } elseif (in_array((int)$corporationID, $corpArray)) {
+                        fixRole($discordID, 'corp');
+                        continue;
+                    }
+                }
+
                 //check if user authed based on standings
                 $standings = null;
-                if ($role === 'blue' || 'neut' || 'red') {
+                if ($role === 'blue' || 'neut' || 'red' || 'fallback') {
                     $allianceContacts = getContacts($allianceID);
                     $corpContacts = getContacts($corporationID);
-                    if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
+                    if (($role === 'blue' || 'fallback') && ((int)$allianceContacts['standing'] === 5 || 10 || (int)$corpContacts['standing'] === 5 || 10)) {
+                        fixRole($discordID, 'blue');
                         $standings = 1;
                     }
-                    if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
+                    if (($role === 'red' || 'fallback') && ((int)$allianceContacts['standing'] === -5 || -10 || (int)$corpContacts['standing'] === -5 || -10)) {
+                        fixRole($discordID, 'red');
                         $standings = 1;
                     }
                     if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
@@ -200,6 +225,11 @@ class authCheck
                     }
                 }
                 if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
+                    // Deactivate user in database
+                    disableUser($discordID);
+                    continue;
+                }
+                if ($role = 'fallback' && null === $standings) {
                     // Deactivate user in database
                     disableUser($discordID);
                     continue;
@@ -213,9 +243,6 @@ class authCheck
         setPermCache('permsLastChecked', $nextCheck);
         return null;
     }
-
-    //Check user corp/alliance affiliation
-
 
     private function checkAuthState()
     {
