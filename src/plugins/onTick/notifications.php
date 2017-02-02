@@ -175,25 +175,17 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 5: // War Declared
-                            $result = preg_split('/againstID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $defAllianceID = $result_split[0];
-                            }
+                            $defAllianceID = $notificationArray[array_search('againstID:', $notificationArray) + 1];
                             $defAllianceName = allianceName($defAllianceID);
                             if ($defAllianceName === 'Unknown') {
                                 $defAllianceName = corpName($defAllianceID);
                             }
-                            $result = preg_split('/declaredByID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $aggAllianceID = $result_split[0];
-                            }
+                            $aggAllianceID = $notificationArray[array_search('declaredByID:', $notificationArray) + 1];
                             $aggAllianceName = allianceName($aggAllianceID);
                             if ($aggAllianceName === 'Unknown') {
                                 $aggAllianceName = corpName($aggAllianceID);
                             }
-                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                            if ([$aggAllianceName === null || ''] || [$defAllianceName === null || '']) {
                                 $msg = '@everyone | War declared. Fighting begins in roughly 24 hours.';
                             } else {
                                 $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
@@ -214,20 +206,12 @@ class notifications
                             $msg = "@everyone | War declared by {$aggCorpName} against {$defCorpName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 8: // Alliance war invalidated by CONCORD
-                            $result = preg_split('/againstID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $defAllianceID = $result_split[0];
-                            }
+                            $defAllianceID = $notificationArray[array_search('againstID:', $notificationArray) + 1];
                             $defAllianceName = allianceName($defAllianceID);
                             if ($defAllianceName === 'Unknown') {
                                 $defAllianceName = corpName($defAllianceID);
                             }
-                            $result = preg_split('/declaredByID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $aggAllianceID = $result_split[0];
-                            }
+                            $aggAllianceID = $notificationArray[array_search('declaredByID:', $notificationArray) + 1];
                             $aggAllianceName = allianceName($aggAllianceID);
                             if ($aggAllianceName === 'Unknown') {
                                 $aggAllianceName = corpName($aggAllianceID);
@@ -415,29 +399,17 @@ class notifications
                             $msg = "{$aggCorpName} has joined the war against {$defCorpName}.";
                             break;
                         case 101: // corp joins war
-                            $result = preg_split('/defenderID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $defCorpID = $result_split[0];
-                            }
+                            $defCorpID = $notificationArray[array_search('defenderID:', $notificationArray) + 1];
                             $defCorpName = allianceName($defCorpID);
                             if ($defCorpName === 'Unknown') {
                                 $defCorpName = corpName($defCorpID);
                             }
-                            $result = preg_split('/aggressorID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $aggCorpID = $result_split[0];
-                            }
+                            $aggCorpID = $notificationArray[array_search('aggressorID:', $notificationArray) + 1];
                             $aggCorpName = allianceName($aggCorpID);
                             if ($aggCorpName === 'Unknown') {
                                 $aggCorpName = corpName($aggCorpID);
                             }
-                            $result = preg_split('/allyID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $thirdCorpID = $result_split[0];
-                            }
+                            $thirdCorpID = $notificationArray[array_search('allyID:', $notificationArray) + 1];
                             $thirdCorpName = allianceName($thirdCorpID);
                             if ($thirdCorpName === 'Unknown') {
                                 $thirdCorpName = corpName($thirdCorpID);
@@ -566,11 +538,7 @@ class notifications
                             $msg = "TCU in **{$systemName}** has self destructed.";
                             break;
                         case 181: // citadel low on fuel
-                            $result = preg_split('/solarsystemID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $solarSystemID = $result_split[1];
-                            }
+                            $solarSystemID = $notificationArray[array_search('solarsystemID:', $notificationArray) + 1];
                             $systemName = systemName($solarSystemID);
                             $msg = "Citadel in **{$systemName}** is low on fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
@@ -607,11 +575,7 @@ class notifications
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
                             break;
                         case 198: // citadel out of fuel
-                            $result = preg_split('/solarsystemID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[0]);
-                                $solarSystemID = $result_split[0];
-                            }
+                            $solarSystemID = $notificationArray[array_search('solarsystemID:', $notificationArray) + 1];
                             $systemName = systemName($solarSystemID);
                             $msg = "Citadel in **{$systemName}** has run out of fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
