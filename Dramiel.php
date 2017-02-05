@@ -54,6 +54,13 @@ $logger->addInfo('Logger Initiated');
 
 GLOBAL $logger;
 
+//Check we are not running on a 32bit platform
+if(PHP_INT_SIZE == 4)
+{
+	$logger->error('32bit PHP found, if you are running a 64bit OS please install 64bit PHP');
+	die();
+}
+
 // Require the config
 if (file_exists('config/config.php')) {
     /** @noinspection PhpIncludeInspection */

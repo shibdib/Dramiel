@@ -142,7 +142,7 @@ class getKillmails
                             }
                         }
                         $totalValue = number_format($kill['zkb']['totalValue']);
-                                                // Check if it's a structure
+                        // Check if it's a structure
                         if ($victimName !== '') {
                             if ($kmGroup['bigKill'] != null && $rawValue >= $kmGroup['bigKill']) {
                                 $channelID = $kmGroup['bigKillChannel'];
