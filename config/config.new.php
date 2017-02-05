@@ -78,22 +78,22 @@ $config['enabledPlugins'] = array( // remove the slashes for the plugins you wan
     'charInfo', // eve character info using eve-kill
     'corpInfo', // eve corp info
     'eveStatus', // tq status message command
-    //"periodicStatusCheck", // ....YOU MUST SET A CHANNEL IN THE NOTIFICATIONS SECTION NEAR THE BOTTOM OF THIS FILE.... Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
+    //'periodicStatusCheck', // ....YOU MUST SET A CHANNEL IN THE NOTIFICATIONS SECTION NEAR THE BOTTOM OF THIS FILE.... Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
     'help', // bot help program, will list active addons
     'price', // price check tool, works for all items and ships. Can either !pc <itemname> for general, or !<systemname> <item> for more specific
     'time', // global clock with eve time
     //'motd', // shows the MOTD of a listed channel.
-    //"evemails", // evemail updater, will post corp and alliance mails to a channel.
-    //"fileReader", // Read advanced plugin config section of the wiki
-    //"notifications", // eve notifications to a channel, good for warning users of an attack
-    //"twitterOutput", // twitter input to stay up to date on eve happenings
+    //'evemails', // evemail updater, will post corp and alliance mails to a channel.
+    //'fileReader', // Read advanced plugin config section of the wiki
+    //'notifications', // eve notifications to a channel, good for warning users of an attack
+    //'twitterOutput', // twitter input to stay up to date on eve happenings
     'getKillmails', // show corp killmails in a chat channel
     //'getKillmailsRedis', // beta redisQ based killmail pulling USE AT OWN RISK (DO NOT USE WITH getKillmails also active)
-    //"siphons", // report possible siphons, see wiki for more info
-    //"siloFull", // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
-    //"fleetUpOperations", // integrate with fleet up and post any new operations and then ping them when they get close
-    //"fleetUpOps", //show upcoming fleet up operations with a message command
-    //"rssReader", //Post news to rss feeds
+    //'siphons', // report possible siphons, see wiki for more info
+    //'siloFull', // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
+    //'fleetUpOperations', // integrate with fleet up and post any new operations and then ping them when they get close
+    //'fleetUpOps', //show upcoming fleet up operations with a message command
+    //'rssReader', //Post news to rss feeds
 );
 
 
@@ -133,7 +133,7 @@ $config['plugins'] = array(
         'motd' => array(
         'keyID' => '', //char api keyID (Must have channel on api and mod rights on the char)
         'vCode' => '', //char api vCode
-        'characterID' =>, //ID Of the character with mod rights to the channel, can get this from zkill, look up your char and its /character/#### is your char ID
+        'characterID' =>'', //ID Of the character with mod rights to the channel, can get this from zkill, look up your char and its /character/#### is your char ID
         'channelname' => '', //name of channel you are requesting, must be IDENTICAL
     ),
     // what channel for eve notifications/also the channel for tq status alerts
@@ -172,7 +172,7 @@ $config['plugins'] = array(
         ),
         'standings' => array(
             'enabled' => 'false', //set to true if you want to allow people to auth based off of corp/alliance standings
-            'apiKey' => 'user1', //enter the KEYID for whatever above api you'd like to base standings off of
+            'apiKey' => 'KEYID', //enter the KEYID for whatever above api you'd like to base standings off of
             'plus10Role' => '',
             'plus5Role' => '',
             'neutralRole' => '',

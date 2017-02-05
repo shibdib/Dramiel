@@ -142,12 +142,12 @@ class getKillmails
                             }
                         }
                         $totalValue = number_format($kill['zkb']['totalValue']);
-                        // Check if it's a structure
+                                                // Check if it's a structure
                         if ($victimName !== '') {
-                            if ($rawValue >= $kmGroup['bigKill']) {
+                            if ($kmGroup['bigKill'] != null && $rawValue >= $kmGroup['bigKill']) {
                                 $channelID = $kmGroup['bigKillChannel'];
                                 $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                            } elseif ($rawValue <= $kmGroup['bigKill']) {
+                            } elseif ($kmGroup['bigKill'] == null || $rawValue <= $kmGroup['bigKill']) {
                                 $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                             }
                         } elseif ($victimName === '') {
