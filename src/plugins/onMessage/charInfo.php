@@ -143,7 +143,7 @@ class charInfo
 DOB: {$dateOfBirth}
 			
 Corporation Name: {$corporationName}
-Alliance Name: {@$allianceName}
+Alliance Name: {$allianceName}
 
 Last Seen In System: {$lastSeenSystem}
 Last Seen Flying a: {$lastSeenShip}
