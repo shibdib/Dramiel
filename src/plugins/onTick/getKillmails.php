@@ -194,7 +194,7 @@ class getKillmails
         if (isset($kills)) {
             foreach ($kills as $kill) {
                 $cacheID = getPermCache('bigKillNewestKillmailID');
-                if ($i < 5) {
+                if ($i < 10) {
                     $killID = $kill['killID'];
                     //check if mail is old
                     if ($killID < $oldID) {
