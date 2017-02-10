@@ -183,6 +183,11 @@ class getKillmails
             $killID = getPermCache('bigKillNewestKillmailID');
         }
 
+        //disable for now
+        $this->logger->addInfo('Killmails: bigKills disabled due to zKill issue');
+        return null;
+
+
         $url = "https://zkillboard.com/api/kills/orderDirection/asc/iskValue/10000000000/afterKillID/{$killID}/";
 
         $kills = json_decode(downloadData($url), true);
