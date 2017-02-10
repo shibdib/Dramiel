@@ -191,9 +191,9 @@ class getKillmails
 
         $kills = json_decode(downloadData($url), true);
         $i = 0;
-        $cacheID = getPermCache('bigKillNewestKillmailID');
         if (isset($kills)) {
             foreach ($kills as $kill) {
+                $cacheID = getPermCache('bigKillNewestKillmailID');
                 if ($i < 5) {
                     $killID = $kill['killID'];
                     //check if mail is old
@@ -202,7 +202,7 @@ class getKillmails
                     }
                     //save highest killID for cache
                     if ($killID > $cacheID) {
-                        $cacheID = $killID;
+                        setPermCache('bigKillNewestKillmailID', $killID);
                     }
                     $channelID = $this->config['plugins']['getKillmails']['bigKills']['bigKillChannel'];
                     $solarSystemID = $kill['solarSystemID'];
@@ -228,12 +228,11 @@ class getKillmails
 
                     $i++;
                 } else {
+                    $cacheID = getPermCache('bigKillNewestKillmailID');
                     $this->logger->addInfo("Killmails: bigKill posting cap reached, newest kill id is {$cacheID}");
                     break;
                 }
             }
-            $newID = $cacheID++;
-            setPermCache('bigKillNewestKillmailID', $newID);
         }
         $updatedID = getPermCache('bigKillNewestKillmailID');
         $this->logger->addInfo("Killmails: All bigKills posted, newest kill id is {$updatedID}");
