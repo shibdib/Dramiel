@@ -5,8 +5,6 @@ use Monolog\Logger;
 
 function zKillRedis()
 {
-    $logger = new Logger('zKill');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init("http://redisq.zkillboard.com/listen.php");
@@ -31,8 +29,6 @@ function zKillRedis()
 
 function getStartMail($kmGroup)
 {
-    $logger = new Logger('zKill');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     if ($kmGroup['allianceID'] === '0' && $kmGroup['lossMails'] === 'true' && $kmGroup['corpID'] !== '0') {
         $url = "https://zkillboard.com/api/no-attackers/no-items/corporationID/{$kmGroup['corpID']}/limit/1/";
@@ -48,7 +44,6 @@ function getStartMail($kmGroup)
     }
 
     if (!isset($url)) { // Make sure it's always set.
-        $this->logger->addInfo('Killmails: ERROR - Ensure your config file is setup correctly for killmails.');
         return null;
     }
 
@@ -59,17 +54,12 @@ function getStartMail($kmGroup)
             setPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID", $killID);
         }
     }
-    $updatedID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
-    $logger->addInfo("Killmails: Initial KillID set at {$updatedID}");
 }
 
 function getStartBigMail()
 {
-    $logger = new Logger('zKill');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     $url = 'https://zkillboard.com/api/kills/orderDirection/desc/iskValue/10000000000/';
     if (!isset($url)) { // Make sure it's always set.
-        $this->logger->addInfo('Killmails: ERROR - Ensure your config file is setup correctly for killmails.');
         return null;
     }
     $kill = json_decode(downloadData($url), true);
@@ -79,6 +69,4 @@ function getStartBigMail()
             setPermCache('bigKillNewestKillmailID', $killID);
         }
     }
-    $updatedID = getPermCache('bigKillNewestKillmailID');
-    $logger->addInfo("Killmails: Big Kill Initial KillID set at {$updatedID}");
 }
