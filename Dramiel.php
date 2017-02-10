@@ -47,6 +47,11 @@ gc_enable();
 // When the bot started
 $startTime = time();
 
+// check log file and rotate if necessary
+if (filesize('log/dramielLog.log') > 500000) {
+    rename('log/dramielLog.log', 'log/dramielLogOld.log');
+}
+
 // create a log channel
 $logger = new Logger('Dramiel');
 $logger->pushHandler(new StreamHandler(__DIR__ . '/log/dramielLog.log', Logger::INFO));
