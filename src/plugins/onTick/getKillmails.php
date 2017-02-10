@@ -186,7 +186,6 @@ class getKillmails
             getStartBigMail();
             $oldID = getPermCache('bigKillNewestKillmailID');
         }
-        $oldID = $oldID++;
 
         $url = 'https://zkillboard.com/api/kills/orderDirection/desc/iskValue/10000000000/limit/10/';
 
@@ -198,7 +197,7 @@ class getKillmails
                 if ($i < 10) {
                     $killID = $kill['killID'];
                     //check if mail is old
-                    if ($killID < $oldID) {
+                    if ((int)$killID <= (int)$oldID) {
                         continue;
                     }
                     //save highest killID for cache
