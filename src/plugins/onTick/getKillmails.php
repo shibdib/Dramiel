@@ -228,8 +228,7 @@ class getKillmails
 
                     $i++;
                 } else {
-                    $updatedID = getPermCache('bigKillNewestKillmailID');
-                    $this->logger->addInfo("Killmails: bigKill posting cap reached, newest kill id is {$updatedID}");
+                    $this->logger->addInfo("Killmails: bigKill posting cap reached, newest kill id is {$cacheID}");
                     break;
                 }
             }
