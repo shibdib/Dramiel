@@ -25,9 +25,6 @@ function zKillRedis()
 
 function getStartMail($kmGroup)
 {
-    $logger = new Logger('zKill');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
-
     if ($kmGroup['allianceID'] === '0' && $kmGroup['lossMails'] === 'true' && $kmGroup['corpID'] !== '0') {
         $url = "https://zkillboard.com/api/no-attackers/no-items/corporationID/{$kmGroup['corpID']}/limit/1/";
     }
@@ -42,7 +39,6 @@ function getStartMail($kmGroup)
     }
 
     if (!isset($url)) { // Make sure it's always set.
-        $this->logger->addInfo('Killmails: ERROR - Ensure your config file is setup correctly for killmails.');
         return null;
     }
 
@@ -53,19 +49,13 @@ function getStartMail($kmGroup)
             setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
         }
     }
-    $updatedID = getPermCache("{$kmGroup['name']}newestKillmailID");
-    $this->logger->addInfo("Killmails: Initial KillID set at {$updatedID}");
 }
 
 function getStartBigMail()
 {
-    $logger = new Logger('zKill');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
-
     $url = 'https://zkillboard.com/api/kills/orderDirection/desc/iskValue/10000000000/';
 
     if (!isset($url)) { // Make sure it's always set.
-        $this->logger->addInfo('Killmails: ERROR - Ensure your config file is setup correctly for killmails.');
         return null;
     }
 
@@ -76,6 +66,4 @@ function getStartBigMail()
             setPermCache('bigKillNewestKillmailID', $killID);
         }
     }
-    $updatedID = getPermCache('bigKillNewestKillmailID');
-    $this->logger->addInfo("Killmails: Big Kill Initial KillID set at {$updatedID}");
 }
