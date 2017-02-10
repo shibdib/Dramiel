@@ -91,7 +91,7 @@ class getKillmails
                 continue;
             }
             //check if start id is greater than current id and if it is set
-            if (null === $killID) {
+            if (null === $killID || preg_match('/[a-z]/i', $killID)) {
                 getStartMail($kmGroup);
                 $killID = $kmGroup['startMail'];
             }
