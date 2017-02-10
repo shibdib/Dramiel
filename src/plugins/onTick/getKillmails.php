@@ -177,25 +177,29 @@ class getKillmails
 
     private function getBigKM()
     {
-        $killID = getPermCache('bigKillNewestKillmailID');
-        if (null === $killID || preg_match('/[a-z]/i', $killID)) {
+        $oldID = getPermCache('bigKillNewestKillmailID');
+        if (null === $oldID || preg_match('/[a-z]/i', $oldID)) {
             getStartBigMail();
-            $killID = getPermCache('bigKillNewestKillmailID');
+            $oldID = getPermCache('bigKillNewestKillmailID');
         }
 
-        //disable for now
-        $this->logger->addInfo('Killmails: bigKills disabled due to zKill issue');
-        return null;
-
-
-        $url = "https://zkillboard.com/api/kills/orderDirection/asc/iskValue/10000000000/afterKillID/{$killID}/";
+        $url = 'https://zkillboard.com/api/kills/orderDirection/desc/iskValue/10000000000/limit/10/';
 
         $kills = json_decode(downloadData($url), true);
         $i = 0;
+        $cacheID = getPermCache('bigKillNewestKillmailID');
         if (isset($kills)) {
             foreach ($kills as $kill) {
                 if ($i < 5) {
                     $killID = $kill['killID'];
+                    //check if mail is old
+                    if ($killID < $oldID) {
+                        continue;
+                    }
+                    //save highest killID for cache
+                    if ($killID > $cacheID) {
+                        $cacheID = $killID;
+                    }
                     $channelID = $this->config['plugins']['getKillmails']['bigKills']['bigKillChannel'];
                     $solarSystemID = $kill['solarSystemID'];
                     $systemName = systemName($solarSystemID);
