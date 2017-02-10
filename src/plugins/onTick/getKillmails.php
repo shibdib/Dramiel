@@ -93,7 +93,7 @@ class getKillmails
             //check if start id is greater than current id and if it is set
             if (null === $killID || preg_match('/[a-z]/i', $killID)) {
                 getStartMail($kmGroup);
-                $killID = $kmGroup['startMail'];
+                $killID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
             }
             if ($kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/no-attackers/no-items/orderDirection/asc/corporationID/{$kmGroup['corpID']}/afterKillID/{$killID}/";
