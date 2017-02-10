@@ -62,3 +62,23 @@ function getStartMail($kmGroup)
     $updatedID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
     $this->logger->addInfo("Killmails: Initial KillID set at {$updatedID}");
 }
+
+function getStartBigMail()
+{
+    $logger = new Logger('zKill');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
+    $url = 'https://zkillboard.com/api/kills/orderDirection/desc/iskValue/10000000000/';
+    if (!isset($url)) { // Make sure it's always set.
+        $this->logger->addInfo('Killmails: ERROR - Ensure your config file is setup correctly for killmails.');
+        return null;
+    }
+    $kill = json_decode(downloadData($url), true);
+    if (null !== $kill) {
+        foreach ($kill as $mail) {
+            $killID = $mail['killID'];
+            setPermCache('bigKillNewestKillmailID', $killID);
+        }
+    }
+    $updatedID = getPermCache('bigKillNewestKillmailID');
+    $this->logger->addInfo("Killmails: Big Kill Initial KillID set at {$updatedID}");
+}
