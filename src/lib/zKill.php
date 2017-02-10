@@ -60,7 +60,7 @@ function getStartMail($kmGroup)
         }
     }
     $updatedID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
-    $this->logger->addInfo("Killmails: Initial KillID set at {$updatedID}");
+    $logger->addInfo("Killmails: Initial KillID set at {$updatedID}");
 }
 
 function getStartBigMail()
@@ -80,5 +80,5 @@ function getStartBigMail()
         }
     }
     $updatedID = getPermCache('bigKillNewestKillmailID');
-    $this->logger->addInfo("Killmails: Big Kill Initial KillID set at {$updatedID}");
+    $logger->addInfo("Killmails: Big Kill Initial KillID set at {$updatedID}");
 }
