@@ -182,8 +182,9 @@ class getKillmails
     private function getBigKM()
     {
         $killID = getPermCache('bigKillNewestKillmailID');
-        if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID || preg_match('/[a-z]/i', $killID)) {
-            $killID = $this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'];
+        if (null !== $killID && preg_match('/[a-z]/i', $killID)) {
+            getStartBigMail($kmGroup);
+            $killID = getPermCache("{$kmGroup['name']}newestKillmailID");
         }
 
         $url = "https://zkillboard.com/api/kills/orderDirection/asc/iskValue/10000000000/afterKillID/{$killID}/";
