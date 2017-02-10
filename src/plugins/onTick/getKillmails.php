@@ -182,7 +182,7 @@ class getKillmails
     private function getBigKM()
     {
         $killID = getPermCache('bigKillNewestKillmailID');
-        if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID) {
+        if ($this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'] > $killID || null === $killID || preg_match('/[a-z]/i', $killID)) {
             $killID = $this->config['plugins']['getKillmails']['bigKills']['bigKillStartID'];
         }
 
