@@ -182,6 +182,7 @@ class getKillmails
             getStartBigMail();
             $oldID = getPermCache('bigKillNewestKillmailID');
         }
+        $oldID = $oldID++;
 
         $url = 'https://zkillboard.com/api/kills/orderDirection/desc/iskValue/10000000000/limit/10/';
 
