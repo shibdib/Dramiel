@@ -216,7 +216,7 @@ function systemName($systemID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string) $data['solar_system_name'];
+        $name = (string) $data['name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
