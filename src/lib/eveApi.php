@@ -216,7 +216,7 @@ function systemName($systemID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string) $data['solar_system_name'];
+        $name = (string) $data['name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -246,7 +246,7 @@ function corpID($corpName)
 
     try {
         // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility");
+        $ch = curl_init("https://esi.tech.ccp.is/latest/corporations/{$corpName}?categories=corporation&language=en-us&strict=true&datasource=tranquility");
         // Set the options for this request
         curl_setopt_array($ch, array(
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect

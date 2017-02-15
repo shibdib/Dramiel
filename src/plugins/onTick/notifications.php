@@ -176,12 +176,12 @@ class notifications
                         case 5: // War Declared
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === 'Unknown') {
+                            if ($defAllianceName === '') {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === 'Unknown') {
+                            if ($aggAllianceName === '') {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {

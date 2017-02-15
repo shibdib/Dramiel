@@ -91,8 +91,8 @@ class authCheck
 
         //if not set set for now (30 minutes from now for role removal)
         if ($permsChecked === NULL) {
-            setPermCache('permsLastChecked', time() - 5);
-            setPermCache('authStateLastChecked', time() + 7200);
+            setPermCache('permsLastChecked', time() - 1);
+            setPermCache('authStateLastChecked', time() + 1);
         }
     }
 
@@ -174,55 +174,68 @@ class authCheck
 
         if ($result->num_rows >= 1) {
             while ($rows = $result->fetch_assoc()) {
-                $charID = $rows['characterID'];
-                $discordID = $rows['discordID'];
-                $role = $rows['role'];
-                $member = $guild->members->get('id', $discordID);
-                $eveName = $rows['eveName'];
-                //Check if member has roles
-                if (null === @$member->roles) {
-                    continue;
-                }
+				$charID = $rows['characterID'];
+				$discordID = $rows['discordID'];
+				$role = $rows['role'];
+				$member = $guild->members->get('id', $discordID);
+				$eveName = $rows['eveName'];
+				//Check if member has roles
+				if (null === @$member->roles) {
+					continue;
+				}
 
-                //Auth things
-                $character = characterDetails($charID);
-                //if issue with esi, skip
-                if (null === $character) {
-                    continue;
-                }
-                $corporationID = $character['corporation_id'];
-                $corporationDetails = corpDetails($corporationID);
-                if (null === $corporationDetails) {
-                    continue;
-                }
-                $allianceID = @$corporationDetails['alliance_id'];
+				//Auth things
+				$character = characterDetails($charID);
+				//if issue with esi, skip
+				$timeout = 0;
+				while (null === $character) { //try 10 times to pull characterDetails
+					if ($timeout > 9) {
+						continue;
+					}
+					else{
+						$character = characterDetails($charID);
+						$timeout++;
+					}
+				}
+				$corporationID = $character['corporation_id'];
+				$corporationDetails = corpDetails($corporationID);
+				$timeout = 0;
+				while (null === $corporationDetails) { //try 10 times to pull corporationDetails
+					if ($timeout > 9) {
+						continue;
+					}
+					else{
+						$corporationDetails = corpDetails($corporationID);
+						$timeout++;
+					}
+				}
+				$allianceID = @$corporationDetails['alliance_id'];
+				//check if user authed based on standings
+				$standings = null;
+				if ($role === 'blue' || 'neut' || 'red') {
+					$allianceContacts = getContacts($allianceID);
+					$corpContacts = getContacts($corporationID);
+					if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
+						$standings = 1;
+					}
+					if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
+						$standings = 1;
+					}
+					if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
+						$standings = 1;
+					}
+				}
+				if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
+					// Deactivate user in database
+					$sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+					$this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
+					$conn->query($sql);
+					continue;
+				}
 
-                //check if user authed based on standings
-                $standings = null;
-                if ($role === 'blue' || 'neut' || 'red') {
-                    $allianceContacts = getContacts($allianceID);
-                    $corpContacts = getContacts($corporationID);
-                    if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
-                        $standings = 1;
-                    }
-                    if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
-                        $standings = 1;
-                    }
-                    if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
-                        $standings = 1;
-                    }
-                }
-                if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
-                    // Deactivate user in database
-                    $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-                    $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
-                    $conn->query($sql);
-                    continue;
-                }
-            }
-            $nextCheck = time() + 10800;
-            setPermCache('permsLastChecked', $nextCheck);
-            return null;
+				$nextCheck = time() + 10800;
+				setPermCache('permsLastChecked', $nextCheck);
+			}
         }
         $nextCheck = time() + 10800;
         setPermCache('permsLastChecked', $nextCheck);
@@ -373,7 +386,17 @@ class authCheck
 
                 //corp ticker
                 if ($this->corpTickers === 'true') {
-                    $character = characterDetails($charID);
+					$timeout = 0;
+					$character = characterDetails($charID);
+					while (null === $character) { //try 10 times to pull characterDetails
+						if ($timeout > 9) {
+							continue;
+						}
+						else{
+							$character = characterDetails($charID);
+							$timeout++;
+						}
+					}
                     if (!array_key_exists('corporation_id', $character)) {
                         continue;
                     }
