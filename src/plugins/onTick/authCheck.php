@@ -145,8 +145,7 @@ class authCheck
         //Establish connection to mysql
         $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
 
-        //$sql = "SELECT characterID, discordID, eveName, role FROM authUsers WHERE active='yes'";
-		$sql = "SELECT characterID, discordID, eveName, active, role FROM authUsers";
+        $sql = "SELECT characterID, discordID, eveName, role FROM authUsers WHERE active='yes'";
 
         $result = $conn->query($sql);
 
@@ -211,91 +210,29 @@ class authCheck
 					}
 				}
 				$allianceID = @$corporationDetails['alliance_id'];
-				if ($rows['active'] == "yes"){
+				//check if user authed based on standings
+				$standings = null;
+				if ($role === 'blue' || 'neut' || 'red') {
+					$allianceContacts = getContacts($allianceID);
+					$corpContacts = getContacts($corporationID);
+					if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
+						$standings = 1;
+					}
+					if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
+						$standings = 1;
+					}
+					if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
+						$standings = 1;
+					}
+				}
+				if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
+					// Deactivate user in database
+					$sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+					$this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
+					$conn->query($sql);
+					continue;
+				}
 
-					//check if user authed based on standings
-					$standings = null;
-					if ($role === 'blue' || 'neut' || 'red') {
-						$allianceContacts = getContacts($allianceID);
-						$corpContacts = getContacts($corporationID);
-						if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
-							$standings = 1;
-						}
-						if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
-							$standings = 1;
-						}
-						if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
-							$standings = 1;
-						}
-					}
-					if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
-						// Deactivate user in database
-						$sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-						$this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
-						$conn->query($sql);
-						continue;
-					}
-				}
-				elseif($rows['active'] == "no") {
-					$roles = @$guild->roles;
-					$member = @$guild->members->get('id', $discordID);
-					if (in_array((int) $allianceID, $allianceArray) || in_array((int) $corporationID, $corpArray)) {
-						foreach ($this->authGroups as $authGroup) {
-							//Check if it's set to match corp and alliance
-							if ($authGroup['corpID'] !== 0 && $authGroup['allianceID'] !== 0) {
-								//Check if corpID matches
-								if ($corpID === $authGroup['corpID'] && $allianceID === $authGroup['allianceID']) {
-									foreach ($roles as $role) {
-										if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
-											$member->addRole($role);
-										}
-										if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
-											$member->addRole($role);
-											$role = 'corp/ally';
-											$guild->members->save($member);
-											// Deactivate user in database
-											$sql = "UPDATE authUsers SET active='yes' WHERE discordID='$discordID'";
-											$this->logger->addInfo("AuthCheck: {$eveName} account has been activates as they are in correct corp/alliance.");
-											$conn->query($sql);
-										}
-									}
-									break;
-								}
-							} elseif ($authGroup['corpID'] !== 0 || $authGroup['allianceID'] !== 0) {
-								//Check if corpID matches
-								if ($corpID === $authGroup['corpID']) {
-									foreach ($roles as $role) {
-										if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
-											$member->addRole($role);
-											$role = 'corp';
-											$guild->members->save($member);
-											// Deactivate user in database
-											$sql = "UPDATE authUsers SET active='yes' WHERE discordID='$discordID'";
-											$this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are in correct corp/alliance.");
-											$conn->query($sql);
-										}
-									}
-									break;
-								}
-								//Check if allianceID matches
-								if ($allianceID === $authGroup['allianceID'] && $authGroup['allianceID'] !== 0) {
-									foreach ($roles as $role) {
-										if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
-											$member->addRole($role);
-											$role = 'ally';
-											$guild->members->save($member);
-											// Deactivate user in database
-											$sql = "UPDATE authUsers SET active='yes' WHERE discordID='$discordID'";
-											$this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are in correct corp/alliance.");
-											$conn->query($sql);
-										}
-									}
-									break;
-								}
-							}
-						}
-					}
-				}
 				$nextCheck = time() + 10800;
 				setPermCache('permsLastChecked', $nextCheck);
 			}
