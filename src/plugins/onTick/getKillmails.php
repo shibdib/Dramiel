@@ -93,16 +93,16 @@ class getKillmails
             if ($kmGroup['startMail'] > $killID || null === $killID) {
                 $killID = $kmGroup['startMail'];
             }
-            if ($kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'true') {
+            if ($kmGroup['allianceID'] == 0 & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/corporationID/{$kmGroup['corpID']}/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/";
             }
-            if ($kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'false') {
+            if ($kmGroup['allianceID'] == 0 & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/corporationID/{$kmGroup['corpID']}/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/";
             }
-            if ($kmGroup['allianceID'] !== '0' & $kmGroup['lossMails'] === 'true') {
+            if ($kmGroup['allianceID'] != 0 & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/allianceID/{$kmGroup['allianceID']}/no-attackers/no-items/orderDirection/asc/afterKillID/{$killID}/";
             }
-            if ($kmGroup['allianceID'] !== '0' & $kmGroup['lossMails'] === 'false') {
+            if ($kmGroup['allianceID'] != 0 & $kmGroup['lossMails'] === 'false') {
                 $url = "https://zkillboard.com/api/allianceID/{$kmGroup['allianceID']}/no-attackers/no-items/kills/orderDirection/asc/afterKillID/{$killID}/";
             }
 
