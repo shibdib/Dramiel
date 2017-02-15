@@ -246,7 +246,7 @@ function corpID($corpName)
 
     try {
         // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility");
+        $ch = curl_init("https://esi.tech.ccp.is/latest/corporations/{$corpName}?categories=corporation&language=en-us&strict=true&datasource=tranquility");
         // Set the options for this request
         curl_setopt_array($ch, array(
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
