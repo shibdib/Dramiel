@@ -141,10 +141,10 @@ class auth
 
                 $roles = @$guild->roles;
                 $member = @$guild->members->get('id', $userID);
-                if (null === $member) {
-                    $this->message->reply("**Failure:** You're not a member of the correct guild.");
-                    return null;
-                }
+                //if (null === $member) {
+                //    $this->message->reply("**Failure:** You're not a member of the correct guild.");
+                //    return null;
+                //}
                 $eveName = characterName($charID);
                 if (null === $eveName) {
                     $this->message->reply('**Failure:** Unable to auth at this time, ESI is down. Please try again later.');
