@@ -182,8 +182,14 @@ class authCheck
                 $character = characterDetails($charID);
 
                 //if issue with esi, skip
-                if (null === $character['corporation_id']) {
-                    continue;
+                $timeout = 0;
+                while (null === $character['corporation_id']) { //try 10 times to pull characterDetails
+                    if ($timeout > 9) {
+                        continue;
+                    } else {
+                        $character = characterDetails($charID);
+                        $timeout++;
+                    }
                 }
 
                 $corporationID = $character['corporation_id'];
