@@ -165,10 +165,10 @@ class authCheck
         //Set corp/ally id arrays
         foreach ($this->authGroups as $authGroup) {
             if ($authGroup['corpID'] !== 0) {
-                $corpArray[] = (int) $authGroup['corpID'];
+                $corpArray[] = $authGroup['corpID'];
             }
             if ($authGroup['allianceID'] !== 0) {
-                $allianceArray[] = (int) $authGroup['allianceID'];
+                $allianceArray[] = $authGroup['allianceID'];
             }
         }
 
@@ -184,41 +184,38 @@ class authCheck
 					continue;
 				}
 
-				//Auth things
-				$character = characterDetails($charID);
+				$timeout = 0;
+                do {
+    				//Auth things
+                    if ($timeout >= 3) {
+                        $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for character: $eveName");
+                        continue 2; // skip this member and move on to the next one if ESI fails 3 time
+                    }
+                    $timeout++;
+	    			$character = characterDetails($charID);
 
-                //Postpone check if ESI is down to prevent timeouts
-                if (@$character['error'] === 'The datasource tranquility is temporarily unavailable') {
-                    $this->logger->addInfo('AuthCheck: The datasource tranquility is temporarily unavailable, check canceled.');
-                    $nextCheck = time() + 10800;
-                    setPermCache('permsLastChecked', $nextCheck);
-                    return null;
-                }
+                    //Postpone check if ESI is down to prevent timeouts
+                    if (isset($character['error']) && $character['error'] === 'The datasource tranquility is temporarily unavailable') {
+                        $this->logger->addInfo('AuthCheck: The datasource tranquility is temporarily unavailable, check canceled.');
+                        $nextCheck = time() + 10800;
+                        setPermCache('permsLastChecked', $nextCheck);
+                        return;
+                    }
+
+                } while (!isset($character['corporation_id']));
                 
-				//if issue with esi, skip
-				$timeout = 0;
-                while (null === @$character['corporation_id']) { //try 10 times to pull characterDetails
-                    if ($timeout > 3) {
-						continue;
-					}
-					else{
-						$character = characterDetails($charID);
-						$timeout++;
-					}
-				}
 				$corporationID = $character['corporation_id'];
-				$corporationDetails = corpDetails($corporationID);
+
 				$timeout = 0;
-				while (null === $corporationDetails) { //try 10 times to pull corporationDetails
-					if ($timeout > 9) {
-						continue;
-					}
-					else{
-						$corporationDetails = corpDetails($corporationID);
-						$timeout++;
-					}
-				}
-				$allianceID = @$corporationDetails['alliance_id'];
+                do {
+                    if ($timeout >= 3) {
+                        $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for corporationID: $corporationID");
+                        continue 2; // skip this member and move on to the next one if ESI fails 3 time
+                    }
+                    $timeout++;
+    				$corporationDetails = corpDetails($corporationID);
+                } while (!isset($corporationDetails));
+				$allianceID = isset($corporationDetails['alliance_id']) ? $corporationDetails['alliance_id'] : null;
 				//check if user authed based on standings
 				$standings = null;
 				if ($role === 'blue' || 'neut' || 'red') {
@@ -234,7 +231,7 @@ class authCheck
 						$standings = 1;
 					}
 				}
-				if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
+				if (!in_array($allianceID, $allianceArray) && !in_array($corporationID, $corpArray) && null === $standings) {
 					// Deactivate user in database
 					$sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
 					$this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
