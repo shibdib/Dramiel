@@ -174,25 +174,25 @@ class authCheck
 
         if ($result->num_rows >= 1) {
             while ($rows = $result->fetch_assoc()) {
-				$charID = $rows['characterID'];
-				$discordID = $rows['discordID'];
-				$role = $rows['role'];
-				$member = $guild->members->get('id', $discordID);
-				$eveName = $rows['eveName'];
-				//Check if member has roles
-				if (null === @$member->roles) {
-					continue;
-				}
+                $charID = $rows['characterID'];
+                $discordID = $rows['discordID'];
+                $role = $rows['role'];
+                $member = $guild->members->get('id', $discordID);
+                $eveName = $rows['eveName'];
+                //Check if member has roles
+                if (null === @$member->roles) {
+                    continue;
+                }
 
-				$timeout = 0;
+                $timeout = 0;
                 do {
-    				//Auth things
+                    //Auth things
                     if ($timeout >= 3) {
                         $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for character: $eveName");
                         continue 2; // skip this member and move on to the next one if ESI fails 3 time
                     }
                     $timeout++;
-	    			$character = characterDetails($charID);
+                    $character = characterDetails($charID);
 
                     //Postpone check if ESI is down to prevent timeouts
                     if (isset($character['error']) && $character['error'] === 'The datasource tranquility is temporarily unavailable') {
@@ -204,44 +204,44 @@ class authCheck
 
                 } while (!isset($character['corporation_id']));
                 
-				$corporationID = $character['corporation_id'];
+                $corporationID = $character['corporation_id'];
 
-				$timeout = 0;
+                $timeout = 0;
                 do {
                     if ($timeout >= 3) {
                         $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for corporationID: $corporationID");
                         continue 2; // skip this member and move on to the next one if ESI fails 3 time
                     }
                     $timeout++;
-    				$corporationDetails = corpDetails($corporationID);
+                    $corporationDetails = corpDetails($corporationID);
                 } while (!isset($corporationDetails));
-				$allianceID = isset($corporationDetails['alliance_id']) ? $corporationDetails['alliance_id'] : null;
-				//check if user authed based on standings
-				$standings = null;
-				if ($role === 'blue' || 'neut' || 'red') {
-					$allianceContacts = getContacts($allianceID);
-					$corpContacts = getContacts($corporationID);
-					if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
-						$standings = 1;
-					}
-					if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
-						$standings = 1;
-					}
-					if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
-						$standings = 1;
-					}
-				}
-				if (!in_array($allianceID, $allianceArray) && !in_array($corporationID, $corpArray) && null === $standings) {
-					// Deactivate user in database
-					$sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-					$this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
-					$conn->query($sql);
-					continue;
-				}
+                $allianceID = isset($corporationDetails['alliance_id']) ? $corporationDetails['alliance_id'] : null;
+                //check if user authed based on standings
+                $standings = null;
+                if ($role === 'blue' || 'neut' || 'red') {
+                    $allianceContacts = getContacts($allianceID);
+                    $corpContacts = getContacts($corporationID);
+                    if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
+                        $standings = 1;
+                    }
+                    if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
+                        $standings = 1;
+                    }
+                    if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
+                        $standings = 1;
+                    }
+                }
+                if (!in_array($allianceID, $allianceArray) && !in_array($corporationID, $corpArray) && null === $standings) {
+                    // Deactivate user in database
+                    $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+                    $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
+                    $conn->query($sql);
+                    continue;
+                }
 
-				$nextCheck = time() + 10800;
-				setPermCache('permsLastChecked', $nextCheck);
-			}
+                $nextCheck = time() + 10800;
+                setPermCache('permsLastChecked', $nextCheck);
+            }
         }
         $nextCheck = time() + 10800;
         setPermCache('permsLastChecked', $nextCheck);
@@ -392,17 +392,17 @@ class authCheck
 
                 //corp ticker
                 if ($this->corpTickers === 'true') {
-					$timeout = 0;
-					$character = characterDetails($charID);
-					while (null === $character) { //try 10 times to pull characterDetails
-						if ($timeout > 9) {
-							continue;
-						}
-						else{
-							$character = characterDetails($charID);
-							$timeout++;
-						}
-					}
+                    $timeout = 0;
+                    $character = characterDetails($charID);
+                    while (null === $character) { //try 10 times to pull characterDetails
+                        if ($timeout > 9) {
+                            continue;
+                        }
+                        else{
+                            $character = characterDetails($charID);
+                            $timeout++;
+                        }
+                    }
                     if (!array_key_exists('corporation_id', $character)) {
                         continue;
                     }
