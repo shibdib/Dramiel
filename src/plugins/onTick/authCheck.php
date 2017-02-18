@@ -182,7 +182,7 @@ class authCheck
                 $character = characterDetails($charID);
 
                 //if issue with esi, skip
-                if (null === $character) {
+                if (null === $character['corporation_id']) {
                     continue;
                 }
 
