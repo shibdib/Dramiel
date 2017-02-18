@@ -183,7 +183,7 @@ class authCheck
 
                 //Postpone check if ESI is down to prevent timeouts
                 if (@$character['error'] === 'The datasource tranquility is temporarily unavailable') {
-                    $this->logger->addError('AuthCheck: The datasource tranquility is temporarily unavailable, check canceled.');
+                    $this->logger->addInfo('AuthCheck: The datasource tranquility is temporarily unavailable, check canceled.');
                     $nextCheck = time() + 10800;
                     setPermCache('permsLastChecked', $nextCheck);
                     return null;
