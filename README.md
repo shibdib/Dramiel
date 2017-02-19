@@ -3,7 +3,6 @@
 
 EVE Discord Bot
 
-# Development is on hold. Bot works as is but any future fixes will come on a "When I feel like working on it" basis. Kinda burnt out on this project atm. 
 
 http://dram.shibdib.info/ I'll host your bot for you!!
 
