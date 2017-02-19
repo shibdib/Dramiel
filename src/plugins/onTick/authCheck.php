@@ -34,23 +34,23 @@ class authCheck
     /**
      * @var
      */
+    private $active;
     private $config;
+    private $discord;
+    private $logger;
     private $db;
     private $dbUser;
     private $dbPass;
     private $dbName;
     private $guildID;
-    private $corpTickers;
-    private $authGroups;
     private $exempt;
-    private $alertChannel;
-    private $guild;
+    private $corpTickers;
     private $nameEnforce;
     private $standingsBased;
-    private $nameCheck;
     private $apiKey;
-    private $discord;
-    private $logger;
+    private $authGroups;
+    private $alertChannel;
+    private $nameCheck;
 
     /**
      * @param $config
@@ -59,6 +59,7 @@ class authCheck
      */
     public function init($config, $discord, $logger)
     {
+        $this->active = true;
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
@@ -74,7 +75,6 @@ class authCheck
         $this->apiKey = $config['eve']['apiKeys'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
         $this->alertChannel = $config['plugins']['auth']['alertChannel'];
-        $this->guild = $config['bot']['guild'];
         $this->nextCheck = 0;
 
         //Set name check to happen if corpTicker or nameEnforce is set
@@ -94,13 +94,22 @@ class authCheck
             setPermCache('permsLastChecked', time() - 1);
             setPermCache('authStateLastChecked', time() + 1);
         }
+
+        // If config is outdated
+        if (null === $this->authGroups) {
+            $msg = '**Auth Failure:** Please update the bots config to the latest version.';
+            queueMessage($msg, $this->alertChannel, $this->guildID);
+            $this->logger->addInfo($msg);
+            $this->active = false;
+        }
+
     }
 
     public function tick()
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
-        if ($lastStatus === 'online') {
+        if ($this->active && $lastStatus === 'online') {
             $permsChecked = getPermCache('permsLastChecked');
             $stateChecked = getPermCache('authStateLastChecked');
             $namesChecked = getPermCache('nextRename');
@@ -108,7 +117,7 @@ class authCheck
 
             if ($permsChecked <= time()) {
                 $this->logger->addInfo('AuthCheck: Checking for users who have left corp/alliance....');
-                $this->checkPermissions();
+                $this->checkPermissions2();
                 $this->logger->addInfo('AuthCheck: Corp/alliance check complete.');
             }
 
@@ -137,30 +146,107 @@ class authCheck
      */
 
     //Remove members who have roles but never authed
+    private function checkPermissions2()
+    {
+        $rows = array();
+        $dbh = new PDO("mysql:host={$this->db};dbname={$this->dbName}", $this->dbUser, $this->dbPass);
+        $rows = array_column($dbh->query('SELECT discordID, characterID, eveName, role FROM authUsers')->fetchAll(), null, 'discordID');
+
+        //Set empty arrays
+        $corpArray = array_column($this->authGroups, 'corpID');
+        $allianceArray = array_column($this->authGroups, 'allianceID');
+
+        foreach ($this->discord->guilds->get('id', $this->guildID)->members as $member) {
+            $discordID = $member->getIdAttribute();
+            $discordNick = $member->nick ?: $member->getUsernameAttribute();
+            if ($member->getRolesAttribute()->isEmpty()) {
+                continue;
+            }
+            if ($this->discord->id == $discordID) {
+                continue;
+            }
+            $this->logger->addDebug("AuthCheck: Username: $discordNick");
+            if (!isset($rows[$discordID])) {
+                $this->logger->addInfo("AuthCheck: User [$discordNick] not found in database.");
+                // remove user
+                continue;
+            }
+            $charID = $rows[$discordID]['characterID'];
+
+            // corporation membership check
+            for ($i=0; $i<3; $i++) {
+                $character = characterDetails($charID);
+                //if (isset($character['corporation_id']) && in_array($character['corporation_id'], $corpArray))
+                if (!is_null($character))
+                    break;
+                //Postpone check if ESI is down to prevent timeouts
+                if (isset($character['error']) && $character['error'] === 'The datasource tranquility is temporarily unavailable') {
+                    $this->logger->addInfo('AuthCheck: The datasource tranquility is temporarily unavailable, check canceled.');
+                    $nextCheck = time() + 10800;
+                    setPermCache('permsLastChecked', $nextCheck);
+                    return;
+                }
+            }
+            if (is_null($character) || isset($character['error'])) {
+                $this->logger->addInfo('AuthCheck: characterDetails lookup failed.');
+                continue;
+            } elseif (isset($character['corporation_id']) && in_array($character['corporation_id'], $corpArray)) {
+                continue; // user is in a valid corporation, stop checking
+            }
+
+            // alliance membership check
+            for ($i=0; $i<3; $i++) {
+                $corporationDetails = corpDetails($corporationID);
+                if (!is_null($corporationDetails))
+                    break;
+            }
+            if (is_null($corporationDetails) || isset($corporationDetails['error'])) {
+                $this->logger->addInfo('AuthCheck: corpDetails lookup failed.');
+                continue;
+            } else if (isset($corporationDetails['alliance_id']) && in_array($corporationDetails['alliance_id'], $allianceArray)) {
+                continue; // user is in a valid alliance, stop checking
+            }
+
+            //check if user authed based on standings
+            $role = $rows[$discordID]['role'];
+            $standings = null;
+            if ($role === 'blue' || 'neut' || 'red') {
+                $allianceContacts = getContacts($allianceID);
+                $corpContacts = getContacts($corporationID);
+                if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
+                    $standings = 1;
+                }
+                if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
+                    $standings = 1;
+                }
+                if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
+                    $standings = 1;
+                }
+            }
+            if ($standings)
+                continue; //keep the user based on standings
+
+            // User failed all checks, deactivate user in database
+            $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+            $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
+            $conn->query($sql);
+        }
+        setPermCache('permsLastChecked', time() + 300);
+    }
+
+    /**
+     * @return null
+     */
+
+    //Remove members who have roles but never authed
     private function checkPermissions()
     {
         //Get guild object
         $guild = $this->discord->guilds->get('id', $this->guildID);
 
-        //Establish connection to mysql
-        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
-
-        $sql = "SELECT characterID, discordID, eveName, role FROM authUsers WHERE active='yes'";
-
-        $result = $conn->query($sql);
-
         //Set empty arrays
         $corpArray = array();
         $allianceArray = array();
-
-        // If config is outdated
-        if (null === $this->authGroups) {
-            $msg = '**Auth Failure:** Please update the bots config to the latest version.';
-            queueMessage($msg, $this->alertChannel, $this->guild);
-            $nextCheck = time() + 10800;
-            setPermCache('permsLastChecked', $nextCheck);
-            return null;
-        }
 
         //Set corp/ally id arrays
         foreach ($this->authGroups as $authGroup) {
@@ -172,80 +258,83 @@ class authCheck
             }
         }
 
-        if ($result->num_rows >= 1) {
-            while ($rows = $result->fetch_assoc()) {
-                $charID = $rows['characterID'];
-                $discordID = $rows['discordID'];
-                $role = $rows['role'];
-                $member = $guild->members->get('id', $discordID);
-                $eveName = $rows['eveName'];
-                //Check if member has roles
-                if (null === @$member->roles) {
-                    continue;
-                }
+        //Establish connection to mysql
+        $conn = new mysqli($this->db, $this->dbUser, $this->dbPass, $this->dbName);
 
-                $timeout = 0;
-                do {
-                    //Auth things
-                    if ($timeout >= 3) {
-                        $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for character: $eveName");
-                        continue 2; // skip this member and move on to the next one if ESI fails 3 time
-                    }
-                    $timeout++;
-                    $character = characterDetails($charID);
-
-                    //Postpone check if ESI is down to prevent timeouts
-                    if (isset($character['error']) && $character['error'] === 'The datasource tranquility is temporarily unavailable') {
-                        $this->logger->addInfo('AuthCheck: The datasource tranquility is temporarily unavailable, check canceled.');
-                        $nextCheck = time() + 10800;
-                        setPermCache('permsLastChecked', $nextCheck);
-                        return;
-                    }
-
-                } while (!isset($character['corporation_id']));
-                
-                $corporationID = $character['corporation_id'];
-
-                $timeout = 0;
-                do {
-                    if ($timeout >= 3) {
-                        $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for corporationID: $corporationID");
-                        continue 2; // skip this member and move on to the next one if ESI fails 3 time
-                    }
-                    $timeout++;
-                    $corporationDetails = corpDetails($corporationID);
-                } while (!isset($corporationDetails));
-                $allianceID = isset($corporationDetails['alliance_id']) ? $corporationDetails['alliance_id'] : null;
-                //check if user authed based on standings
-                $standings = null;
-                if ($role === 'blue' || 'neut' || 'red') {
-                    $allianceContacts = getContacts($allianceID);
-                    $corpContacts = getContacts($corporationID);
-                    if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
-                        $standings = 1;
-                    }
-                    if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
-                        $standings = 1;
-                    }
-                    if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
-                        $standings = 1;
-                    }
-                }
-                if (!in_array($allianceID, $allianceArray) && !in_array($corporationID, $corpArray) && null === $standings) {
-                    // Deactivate user in database
-                    $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-                    $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
-                    $conn->query($sql);
-                    continue;
-                }
-
-                $nextCheck = time() + 10800;
-                setPermCache('permsLastChecked', $nextCheck);
+        $result = $conn->query("SELECT characterID, discordID, eveName, role FROM authUsers WHERE active='yes'");
+        while ($row = $result->fetch_assoc()) {
+            $charID = $row['characterID'];
+            $discordID = $row['discordID'];
+            $role = $row['role'];
+            $eveName = $row['eveName'];
+            //Check if member has roles
+            //if ($guild->members->get('id', $discordID)->getRolesAttribute()->isEmpty()) {
+            if ($guild->members->fetch($discordID)->done(function ($r) { return $r->getRolesAttribute()->isEmpty(); })) {
+                $this->logger->addInfo('AuthCheck: skipping user due to empty roles attribute.');
+                continue;
             }
+
+            $timeout = 0;
+            do {
+                //Auth things
+                if ($timeout >= 3) {
+                    $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for character: $eveName");
+                    continue 2; // skip this member and move on to the next one if ESI fails 3 time
+                }
+                $timeout++;
+                $character = characterDetails($charID);
+
+                //Postpone check if ESI is down to prevent timeouts
+                if (isset($character['error']) && $character['error'] === 'The datasource tranquility is temporarily unavailable') {
+                    $this->logger->addInfo('AuthCheck: The datasource tranquility is temporarily unavailable, check canceled.');
+                    $nextCheck = time() + 10800;
+                    setPermCache('permsLastChecked', $nextCheck);
+                    return;
+                }
+
+            } while (!isset($character['corporation_id']));
+            $corporationID = $character['corporation_id'];
+            if (in_array($corporationID, $corpArray))
+                continue; // user is in a valid corp, stop checking
+
+            $timeout = 0;
+            do {
+                if ($timeout >= 3) {
+                    $this->logger->addInfo("AuthCheck: ESI lookup failed $timeout times for corporationID: $corporationID");
+                    continue 2; // skip this member and move on to the next one if ESI fails 3 time
+                }
+                $timeout++;
+                $corporationDetails = corpDetails($corporationID);
+            } while (!isset($corporationDetails));
+            if (isset($corporationDetails['alliance_id']) && in_array($corporationDetails['alliance_id'], $allianceArray))
+                continue; // user is in a valid alliance, stop checking
+
+            //check if user authed based on standings
+            $standings = null;
+            if ($role === 'blue' || 'neut' || 'red') {
+                $allianceContacts = getContacts($allianceID);
+                $corpContacts = getContacts($corporationID);
+                if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
+                    $standings = 1;
+                }
+                if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
+                    $standings = 1;
+                }
+                if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
+                    $standings = 1;
+                }
+            }
+            if ($standings)
+                continue; //keep the user based on standings
+
+            // User failed all checks, deactivate user in database
+            $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+            $this->logger->addInfo("AuthCheck: {$eveName} account has been deactivated as they are no longer in a correct corp/alliance.");
+            $conn->query($sql);
         }
         $nextCheck = time() + 10800;
         setPermCache('permsLastChecked', $nextCheck);
-        return null;
+        return;
     }
 
     //Check user corp/alliance affiliation
@@ -257,16 +346,6 @@ class authCheck
         //Check if exempt roles are set
         if (null === $this->exempt) {
             $this->exempt = '0';
-        }
-
-        // If config is outdated
-        if (null === $this->authGroups) {
-            $msg = '**Auth Failure:** Please update the bots config to the latest version.';
-            queueMessage($msg, $this->alertChannel, $this->guild);
-            //queue up next check
-            $nextCheck = time() + 1800;
-            setPermCache('authStateLastChecked', $nextCheck);
-            return null;
         }
 
         //Establish connection to mysql
@@ -322,7 +401,7 @@ class authCheck
         $nameList = implode(', ', $removedRoles);
         if ($userCount > 0 && strlen($nameList) > 3 && null !== $nameList) {
             $msg = "Following users roles have been removed - {$nameList}";
-            queueMessage($msg, $this->alertChannel, $this->guild);
+            queueMessage($msg, $this->alertChannel, $this->guildID);
             $this->logger->addInfo("AuthCheck: Roles removed from {$nameList}");
         }
         //queue up next check
@@ -352,15 +431,6 @@ class authCheck
             setPermCache('nameQueueState', 1);
         }
         $result = $conn->query($sql);
-
-        // If config is outdated
-        if (null === $this->authGroups) {
-            $msg = '**Auth Failure:** Please update the bots config to the latest version.';
-            queueMessage($msg, $this->alertChannel, $this->guild);
-            $nextCheck = time() + 1800;
-            setPermCache('nextRename', $nextCheck);
-            return null;
-        }
 
         if (@$result->num_rows >= 1) {
             while ($rows = $result->fetch_assoc()) {
