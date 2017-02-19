@@ -64,7 +64,7 @@ function makeApiRequest($url)
 function serverStatus()
 {
     $logger = new Logger('eveApi');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init('https://api.eveonline.com/server/ServerStatus.xml.aspx');
@@ -125,7 +125,7 @@ function characterName($characterID)
 function characterID($characterName)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     $characterName = urlencode($characterName);
 
     try {
@@ -165,7 +165,7 @@ function characterID($characterName)
 function characterDetails($characterID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -199,7 +199,7 @@ function characterDetails($characterID)
 function systemName($systemID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -241,7 +241,7 @@ function systemName($systemID)
 function corpID($corpName)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     $corpName = urlencode($corpName);
 
     try {
@@ -302,7 +302,7 @@ function corpName($corpID)
 function corpDetails($corpID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -336,7 +336,7 @@ function corpDetails($corpID)
 function allianceName($allianceID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -375,7 +375,7 @@ function allianceName($allianceID)
 function systemID($systemName)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     $systemName = urlencode($systemName);
 
     try {
@@ -415,7 +415,7 @@ function systemID($systemName)
 function apiTypeName($typeID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -454,7 +454,7 @@ function apiTypeName($typeID)
 function apiTypeID($typeName)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     $typeName = urlencode($typeName);
     try {
         // Initialize a new request for this URL
