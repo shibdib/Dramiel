@@ -311,11 +311,14 @@ class authCheck
                 if (!($this->isMemberInValidCorp($member) || $this->isMemberInValidAlliance($member) || $this->isMemberCorpOrAllianceContact($member))) {
                     $this->deactivateMember($member);
                 }
+                if ($this->nameCheck) {
+                    $this->resetMemberNick($member);
+                }
             } catch (Exception $e) {
                 $this->logger->addError("AuthCheck: " . $e->getMessage());
-            }
-            if ($this->nameCheck) {
-                $this->resetMemberNick($member);
+                if ($e->getMessage() == 'The datasource tranquility is temporarily unavailable') {
+                    return;
+                }
             }
         }
         setPermCache('permsLastChecked', time() + 1800);
