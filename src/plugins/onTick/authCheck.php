@@ -106,10 +106,6 @@ class authCheck
             $this->logger->addInfo($msg);
             $this->active = false;
         }
-
-        // Load database users
-        $dbh = new PDO("mysql:host={$this->db};dbname={$this->dbName}", $this->dbUser, $this->dbPass);
-        $this->dbusers = array_column($dbh->query("SELECT discordID, characterID, eveName, role FROM authUsers where active='yes'")->fetchAll(), null, 'discordID');
     }
 
     public function tick()
@@ -301,6 +297,12 @@ class authCheck
     {
         $this->characterCache = array();
         $this->corpCache = array();
+        // Load database users
+        $dbh = new PDO("mysql:host={$this->db};dbname={$this->dbName}", $this->dbUser, $this->dbPass);
+        $this->dbusers = array_column($dbh->query("SELECT discordID, characterID, eveName, role FROM authUsers where active='yes'")->fetchAll(), null, 'discordID');
+        if (!$this->dbusers) {
+            return;
+        }
         foreach ($this->discord->guilds->get('id', $this->guildID)->members as $member) {
             $discordNick = $member->nick ?: $member->user->username;
             if ($this->discord->id == $member->id || $member->getRolesAttribute()->isEmpty()) {
