@@ -1,2 +1,3 @@
-database/
-.idea/
+composer.phar
+/vendor/
+config/config.php
