@@ -220,7 +220,7 @@ class authCheck
         if (isset($this->dbusers[$discordID])) {
             $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
             $corp = $this->getCorpDetails($character['corporation_id']);
-            $return = in_array($corp['alliance_id'], $allianceArray);
+            $return = isset($corp['alliance_id']) && in_array($corp['alliance_id'], $allianceArray);
         } else {
             $this->logger->addInfo("AuthCheck: User [$discordNick] not found in database.");
         }
