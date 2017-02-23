@@ -258,6 +258,7 @@ class authCheck
         $dbh = new PDO("mysql:host={$this->db};dbname={$this->dbName}", $this->dbUser, $this->dbPass);
         $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
         $dbh->query($sql);
+        unset($this->dbusers[$member->id])
         $this->removeRoles($member);
         $this->logger->addInfo("AuthCheck: {$discordNick} account has been deactivated as they are no longer in a correct corp/alliance.");
     }
