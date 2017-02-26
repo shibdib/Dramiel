@@ -43,6 +43,7 @@ class authCheck
     private $guild;
     private $nameEnforce;
     private $standingsBased;
+    private $standings;
     private $nameCheck;
     private $apiKey;
     private $discord;
@@ -63,9 +64,10 @@ class authCheck
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
         $this->standingsBased = $config['plugins']['auth']['standings']['enabled'];
+        $this->standings = $config['plugins']['auth']['standings'];
         $this->apiKey = $config['eve']['apiKeys'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
-        $this->alertChannel = (int) $config['plugins']['auth']['alertChannel'];
+        $this->alertChannel = (int)$config['plugins']['auth']['alertChannel'];
         $this->guild = $config['bot']['guild'];
         $this->nextCheck = 0;
 
@@ -153,10 +155,10 @@ class authCheck
         //Set corp/ally id arrays
         foreach ($this->authGroups as $authGroup) {
             if ($authGroup['corpID'] !== 0) {
-                $corpArray[] = (int) $authGroup['corpID'];
+                $corpArray[] = (int)$authGroup['corpID'];
             }
             if ($authGroup['allianceID'] !== 0) {
-                $allianceArray[] = (int) $authGroup['allianceID'];
+                $allianceArray[] = (int)$authGroup['allianceID'];
             }
         }
 
@@ -165,6 +167,14 @@ class authCheck
                 $charID = $rows['characterID'];
                 $discordID = $rows['discordID'];
                 $role = $rows['role'];
+                $member = @$guild->members->get('id', $discordID);
+                $roles = $member->roles;
+
+                //get member roles
+                $roleArray = array();
+                foreach ($roles as $role) {
+                    $roleArray[] = (string)$role->name;
+                }
 
                 //Fix corrupt role
                 if (strpos($role, '<@&') !== false) {
@@ -208,43 +218,28 @@ class authCheck
                 }
                 $allianceID = @$corporationDetails['alliance_id'];
 
-                //Fix role in db
-                if ($role === 'fallback') {
-                    if (in_array((int)$allianceID, $allianceArray) && in_array((int)$corporationID, $corpArray)) {
-                        fixRole($discordID, 'corp/ally');
-                        continue;
-                    } elseif (in_array((int)$allianceID, $allianceArray)) {
-                        fixRole($discordID, 'ally');
-                        continue;
-                    } elseif (in_array((int)$corporationID, $corpArray)) {
-                        fixRole($discordID, 'corp');
-                        continue;
-                    }
-                }
-
                 //check if user authed based on standings
                 $standings = null;
-                if ($role === 'blue' || 'neut' || 'red' || 'fallback') {
-                    $allianceContacts = getContacts($allianceID);
-                    $corpContacts = getContacts($corporationID);
-                    if (($role === 'blue' || 'fallback') && ((int)$allianceContacts['standing'] === 5 || 10 || (int)$corpContacts['standing'] === 5 || 10)) {
-                        fixRole($discordID, 'blue');
-                        $standings = 1;
-                    }
-                    if (($role === 'red' || 'fallback') && ((int)$allianceContacts['standing'] === -5 || -10 || (int)$corpContacts['standing'] === -5 || -10)) {
-                        fixRole($discordID, 'red');
-                        $standings = 1;
-                    }
-                    if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
-                        $standings = 1;
-                    }
+                $allianceContacts = getContacts($allianceID);
+                $corpContacts = getContacts($corporationID);
+                if (in_array($this->standings['plus10Role'], $roleArray) && ((int)$allianceContacts['standing'] === 10 || (int)$corpContacts['standing'] === 10)) {
+                    $standings = 1;
                 }
-                if (!in_array((int) $allianceID, $allianceArray) && !in_array((int) $corporationID, $corpArray) && null === $standings) {
-                    // Deactivate user in database
-                    disableUser($discordID);
-                    continue;
+                if (in_array($this->standings['plus5Role'], $roleArray) && ((int)$allianceContacts['standing'] === 5 || (int)$corpContacts['standing'] === 5)) {
+                    $standings = 1;
                 }
-                if ($role = 'fallback' && null === $standings) {
+                if (in_array($this->standings['neutralRole'], $roleArray) && (((int)$allianceContacts['standing'] === 0 || (int)$corpContacts['standing'] === 0) || ((int)$allianceContacts['standing'] === null || (int)$corpContacts['standing'] === null))) {
+                    $standings = 1;
+                }
+                if (in_array($this->standings['minus10Role'], $roleArray) && ((int)$allianceContacts['standing'] === -10 || (int)$corpContacts['standing'] === -10)) {
+                    $standings = 1;
+                }
+                if (in_array($this->standings['minus5Role'], $roleArray) && ((int)$allianceContacts['standing'] === -5 || (int)$corpContacts['standing'] === -5)) {
+                    $standings = 1;
+                }
+
+                //check corp and alliance
+                if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray) && null === $standings) {
                     // Deactivate user in database
                     disableUser($discordID);
                     continue;
@@ -392,10 +387,10 @@ class authCheck
                     }
                     $nick = null;
                     if (null !== @$corpInfo['corpTicker']) {
-                        $corpTicker = (string) $corpInfo['corpTicker'];
+                        $corpTicker = (string)$corpInfo['corpTicker'];
                         if ($this->nameEnforce === 'true') {
                             $nick = "[{$corpTicker}] {$eveName}";
-                        } elseif ((string) $nickName === "[{$corpTicker}]") {
+                        } elseif ((string)$nickName === "[{$corpTicker}]") {
                             $nick = "[{$corpTicker}] {$userName}";
                         } elseif (strpos($nickName, $corpTicker) === false) {
                             $nick = "[{$corpTicker}] {$nickName}";
@@ -416,11 +411,11 @@ class authCheck
                     if (@$corpTicker === 'U') {
                         continue;
                     }
-                    $corpName = (string) $corporationDetails['corporation_name'];
+                    $corpName = (string)$corporationDetails['corporation_name'];
                     if (null !== $corpTicker) {
                         if ($this->nameEnforce === 'true') {
                             $nick = "[{$corpTicker}] {$eveName}";
-                        } elseif ((string) $nickName === "[{$corpTicker}]") {
+                        } elseif ((string)$nickName === "[{$corpTicker}]") {
                             $nick = "[{$corpTicker}] {$userName}";
                         } elseif (strpos($nickName, $corpTicker) === false) {
                             $nick = "[{$corpTicker}] {$nickName}";
@@ -454,14 +449,14 @@ class authCheck
     private function standingsUpdate()
     {
         foreach ($this->apiKey as $apiKey) {
-            if ((string) $apiKey['keyID'] === (string) $this->config['plugins']['auth']['standings']['apiKey']) {
+            if ((string)$apiKey['keyID'] === (string)$this->config['plugins']['auth']['standings']['apiKey']) {
                 $url = "https://api.eveonline.com/char/ContactList.xml.aspx?keyID={$apiKey['keyID']}&vCode={$apiKey['vCode']}&characterID={$apiKey['characterID']}";
                 $xml = makeApiRequest($url);
                 if (empty($xml)) {
                     return null;
                 }
                 foreach ($xml->result->rowset as $contactType) {
-                    if ((string) $contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
+                    if ((string)$contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
                         foreach ($contactType->row as $contact) {
                             if (null !== $contact['contactID'] && $contact['contactName'] && $contact['standing']) {
                                 addContactInfo($contact['contactID'], $contact['contactName'], $contact['standing']);

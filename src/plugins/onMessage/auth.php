@@ -191,7 +191,7 @@ class auth
                     }
                 }
                 //check for standings based roles
-                if ($this->standingsBased === 'true' && $role === null) {
+                if ($this->standingsBased === 'true' && $group === null) {
                     $allianceContacts = getContacts($allianceID);
                     $corpContacts = getContacts($corpID);
                     foreach ($roles as $role) {
