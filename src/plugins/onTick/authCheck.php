@@ -165,21 +165,16 @@ class authCheck
         if (count($result) >= 1) {
             foreach ($result as $rows) {
                 $charID = $rows['characterID'];
+                $name = $rows['eveName'];
                 $discordID = $rows['discordID'];
                 $role = $rows['role'];
                 $member = @$guild->members->get('id', $discordID);
-                $roles = $member->roles;
+                $roles = @$member->roles;
 
                 //get member roles
                 $roleArray = array();
-                foreach ($roles as $role) {
+                foreach (@$roles as $role) {
                     $roleArray[] = (string)$role->name;
-                }
-
-                //Fix corrupt role
-                if (strpos($role, '<@&') !== false) {
-                    fixRole($discordID, 'fallback');
-                    continue;
                 }
 
                 $member = $guild->members->get('id', $discordID);
@@ -218,32 +213,55 @@ class authCheck
                 }
                 $allianceID = @$corporationDetails['alliance_id'];
 
-                //check if user authed based on standings
-                $standings = null;
-                $allianceContacts = getContacts($allianceID);
-                $corpContacts = getContacts($corporationID);
-                if (in_array($this->standings['plus10Role'], $roleArray) && ((int)$allianceContacts['standing'] === 10 || (int)$corpContacts['standing'] === 10)) {
-                    $standings = 1;
-                }
-                if (in_array($this->standings['plus5Role'], $roleArray) && ((int)$allianceContacts['standing'] === 5 || (int)$corpContacts['standing'] === 5)) {
-                    $standings = 1;
-                }
-                if (in_array($this->standings['neutralRole'], $roleArray) && (((int)$allianceContacts['standing'] === 0 || (int)$corpContacts['standing'] === 0) || ((int)$allianceContacts['standing'] === null || (int)$corpContacts['standing'] === null))) {
-                    $standings = 1;
-                }
-                if (in_array($this->standings['minus10Role'], $roleArray) && ((int)$allianceContacts['standing'] === -10 || (int)$corpContacts['standing'] === -10)) {
-                    $standings = 1;
-                }
-                if (in_array($this->standings['minus5Role'], $roleArray) && ((int)$allianceContacts['standing'] === -5 || (int)$corpContacts['standing'] === -5)) {
-                    $standings = 1;
+                //check allianceID
+                if (null === $allianceID || 0 === (int)$allianceID) {
+                    $allianceID = 1;
                 }
 
+                //check if user authed based on standings
+                $standings = null;
+                if ($this->standingsBased === 'true' && (in_array($this->standings['plus10Role'], $roleArray) || in_array($this->standings['plus5Role'], $roleArray) || in_array($this->standings['neutralRole'], $roleArray) || in_array($this->standings['minus10Role'], $roleArray) || in_array($this->standings['minus5Role'], $roleArray))) {
+                    $allianceContacts = getContacts($allianceID);
+                    $corpContacts = getContacts($corporationID);
+                    if (in_array($this->standings['plus10Role'], $roleArray) && ((int)$allianceContacts['standing'] === 10 || (int)$corpContacts['standing'] === 10)) {
+                        $standings = 1;
+                        $group = 'blue';
+                    }
+                    if (in_array($this->standings['plus5Role'], $roleArray) && ((int)$allianceContacts['standing'] === 5 || (int)$corpContacts['standing'] === 5)) {
+                        $standings = 1;
+                        $group = 'blue';
+                    }
+                    if (in_array($this->standings['neutralRole'], $roleArray) && (((int)$allianceContacts['standing'] === 0 || (int)$corpContacts['standing'] === 0) || ((int)$allianceContacts['standing'] === null || (int)$corpContacts['standing'] === null))) {
+                        $standings = 1;
+                        $group = 'neut';
+                    }
+                    if (in_array($this->standings['minus10Role'], $roleArray) && ((int)$allianceContacts['standing'] === -10 || (int)$corpContacts['standing'] === -10)) {
+                        $standings = 1;
+                        $group = 'red';
+                    }
+                    if (in_array($this->standings['minus5Role'], $roleArray) && ((int)$allianceContacts['standing'] === -5 || (int)$corpContacts['standing'] === -5)) {
+                        $standings = 1;
+                        $group = 'red';
+                    }
+                }
+                //Fix role in db
+                if (in_array((int)$allianceID, $allianceArray)) {
+                    $group = 'ally';
+                }
+                if (in_array((int)$corporationID, $corpArray)) {
+                    $group = 'corp';
+                }
+                if (in_array((int)$allianceID, $allianceArray) && in_array((int)$corporationID, $corpArray)) {
+                    $group = 'corp/ally';
+                }
                 //check corp and alliance
                 if (!in_array((int)$allianceID, $allianceArray) && !in_array((int)$corporationID, $corpArray) && null === $standings) {
                     // Deactivate user in database
+                    $this->logger->addInfo("AuthCheck: Disabling {$name}");
                     disableUser($discordID);
                     continue;
                 }
+                fixRole($discordID, $group);
             }
             $nextCheck = time() + 10800;
             setPermCache('permsLastChecked', $nextCheck);
