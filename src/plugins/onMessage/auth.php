@@ -40,6 +40,7 @@ class auth
     private $standingsBased;
     private $guild;
     private $triggers;
+    private $exempt;
 
     /**
      * @param $config
@@ -54,6 +55,7 @@ class auth
         $this->logger = $logger;
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
         $this->nameEnforce = $config['plugins']['auth']['nameEnforce'];
+        $this->exempt = $config['plugins']['auth']['exempt'];
         $this->ssoUrl = $primary['plugins']['auth']['url'];
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
         $this->authGroups = $config['plugins']['auth']['authGroups'];
@@ -141,10 +143,16 @@ class auth
 
                 $roles = @$guild->roles;
                 $member = @$guild->members->get('id', $userID);
-                //if (null === $member) {
-                //    $this->message->reply("**Failure:** You're not a member of the correct guild.");
-                //    return null;
-                //}
+                $memberRoles = @$member->roles;
+
+                //remove roles to prevent auth issues
+                foreach (@$memberRoles as $role) {
+                    if (!in_array($role->name, $this->exempt, true)) {
+                        $member->removeRole($role);
+                        $guild->members->save($member);
+                    }
+                }
+                
                 $eveName = characterName($charID);
                 if (null === $eveName) {
                     $this->message->reply('**Failure:** Unable to auth at this time, ESI is down. Please try again later.');
