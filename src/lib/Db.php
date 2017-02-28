@@ -244,6 +244,8 @@ function clearAllMessageQueue()
 
 //CORP INFO
 /**
+ * @param $corpID
+ * @param $corpTicker
  * @param string $corpName
  */
 function addCorpInfo($corpID, $corpTicker, $corpName)
@@ -305,14 +307,16 @@ function getPendingUser($code)
 }
 
 /**
+ * @param $userID
  * @param integer $charID
+ * @param $eveName
  * @param integer $id
+ * @param string $role
  */
 function insertNewUser($userID, $charID, $eveName, $id, $role = 'corp')
 {
     $active = 'yes';
     $db = 'auth';
-    dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => $id), $db);
     dbExecute('REPLACE into authUsers (`characterID`, `discordID`, `eveName`, `active`, `role`) VALUES (:characterID, :discordID, :eveName, :active, :role)', array(':characterID' => $charID, ':discordID' => $userID, ':eveName' => (string) $eveName, ':active' => $active, ':role' => (string) $role), $db);
     dbExecute('DELETE from pendingUsers WHERE `id` = :id', array(':id' => $id), $db);
 }

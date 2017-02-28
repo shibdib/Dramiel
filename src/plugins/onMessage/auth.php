@@ -152,7 +152,7 @@ class auth
                         $guild->members->save($member);
                     }
                 }
-                
+
                 $eveName = characterName($charID);
                 if (null === $eveName) {
                     $this->message->reply('**Failure:** Unable to auth at this time, ESI is down. Please try again later.');
@@ -235,6 +235,7 @@ class auth
                     }
                 }
                 if (null !== $group) {
+                    dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => (string)$id), 'auth');
                     $guild = $this->discord->guilds->get('id', $guildID);
                     insertNewUser($userID, $charID, $eveName, $id, $group);
                     $guild->members->save($member);

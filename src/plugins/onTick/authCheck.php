@@ -167,7 +167,6 @@ class authCheck
                 $charID = $rows['characterID'];
                 $name = $rows['eveName'];
                 $discordID = $rows['discordID'];
-                $role = $rows['role'];
                 $member = @$guild->members->get('id', $discordID);
                 $roles = @$member->roles;
 
