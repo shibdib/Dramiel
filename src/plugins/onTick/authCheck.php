@@ -220,7 +220,7 @@ class authCheck
         if (isset($this->dbusers[$discordID])) {
             $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
             $corp = $this->getCorpDetails($character['corporation_id']);
-            $return = in_array($corp['alliance_id'], $allianceArray);
+            $return = isset($corp['alliance_id']) && in_array($corp['alliance_id'], $allianceArray);
         } else {
             $this->logger->addInfo("AuthCheck: User [$discordNick] not found in database.");
         }
@@ -258,6 +258,7 @@ class authCheck
         $dbh = new PDO("mysql:host={$this->db};dbname={$this->dbName}", $this->dbUser, $this->dbPass);
         $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
         $dbh->query($sql);
+        unset($this->dbusers[$member->id]);
         $this->removeRoles($member);
         $this->logger->addInfo("AuthCheck: {$discordNick} account has been deactivated as they are no longer in a correct corp/alliance.");
     }
