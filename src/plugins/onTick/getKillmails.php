@@ -86,7 +86,7 @@ class getKillmails
         foreach ($this->groupConfig as $kmGroup) {
             $SavedKillID = getPermCache("{$kmGroup['name']}newestKillmailID");
             //check if start id is greater than current id and if it is set
-            if (null !== $SavedKillID && preg_match('/[a-z]/i', $killID)) {
+            if (null !== $SavedKillID && preg_match('/[a-z]/i', $SavedKillID)) {
                 getStartMail($kmGroup);
                 $SavedKillID = getPermCache("{$kmGroup['name']}newestKillmailID");
             }
