@@ -85,15 +85,15 @@ class getKillmails
     private function getKM()
     {
         foreach ($this->groupConfig as $kmGroup) {
-            $killID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
+            $SavedKillID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
             //Check if the corp/alliance is set
             if (strlen($kmGroup['corpID']) < 5 && strlen($kmGroup['allianceID']) < 5) {
                 continue;
             }
             //check if start id is greater than current id and if it is set
-            if (null === $killID || preg_match('/[a-z]/i', $killID)) {
+            if (null === $SavedKillID || preg_match('/[a-z]/i', $SavedKillID)) {
                 getStartMail($kmGroup);
-                $killID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
+                $SavedKillID = getPermCache("{$kmGroup['corpID']}-{$kmGroup['allianceID']}-newestKillmailID");
             }
             if ((string)$kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'true') {
                 $url = "https://zkillboard.com/api/corporationID/{$kmGroup['corpID']}/no-attackers/no-items/orderDirection/asc/pastSeconds/10800/";
@@ -123,6 +123,10 @@ class getKillmails
                             $kmGroup['bigKill'] = 99999999999999999999999999;
                         }
                         $killID = $kill['killID'];
+                        if ($killID <= $SavedKillID) {
+                            $i++;
+                            continue;
+                        }
                         $channelID = $kmGroup['channel'];
                         $solarSystemID = $kill['solarSystemID'];
                         $systemName = systemName($solarSystemID);
