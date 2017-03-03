@@ -175,6 +175,9 @@ class getKillmails
                         break;
                     }
                 }
+                if (null === $killID) {
+                    $killID = $SavedKillID;
+                }
                 setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
             }
             $updatedID = getPermCache("{$kmGroup['name']}newestKillmailID");
