@@ -126,7 +126,7 @@ function characterID($characterName)
 {
     $logger = new Logger('eveESI');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
-    $characterName = urlencode($characterName);
+    $characterName = rawurlencode(urldecode($characterName));
 
     try {
         // Initialize a new request for this URL
