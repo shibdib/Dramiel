@@ -275,6 +275,9 @@ class notifications
                         case 35: // Insurance payment
                             $msg = 'skip';
                             break;
+                        case 36: // Insurance 
+                            $msg = 'skip';
+                            break;
                         case 41: // System lost
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
                             $systemName = systemName($solarSystemID[0]);
