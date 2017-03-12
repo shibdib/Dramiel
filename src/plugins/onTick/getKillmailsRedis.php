@@ -137,13 +137,13 @@ class getKillmailsRedis
                 $attackerCorpArray = array();
                 $attackerAllianceArray = array();
 
-				//Populate arrays with corp and alliance ids of attackers
+                //Populate arrays with corp and alliance ids of attackers
                 foreach ($kill['killmail']['attackers'] as $attacker) {
                     $attackerCorpArray[] = (int) @$attacker['corporation']['id'];
                     $attackerAllianceArray[] = (int) @$attacker['alliance']['id'];
                 }
 
-				//check if it was corp or alliance kill or lossmail
+                //check if it was corp or alliance kill or lossmail
                 if ((int) @$kill['killmail']['victim']['corporation']['id'] === $kmGroup['corpID'] && (int) $kmGroup['corpID'] !== 0) {
                     $corpLoss = true;
                 } elseif ((int) @$kill['killmail']['victim']['alliance']['id'] === $kmGroup['allianceID'] && (int) $kmGroup['allianceID'] !== 0) {
@@ -153,7 +153,7 @@ class getKillmailsRedis
                 } elseif (in_array((int) $kmGroup['allianceID'], $attackerAllianceArray) && (int) $kmGroup['allianceID'] !== 0) {
                     $allianceKill = true;
                 } else {
-					//if it wasn't any of these continue in case there is another group to process
+                	//if it wasn't any of these continue in case there is another group to process
                     continue;
                 }
 
@@ -166,8 +166,8 @@ class getKillmailsRedis
                 if (null === $kmGroup['bigKill']) {
                     $kmGroup['bigKill'] = 99999999999999999999999999;
                 }
-				
-				//get the kill values
+                
+                //get the kill values
                 $killID = $kill['killmail']['killID'];
                 $channelID = $kmGroup['channel'];
                 $systemName = $kill['killmail']['solarSystem']['name'];
@@ -208,7 +208,7 @@ class getKillmailsRedis
                 queueMessage($msg, $channelID, $this->guild);
                 $this->logger->addInfo("Killmails: Mail {$killID} queued.");
                 setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
-				//don't process the same kill twice
+                //don't process the same kill twice
                 break;
             }
         }
