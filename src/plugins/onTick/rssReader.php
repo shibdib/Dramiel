@@ -35,6 +35,9 @@ class rssReader
     public $discord;
     public $logger;
     public $guild;
+    public $itemTitle;
+    public $itemUrl;
+    public $itemDate;
 
     /**
      * @param $config
@@ -50,7 +53,7 @@ class rssReader
         $this->rssFeeds = $config['plugins']['rssReader']['rssFeeds'];
         $this->toDiscordChannel = $config['plugins']['rssReader']['channelID'];
         $lastCheck = getPermCache('rssLastChecked');
-        if ($lastCheck === NULL) {
+        if (is_null($lastCheck)) {
             // Schedule it for right now if first run
             setPermCache('rssLastChecked', time() - 5);
         }
@@ -73,6 +76,10 @@ class rssReader
         }
     }
 
+    /**
+     * @param $feeds
+     * @param $toChannel
+     */
     private function getRss($feeds, $toChannel)
     {
         foreach ($feeds as $rssUrl) {
@@ -82,7 +89,15 @@ class rssReader
             }
 
             $rss = simplexml_load_file($rssUrl); // XML parser
-            $feedLink = $rss->channel->link;
+			if ($rss===null || !is_object($rss)) {
+				$this->logger->addInfo("Failed to load xml file: {$rssUrl}");
+				break;
+			}
+			if (!is_object($rss->feed)) {
+				$this->logger->addInfo("Feed is not an object at: {$rssUrl}");
+				break;
+			}
+			$feedLink = $rss->feed->id;
             $latestTopicDate = getPermCache("rssFeed{$feedLink}");
 
             //Check if feed has been checked before
@@ -93,23 +108,32 @@ class rssReader
             }
 
             //Find item to check if feed is formatted
-            $itemTitle = (string) $rss->channel->item->title;
-            $itemUrl = (string) $rss->channel->item->link;
-            $itemDate = strtotime($rss->channel->item->pubDate);
+			$title = (string) $rss->feed->entry->title; 
+            if (empty($title)) {
+                $itemTitle = (string) $rss->feed->entry->title;
+            }
+			$Url = (string) $rss->feed->entry->id;
+            if (empty($Url)) {
+                $itemUrl = (string) $rss->feed->entry->id;
+            }
+			$date = (string) $rss->feed->entry->updated;
+            if (empty($date)) {
+                $itemDate = strtotime($rss->feed->entry->updated);
+            }
 
             //Check to see if feed is formatted correctly
-            if ($itemTitle === NULL || $itemUrl === NULL || $itemDate === NULL) {
+            if (is_null($itemTitle) || is_null($itemUrl) || is_null($itemDate)) {
                 $this->logger->addInfo("rssReader: {$rssUrl} is not a properly formatted RSS feed.");
                 continue;
             }
 
             //Find item to post
-            foreach ($rss->channel->item as $item) {
+            foreach ($rss->feed->entry as $item) {
                 //Get item details
                 $itemTitle = (string) $item->title;
-                $itemUrl = (string) $item->link;
-                $itemPubbed = $item->pubDate;
-                $itemDate = strtotime($item->pubDate);
+                $itemUrl = (string) $item->id;
+                $itemPubbed = $item->updated;
+                $itemDate = strtotime($item->updated);
 
                 //Check if item is old
                 if ($itemDate <= $latestTopicDate) {
