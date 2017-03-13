@@ -85,7 +85,10 @@ class getKillmailsRedis
             $kill = zKillRedis();
             $i++;
 
-            //Check if mail is null
+            //Check if there is a killmail available and mail is not null
+            if(!is_array($kill)){
+                break;
+            }
             if (!array_key_exists('killID', $kill)) {
                 break;
             }
