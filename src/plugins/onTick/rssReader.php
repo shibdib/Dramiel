@@ -109,15 +109,15 @@ class rssReader
 
             //Find item to check if feed is formatted
 			$title = (string) $rss->feed->entry->title; 
-            if (empty($title)) {
+            if (!empty($title)) {
                 $itemTitle = (string) $rss->feed->entry->title;
             }
 			$Url = (string) $rss->feed->entry->id;
-            if (empty($Url)) {
+            if (!empty($Url)) {
                 $itemUrl = (string) $rss->feed->entry->id;
             }
 			$date = (string) $rss->feed->entry->updated;
-            if (empty($date)) {
+            if (!empty($date)) {
                 $itemDate = strtotime($rss->feed->entry->updated);
             }
 
