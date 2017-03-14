@@ -90,7 +90,7 @@ class getKillmails
                 getStartMail($kmGroup);
                 $SavedKillID = getPermCache("{$kmGroup['name']}newestKillmailID");
             }
-            if ($kmGroup['startMail'] > $killID || null === $killID) {
+            if ($kmGroup['startMail'] > $SavedKillID || null === $SavedKillID) {
                 $SavedKillID = $kmGroup['startMail'];
             }
             if ((string)$kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'true') {
