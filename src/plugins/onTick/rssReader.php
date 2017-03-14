@@ -53,7 +53,7 @@ class rssReader
         $this->guild = $config['bot']['guild'];
         $this->rssFeeds = $config['plugins']['rssReader']['rssFeeds'];
         $this->toDiscordChannel = $config['plugins']['rssReader']['channelID'];
-        $lastCheck = 1489200520; //getPermCache('rssLastChecked');
+        $lastCheck = getPermCache('rssLastChecked');
         if (is_null($lastCheck)) {
             // Schedule it for right now if first run
             setPermCache('rssLastChecked', time() - 5);
@@ -110,9 +110,9 @@ class rssReader
             }
 
             //Find item to check if feed is formatted 
-            $rss->feed->entry[0]->title = $itemTitle;
-            $rss->feed->entry[0]->id = $itemUrl;
-			$rss->feed->entry[0]->published = $strDate;
+            $itemTitle = $rss->entry->title;
+            $itemUrl = $rss->entry->id;
+            $strDate = $rss->entry->published;
 			
 			$itemDate = strtotime($strDate);
 			
@@ -123,7 +123,7 @@ class rssReader
             }
 
             //Find item to post
-            foreach ($rss->feed->entry as $item) {
+            foreach ($rss->entry as $item) {
                 //Get item details
                 $itemTitle = $item->title;
                 $itemUrl = $item->id;
