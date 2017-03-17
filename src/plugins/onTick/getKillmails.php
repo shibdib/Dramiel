@@ -130,7 +130,10 @@ class getKillmails
                     $solarSystemID = $kill['solarSystemID'];
                     $systemName = systemName($solarSystemID);
                     $killTime = $kill['killTime'];
-                    $victimAllianceName = $kill['victim']['allianceName'];
+                    $victimAllianceName = '';
+                    if ($kill['victim']['allianceName'] !== null || $kill['victim']['allianceName'] !== '') {
+                        $victimAllianceName = "|{$kill['victim']['allianceName']}";
+                    }
                     $victimName = $kill['victim']['characterName'];
                     $victimCorpName = $kill['victim']['corporationName'];
                     $victimShipID = $kill['victim']['shipTypeID'];
@@ -155,12 +158,12 @@ class getKillmails
                     if ($victimName !== '') {
                         if ($kmGroup['bigKill'] != null && $rawValue >= $kmGroup['bigKill']) {
                             $channelID = $kmGroup['bigKillChannel'];
-                            $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                            $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                         } elseif ($kmGroup['bigKill'] == null || $rawValue <= $kmGroup['bigKill']) {
-                            $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                            $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                         }
                     } elseif ($victimName === '') {
-                        $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                        $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
 
                     if (!isset($msg)) { // Make sure it's always set.
