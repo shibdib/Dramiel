@@ -131,7 +131,7 @@ class getKillmails
                     $systemName = systemName($solarSystemID);
                     $killTime = $kill['killTime'];
                     $victimAllianceName = '';
-                    if ($kill['victim']['allianceName'] !== null || $kill['victim']['allianceName'] !== '') {
+                    if ($kill['victim']['allianceName'] !== null && $kill['victim']['allianceName'] !== '') {
                         $victimAllianceName = "|{$kill['victim']['allianceName']}";
                     }
                     $victimName = $kill['victim']['characterName'];
