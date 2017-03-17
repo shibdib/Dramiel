@@ -74,16 +74,29 @@ class rssReader
         }
     }
 
+    /**
+     * @param $feeds
+     * @param $toChannel
+     */
+
     private function getRss($feeds, $toChannel)
     {
         foreach ($feeds as $rssUrl) {
             //Check that url is set
-            if ($rssUrl === '' || '0' || 0 || null) {
+            if (!isset($rssUrl) || $rssUrl === '') {
                 continue;
             }
 
-            $rss = simplexml_load_file($rssUrl); // XML parser
-            $feedLink = $rss->channel->link;
+            $rss = new SimpleXMLElement($rssUrl, null, true); // XML parser
+            if ($rss === null || !is_object($rss)) {
+                $this->logger->addInfo("Failed to load xml file: {$rssUrl}");
+                break;
+            }
+            if (!is_object($rss->feed)) {
+                $this->logger->addInfo("Feed is not an object at: {$rssUrl}");
+                break;
+            }
+            $feedLink = $rss->feed->id;
             $latestTopicDate = getPermCache("rssFeed{$feedLink}");
 
             //Check if feed has been checked before
@@ -94,23 +107,25 @@ class rssReader
             }
 
             //Find item to check if feed is formatted
-            $itemTitle = (string) $rss->channel->item->title;
-            $itemUrl = (string) $rss->channel->item->link;
-            $itemDate = strtotime($rss->channel->item->pubDate);
+            $itemTitle = $rss->entry->title;
+            $itemUrl = $rss->entry->id;
+            $strDate = $rss->entry->published;
+
+            $itemDate = strtotime($strDate);
 
             //Check to see if feed is formatted correctly
-            if ($itemTitle === NULL || $itemUrl === NULL || $itemDate === NULL) {
-                $this->logger->addInfo("rssReader: {$rssUrl} is not a properly formatted RSS feed.");
+            if (is_null($itemTitle) || is_null($itemUrl) || is_null($itemDate)) {
+                $this->logger->addInfo("rssReader: {$rssUrl} is not a properly formatted RSS feed. {$itemTitle} {$itemUrl} {$itemDate}");
                 continue;
             }
 
             //Find item to post
-            foreach ($rss->channel->item as $item) {
+            foreach ($rss->entry as $item) {
                 //Get item details
-                $itemTitle = (string) $item->title;
-                $itemUrl = (string) $item->link;
-                $itemPubbed = $item->pubDate;
-                $itemDate = strtotime($item->pubDate);
+                $itemTitle = $item->title;
+                $itemUrl = $item->id;
+                $itemPubbed = $item->published;
+                $itemDate = strtotime($item->published);
 
                 //Check if item is old
                 if ($itemDate <= $latestTopicDate) {

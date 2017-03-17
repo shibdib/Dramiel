@@ -555,9 +555,11 @@ class notifications
                             }
                             break;
                         case 182: //  Citadel being anchored
+                            preg_match('/(?<=ownerCorpName: )[^\r\n]+/i', $notificationString, $corpName);
+                            $corpName = $corpName[0];
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
                             $systemName = systemName($solarSystemID[0]);
-                            $msg = "Citadel is being anchored in **{$systemName}**.";
+                            $msg = "Citadel owned by **{$corpName}** is being anchored in **{$systemName}**.";
                             break;
                         case 184: //  Citadel under attack
                             $aggID = trim(explode(': ', $notificationArray[7])[1]);
