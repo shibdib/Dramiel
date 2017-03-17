@@ -90,7 +90,7 @@ class getKillmails
                 getStartMail($kmGroup);
                 $SavedKillID = getPermCache("{$kmGroup['name']}newestKillmailID");
             }
-            if ($kmGroup['startMail'] > $killID || null === $killID) {
+            if ($kmGroup['startMail'] > $SavedKillID || null === $SavedKillID) {
                 $SavedKillID = $kmGroup['startMail'];
             }
             if ((string)$kmGroup['allianceID'] === '0' & $kmGroup['lossMails'] === 'true') {
@@ -112,17 +112,17 @@ class getKillmails
             }
 
             $kills = json_decode(downloadData($url), true);
-            $i = 0;
+//            $i = 0;
             if (isset($kills)) {
                 foreach ($kills as $kill) {
-                    if ($i < 10) {
+ //                   if ($i < 10) {
                         //if big kill isn't set, disable it
                         if (!array_key_exists('bigKill', $kmGroup)) {
                             $kmGroup['bigKill'] = 99999999999999999999999999;
                         }
                         $killID = $kill['killID'];
                         if ($killID <= $SavedKillID) {
-                            $i++;
+//                            $i++;
                             continue;
                         }
                         $channelID = $kmGroup['channel'];
@@ -171,12 +171,12 @@ class getKillmails
                         queueMessage($msg, $channelID, $this->guild);
                         $this->logger->addInfo("Killmails: Mail {$killID} queued.");
 
-                        $i++;
-                    } else {
+//                        $i++;
+/*                    } else {
                         $updatedID = getPermCache("{$kmGroup['name']}newestKillmailID");
                         $this->logger->addInfo("Killmails: Kill posting cap reached, newest kill id for {$kmGroup['name']} is {$updatedID}");
                         break;
-                    }
+                    }*/
                 }
                 if (null === $killID) {
                     $killID = $SavedKillID;
@@ -204,7 +204,7 @@ class getKillmails
         if (isset($kills)) {
             foreach ($kills as $kill) {
                 $cacheID = getPermCache('bigKillNewestKillmailID');
-                if ($i < 10) {
+ //               if ($i < 10) {
                     $killID = $kill['killID'];
                     //check if mail is old
                     if ((int)$killID <= (int)$oldID) {
@@ -236,12 +236,12 @@ class getKillmails
                     queueMessage($msg, $channelID, $this->guild);
                     $this->logger->addInfo("Killmails: Mail {$killID} queued.");
 
-                    $i++;
+/*                    $i++;
                 } else {
                     $cacheID = getPermCache('bigKillNewestKillmailID');
                     $this->logger->addInfo("Killmails: bigKill posting cap reached, newest kill id is {$cacheID}");
                     break;
-                }
+                }*/
             }
         }
         $updatedID = getPermCache('bigKillNewestKillmailID');
