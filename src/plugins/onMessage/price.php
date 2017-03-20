@@ -133,24 +133,26 @@ class price
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
                 }
 
-                $lowBuy = number_format((float) $data->marketstat->type->buy->min, 2);
-                $avgBuy = number_format((float) $data->marketstat->type->buy->avg, 2);
-                $highBuy = number_format((float) $data->marketstat->type->buy->max, 2);
-                $lowSell = number_format((float) $data->marketstat->type->sell->min, 2);
-                $avgSell = number_format((float) $data->marketstat->type->sell->avg, 2);
-                $highSell = number_format((float) $data->marketstat->type->sell->max, 2);
+                $lowBuy = str_pad(number_format((float)$data->marketstat->type->buy->min, 2), 18, " ", STR_PAD_LEFT);
+                $avgBuy = str_pad(number_format((float)$data->marketstat->type->buy->avg, 2), 18, " ", STR_PAD_LEFT);
+                $highBuy = str_pad(number_format((float)$data->marketstat->type->buy->max, 2), 18, " ", STR_PAD_LEFT);
+                $lowSell = str_pad(number_format((float)$data->marketstat->type->sell->min, 2), 18, " ", STR_PAD_LEFT);
+                $avgSell = str_pad(number_format((float)$data->marketstat->type->sell->avg, 2), 18, " ", STR_PAD_LEFT);
+                $highSell = str_pad(number_format((float)$data->marketstat->type->sell->max, 2), 18, " ", STR_PAD_LEFT);
 
                 $this->logger->addInfo("Price: Sending pricing info to {$user}");
                 $solarSystemName = $systemName === 'pc' ? 'Global' : ucfirst($systemName);
-                $messageData = "**System: {$solarSystemName}**
+                $messageData = "
+```  System:   {$solarSystemName}
+    Item:   {$itemName}```
 **Buy:**
-   Low: {$lowBuy}
-   Avg: {$avgBuy}
-   High: {$highBuy}
+```    Low: {$lowBuy}
+    Avg: {$avgBuy}
+   High: {$highBuy}```
 **Sell:**
-   Low: {$lowSell}
-   Avg: {$avgSell}
-   High: {$highSell}";
+```    Low: {$lowSell}
+    Avg: {$avgSell}
+   High: {$highSell}```";
                 $this->message->reply($messageData);
             } else {
                 $this->message->reply("**Error:** ***{$itemName}*** not found");

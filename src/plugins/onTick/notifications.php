@@ -265,6 +265,41 @@ class notifications
                         case 21: // member left corp
                             $msg = 'skip';
                             break;
+                        case 27: // Corp declares war
+                            preg_match('/?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            $defAllianceName = allianceName($defAllianceID[0]);
+                            if ($defAllianceName === '') {
+                                $defAllianceName = corpName($defAllianceID[0]);
+                            }
+                            preg_match('/?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            $aggAllianceName = allianceName($aggAllianceID[0]);
+                            if ($aggAllianceName === '') {
+                                $aggAllianceName = corpName($aggAllianceID[0]);
+                            }
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = '@everyone | War declared. Fighting begins in roughly 24 hours.';
+                            } else {
+                                $msg = "**{$aggAllianceName}** has declared war on **{$defAllianceName}**.
+Within 24 hours fighting can legally occur between those involved. If war is due to a corporation at war joining or leaving an alliance, then the war starts immediately instead.";
+                            }
+                            break;
+                        case 30: // Corp retracts war
+                            preg_match('/?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            $defAllianceName = allianceName($defAllianceID[0]);
+                            if ($defAllianceName === '') {
+                                $defAllianceName = corpName($defAllianceID[0]);
+                            }
+                            preg_match('/?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            $aggAllianceName = allianceName($aggAllianceID[0]);
+                            if ($aggAllianceName === '') {
+                                $aggAllianceName = corpName($aggAllianceID[0]);
+                            }
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = '@everyone | War has been retracted.  Fighting ends in roughly 24 hours.';
+                            } else {
+                                $msg = "The war between **{$aggAllianceName}** and **{$defAllianceName}** is coming to an end. **{$aggAllianceName}** has retracted the war against **{$defAllianceName}**. The war will be declared as being over after approximately 24 hours.";
+                            }
+                            break;
                         case 31: // Alliance war invalidated by CONCORD
                             $aggAllianceID = trim(explode(': ', $notificationArray[2])[1]);
                             $aggAllianceName = allianceName($aggAllianceID);
