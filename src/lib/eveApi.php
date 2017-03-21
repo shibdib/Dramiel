@@ -435,7 +435,7 @@ function allianceName($allianceID)
     return $name;
 }
 
-/** 
+/**
  * @param string $systemName
  * @return mixed
  */
