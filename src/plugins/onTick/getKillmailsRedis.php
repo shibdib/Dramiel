@@ -86,7 +86,7 @@ class getKillmailsRedis
             $i++;
 
             //Check if mail is null
-            if (!array_key_exists('killID', $kill)) {
+            if (!$kill || !array_key_exists('killID', $kill)) {
                 break;
             }
 
