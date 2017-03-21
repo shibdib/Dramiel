@@ -265,12 +265,12 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 27: // Corp declares war
-                            preg_match('/?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
                             if ($defAllianceName === '') {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
-                            preg_match('/?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
                             if ($aggAllianceName === '') {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
@@ -283,12 +283,12 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             }
                             break;
                         case 30: // Corp retracts war
-                            preg_match('/?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
                             if ($defAllianceName === '') {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
-                            preg_match('/?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
                             if ($aggAllianceName === '') {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
