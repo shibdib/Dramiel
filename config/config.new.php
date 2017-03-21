@@ -76,6 +76,7 @@ $config['enabledPlugins'] = array( // remove the slashes for the plugins you wan
     'auth', //sso based auth system
     'authCheck', // checks if users have left corp or alliance
     'charInfo', // eve character info using eve-kill
+    'sysInfo',
     'corpInfo', // eve corp info
     'eveStatus', // tq status message command
     //'periodicStatusCheck', // ....YOU MUST SET A CHANNEL IN THE NOTIFICATIONS SECTION NEAR THE BOTTOM OF THIS FILE.... Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
