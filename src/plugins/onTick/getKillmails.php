@@ -129,7 +129,10 @@ class getKillmails
                         $solarSystemID = $kill['solarSystemID'];
                         $systemName = systemName($solarSystemID);
                         $killTime = $kill['killTime'];
-                        $victimAllianceName = $kill['victim']['allianceName'];
+                        $victimAllianceName = '';
+                    if ($kill['victim']['allianceName'] !== null && $kill['victim']['allianceName'] !== '') {
+                            $victimAllianceName = "|{$kill['victim']['allianceName']}";
+                        }
                         $victimName = $kill['victim']['characterName'];
                         $victimCorpName = $kill['victim']['corporationName'];
                         $victimShipID = $kill['victim']['shipTypeID'];
@@ -215,7 +218,10 @@ class getKillmails
                     $solarSystemID = $kill['solarSystemID'];
                     $systemName = systemName($solarSystemID);
                     $killTime = $kill['killTime'];
-                    $victimAllianceName = $kill['victim']['allianceName'];
+                $victimAllianceName = '';
+                if ($kill['victim']['allianceName'] !== null && $kill['victim']['allianceName'] !== '') {
+                    $victimAllianceName = "|{$kill['victim']['allianceName']}";
+                }
                     $victimName = $kill['victim']['characterName'];
                     $victimCorpName = $kill['victim']['corporationName'];
                     $victimShipID = $kill['victim']['shipTypeID'];
