@@ -231,6 +231,74 @@ function systemName($systemID)
 }
 
 /**
+ * @param string $systemID
+ * @return mixed
+ * Return system information
+*/
+function systemDetails($systemID)
+{
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
+
+    try {
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
+    }
+
+    return $data;
+}
+
+/**
+ * @param string $regionID
+ * @return mixed
+ * Return region information
+*/
+function regionDetails($regionID)
+{
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
+
+    try {
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/regions/{$regionID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
+    }
+
+    return $data;
+}
+
+/**
  * @param string $corpName
  * @return mixed
  */
