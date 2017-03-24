@@ -1,3 +1,4 @@
 composer.phar
 /vendor/
 config/config.php
+/src/plugins/onMessage/timerBoard.php

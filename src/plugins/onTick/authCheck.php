@@ -131,169 +131,8 @@ class authCheck
     }
 
     // remove user roles
-    private function removeRoles($member)
-    {
-        $discordNick = $member->nick ?: $member->user->username;
-        $roleRemoved = false;
-        if (!is_null($member->roles)) {
-            if (!isset($this->dbusers[$member->id])) {
-                foreach ($member->roles as $role) {
-                    if (!in_array($role->name, $this->exempt, true)) {
-                        $roleRemoved = true;
-                        $member->removeRole($role);
-                        $this->discord->guilds->get('id', $this->guildID)->members->save($member);
-                    }
-                }
-            }
-            if ($roleRemoved) {
-                $this->logger->addInfo("AuthCheck: Roles removed from $discordNick");
-                $msg = "Discord roles removed from $discordNick";
-                queueMessage($msg, $this->alertChannel, $this->guildID);
-            }
-        }
-    }
 
-    private function getCharacterDetails($charID, $retries = 3)
-    {
-        if (isset($this->characterCache[$charID])) {
-            return $this->characterCache[$charID];
-        }
-        $character = null;
-        for ($i = 0; $i < $retries; $i++) {
-            $character = characterDetails($charID);
-            if (!is_null($character)) {
-                break;
-            }
-        }
-        if (!$character || isset($character['error'])) {
-            $this->logger->addInfo('AuthCheck: characterDetails lookup failed.');
-            $msg = isset($character['error']) ? $character['error'] : 'characterDetails lookup failed';
-            throw new Exception($msg);
-        }
-        $this->characterCache[$charID] = $character;
-        return $character;
-    }
 
-    private function getCorpDetails($corpID, $retries = 3)
-    {
-        if (isset($this->corpCache[$corpID])) {
-            return $this->corpCache[$corpID];
-        }
-        $corporationDetails = null;
-        for ($i = 0; $i < $retries; $i++) {
-            $corporationDetails = corpDetails($corpID);
-            if (!is_null($corporationDetails)) {
-                break;
-            }
-        }
-        if (!$corporationDetails || isset($corporationDetails['error'])) {
-            $this->logger->addInfo('AuthCheck: corpDetails lookup failed.');
-            $msg = isset($corporationDetails['error']) ? $corporationDetails['error'] : 'corpDetails lookup failed';
-            throw new Exception($msg);
-        }
-        $this->corpCache[$corpID] = $corporationDetails;
-        return $corporationDetails;
-    }
-
-    private function isMemberInValidCorp($member)
-    {
-        $corpArray = array_column($this->authGroups, 'corpID');
-        $discordID = $member->id;
-        $discordNick = $member->nick ?: $member->user->username;
-        $return = false;
-        if (isset($this->dbusers[$discordID])) {
-            $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
-            $return = in_array($character['corporation_id'], $corpArray);
-        } else {
-            $this->logger->addInfo("AuthCheck: User [$discordNick] not found in database.");
-        }
-        return $return;
-    }
-
-    private function isMemberInValidAlliance($member)
-    {
-        $allianceArray = array_column($this->authGroups, 'allianceID');
-        $discordID = $member->id;
-        $discordNick = $member->nick ?: $member->user->username;
-        $return = false;
-        // get charID
-        if (isset($this->dbusers[$discordID])) {
-            $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
-            $corp = $this->getCorpDetails($character['corporation_id']);
-            $return = isset($corp['alliance_id']) && in_array($corp['alliance_id'], $allianceArray);
-        } else {
-            $this->logger->addInfo("AuthCheck: User [$discordNick] not found in database.");
-        }
-        return $return;
-    }
-
-    private function isMemberCorpOrAllianceContact($member) {
-        $return = false;
-        $discordID = $member->id;
-        if (isset($this->dbusers[$discordID])) {
-            $role = $this->dbusers[$discordID]['role'];
-            if ($role === 'blue' || 'neut' || 'red') {
-                $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
-                $corporationDetails = $this->getCorpDetails($character['corporation_id']);
-                $allianceContacts = getContacts($corporationDetails['alliance_id']);
-                $corpContacts = getContacts($character['corporation_id']);
-                if ($role === 'blue' && ((int) $allianceContacts['standing'] === 5 || 10 || (int) $corpContacts['standing'] === 5 || 10)) {
-                    $return = true;
-                }
-                if ($role === 'red' && ((int) $allianceContacts['standing'] === -5 || -10 || (int) $corpContacts['standing'] === -5 || -10)) {
-                    $return = true;
-                }
-                if ($role === 'neut' && ((int) $allianceContacts['standing'] === 0 || (int) $corpContacts['standing'] === 0 || (@(int) $allianceContacts['standings'] === null || '' && @(int) $corpContacts['standings'] === null || ''))) {
-                    $return = true;
-                }
-            }
-        }
-        return $return;
-    }
-
-    private function deactivateMember($member)
-    {
-        $discordID = $member->id;
-        $discordNick = $member->nick ?: $member->user->username;
-        $dbh = new PDO("mysql:host={$this->db};dbname={$this->dbName}", $this->dbUser, $this->dbPass);
-        $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
-        $dbh->query($sql);
-        unset($this->dbusers[$member->id]);
-        $this->removeRoles($member);
-        $this->logger->addInfo("AuthCheck: {$discordNick} account has been deactivated as they are no longer in a correct corp/alliance.");
-    }
-
-    private function resetMemberNick($member)
-    {
-        $discordID = $member->id;
-        $discordNick = $member->nick ?: $member->user->username;
-        if (!isset($this->dbusers[$discordID])) {
-            return false;
-        }
-        $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']); 
-        $corpTicker = '';
-        if ($this->corpTickers === 'true') {
-            $corporationDetails = $this->getCorpDetails($character['corporation_id']);
-            if ($corporationDetails && isset($corporationDetails['ticker']) && $corporationDetails['ticker'] !== 'U') {
-                $corpTicker = "[{$corporationDetails['ticker']}] ";
-            }
-        }
-        if ($this->nameEnforce) {
-            $newNick = $corpTicker . $this->dbusers[$discordID]['eveName'];
-        } else {
-            $newNick = $corpTicker . $discordNick;
-        }
-        if ($newNick !== $discordNick) {
-            queueRename($discordID, $newNick, $this->guildID);
-        }
-    }
-
-    /**
-     * @return null
-     */
-
-    //Check user corp/alliance affiliation
-    //Remove members who have roles but never authed
     private function checkPermissions()
     {
         $this->characterCache = array();
@@ -327,17 +166,177 @@ class authCheck
         setPermCache('permsLastChecked', time() + 1800);
     }
 
+    private function isMemberInValidCorp($member)
+    {
+        $corpArray = array_column($this->authGroups, 'corpID');
+        $discordID = $member->id;
+        $return = false;
+        if (isset($this->dbusers[$discordID])) {
+            $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
+            $return = in_array($character['corporation_id'], $corpArray);
+        }
+        return $return;
+    }
+
+    private function getCharacterDetails($charID, $retries = 3)
+    {
+        if (isset($this->characterCache[$charID])) {
+            return $this->characterCache[$charID];
+        }
+        $character = null;
+        for ($i = 0; $i < $retries; $i++) {
+            $character = characterDetails($charID);
+            if (!is_null($character)) {
+                break;
+            }
+        }
+        if (!$character || isset($character['error'])) {
+            $this->logger->addInfo('AuthCheck: characterDetails lookup failed.');
+            $msg = isset($character['error']) ? $character['error'] : 'characterDetails lookup failed';
+            throw new Exception($msg);
+        }
+        $this->characterCache[$charID] = $character;
+        return $character;
+    }
+
+    private function isMemberInValidAlliance($member)
+    {
+        $allianceArray = array_column($this->authGroups, 'allianceID');
+        $discordID = $member->id;
+        $return = false;
+        // get charID
+        if (isset($this->dbusers[$discordID])) {
+            $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
+            $corp = $this->getCorpDetails($character['corporation_id']);
+            $return = isset($corp['alliance_id']) && in_array($corp['alliance_id'], $allianceArray);
+        }
+        return $return;
+    }
+
+    private function getCorpDetails($corpID, $retries = 3)
+    {
+        if (isset($this->corpCache[$corpID])) {
+            return $this->corpCache[$corpID];
+        }
+        $corporationDetails = null;
+        for ($i = 0; $i < $retries; $i++) {
+            $corporationDetails = corpDetails($corpID);
+            if (!is_null($corporationDetails)) {
+                break;
+            }
+        }
+        if (!$corporationDetails || isset($corporationDetails['error'])) {
+            $this->logger->addInfo('AuthCheck: corpDetails lookup failed.');
+            $msg = isset($corporationDetails['error']) ? $corporationDetails['error'] : 'corpDetails lookup failed';
+            throw new Exception($msg);
+        }
+        $this->corpCache[$corpID] = $corporationDetails;
+        return $corporationDetails;
+    }
+
+    private function isMemberCorpOrAllianceContact($member)
+    {
+        $return = false;
+        $discordID = $member->id;
+        if (isset($this->dbusers[$discordID])) {
+            $role = $this->dbusers[$discordID]['role'];
+            if ($role === 'blue' || 'neut' || 'red') {
+                $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
+                $corporationDetails = $this->getCorpDetails($character['corporation_id']);
+                $allianceContacts = getContacts($corporationDetails['alliance_id']);
+                $corpContacts = getContacts($character['corporation_id']);
+                if ($role === 'blue' && ((int)$allianceContacts['standing'] === 5 || 10 || (int)$corpContacts['standing'] === 5 || 10)) {
+                    $return = true;
+                }
+                if ($role === 'red' && ((int)$allianceContacts['standing'] === -5 || -10 || (int)$corpContacts['standing'] === -5 || -10)) {
+                    $return = true;
+                }
+                if ($role === 'neut' && ((int)$allianceContacts['standing'] === 0 || (int)$corpContacts['standing'] === 0 || (@(int)$allianceContacts['standings'] === null || '' && @(int)$corpContacts['standings'] === null || ''))) {
+                    $return = true;
+                }
+            }
+        }
+        return $return;
+    }
+
+    private function deactivateMember($member)
+    {
+        $discordID = $member->id;
+        $discordNick = $member->nick ?: $member->user->username;
+        $this->logger->addInfo("AuthCheck: User [$discordNick] not found in database.");
+        $dbh = new PDO("mysql:host={$this->db};dbname={$this->dbName}", $this->dbUser, $this->dbPass);
+        $sql = "UPDATE authUsers SET active='no' WHERE discordID='$discordID'";
+        $dbh->query($sql);
+        unset($this->dbusers[$member->id]);
+        $this->removeRoles($member);
+    }
+
+    private function removeRoles($member)
+    {
+        $discordNick = $member->nick ?: $member->user->username;
+        $roleRemoved = false;
+        $guild = $this->discord->guilds->get('id', $this->guildID);
+        if (!is_null($member->roles)) {
+            if (!isset($this->dbusers[$member->id])) {
+                foreach ($member->roles as $role) {
+                    if (!in_array($role->name, $this->exempt, true)) {
+                        $roleRemoved = true;
+                        $member->removeRole($role);
+                        $guild->members->save($member);
+                        break; //temp to see if an issue lies in removing multiple roles from the same person too quickly
+                    }
+                }
+            }
+            if ($roleRemoved) {
+                $this->logger->addInfo("AuthCheck: Roles removed from $discordNick");
+                $msg = "Discord roles removed from $discordNick";
+                queueMessage($msg, $this->alertChannel, $this->guildID);
+            }
+        }
+    }
+
+    /**
+     * @return null
+     */
+
+    //Check user corp/alliance affiliation
+    //Remove members who have roles but never authed
+    private function resetMemberNick($member)
+    {
+        $discordID = $member->id;
+        $discordNick = $member->nick ?: $member->user->username;
+        if (!isset($this->dbusers[$discordID])) {
+            return false;
+        }
+        $character = $this->getCharacterDetails($this->dbusers[$discordID]['characterID']);
+        $corpTicker = '';
+        if ($this->corpTickers === 'true') {
+            $corporationDetails = $this->getCorpDetails($character['corporation_id']);
+            if ($corporationDetails && isset($corporationDetails['ticker']) && $corporationDetails['ticker'] !== 'U') {
+                $corpTicker = "[{$corporationDetails['ticker']}] ";
+            }
+        }
+        if ($this->nameEnforce) {
+            $newNick = $corpTicker . $this->dbusers[$discordID]['eveName'];
+        } else {
+            $newNick = $corpTicker . $discordNick;
+        }
+        if ($newNick !== $discordNick) {
+            queueRename($discordID, $newNick, $this->guildID);
+        }
+    }
+
     private function standingsUpdate()
     {
         foreach ($this->apiKey as $apiKey) {
-            if ((string) $apiKey['keyID'] === (string) $this->config['plugins']['auth']['standings']['apiKey']) {
+            if ((string)$apiKey['keyID'] === (string)$this->config['plugins']['auth']['standings']['apiKey']) {
                 $url = "https://api.eveonline.com/char/ContactList.xml.aspx?keyID={$apiKey['keyID']}&vCode={$apiKey['vCode']}&characterID={$apiKey['characterID']}";
                 $xml = makeApiRequest($url);
                 if (empty($xml)) {
                     return null;
                 }
                 foreach ($xml->result->rowset as $contactType) {
-                    if ((string) $contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
+                    if ((string)$contactType->attributes()->name === 'corporateContactList' || 'allianceContactList') {
                         foreach ($contactType->row as $contact) {
                             if (null !== $contact['contactID'] && $contact['contactName'] && $contact['standing']) {
                                 addContactInfo($contact['contactID'], $contact['contactName'], $contact['standing']);

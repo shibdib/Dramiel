@@ -115,65 +115,68 @@ class getKillmails
 //            $i = 0;
             if (isset($kills)) {
                 foreach ($kills as $kill) {
- //                   if ($i < 10) {
-                        //if big kill isn't set, disable it
-                        if (!array_key_exists('bigKill', $kmGroup)) {
-                            $kmGroup['bigKill'] = 99999999999999999999999999;
-                        }
-                        $killID = $kill['killID'];
-                        if ($killID <= $SavedKillID) {
+                    //                   if ($i < 10) {
+                    //if big kill isn't set, disable it
+                    if (!array_key_exists('bigKill', $kmGroup)) {
+                        $kmGroup['bigKill'] = 99999999999999999999999999;
+                    }
+                    $killID = $kill['killID'];
+                    if ($killID <= $SavedKillID) {
 //                            $i++;
-                            continue;
-                        }
-                        $channelID = $kmGroup['channel'];
-                        $solarSystemID = $kill['solarSystemID'];
-                        $systemName = systemName($solarSystemID);
-                        $killTime = $kill['killTime'];
-                        $victimAllianceName = $kill['victim']['allianceName'];
-                        $victimName = $kill['victim']['characterName'];
-                        $victimCorpName = $kill['victim']['corporationName'];
-                        $victimShipID = $kill['victim']['shipTypeID'];
-                        $shipName = apiTypeName($victimShipID);
-                        $rawValue = $kill['zkb']['totalValue'];
-                        //Check if killmail meets minimum value and if it meets lost minimum value
-                        if (isset($kmGroup['minimumValue']) && isset($kmGroup['minimumlossValue'])) {
-                            if ($rawValue < $kmGroup['minimumValue']) {
-                                if ($kill['victim']['corporationID'] == $kmGroup['corpID'] && $rawValue > $kmGroup['minimumlossValue'] ||
+                        continue;
+                    }
+                    $channelID = $kmGroup['channel'];
+                    $solarSystemID = $kill['solarSystemID'];
+                    $systemName = systemName($solarSystemID);
+                    $killTime = $kill['killTime'];
+                    $victimAllianceName = '';
+                    if ($kill['victim']['allianceName'] !== null && $kill['victim']['allianceName'] !== '') {
+                        $victimAllianceName = "|{$kill['victim']['allianceName']}";
+                    }
+                    $victimName = $kill['victim']['characterName'];
+                    $victimCorpName = $kill['victim']['corporationName'];
+                    $victimShipID = $kill['victim']['shipTypeID'];
+                    $shipName = apiTypeName($victimShipID);
+                    $rawValue = $kill['zkb']['totalValue'];
+                    //Check if killmail meets minimum value and if it meets lost minimum value
+                    if (isset($kmGroup['minimumValue']) && isset($kmGroup['minimumlossValue'])) {
+                        if ($rawValue < $kmGroup['minimumValue']) {
+                            if ($kill['victim']['corporationID'] == $kmGroup['corpID'] && $rawValue > $kmGroup['minimumlossValue'] ||
                                 $kill['victim']['allianceID'] == $kmGroup['allianceID'] && $rawValue > $kmGroup['minimumlossValue'])
-                                {
-                                    $this->logger->addInfo("Killmails: Mail {$killID} posted because it meet minimum loss value required.");
-                                } else {
-                                    $this->logger->addInfo("Killmails: Mail {$killID} ignored for not meeting the minimum value required.");
-                                    setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
-                                    continue;
-                                }
+                            {
+                                $this->logger->addInfo("Killmails: Mail {$killID} posted because it meet minimum loss value required.");
+                            } else {
+                                $this->logger->addInfo("Killmails: Mail {$killID} ignored for not meeting the minimum value required.");
+                                setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
+                                continue;
                             }
                         }
-                        $totalValue = number_format($kill['zkb']['totalValue']);
-                        // Check if it's a structure
-                        if ($victimName !== '') {
-                            if ($kmGroup['bigKill'] != null && $rawValue >= $kmGroup['bigKill']) {
-                                $channelID = $kmGroup['bigKillChannel'];
-                                $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                            } elseif ($kmGroup['bigKill'] == null || $rawValue <= $kmGroup['bigKill']) {
-                                $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                            }
-                        } elseif ($victimName === '') {
-                            $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                    }
+                    $totalValue = number_format($kill['zkb']['totalValue']);
+                    // Check if it's a structure
+                    if ($victimName !== '') {
+                        if ($kmGroup['bigKill'] != null && $rawValue >= $kmGroup['bigKill']) {
+                            $channelID = $kmGroup['bigKillChannel'];
+                            $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                        } elseif ($kmGroup['bigKill'] == null || $rawValue <= $kmGroup['bigKill']) {
+                            $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                         }
+                    } elseif ($victimName === '') {
+                        $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                    }
 
-                        if (!isset($msg)) { // Make sure it's always set.
-                            return null;
-                        }
-                        queueMessage($msg, $channelID, $this->guild);
-                        $this->logger->addInfo("Killmails: Mail {$killID} queued.");
+                    if (!isset($msg)) { // Make sure it's always set.
+                        return null;
+                    }
+                    queueMessage($msg, $channelID, $this->guild);
+                    $this->logger->addInfo("Killmails: Mail {$killID} queued.");
 
 //                        $i++;
-/*                    } else {
-                        $updatedID = getPermCache("{$kmGroup['name']}newestKillmailID");
-                        $this->logger->addInfo("Killmails: Kill posting cap reached, newest kill id for {$kmGroup['name']} is {$updatedID}");
-                        break;
-                    }*/
+                    /*                    } else {
+                                            $updatedID = getPermCache("{$kmGroup['name']}newestKillmailID");
+                                            $this->logger->addInfo("Killmails: Kill posting cap reached, newest kill id for {$kmGroup['name']} is {$updatedID}");
+                                            break;
+                                        }*/
                 }
                 if (null === $killID) {
                     $killID = $SavedKillID;
@@ -201,44 +204,47 @@ class getKillmails
         if (isset($kills)) {
             foreach ($kills as $kill) {
                 $cacheID = getPermCache('bigKillNewestKillmailID');
- //               if ($i < 10) {
-                    $killID = $kill['killID'];
-                    //check if mail is old
-                    if ((int)$killID <= (int)$oldID) {
-                        continue;
-                    }
-                    //save highest killID for cache
-                    if ($killID > $cacheID) {
-                        setPermCache('bigKillNewestKillmailID', $killID);
-                    }
-                    $channelID = $this->config['plugins']['getKillmails']['bigKills']['bigKillChannel'];
-                    $solarSystemID = $kill['solarSystemID'];
-                    $systemName = systemName($solarSystemID);
-                    $killTime = $kill['killTime'];
-                    $victimAllianceName = $kill['victim']['allianceName'];
-                    $victimName = $kill['victim']['characterName'];
-                    $victimCorpName = $kill['victim']['corporationName'];
-                    $victimShipID = $kill['victim']['shipTypeID'];
-                    $shipName = apiTypeName($victimShipID);
-                    $totalValue = number_format($kill['zkb']['totalValue']);
-                    // Check if it's a structure
-                    if ($victimName !== '') {
-                        $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                    } else {
-                        $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                    }
-                    if (!isset($msg)) { // Make sure it's always set.
-                        return null;
-                    }
-                    queueMessage($msg, $channelID, $this->guild);
-                    $this->logger->addInfo("Killmails: Mail {$killID} queued.");
-
-/*                    $i++;
+                //               if ($i < 10) {
+                $killID = $kill['killID'];
+                //check if mail is old
+                if ((int)$killID <= (int)$oldID) {
+                    continue;
+                }
+                //save highest killID for cache
+                if ($killID > $cacheID) {
+                    setPermCache('bigKillNewestKillmailID', $killID);
+                }
+                $channelID = $this->config['plugins']['getKillmails']['bigKills']['bigKillChannel'];
+                $solarSystemID = $kill['solarSystemID'];
+                $systemName = systemName($solarSystemID);
+                $killTime = $kill['killTime'];
+                $victimAllianceName = '';
+                if ($kill['victim']['allianceName'] !== null && $kill['victim']['allianceName'] !== '') {
+                    $victimAllianceName = "|{$kill['victim']['allianceName']}";
+                }
+                $victimName = $kill['victim']['characterName'];
+                $victimCorpName = $kill['victim']['corporationName'];
+                $victimShipID = $kill['victim']['shipTypeID'];
+                $shipName = apiTypeName($victimShipID);
+                $totalValue = number_format($kill['zkb']['totalValue']);
+                // Check if it's a structure
+                if ($victimName !== '') {
+                    $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                 } else {
-                    $cacheID = getPermCache('bigKillNewestKillmailID');
-                    $this->logger->addInfo("Killmails: bigKill posting cap reached, newest kill id is {$cacheID}");
-                    break;
-                }*/
+                    $msg = "**10b+ Kill Reported**\n\n**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** owned by (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
+                }
+                if (!isset($msg)) { // Make sure it's always set.
+                    return null;
+                }
+                queueMessage($msg, $channelID, $this->guild);
+                $this->logger->addInfo("Killmails: Mail {$killID} queued.");
+
+                /*                    $i++;
+                                } else {
+                                    $cacheID = getPermCache('bigKillNewestKillmailID');
+                                    $this->logger->addInfo("Killmails: bigKill posting cap reached, newest kill id is {$cacheID}");
+                                    break;
+                                }*/
             }
         }
         $updatedID = getPermCache('bigKillNewestKillmailID');
