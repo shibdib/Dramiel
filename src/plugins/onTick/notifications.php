@@ -265,6 +265,9 @@ class notifications
                         case 21: // member left corp
                             $msg = 'skip';
                             break;
+                        case 25: // blueprint locking
+                            $msg = 'skip';
+                            break;
                         case 27: // Corp declares war
                             preg_match('/?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
@@ -519,6 +522,11 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             break;
                         case 141: // Kill report
                             $msg = 'skip';
+                            break;
+                        case 146 : //  FF Changed
+                            preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
+                            $corpName = corpName($corpID[0]);
+                            $msg = "@everyone | {$corpName}'s' Friendly Fire rules have changed.";
                             break;
                         case 147: // Entosis has started
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
