@@ -23,8 +23,8 @@
  * SOFTWARE.
  */
 
-use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * @param $url
@@ -33,28 +33,28 @@ use Monolog\Handler\StreamHandler;
 function downloadData($url)
 {
     $logger = new Logger('cURL');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     try {
-        $userAgent = "Mozilla/5.0 (en-us;)";
+        $userAgent = 'Mozilla/5.0 (en-us;)';
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($curl, CURLOPT_TIMEOUT, 12);
         curl_setopt($curl, CURLOPT_POST, false);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
-        curl_setopt($curl, CURLOPT_ENCODING, "");
+        curl_setopt($curl, CURLOPT_ENCODING, '');
         $headers = array();
-        $headers[] = "Connection: keep-alive";
-        $headers[] = "Keep-Alive: timeout=12, max=1000";
+        $headers[] = 'Connection: keep-alive';
+        $headers[] = 'Keep-Alive: timeout=12, max=1000';
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($curl);
-        return $result;
+        return curl_exec($curl);
     } catch (Exception $e) {
-        $logger->error("cURL Error: " . $e->getMessage());
+        $logger->error('cURL Error: ' . $e->getMessage());
         return null;
     }
 }
+
 /**
  * @param string $url
  * @param $downloadPath
@@ -63,18 +63,18 @@ function downloadData($url)
 function downloadLargeData($url, $downloadPath)
 {
     $logger = new Logger('cURL');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/libraryError.log', Logger::DEBUG));
-    $userAgent = "Mozilla/5.0 (en-us;)";
+    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $userAgent = 'Mozilla/5.0 (en-us;)';
     try {
         $opts = array(
             'http' => array(
-                'method' => "GET",
+                'method' => 'GET',
                 'user_agent' => $userAgent,
             )
         );
         $context = stream_context_create($opts);
-        $readHandle = fopen($url, "rb", false, $context);
-        $writeHandle = fopen($downloadPath, "w+b");
+        $readHandle = fopen($url, 'rb', false, $context);
+        $writeHandle = fopen($downloadPath, 'w+b');
         if (!$readHandle || !$writeHandle) {
             return false;
         }
@@ -87,7 +87,7 @@ function downloadLargeData($url, $downloadPath)
         fclose($writeHandle);
         return true;
     } catch (Exception $e) {
-        $logger->error("Download Error: " . $e->getMessage());
+        $logger->error('Download Error: ' . $e->getMessage());
         return false;
     }
 }

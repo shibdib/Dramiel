@@ -28,133 +28,78 @@ use discord\discord;
 /**
  * Class periodicStatusCheck
  */
-class periodicStatusCheck {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
+class periodicStatusCheck
+{
+    public $config;
+    public $discord;
+    public $logger;
     public $guild;
     protected $keyID;
     protected $vCode;
     protected $prefix;
+    private $toDiscordChannel;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
-        $this->toDiscordChannel = $config["plugins"]["notifications"]["channelID"];
-        $lastCheck = getPermCache("statusLastChecked");
-        if ($lastCheck == NULL) {
-            // Schedule it for right now if first run
-            setPermCache("statusLastChecked", time() - 5);
-        }
+        $this->guild = $config['bot']['guild'];
+        $this->toDiscordChannel = $config['plugins']['notifications']['channelID'];
+        //Refresh check at bot start
+        setPermCache('statusLastChecked', time() - 5);
     }
 
     /**
      *
      */
-    function tick()
+    public function tick()
     {
-        $lastChecked = getPermCache("statusLastChecked");
+        $lastChecked = getPermCache('statusLastChecked');
 
         if ($lastChecked <= time()) {
             $this->checkStatus();
         }
     }
 
-    function checkStatus()
+    private function checkStatus()
     {
-        $discord = $this->discord;
-
-        if ($this->toDiscordChannel == 0) {
-            setPermCache("statusLastChecked", time() + 300);
-            $this->logger->addInfo("TQ Status Check Failed - Add a channel ID to the notifications section in the config.");
+        if ($this->toDiscordChannel === 0) {
+            setPermCache('statusLastChecked', time() + 300);
+            $this->logger->addInfo('statusCheck: TQ Status Check Failed - Add a channel ID to the notifications section in the config.');
             return null;
         }
         // What was the servers last reported state
-        $lastStatus = getPermCache("statusLastState");
-
-        //api
-        $url = "https://api.eveonline.com/server/ServerStatus.xml.aspx";
-        $xml = makeApiRequest($url);
+        $lastStatus = getPermCache('statusLastState');
 
         //Crest
-        $crestData = json_decode(downloadData("https://crest-tq.eveonline.com/"), true);
-        $crestStatus = isset($crestData["serviceStatus"]) ? $crestData["serviceStatus"] : "offline";
-        $tqOnline = (int) $crestData["userCount"];
-
-        if (!isset($xml->result)) {
-            $this->logger->addInfo("TQ Status check canceled, API Error.");
-            setPermCache("statusLastChecked", time() + 300);
-            return null;
-        }
-
-        foreach ($xml->result as $info) {
-            $apiStatus = $info->serverOpen;
-            if ($apiStatus == "True") {$apiStatus = "online"; } else {$apiStatus = "offline"; }
-        }
-
-        if (!isset($apiStatus)) { // Make sure it's always set.
-            $apiStatus = "offline";
-        }
-
-        if ($crestStatus != "online") { $crestHolder = "offline"; } else { $crestHolder = "online"; }
-        if ($crestHolder != $apiStatus) {
-            $this->logger->addInfo("TQ Status check canceled, CREST and API different.");
-            setPermCache("statusLastChecked", time() + 300);
-            return null;
-        }
-        if ($lastStatus == $crestStatus) {
+        $crestData = json_decode(downloadData('https://crest-tq.eveonline.com/'), true);
+        $crestStatus = isset($crestData['serviceStatus']) ? $crestData['serviceStatus'] : 'offline';
+        $tqOnline = (int) @$crestData['userCount'];
+        
+        if ($lastStatus === $crestStatus) {
             // No change
-            setPermCache("statusLastChecked", time() + 300);
+            setPermCache('statusLastChecked', time() + 300);
             return null;
         }
+
         $msg = "**TQ Status Change:** {$crestStatus} with {$tqOnline} users online.";
         $channelID = $this->toDiscordChannel;
-        $guild = $discord->guilds->get('id', $this->guild);
-        $channel = $guild->channels->get('id', $channelID);
-        $channel->sendMessage($msg, false);
-        setPermCache("statusLastState", $crestStatus);
-        setPermCache("statusLastChecked", time() + 300);
-        $this->logger->addInfo("TQ Status Change Detected. New status - {$crestStatus}");
+        priorityQueueMessage($msg, $channelID, $this->guild);
+        setPermCache('statusLastState', $crestStatus);
+        if ($crestStatus === 'online') {
+            setPermCache('serverState', $crestStatus);
+            setPermCache('statusLastChecked', time() + 300);
+            $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");
+            return null;
+        }
+        setPermCache('statusLastChecked', time() + 90);
+        $this->logger->addInfo("statusCheck: TQ Status Change Detected. New status - {$crestStatus}");
         return null;
-    }
-
-    /**
-     *
-     */
-    function onMessage()
-    {
-    }
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
-        );
     }
 }

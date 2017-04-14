@@ -24,16 +24,31 @@
  */
 
 /**
- * Class time
  * @property  message
  */
-class time
+use discord\discord;
+
+/**
+ * Class ops
+ * @property  userID
+ * @property  apiKey
+ * @property  groupID
+ * @property  excludeChannel
+ */
+class fleetUpOps
 {
     public $config;
     public $discord;
     public $logger;
-    public $message;
+    protected $keyID;
+    protected $vCode;
+    protected $prefix;
+    private $userID;
+    private $groupID;
+    private $apiKey;
+    private $guild;
     private $excludeChannel;
+    private $message;
     private $triggers;
 
     /**
@@ -46,9 +61,13 @@ class time
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->userID = $config['plugins']['fleetUp']['userID'];
+        $this->groupID = $config['plugins']['fleetUp']['groupID'];
+        $this->apiKey = $config['plugins']['fleetUp']['apiKey'];
+        $this->guild = $config['bot']['guild'];
         $this->excludeChannel = $this->config['bot']['restrictedChannels'];
-        $this->triggers[] = $this->config['bot']['trigger'] . 'time';
-        $this->triggers[] = $this->config['bot']['trigger'] . 'Time';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'ops';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Ops';
     }
 
     /**
@@ -67,30 +86,45 @@ class time
 
         $this->message = $message;
         $user = $msgData['message']['from'];
-
+        $channelID = $msgData['message']['channelID'];
         $message = $msgData['message']['message'];
+        date_default_timezone_set('UTC');
 
         $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
         if (isset($data['trigger'])) {
-            $date = date('d-F-Y');
-            $fullDate = date('Y-m-d H:i:s');
-            $datetime = new DateTime($fullDate);
-            $est = $datetime->setTimezone(new DateTimeZone('America/New_York'));
-            $est = $est->format('H:i:s');
-            $pst = $datetime->setTimezone(new DateTimeZone('America/Los_Angeles'));
-            $pst = $pst->format('H:i:s');
-            $utc = $datetime->setTimezone(new DateTimeZone('UTC'));
-            $utc = $utc->format('H:i:s');
-            $cet = $datetime->setTimezone(new DateTimeZone('Europe/Copenhagen'));
-            $cet = $cet->format('H:i:s');
-            $msk = $datetime->setTimezone(new DateTimeZone('Europe/Moscow'));
-            $msk = $msk->format('H:i:s');
-            $aus = $datetime->setTimezone(new DateTimeZone('Australia/Sydney'));
-            $aus = $aus->format('H:i:s');
 
-            $this->logger->addInfo("Time: Sending time info to {$user}");
-            $this->message->reply("**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
+            // Check if the channel is restricted
+            if ($channelID === $this->excludeChannel) {
+                return $this->message->reply('**Upcoming Ops not allowed in this channel**');
+            }
+            //fleetUp post upcoming operations
+            $ops = json_decode(downloadData("http://api.fleet-up.com/Api.svc/tlYgBRjmuXj2Yl1lEOyMhlDId/{$this->userID}/{$this->apiKey}/Operations/{$this->groupID}"), true);
+            if ($ops['Data'] === null) {
+                $this->message->reply('No upcoming operations detected.');
+                return null;
+            }
+            $this->logger->addInfo("Sending ops info to {$user}");
+            foreach ($ops['Data'] as $operation) {
+                $name = $operation['Subject'];
+                $startTime = $operation['StartString'];
+                $desto = $operation['Location'];
+                $formUp = $operation['LocationInfo'];
+                $info = $operation['Details'];
+                $id = $operation['Id'];
+                $link = "https://fleet-up.com/Operation#{$id}\
+	    ";
+                $this->message->reply("
+**Upcoming Operation**.
+Title - {$name}.
+Form Up Time - {$startTime}. EVE time
+Form Up System - {$formUp}.
+Target System - {$desto}.
+Details - {$info}.
+Link - {$link}");
+            }
+            return null;
         }
+        return null;
     }
 
     /**
@@ -99,9 +133,9 @@ class time
     public function information()
     {
         return array(
-            'name' => 'time',
+            'name' => 'ops',
             'trigger' => $this->triggers,
-            'information' => 'This shows the time for various timezones compared to EVE Time. To use simply type <!time>'
+            'information' => 'This shows the upcoming operations. To use simply type <!ops>'
         );
     }
 }

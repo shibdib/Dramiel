@@ -28,19 +28,9 @@
  */
 class setNickname
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-
+    public $config;
+    public $discord;
+    public $logger;
     public $message;
 
     /**
@@ -48,7 +38,7 @@ class setNickname
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
@@ -56,47 +46,42 @@ class setNickname
     }
 
     /**
-     *
-     */
-    function tick()
-    {
-    }
-
-    /**
      * @param $msgData
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
+        $message = $msgData['message']['message'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
 
             //Admin Check
             $botID = $this->discord->id;
-            $userID = $msgData["message"]["fromID"];
-            $adminRoles = $this->config["bot"]["adminRoles"];
-            $id = $this->config["bot"]["guild"];
+            $userID = $msgData['message']['fromID'];
+            $adminRoles = $this->config['bot']['adminRoles'];
+            $adminRoles = array_map('strtolower', $adminRoles);
+            $id = $this->config['bot']['guild'];
             $guild = $this->discord->guilds->get('id', $id);
-            $member = $guild->members->get("id", $userID);
+            $member = $guild->members->get('id', $userID);
             $roles = $member->roles;
             foreach ($roles as $role) {
-                if (in_array($role->name, $adminRoles, true)) {
-                    $member = $guild->members->get("id", $botID);
-                    $nick = (string) $data["messageString"];
+                if (in_array(strtolower($role->name), $adminRoles, true)) {
+                    $member = $guild->members->get('id', $botID);
+                    $nick = (string) $data['messageString'];
                     $member->setNickname($nick);
 
-                    $msg = "Bot nickname changed to **{$nick}** by {$msgData["message"]["from"]}";
-                    $this->logger->addInfo("Bot nickname changed to {$nick} by {$msgData["message"]["from"]}");
+                    $msg = "Bot nickname changed to **{$nick}** by {$msgData['message']['from']}";
+                    $this->logger->addInfo("setNickname: Bot nickname changed to {$nick} by {$msgData['message']['from']}");
                     $this->message->reply($msg);
                     return null;
                 }
             }
-            $msg = ":bangbang: You do not have the necessary roles to issue this command :bangbang:";
+            $this->logger->addInfo("setNickname: {$msgData['message']['from']} attempted to change the bot's nickname.");
+            $msg = ':bangbang: You do not have the necessary roles to issue this command :bangbang:';
             $this->message->reply($msg);
             return null;
         }
@@ -106,21 +91,13 @@ class setNickname
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
-            "name" => "nickname",
-            "trigger" => array($this->config["bot"]["trigger"] . "nickname"),
-            "information" => "Changes the bots nickname (Admin Role)"
+            'name' => 'nickname',
+            'trigger' => array($this->config['bot']['trigger'] . 'nickname'),
+            'information' => 'Changes the bots nickname **(Admin Role Required)**'
         );
-    }
-
-    /**
-     * @param $msgData
-     * @param $message
-     */
-    function onMessageAdmin()
-    {
     }
 
 }

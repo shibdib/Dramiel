@@ -1,4 +1,3 @@
-*.xml
-*.log
-database/
+composer.phar
+/vendor/
 config/config.php

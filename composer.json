@@ -1,5 +1,5 @@
 {
-  "name": "shibdib/Dramiel",
+  "name": "shibdib/dramiel",
   "description": "EVE Online Discord Bot",
   "keywords": ["eve", "online", "corporation", "discord", "bot"],
   "license": "MIT",
@@ -8,7 +8,7 @@
     "php": ">=5.6.0",
     "dg/twitter-php": "*",
     "team-reflex/discord-php": "dev-develop",
-    "monolog/monolog": "1.19.*",
+    "monolog/monolog": "*",
     "ratchet/pawl": "*"
   }
 }

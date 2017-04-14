@@ -23,18 +23,17 @@
  * SOFTWARE.
  */
 
+use Discord\Parts\User\Game;
+
 /**
- * Class time
  * @property  message
  */
-class time
+class setGame
 {
     public $config;
     public $discord;
     public $logger;
     public $message;
-    private $excludeChannel;
-    private $triggers;
 
     /**
      * @param $config
@@ -46,9 +45,6 @@ class time
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
-        $this->triggers[] = $this->config['bot']['trigger'] . 'time';
-        $this->triggers[] = $this->config['bot']['trigger'] . 'Time';
     }
 
     /**
@@ -58,39 +54,42 @@ class time
      */
     public function onMessage($msgData, $message)
     {
-        $channelID = (int) $msgData['message']['channelID'];
-
-        if (in_array($channelID, $this->excludeChannel, true))
-        {
-            return null;
-        }
-
         $this->message = $message;
-        $user = $msgData['message']['from'];
 
         $message = $msgData['message']['message'];
 
         $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
         if (isset($data['trigger'])) {
-            $date = date('d-F-Y');
-            $fullDate = date('Y-m-d H:i:s');
-            $datetime = new DateTime($fullDate);
-            $est = $datetime->setTimezone(new DateTimeZone('America/New_York'));
-            $est = $est->format('H:i:s');
-            $pst = $datetime->setTimezone(new DateTimeZone('America/Los_Angeles'));
-            $pst = $pst->format('H:i:s');
-            $utc = $datetime->setTimezone(new DateTimeZone('UTC'));
-            $utc = $utc->format('H:i:s');
-            $cet = $datetime->setTimezone(new DateTimeZone('Europe/Copenhagen'));
-            $cet = $cet->format('H:i:s');
-            $msk = $datetime->setTimezone(new DateTimeZone('Europe/Moscow'));
-            $msk = $msk->format('H:i:s');
-            $aus = $datetime->setTimezone(new DateTimeZone('Australia/Sydney'));
-            $aus = $aus->format('H:i:s');
 
-            $this->logger->addInfo("Time: Sending time info to {$user}");
-            $this->message->reply("**EVE Time:** {$utc} -- **EVE Date:** {$date} -- **PST/Los Angeles:** {$pst} -- **EST/New York:** {$est} -- **CET/Copenhagen:** {$cet} -- **MSK/Moscow:** {$msk} -- **AEST/Sydney:** {$aus}");
+            //Admin Check
+            $userID = $msgData['message']['fromID'];
+            $adminRoles = $this->config['bot']['adminRoles'];
+            $adminRoles = array_map('strtolower', $adminRoles);
+            $id = $this->config['bot']['guild'];
+            $guild = $this->discord->guilds->get('id', $id);
+            $member = $guild->members->get('id', $userID);
+            $roles = $member->roles;
+            foreach ($roles as $role) {
+                if (in_array(strtolower($role->name), $adminRoles, true)) {
+                    $newGame = (string) $data['messageString'];
+                    $game = $this->discord->factory(Game::class, [
+                        'name' => $newGame,
+                    ]);
+                    $this->discord->updatePresence($game);
+                    setPermCache('botGame', $newGame);
+
+                    $msg = "Bot is now playing **{$newGame}**";
+                    $this->logger->addInfo("setGame: Bot game changed to {$newGame} by {$msgData['message']['from']}");
+                    $this->message->reply($msg);
+                    return null;
+                }
+            }
+            $this->logger->addInfo("setGame: {$msgData['message']['from']} attempted to change the bot's game.");
+            $msg = ':bangbang: You do not have the necessary roles to issue this command :bangbang:';
+            $this->message->reply($msg);
+            return null;
         }
+        return null;
     }
 
     /**
@@ -99,9 +98,10 @@ class time
     public function information()
     {
         return array(
-            'name' => 'time',
-            'trigger' => $this->triggers,
-            'information' => 'This shows the time for various timezones compared to EVE Time. To use simply type <!time>'
+            'name' => 'game',
+            'trigger' => array($this->config['bot']['trigger'] . 'game'),
+            'information' => 'Changes the bots game **(Admin Role Required)**'
         );
     }
+
 }

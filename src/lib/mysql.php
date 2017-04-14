@@ -36,7 +36,8 @@
  */
 
 
-function insertUser($url, $user, $pass, $dbName, $userID, $characterID, $eveName, $type) {
+function insertUser($url, $user, $pass, $dbName, $userID, $characterID, $eveName, $type)
+{
     $host = $url;
     $username = $user;
     $password = $pass;
@@ -46,7 +47,7 @@ function insertUser($url, $user, $pass, $dbName, $userID, $characterID, $eveName
     if ($stmt = $mysqli->prepare("REPLACE into authUsers (characterID, discordID, eveName, active, role) values(?,?,?,'yes',?)")) {
 
         // Bind the variables to the parameter as strings.
-        $stmt->bind_param("ssss", $characterID, $userID, $eveName, $type);
+        $stmt->bind_param('ssss', $characterID, $userID, $eveName, $type);
 
         // Execute the statement.
         $stmt->execute();
@@ -66,7 +67,8 @@ function insertUser($url, $user, $pass, $dbName, $userID, $characterID, $eveName
  * @param $authCode
  * @return null
  */
-function disableReg($url, $user, $pass, $dbName, $authCode) {
+function disableReg($url, $user, $pass, $dbName, $authCode)
+{
     $host = $url;
     $username = $user;
     $password = $pass;
@@ -76,7 +78,7 @@ function disableReg($url, $user, $pass, $dbName, $authCode) {
     if ($stmt = $mysqli->prepare("UPDATE pendingUsers SET active='0' WHERE authString= ?")) {
 
         // Bind the variables to the parameter as strings.
-        $stmt->bind_param("s", $authCode);
+        $stmt->bind_param('s', $authCode);
 
         // Execute the statement.
         $stmt->execute();
@@ -96,7 +98,8 @@ function disableReg($url, $user, $pass, $dbName, $authCode) {
  * @param $authCode
  * @return bool|null
  */
-function selectPending($url, $user, $pass, $dbName, $authCode) {
+function selectPending($url, $user, $pass, $dbName, $authCode)
+{
     $host = $url;
     $username = $user;
     $password = $pass;
@@ -106,7 +109,7 @@ function selectPending($url, $user, $pass, $dbName, $authCode) {
     if ($stmt = $mysqli->prepare("SELECT * FROM pendingUsers WHERE authString= ? AND active='1'")) {
 
         // Bind the variables to the parameter as strings.
-        $stmt->bind_param("s", $authCode);
+        $stmt->bind_param('s', $authCode);
 
         // Execute the statement.
         $stmt->execute();

@@ -28,37 +28,26 @@
  */
 class corpInfo
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    public $message;
+    public $config;
+    public $discord;
+    public $logger;
+    private $excludeChannel;
+    private $message;
+    private $triggers;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-    }
-
-    /**
-     *
-     */
-    function tick()
-    {
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'corp';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Corp';
     }
 
     /**
@@ -66,70 +55,57 @@ class corpInfo
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
+        $channelID = (int) $msgData['message']['channelID'];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
+
         $this->message = $message;
 
-        $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
+        $message = $msgData['message']['message'];
+        $user = $msgData['message']['from'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
-            $messageString = $data["messageString"];
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
+            $messageString = $data['messageString'];
             $cleanString = urlencode($messageString);
-            $url = "https://api.eveonline.com/eve/CharacterID.xml.aspx?names={$cleanString}";
-            $xml = makeApiRequest($url);
-            if (empty($data)) {
-                return $this->message->reply("**Error:** Unable to find any group matching that name.");
-            }
-            $corpID = null;
-            if (isset($xml->result->rowset->row)) {
-                foreach ($xml->result->rowset->row as $character) {
-                    $corpID = $character->attributes()->characterID;
-                }
-            }
+            $corpID = corpID($cleanString);
 
             if (empty($corpID)) {
-                return $this->message->reply("**Error:** Unable to find any group matching that name.");
+                return $this->message->reply('**Error:** Unable to find any group matching that name.');
             }
 
-            // Get stats
-            $statsURL = "https://beta.eve-kill.net/api/corpInfo/corporationID/" . urlencode($corpID) . "/";
-            $stats = json_decode(downloadData($statsURL), true);
-
-            if (is_null(@$stats["corporationActiveArea"])) {
-                return $this->message->reply("**Error:** No data available for that group.");
+            $corporation = corpDetails($corpID);
+            if (null === $corporation) {
+                return $this->message->reply('**Error:** ESI is down. Try again later.');
             }
+            $corporationName = $corporation['corporation_name'];
+            $allianceID = $corporation['alliance_id'];
+            $allianceName = allianceName($allianceID);
+            $ceoID = $corporation['ceo_id'];
+            $ceoName = characterName($ceoID);
+            $memberCount = $corporation['member_count'];
+            $corpTicker = $corporation['ticker'];
+            $url = "https://zkillboard.com/corporation/{$corpID}/";
 
-            $corporationName = @$stats["corporationName"];
-            $allianceName = isset($stats["allianceName"]) ? $stats["allianceName"] : "None";
-            $factionName = isset($stats["factionName"]) ? $stats["factionName"] : "None";
-            $ceoName = @$stats["ceoName"];
-            $homeStation = @$stats["stationName"];
-            $taxRate = @$stats["taxRate"];
-            $corporationActiveArea = @$stats["corporationActiveArea"];
-            $allianceActiveArea = @$stats["allianceActiveArea"];
-            $memberCount = @$stats["memberArrayCount"];
-            $superCaps = @count($stats["superCaps"]);
-            $ePeenSize = @$stats["ePeenSize"];
-            $url = "https://zkillboard.com/corporation/" . @$stats["corporationID"] . "/";
+            if ($corporationName === null || $corporationName === '') {
+                return $this->message->reply('**Error:** No corporation found.');
+            }
 
 
             $msg = "```Corp Name: {$corporationName}
-Alliance Name: {$allianceName}
-Faction: {$factionName}
+Corp Ticker: {$corpTicker}
 CEO: {$ceoName}
-Home Station: {$homeStation}
-Tax Rate: {$taxRate}%
-Corp Active Region: {$corporationActiveArea}
-Alliance Active Region: {$allianceActiveArea}
+Alliance Name: {$allianceName}
 Member Count: {$memberCount}
-Known Super Caps: {$superCaps}
-ePeen Size: {$ePeenSize}
 ```
 For more info, visit: $url";
 
-            $this->logger->addInfo("Sending character info to {$user}");
+            $this->logger->addInfo("corpInfo: Sending corp info to {$user}");
             $this->message->reply($msg);
         }
         return null;
@@ -138,17 +114,12 @@ For more info, visit: $url";
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
-            "name" => "corp",
-            "trigger" => array($this->config["bot"]["trigger"] . "corp"),
-            "information" => "Returns basic EVE Online data about a corporation from projectRena. To use simply type !corp corporation_name"
+            'name' => 'corp',
+            'trigger' => $this->triggers,
+            'information' => 'Returns basic EVE Online data about a corporation from CREST and ESI. To use simply type !corp corporation_name'
         );
     }
-
-    function onMessageAdmin()
-    {
-    }
-
 }

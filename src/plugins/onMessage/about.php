@@ -28,22 +28,12 @@
  */
 class about
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $message;
+    public $config;
+    public $discord;
+    public $logger;
+    public $message;
+    private $excludeChannel;
+    private $triggers;
 
     /**
      * @param $config
@@ -51,57 +41,60 @@ class about
      * @param $logger
      * @internal param $message
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-    }
-
-    /**
-     *
-     */
-    function tick()
-    {
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
+        $this->triggers[] = $this->config['bot']['trigger'] . 'about';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'About';
     }
 
     /**
      * @param $msgData
      * @param $message
+     * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
         $info['guilds'] = $this->discord->guilds->count();
+        $channelID = (int) $msgData['message']['channelID'];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
 
         global $startTime; // Get the starttime of the bot
-        $time1 = new DateTime(date("Y-m-d H:i:s", $startTime));
-        $time2 = new DateTime(date("Y-m-d H:i:s"));
+        $time1 = new DateTime(date('Y-m-d H:i:s', $startTime));
+        $time2 = new DateTime(date('Y-m-d H:i:s'));
         $interval = $time1->diff($time2);
 
-        $botid = $this->discord->id;
+        $botID = $this->discord->id;
 
-        $message = $msgData["message"]["message"];
-        $user = $msgData["message"]["from"];
+        $message = $msgData['message']['message'];
+        $user = $msgData['message']['from'];
 
-        $data = command($message, $this->information()["trigger"], $this->config["bot"]["trigger"]);
-        if (isset($data["trigger"])) {
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if (isset($data['trigger'])) {
             $gitRevision = gitRevision();
             $gitBranch = gitBranch();
-            $msg = "```
+            $msg = '```
 Developer: Shibdib (In-game Name: Mr Twinkie)
 
-Bot ID: " . $botid . "
+Bot ID: ' . $botID . '
 
-Current Version: " . $gitRevision["short"] . "
-Current Branch: " . $gitBranch . "
+Current Version: ' . $gitRevision['short'] . '
+Current Branch: ' . $gitBranch . "
 Github Repo: https://github.com/shibdib/Dramiel
 
 Statistics:
 Currently on {$info['guilds']} different discord servers.
-Up-time: " . $interval->y . " Year(s), " . $interval->m . " Month(s), " . $interval->d . " Days, " . $interval->h . " Hours, " . $interval->i . " Minutes, " . $interval->s . " seconds.
-Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
-            $this->logger->addInfo("Sending about info to {$user}");
+Up-time: " . $interval->y . ' Year(s), ' . $interval->m . ' Month(s), ' . $interval->d . ' Days, ' . $interval->h . ' Hours, ' . $interval->i . ' Minutes, ' . $interval->s . ' seconds.
+Memory Usage: ~' . round(memory_get_usage() / 1024 / 1024, 3) . 'MB```';
+            $this->logger->addInfo("About: Sending about info to {$user}");
             $this->message->reply($msg);
         }
     }
@@ -109,12 +102,12 @@ Memory Usage: ~" . round(memory_get_usage() / 1024 / 1024, 3) . "MB```";
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
-            "name" => "about",
-            "trigger" => array($this->config["bot"]["trigger"] . "about"),
-            "information" => "Shows information on the bot, who created it, what library it's using, revision, and other stats. Example: !about"
+            'name' => 'about',
+            'trigger' => $this->triggers,
+            'information' => "Shows information on the bot, who created it, what library it's using, revision, and other stats. Example: !about"
         );
     }
 }

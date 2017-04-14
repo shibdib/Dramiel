@@ -30,92 +30,59 @@ use discord\discord;
  */
 class fileReader
 {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $db;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $channelConfig;
-    /**
-     * @var int
-     */
-    var $lastCheck = 0;
-    /**
-     * @var
-     */
-    var $logger;
+    public $config;
+    public $discord;
+    public $logger;
     public $guild;
+    private $db;
+    private $channelConfig;
+    private $lastCheck = 0;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->guild = $config["bot"]["guild"];
-        $this->channelConfig = $config["plugins"]["fileReader"]["channelConfig"];
-        $this->db = $config["plugins"]["fileReader"]["db"];
+        $this->guild = $config['bot']['guild'];
+        $this->channelConfig = $config['plugins']['fileReader']['channelConfig'];
+        $this->db = $config['plugins']['fileReader']['db'];
         if (!is_file($this->db)) {
             touch($this->db);
         }
     }
 
     /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            "name" => "",
-            "trigger" => array(),
-            "information" => ""
-        );
-    }
-
-    /**
      *
      */
-    function tick()
+    public function tick()
     {
-        $discord = $this->discord;
-
         if (filemtime($this->db) >= $this->lastCheck) {
             $data = file($this->db);
             if ($data) {
-                $ping = "";
+                $ping = '';
                 foreach ($data as $row) {
-                    $row = str_replace("^@", "", $row);
-                    if ($row == "" || $row == " ") {
+                    $row = str_replace('^@', '', $row);
+                    if ($row === '' || $row === ' ') {
                         continue;
                     }
 
-                    $ping .= $row . "  ";
-                    usleep(300000);
+                    $ping .= $row . '  ';
                 }
 
                 // Remove |  from the line or whatever else is at the last two characters in the string
                 $message = trim(substr($ping, 0, -2));
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
-                    if ($chanConfig["searchString"] == false) { // If no match was found, and searchString is false, just use that
-                        $message = $chanConfig["textStringPrepend"] . " \n " . $message . "  " . $chanConfig["textStringAppend"];
-                        $channelID = $chanConfig["channelID"];
-                    } elseif (stristr($message, $chanConfig["searchString"])) {
-                        $message = $chanConfig["textStringPrepend"] . " \n " . $message . "  " . $chanConfig["textStringAppend"];
-                        $channelID = $chanConfig["channelID"];
+                    if (!array_key_exists('searchString', $chanConfig)) {// If no match was found, and searchString is false, just use that
+                        $message = $chanConfig['textStringPrepend'] . " \n " . $message . '  ' . $chanConfig['textStringAppend'];
+                        $channelID = $chanConfig['channelID'];
+                    } elseif (stristr($message, $chanConfig['searchString'])) {
+                        $message = $chanConfig['textStringPrepend'] . " \n " . $message . '  ' . $chanConfig['textStringAppend'];
+                        $channelID = $chanConfig['channelID'];
                     }
                 }
 
@@ -123,29 +90,22 @@ class fileReader
                     $channelID = null;
                 }
                 $begin = mb_substr($message, 0, 15);
-                if (stristr($begin, "#")) {
-                    $message = "skip";
+                if (strstr($begin, '#')) {
+                    $message = 'skip';
                 }
-                if ($channelID == "" || $channelID == null) {
-                    $message = "skip";
+                if ($channelID === '' || $channelID === null) {
+                    $message = 'skip';
                 }
-                if ($message != "skip") {
-                    $this->logger->addInfo("Ping sent to channel {$channelID}, Message - {$message}");
-                    // Send the pings to the channel
-                    $guild = $discord->guilds->get('id', $this->guild);
-                    $channel = $guild->channels->get('id', $channelID);
-                    $channel->sendMessage($message, false);
+                if ($message !== 'skip') {
+                    $this->logger->addInfo("fileReader: Ping sent to front of queue for {$channelID}");
+                    priorityQueueMessage($message, $channelID, $this->guild);
                 }
             }
-            $h = fopen($this->db, "w+");
+            $h = fopen($this->db, 'wb+');
             fclose($h);
             chmod($this->db, 0777);
         }
         clearstatcache();
         $this->lastCheck = time();
-    }
-
-    function onMessage()
-    {
     }
 }

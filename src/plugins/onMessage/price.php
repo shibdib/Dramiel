@@ -24,59 +24,41 @@
  */
 
 /**
- * Class priceChecks
- * @property  excludeChannel
- * @property  message
+ * Class price
  */
 class price
 {
     /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $solarSystems;
-    /**
      * @var array
      */
-    var $triggers = array();
-    public $excludeChannel;
-    public $message;
+    public $triggers = array();
+    private $excludeChannel;
+    private $message;
+    private $config;
+    private $discord;
+    private $logger;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->triggers[] = $this->config["bot"]["trigger"] . "pc";
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Jita");
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Amarr");
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Rens");
-        $this->triggers[] = $this->config["bot"]["trigger"] . strtolower("Dodixie");
-        $this->excludeChannel = $config["plugins"]["priceChecker"]["channelID"];
-    }
-
-    /**
-     *
-     */
-    function tick()
-    {
-
+        $this->triggers[] = $this->config['bot']['trigger'] . 'pc';
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Jita');
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Amarr');
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Rens');
+        $this->triggers[] = $this->config['bot']['trigger'] . strtolower('Dodixie');
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Pc';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Jita';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Amarr';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Rens';
+        $this->triggers[] = $this->config['bot']['trigger'] . 'Dodixie';
+        $this->excludeChannel = $this->config['bot']['restrictedChannels'];
     }
 
     /**
@@ -84,35 +66,40 @@ class price
      * @param $message
      * @return null
      */
-    function onMessage($msgData, $message)
+    public function onMessage($msgData, $message)
     {
         $this->message = $message;
-        $user = $msgData["message"]["from"];
-        $channelID = $msgData["message"]["channelID"];
+        $user = $msgData['message']['from'];
+        $channelID = (int) $msgData['message']['channelID'];
+
+        if (in_array($channelID, $this->excludeChannel, true))
+        {
+            return null;
+        }
 
 
         // Bind a few things to vars for the plugins
-        $message = $msgData["message"]["message"];
+        $message = $msgData['message']['message'];
 
         // Quick Lookups
         $quickLookUps = array(
-            "plex" => array(
-                "typeID" => 29668,
-                "typeName" => "30 Day Pilot's License Extension (PLEX)"
+            'plex' => array(
+                'typeID' => 29668,
+                'typeName' => "30 Day Pilot's License Extension (PLEX)"
             ),
-            "30 day" => array(
-                "typeID" => 29668,
-                "typeName" => "30 Day Pilot's License Extension (PLEX)"
+            '30 day' => array(
+                'typeID' => 29668,
+                'typeName' => "30 Day Pilot's License Extension (PLEX)"
             )
         );
 
-        $data = command(strtolower($message), $this->information()["trigger"], $this->config["bot"]["trigger"]);
+        $data = command(strtolower($message), $this->information()['trigger'], $this->config['bot']['trigger']);
 
-        if (isset($data["trigger"])) {
+        if (isset($data['trigger'])) {
 
-            $systemName = $data["trigger"];
-            $itemName = $data["messageString"];
-            $single = apiTypeID(urlencode($itemName));
+            $systemName = $data['trigger'];
+            $itemName = $data['messageString'];
+            $single = apiTypeID($itemName);
 
             // Quick lookups
             if (isset($quickLookUps[$itemName])) {
@@ -120,49 +107,51 @@ class price
             }
 
             // Check if the channel is restricted
-            if ($channelID == $this->excludeChannel) {
-                return $this->message->reply("**Price Check not allowed in this channel**");
+            if (in_array($channelID, $this->excludeChannel, true)) {
+                return $this->message->reply('**Price Check not allowed in this channel**');
             }
 
             // If there is a single result, we'll get data now!
             if ($single) {
-                $typeID = $single["typeID"];
+                $typeID = $single['typeID'];
 
-                if (is_null($typeID)) {
+                if (null === $typeID) {
                     $typeID = $single;
                 }
 
-                if ($systemName == "pc") {
-                    $solarSystemID = "global";
+                if ($systemName === 'pc') {
+                    $solarSystemID = 'global';
                 } else {
-                    $solarSystemID = apiCharacterID(urlencode($systemName));
+                    $solarSystemID = systemID($systemName);
                 }
 
                 // Get pricing data
-                if ($solarSystemID == "global") {
+                if ($solarSystemID === 'global') {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?typeid={$typeID}"));
                 } else {
                     $data = new SimpleXMLElement(downloadData("https://api.eve-central.com/api/marketstat?usesystem={$solarSystemID}&typeid={$typeID}"));
                 }
 
-                $lowBuy = number_format((float) $data->marketstat->type->buy->min, 2);
-                $avgBuy = number_format((float) $data->marketstat->type->buy->avg, 2);
-                $highBuy = number_format((float) $data->marketstat->type->buy->max, 2);
-                $lowSell = number_format((float) $data->marketstat->type->sell->min, 2);
-                $avgSell = number_format((float) $data->marketstat->type->sell->avg, 2);
-                $highSell = number_format((float) $data->marketstat->type->sell->max, 2);
+                $lowBuy = str_pad(number_format((float) $data->marketstat->type->buy->min, 2),18," ",STR_PAD_LEFT);
+                $avgBuy = str_pad(number_format((float) $data->marketstat->type->buy->avg, 2),18," ",STR_PAD_LEFT);
+                $highBuy = str_pad(number_format((float) $data->marketstat->type->buy->max, 2),18," ",STR_PAD_LEFT);
+                $lowSell = str_pad(number_format((float) $data->marketstat->type->sell->min, 2),18," ",STR_PAD_LEFT);
+                $avgSell = str_pad(number_format((float) $data->marketstat->type->sell->avg, 2),18," ",STR_PAD_LEFT);
+                $highSell = str_pad(number_format((float) $data->marketstat->type->sell->max, 2),18," ",STR_PAD_LEFT);
 
-                $this->logger->addInfo("Sending pricing info to {$user}");
-                $solarSystemName = $systemName == "pc" ? "Global" : ucfirst($systemName);
-                $messageData = "**System: {$solarSystemName}**
+                $this->logger->addInfo("Price: Sending pricing info to {$user}");
+                $solarSystemName = $systemName === 'pc' ? 'Global' : ucfirst($systemName);
+                $messageData = "
+```  System:   {$solarSystemName}
+    Item:   {$itemName}```
 **Buy:**
-   Low: {$lowBuy}
-   Avg: {$avgBuy}
-   High: {$highBuy}
+```    Low: {$lowBuy}
+    Avg: {$avgBuy}
+   High: {$highBuy}```
 **Sell:**
-   Low: {$lowSell}
-   Avg: {$avgSell}
-   High: {$highSell}";
+```    Low: {$lowSell}
+    Avg: {$avgSell}
+   High: {$highSell}```";
                 $this->message->reply($messageData);
             } else {
                 $this->message->reply("**Error:** ***{$itemName}*** not found");
@@ -174,12 +163,12 @@ class price
     /**
      * @return array
      */
-    function information()
+    public function information()
     {
         return array(
-            "name" => "pc",
-            "trigger" => $this->triggers,
-            "information" => "Shows price information for items in EVE. To use simply type **!pc item_name** for global stats or **!jita/amarr/rens_or_dodixie item_name** for hub specific info."
+            'name' => 'pc',
+            'trigger' => $this->triggers,
+            'information' => 'Shows price information for items in EVE. To use simply type **!pc item_name** for global stats or **!jita/amarr/rens_or_dodixie item_name** for hub specific info.'
         );
     }
 }

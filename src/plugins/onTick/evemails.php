@@ -31,136 +31,128 @@ use discord\discord;
  * @property  vCode
  * @property  characterID
  */
-class evemails {
-    /**
-     * @var
-     */
-    var $config;
-    /**
-     * @var
-     */
-    var $discord;
-    /**
-     * @var
-     */
-    var $logger;
-    /**
-     * @var
-     */
-    var $nextCheck;
-    /**
-     * @var
-     */
-    var $toIDs;
-    /**
-     * @var
-     */
-    var $toDiscordChannel;
-
-    /**
-     * @var
-     */
-    var $newestMailID;
-    /**
-     * @var
-     */
-    var $maxID;
-    /**
-     * @var
-     */
-    var $keyCount;
-    /**
-     * @var
-     */
-    var $keys;
-    public $keyID;
-    public $vCode;
-    public $guild;
-    public $characterID;
+class evemails
+{
+    public $config;
+    public $discord;
+    public $logger;
+    private $nextCheck;
+    private $toIDs;
+    private $toDiscordChannel;
+    private $newestMailID;
+    private $maxID;
+    private $apiKey;
+    private $numberOfKeys;
+    private $guild;
 
     /**
      * @param $config
      * @param $discord
      * @param $logger
      */
-    function init($config, $discord, $logger)
+    public function init($config, $discord, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
-        $this->toIDs = $config["plugins"]["evemails"]["fromIDs"];
-        $this->toDiscordChannel = $config["plugins"]["evemails"]["channelID"];
-        $this->newestMailID = getPermCache("newestCorpMailID");
+        $this->toIDs = $config['plugins']['evemails']['fromIDs'];
+        $this->toDiscordChannel = $config['plugins']['evemails']['channelID'];
+        $this->newestMailID = getPermCache('newestCorpMailID');
         $this->maxID = 0;
-        $this->keyID = $config["eve"]["apiKeys"]["user1"]["keyID"];
-        $this->vCode = $config["eve"]["apiKeys"]["user1"]["vCode"];
-        $this->guild = $config["bot"]["guild"];
-        $this->characterID = $config["eve"]["apiKeys"]["user1"]["characterID"];
+        $this->apiKey = $config['eve']['apiKeys'];
+        $this->guild = $config['bot']['guild'];
         $this->nextCheck = 0;
-        $lastCheck = getPermCache("mailLastChecked{$this->keyID}");
-        if ($lastCheck == NULL) {
-            // Schedule it for right now if first run
-            setPermCache("mailLastChecked{$this->keyID}", time() - 5);
+
+        //Get number of keys
+        $x = 0;
+        foreach ($this->apiKey as $apiKey) {
+            //Check if api is set
+            if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
+                continue;
+            }
+            $x++;
         }
+        $this->numberOfKeys = $x;
     }
 
     /**
      *
      */
-    function tick()
+    public function tick()
     {
-        $lastChecked = getPermCache("mailLastChecked{$this->keyID}");
-        $keyID = $this->keyID;
-        $vCode = $this->vCode;
-        $characterID = $this->characterID;
-        $discord = $this->discord;
-
-        if ($lastChecked <= time()) {
-            $this->logger->addInfo("Checking API Key {$keyID} for new mail..");
-            $this->checkMails($keyID, $vCode, $characterID, $discord);
+        // What was the servers last reported state
+        $lastStatus = getPermCache('serverState');
+        if ($lastStatus === 'online') {
+            foreach ($this->apiKey as $apiKey) {
+                //Check if api is set
+                if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
+                    continue;
+                }
+                //Get
+                $lastChecked = getPermCache('mailLastChecked');
+                if ($lastChecked <= time()) {
+                    $lastCheckedAPI = getPermCache("mailLastChecked{$apiKey['keyID']}");
+                    if ($lastCheckedAPI <= time()) {
+                        $this->logger->addInfo("Mails: Checking API Key {$apiKey['keyID']} for new mail...");
+                        $this->checkMails($apiKey['keyID'], $apiKey['vCode'], $apiKey['characterID']);
+                    }
+                }
+            }
         }
-
     }
 
-    function checkMails($keyID, $vCode, $characterID, $discord)
+    private function checkMails($keyID, $vCode, $characterID)
     {
+
         $url = "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}";
-        $data = json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)), true);
-        $data = $data["result"]["rowset"]["row"];
+        $data = json_decode(json_encode(simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA)), true);
         $xml = makeApiRequest($url);
         $cached = $xml->cachedUntil[0];
         $baseUnix = strtotime($cached);
         $cacheClr = $baseUnix - 13500;
+
+        //Set timer for next key based on number of keys
+        $nextKey = (1900 / (int)$this->numberOfKeys) + time();
+        $nextKeyTime = gmdate('Y-m-d H:i:s', $nextKey);
+        setPermCache('mailLastChecked', $nextKey);
+
+        //Set cache timer for api key
         if ($cacheClr <= time()) {
             $weirdTime = time() + 1830;
-            $cacheTimer = gmdate("Y-m-d H:i:s", $weirdTime);
             setPermCache("mailLastChecked{$keyID}", $weirdTime);
         } else {
-            $cacheTimer = gmdate("Y-m-d H:i:s", $cacheClr);
             setPermCache("mailLastChecked{$keyID}", $cacheClr);
         }
 
+        // If there is no data, just quit..
+        if (empty($data['result']['rowset']['row'])) {
+            return null;
+        }
+        $data = $data['result']['rowset']['row'];
+
         $mails = array();
-        if (isset($data["@attributes"])) { $mails[] = $data["@attributes"]; }
+        if (isset($data['@attributes'])) {
+            $mails[] = $data['@attributes'];
+        }
         // Sometimes there is only ONE notification, so.. yeah..
         if (count($data) > 1) {
             foreach ($data as $multiMail) {
-                $mails[] = $multiMail["@attributes"];
+                $mails[] = $multiMail['@attributes'];
             }
         }
 
-        usort($mails, array($this, "sortByDate"));
+        usort($mails, array($this, 'sortByDate'));
 
         foreach ($mails as $mail) {
-            if (in_array($mail["toCorpOrAllianceID"], $this->toIDs) && $mail["messageID"] > $this->newestMailID) {
-                $sentBy = $mail["senderName"];
-                $title = $mail["title"];
-                $sentDate = $mail["sentDate"];
-                $url = "https://api.eveonline.com/char/MailBodies.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}&ids=" . $mail["messageID"];
-                $content = strip_tags(str_replace("<br>", "\n", json_decode(json_encode(simplexml_load_string(downloadData($url), "SimpleXMLElement", LIBXML_NOCDATA)))->result->rowset->row));
+            if (in_array($mail['toCorpOrAllianceID'], $this->toIDs) && $mail['messageID'] > $this->newestMailID) {
+                $sentBy = $mail['senderName'];
+                $title = $mail['title'];
+                $sentDate = $mail['sentDate'];
+                $url = "https://api.eveonline.com/char/MailBodies.xml.aspx?keyID={$keyID}&vCode={$vCode}&characterID={$characterID}&ids=" . $mail['messageID'];
+                $content = strip_tags(str_replace('<br>', "\n", json_decode(json_encode(simplexml_load_string(downloadData($url), 'SimpleXMLElement', LIBXML_NOCDATA)))->result->rowset->row));
 
                 // Blank Content Check
-                if ($content == "") {
+                if ($content === '') {
                     return null;
                 }
 
@@ -171,31 +163,29 @@ class evemails {
                 $msg .= "**Sent Date: **{$sentDate}\n";
                 $msg .= "**Title: ** {$title}\n";
                 $msg .= "**Content: **\n";
-                $msg .= htmlspecialchars_decode(trim($messageSplit[0]));
-                $msgLong = htmlspecialchars_decode(trim($messageSplit[1]));
+                $msg .= htmlspecialchars_decode(trim($messageSplit[0]), null);
+                $msgLong = htmlspecialchars_decode(trim($messageSplit[1]), null);
 
                 // Send the mails to the channel
                 $channelID = $this->toDiscordChannel;
-                $guild = $discord->guilds->get('id', $this->guild);
-                $channel = $guild->channels->get('id', $channelID);
-                $channel->sendMessage($msg, false);
-                sleep(1); // Lets sleep for a second, so we don't rage spam
+                queueMessage($msg, $channelID, $this->guild);
+                $this->logger->addInfo('Mails: New mail queued');
                 if (strlen($content) > 1850) {
-                    $channel->sendMessage($msgLong, false);
+                    queueMessage($msgLong, $channelID, $this->guild);
                 }
 
                 // Find the maxID so we don't spit this message out ever again
-                $this->maxID = max($mail["messageID"], $this->maxID);
+                $this->maxID = max($mail['messageID'], $this->maxID);
                 $this->newestMailID = $this->maxID; //$mail["messageID"];
                 $updateMaxID = true;
 
                 // set the maxID
                 if ($updateMaxID) {
-                    setPermCache("newestCorpMailID", $this->maxID);
+                    setPermCache('newestCorpMailID', $this->maxID);
                 }
             }
         }
-        $this->logger->addInfo("Next Mail Check At: {$cacheTimer} EVE Time");
+        $this->logger->addInfo("Mails: Next Mail Check At: {$nextKeyTime} EVE Time");
     }
 
     /**
@@ -203,27 +193,8 @@ class evemails {
      * @param $bravo
      * @return int
      */
-    function sortByDate($alpha, $bravo)
+    private function sortByDate($alpha, $bravo)
     {
-        return strcmp($alpha["sentDate"], $bravo["sentDate"]);
-    }
-
-    /**
-     *
-     */
-    function onMessage()
-    {
-    }
-
-    /**
-     * @return array
-     */
-    function information()
-    {
-        return array(
-            "name" => "",
-            "trigger" => array(""),
-            "information" => ""
-        );
+        return strcmp($alpha['sentDate'], $bravo['sentDate']);
     }
 }
