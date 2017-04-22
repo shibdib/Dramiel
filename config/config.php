@@ -81,7 +81,7 @@ $config['plugins'] = array(
         'channelID' => dbQueryField("SELECT value FROM config WHERE variable = 'eveMailsChannelID'", 'value', array(), 'config') // what channel id like these to post too
     ),
     'fileReader' => array(
-        'db' => '/../../../jabberPings.db',
+        'db' => '/../../jabberPings.db',
         'channelConfig' => array(
             'pings' => array(
                 'default' => true,
