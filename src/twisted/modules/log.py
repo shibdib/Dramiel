@@ -1,6 +1,6 @@
 import os
 dir = os.path.dirname(__file__)
-filename = os.path.join(dir, '..','..','jabberPings.db')
+filename = os.path.join(dir, '..','..','..','jabberPings.db')
 logfile = open(filename, "w")
 
 def log(tbot, user, channel, msg):
