@@ -264,6 +264,9 @@ class notifications
                         case 21: // member left corp
                             $msg = 'skip';
                             break;
+                        case 25: // corp vote
+                            $msg = 'skip';
+                            break;
                         case 27: // Corp declares war
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
@@ -280,6 +283,23 @@ class notifications
                             } else {
                                 $msg = "**{$aggAllianceName}** has declared war on **{$defAllianceName}**.
 Within 24 hours fighting can legally occur between those involved. If war is due to a corporation at war joining or leaving an alliance, then the war starts immediately instead.";
+                            }
+                            break;
+                        case 29: // War Surrender
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defCorpID);
+                            $defCorpName = allianceName($defCorpID[0]);
+                            if ($defCorpName === '') {
+                                $defCorpName = corpName($defCorpID[0]);
+                            }
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggCorpID);
+                            $aggCorpName = allianceName($aggCorpID[0]);
+                            if ($aggCorpName === '') {
+                                $aggCorpName = corpName($aggCorpID[0]);
+                            }
+                            if ($aggCorpName === null || '' || $defCorpName === null || '') {
+                                $msg = 'A war has ended. Fighting ends in roughly 24 hours.';
+                            } else {
+                                $msg = "The war between **{$aggCorpName}** and **{$defCorpName}** has ended. Fighting ends in roughly 24 hours.";
                             }
                             break;
                         case 30: // Corp retracts war
@@ -495,6 +515,9 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 120: // Kill right
                             $msg = 'skip';
                             break;
+                        case 123: // Surrender (Need XML)
+                            $msg = 'skip';
+                            break;
                         case 128: // Corp App
                             $msg = 'skip';
                             break;
@@ -518,6 +541,14 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             break;
                         case 141: // Kill report
                             $msg = 'skip';
+                            break;
+                        case 146: // ff legality changed
+                            preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
+                            $corpName = allianceName($corpID[0]);
+                            if ($corpName === 'Unknown') {
+                                $corpName = corpName($corpID[0]);
+                            }
+                            $msg = "{$corpName} has changed the legality for friendly fire.";
                             break;
                         case 147: // Entosis has started
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
