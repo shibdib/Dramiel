@@ -3,11 +3,11 @@
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-function zKillRedis()
+function zKillRedis($uniqueID)
 {
     try {
         // Initialize a new request for this URL
-        $ch = curl_init("http://redisq.zkillboard.com/listen.php");
+        $ch = curl_init("http://redisq.zkillboard.com/listen.php?queueID=$uniqueID");
         // Set the options for this request
         curl_setopt_array($ch, array(
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
