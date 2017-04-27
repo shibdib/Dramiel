@@ -56,7 +56,6 @@ class siloFull
         $this->toDiscordChannel = $config['plugins']['siloFull']['channelID'];
         $this->keyID = $config['plugins']['siloFull']['keyID'];
         $this->vCode = $config['plugins']['siloFull']['vCode'];
-        $this->towerRace = $config['plugins']['siloFull']['towerRace'];
         $lastCheck = getPermCache("siloLastChecked{$this->keyID}");
         if ($lastCheck === NULL) {
             // Schedule it for right now if first run
@@ -88,23 +87,26 @@ class siloFull
         $url = "https://api.eveonline.com/corp/AssetList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
         $xml = makeApiRequest($url);
         $siloCount = 0;
-        $towerMulti = 0;
-        $towerFull = 20000;
-        $cleanFull = number_format($towerFull);
-        if ($this->towerRace === '1') {
-            $towerMulti = 0.50;
-            $towerFull = 30000;
-            $cleanFull = number_format($towerFull);
-        }
-        if ($this->towerRace === '2') {
-            $towerMulti = 1;
-            $towerFull = 40000;
-            $cleanFull = number_format($towerFull);
-        }
         foreach ($xml->result->rowset->row as $structures) {
             //Check silos
             if ($structures->attributes()->typeID == 14343) {
                 if (isset($structures->rowset->row)) {
+                    $towerRace = $this->getTowerRace($keyID, $vCode, $structures->attributes()->locationID);
+                    if ($towerRace === '1') {
+                        $towerMulti = 0.50;
+                        $towerFull = 30000;
+                        $cleanFull = number_format($towerFull);
+                    }
+                    if ($towerRace === '2') {
+                        $towerMulti = 1;
+                        $towerFull = 40000;
+                        $cleanFull = number_format($towerFull);
+                    }
+                    if ($towerRace === '3') {
+                        $towerMulti = 0;
+                        $towerFull = 20000;
+                        $cleanFull = number_format($towerFull);
+                    }
                     foreach ($structures->rowset->row as $silo) {
                         $moonGoo = $silo->attributes()->typeID;
                         switch ($moonGoo) {
@@ -826,5 +828,22 @@ class siloFull
         }
         $this->logger->addInfo("siloFull: Silo Check Complete Next Check At {$cacheTimer}");
         return null;
+    }
+
+    private function getTowerRace($keyID, $vCode, $systemID)
+    {
+        $url = "https://api.eveonline.com/corp/StarbaseList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
+        $xml = makeApiRequest($url);
+        foreach ($xml->result->rowset->row as $tower) {
+            if ($tower->attributes()->locationID == $systemID) {
+                if ($tower->attributes()->typeID == 12235 || 20059 || 20060) {
+                    return '1';
+                }
+                if ($tower->attributes()->typeID == 12236 || 20063 || 20064) {
+                    return '2';
+                }
+            }
+            return '3';
+        }
     }
 }
