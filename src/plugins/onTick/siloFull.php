@@ -979,10 +979,10 @@ class siloFull
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $tower) {
             if ($tower->attributes()->locationID == $systemID) {
-                if ($tower->attributes()->typeID == 12235 || 20059 || 20060) {
+                if ($tower->attributes()->typeID == 12235 || 20059 || 20060 || 27539 || 27607 || 27610 || 27532 || 27591 || 27594 || 27530 || 27589 || 27592) {
                     return '1';
                 }
-                if ($tower->attributes()->typeID == 12236 || 20063 || 20064) {
+                if ($tower->attributes()->typeID == 12236 || 20063 || 20064 || 27538 || 27603 || 27606 || 27536 || 27601 || 27604) {
                     return '2';
                 }
             }

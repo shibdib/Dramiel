@@ -261,7 +261,6 @@ $config['plugins'] = array(
         'channelID' => dbQueryField("SELECT value FROM config WHERE variable = 'siloFullChannelID'", 'value', array(), 'config'), //silo alerts post to this channel
         'keyID' => dbQueryField("SELECT value FROM config WHERE variable = 'corpKeyID1'", 'value', array(), 'config'), //corp api keyID (Must have assets)
         'vCode' => dbQueryField("SELECT value FROM config WHERE variable = 'corpvCode1'", 'value', array(), 'config'), //corp api vCode
-        'towerRace' => dbQueryField("SELECT value FROM config WHERE variable = 'towerRace'", 'value', array(), 'config'), //The race of your moon goo towers (to determine silo bonus.) Amarr/Amarr Faction Variants = 1, Gal/Gal Faction Variants = 2, Everyone else = 0
     ),
     //Fleet up linking will share operations to a specific channel and then reping them when it gets within 30 minutes of form up
     'fleetUp' => array(
