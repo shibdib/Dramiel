@@ -339,30 +339,36 @@ function fixRole($discordID, $role)
 //eveDb interaction
 function getTypeID($typeName)
 {
-    return dbQueryRow('SELECT * FROM invTypes WHERE lower(`typeName`) = :typeName', array(':typeName' => $typeName), 'eve');
+    $query = dbQueryRow('SELECT * FROM invTypes WHERE lower(`typeName`) = :typeName', array(':typeName' => $typeName), 'eve');
+    return $query['typeID'];
 }
 
 function getTypeName($typeID)
 {
-    return dbQueryRow('SELECT * FROM invTypes WHERE `typeID` = :typeID', array(':typeID' => $typeID), 'eve');
+    $query = dbQueryRow('SELECT * FROM invTypes WHERE `typeID` = :typeID', array(':typeID' => $typeID), 'eve');
+    return $query['typeName'];
 }
 
 function getSystemID($solarSystemName)
 {
-    return dbQueryRow('SELECT * FROM mapSolarSystems WHERE lower(`solarSystemName`) = :solarSystemName', array(':solarSystemName' => $solarSystemName), 'eve');
+    $query = dbQueryRow('SELECT * FROM mapSolarSystems WHERE lower(`solarSystemName`) = :solarSystemName', array(':solarSystemName' => $solarSystemName), 'eve');
+    return $query['solarSystemID'];
 }
 
 function getSystemName($systemID)
 {
-    return dbQueryRow('SELECT * FROM mapSolarSystems WHERE `solarSystemID` = :systemID', array(':systemID' => $systemID), 'eve');
+    $query = dbQueryRow('SELECT * FROM mapSolarSystems WHERE `solarSystemID` = :systemID', array(':systemID' => $systemID), 'eve');
+    return $query['solarSystemName'];
 }
 
 function getRegionID($regionName)
 {
-    return dbQueryRow('SELECT * FROM mapRegions WHERE lower(`regionName`) = :regionName', array(':regionName' => $regionName), 'eve');
+    $query = dbQueryRow('SELECT * FROM mapRegions WHERE lower(`regionName`) = :regionName', array(':regionName' => $regionName), 'eve');
+    return $query['regionName'];
 }
 
 function getRegionName($regionID)
 {
-    return dbQueryRow('SELECT * FROM mapRegions WHERE `regionID` = :regionID', array(':regionID' => $regionID), 'eve');
+    $query = dbQueryRow('SELECT * FROM mapRegions WHERE `regionID` = :regionID', array(':regionID' => $regionID), 'eve');
+    return $query['regionName'];
 }
