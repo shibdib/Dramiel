@@ -48,7 +48,7 @@ class sysInfo
 				$messageString = dbQueryField('SELECT name FROM usersSeen WHERE id = :id', 'name', array(':id' => $messageString));
 			}
 			$cleanString = urlencode($messageString);
-			$sysID = urlencode(systemID($cleanString));
+			$sysID = urlencode(getSystemID($cleanString));
 
 			//Check if we get a system back, otherwise check for partials
 			if(empty($sysID))
@@ -67,7 +67,7 @@ class sysInfo
 					return $this->message->reply('**Error:** no data available');
 				}
 				if ($tot == 1){
-					$sysID = urlencode(systemID($res[0]));
+					$sysID = urlencode(getSystemID($res[0]));
 					if(empty($sysID)){
 						return $this->message->reply('**Error:** no data available');
 					}
@@ -88,8 +88,7 @@ class sysInfo
 			$json = json_decode(file_get_contents($url));
 
 			$regionID = $json->info->regionID;
-			$regionDetails = regionDetails($regionID);
-			$regionName = $regionDetails['name'];
+			$regionName = getRegionName($regionID);
 
 			$thisMonth = (string)date('Ym');
             $lastMonth = (string)date('Ym', strtotime('first day of previous month'));

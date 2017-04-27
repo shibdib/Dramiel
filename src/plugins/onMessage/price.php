@@ -99,7 +99,7 @@ class price
 
             $systemName = $data['trigger'];
             $itemName = $data['messageString'];
-            $single = apiTypeID($itemName);
+            $single = getTypeID($itemName);
 
             // Quick lookups
             if (isset($quickLookUps[$itemName])) {
@@ -122,7 +122,7 @@ class price
                 if ($systemName === 'pc') {
                     $solarSystemID = 'global';
                 } else {
-                    $solarSystemID = systemID($systemName);
+                    $solarSystemID = getSystemID($systemName);
                 }
 
                 // Get pricing data
