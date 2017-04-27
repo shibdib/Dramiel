@@ -128,7 +128,7 @@ class getKillmailsOld
                     }
                     $channelID = $kmGroup['channel'];
                     $solarSystemID = $kill['solarSystemID'];
-                    $systemName = systemName($solarSystemID);
+                    $systemName = getSystemName($solarSystemID);
                     $killTime = $kill['killTime'];
                     $victimAllianceName = '';
                     if ($kill['victim']['allianceName'] !== null && $kill['victim']['allianceName'] !== '') {
@@ -137,7 +137,7 @@ class getKillmailsOld
                     $victimName = $kill['victim']['characterName'];
                     $victimCorpName = $kill['victim']['corporationName'];
                     $victimShipID = $kill['victim']['shipTypeID'];
-                    $shipName = apiTypeName($victimShipID);
+                    $shipName = getTypeName($victimShipID);
                     $rawValue = $kill['zkb']['totalValue'];
                     //Check if killmail meets minimum value and if it meets lost minimum value
                     if (isset($kmGroup['minimumValue']) && isset($kmGroup['minimumlossValue'])) {
@@ -217,7 +217,7 @@ class getKillmailsOld
                 }
                 $channelID = $this->config['plugins']['getKillmails']['bigKills']['bigKillChannel'];
                 $solarSystemID = $kill['solarSystemID'];
-                $systemName = systemName($solarSystemID);
+                $systemName = getSystemName($solarSystemID);
                 $killTime = $kill['killTime'];
                 $victimAllianceName = '';
                 if ($kill['victim']['allianceName'] !== null && $kill['victim']['allianceName'] !== '') {
@@ -226,7 +226,7 @@ class getKillmailsOld
                 $victimName = $kill['victim']['characterName'];
                 $victimCorpName = $kill['victim']['corporationName'];
                 $victimShipID = $kill['victim']['shipTypeID'];
-                $shipName = apiTypeName($victimShipID);
+                $shipName = getTypeName($victimShipID);
                 $totalValue = number_format($kill['zkb']['totalValue']);
                 // Check if it's a structure
                 if ($victimName !== '') {

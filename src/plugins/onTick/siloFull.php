@@ -109,8 +109,8 @@ class siloFull
                         $moonGoo = $silo->attributes()->typeID;
                         switch ($moonGoo) {
                             case 16634:
-                                $typeName = apiTypeName(16634);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16634);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -144,8 +144,8 @@ class siloFull
                                 }
                                 break;
                             case 16643:
-                                $typeName = apiTypeName(16643);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16643);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -179,8 +179,8 @@ class siloFull
                                 }
                                 break;
                             case 16647:
-                                $typeName = apiTypeName(16647);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16647);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -214,8 +214,8 @@ class siloFull
                                 }
                                 break;
                             case 16641:
-                                $typeName = apiTypeName(16641);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16641);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 30000 + (30000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -249,8 +249,8 @@ class siloFull
                                 }
                                 break;
                             case 16640:
-                                $typeName = apiTypeName(16640);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16640);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -284,8 +284,8 @@ class siloFull
                                 }
                                 break;
                             case 16635:
-                                $typeName = apiTypeName(16635);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16635);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -319,8 +319,8 @@ class siloFull
                                 }
                                 break;
                             case 16648:
-                                $typeName = apiTypeName(16648);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16648);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -354,8 +354,8 @@ class siloFull
                                 }
                                 break;
                             case 16633:
-                                $typeName = apiTypeName(16633);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16633);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -389,8 +389,8 @@ class siloFull
                                 }
                                 break;
                             case 16646:
-                                $typeName = apiTypeName(16646);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16646);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 22500 + (22500 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -424,8 +424,8 @@ class siloFull
                                 }
                                 break;
                             case 16651:
-                                $typeName = apiTypeName(16651);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16651);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -459,8 +459,8 @@ class siloFull
                                 }
                                 break;
                             case 16650:
-                                $typeName = apiTypeName(16650);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16650);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -494,8 +494,8 @@ class siloFull
                                 }
                                 break;
                             case 16644:
-                                $typeName = apiTypeName(16644);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16644);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -529,8 +529,8 @@ class siloFull
                                 }
                                 break;
                             case 16652:
-                                $typeName = apiTypeName(16652);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16652);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -564,8 +564,8 @@ class siloFull
                                 }
                                 break;
                             case 16639:
-                                $typeName = apiTypeName(16639);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16639);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -599,8 +599,8 @@ class siloFull
                                 }
                                 break;
                             case 16636:
-                                $typeName = apiTypeName(16636);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16636);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 180000 + (180000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -634,8 +634,8 @@ class siloFull
                                 }
                                 break;
                             case 16649:
-                                $typeName = apiTypeName(16649);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16649);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -669,8 +669,8 @@ class siloFull
                                 }
                                 break;
                             case 16653:
-                                $typeName = apiTypeName(16653);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16653);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -704,8 +704,8 @@ class siloFull
                                 }
                                 break;
                             case 16638:
-                                $typeName = apiTypeName(16638);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16638);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -739,8 +739,8 @@ class siloFull
                                 }
                                 break;
                             case 16637:
-                                $typeName = apiTypeName(16637);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16637);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 45000 + (45000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;
@@ -774,8 +774,8 @@ class siloFull
                                 }
                                 break;
                             case 16642:
-                                $typeName = apiTypeName(16642);
-                                $systemName = systemName($structures->attributes()->locationID);
+                                $typeName = getTypeName(16642);
+                                $systemName = getSystemName($structures->attributes()->locationID);
                                 $towerWarn = 18000 + (18000 * $towerMulti);
                                 if ($silo->attributes()->quantity >= $towerWarn) {
                                     $siloID = $structures->attributes()->itemID;

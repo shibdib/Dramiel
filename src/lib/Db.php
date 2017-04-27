@@ -39,6 +39,8 @@ function openDB($db = null)
         $db = __DIR__ . '/../../database/authDB.sqlite';
     } elseif ($db === 'config') {
         $db = __DIR__ . '/../../../config/botConfig.sqlite';
+    } elseif ($db === 'eve') {
+        $db = __DIR__ . '/../../database/eveData.db';
     } else {
         $db = __DIR__ . '/../../database/dramiel.sqlite';
     }
@@ -332,4 +334,35 @@ function fixRole($discordID, $role)
 {
     $db = 'auth';
     dbExecute('UPDATE authUsers SET `role`=:role WHERE `discordID` = :discordID', array(':role' => $role, ':discordID' => $discordID), $db);
+}
+
+//eveDb interaction
+function getTypeID($typeName)
+{
+    return dbQueryRow('SELECT * FROM invTypes WHERE `typeName` = :typeName', array(':typeName' => $typeName), 'eve');
+}
+
+function getTypeName($typeID)
+{
+    return dbQueryRow('SELECT * FROM invTypes WHERE `typeID` = :typeID', array(':typeID' => $typeID), 'eve');
+}
+
+function getSystemID($solarSystemName)
+{
+    return dbQueryRow('SELECT * FROM mapSolarSystems WHERE `solarSystemName` = :solarSystemName', array(':solarSystemName' => $solarSystemName), 'eve');
+}
+
+function getSystemName($systemID)
+{
+    return dbQueryRow('SELECT * FROM mapSolarSystems WHERE `solarSystemID` = :systemID', array(':systemID' => $systemID), 'eve');
+}
+
+function getRegionID($regionName)
+{
+    return dbQueryRow('SELECT * FROM mapRegions WHERE `regionName` = :regionName', array(':regionName' => $regionName), 'eve');
+}
+
+function getRegionName($regionID)
+{
+    return dbQueryRow('SELECT * FROM mapRegions WHERE `regionID` = :regionID', array(':regionID' => $regionID), 'eve');
 }
