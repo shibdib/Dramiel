@@ -248,7 +248,6 @@ $config['plugins'] = array(
         'channelID' => 0, //silo alerts post to this channel
         'keyID' => '', //corp api keyID (Must have assets)
         'vCode' => '', //corp api vCode
-        'towerRace' => 0, //The race of your moon goo towers (to determine silo bonus.) Amarr/Amarr Faction Variants = 1, Gal/Gal Faction Variants = 2, Everyone else = 0
     ),
     //Fleet up linking will share operations to a specific channel and then reping them when it gets within 30 minutes of form up
     'fleetUp' => array(
