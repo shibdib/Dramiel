@@ -177,12 +177,12 @@ class notifications
                         case 5: // War Declared
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === '') {
+                            if ($defAllianceName === '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === '') {
+                            if ($aggAllianceName === '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -208,12 +208,12 @@ class notifications
                         case 8: // Alliance war invalidated by CONCORD
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === 'Unknown') {
+                            if ($defAllianceName === 'Unknown' || '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === 'Unknown') {
+                            if ($aggAllianceName === 'Unknown' || '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -271,12 +271,12 @@ class notifications
                         case 27: // Corp declares war
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === '') {
+                            if ($defAllianceName === '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === '') {
+                            if ($aggAllianceName === '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -289,12 +289,12 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 29: // War Surrender
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defCorpID);
                             $defCorpName = allianceName($defCorpID[0]);
-                            if ($defCorpName === '') {
+                            if ($defCorpName === '' || ' ' || null) {
                                 $defCorpName = corpName($defCorpID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggCorpID);
                             $aggCorpName = allianceName($aggCorpID[0]);
-                            if ($aggCorpName === '') {
+                            if ($aggCorpName === '' || ' ' || null) {
                                 $aggCorpName = corpName($aggCorpID[0]);
                             }
                             if ($aggCorpName === null || '' || $defCorpName === null || '') {
@@ -306,12 +306,12 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 30: // Corp retracts war
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === '') {
+                            if ($defAllianceName === '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === '') {
+                            if ($aggAllianceName === '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -452,12 +452,12 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 100: // Aggressor corp joins war
                             preg_match('/(?<=defenderID: )\S+/i', $notificationString, $defCorpID);
                             $defCorpName = allianceName($defCorpID[0]);
-                            if ($defCorpName === 'Unknown') {
+                            if ($defCorpName === 'Unknown' || '' || ' ' || null) {
                                 $defCorpName = corpName($defCorpID[0]);
                             }
                             preg_match('/(?<=aggressorID: )\S+/i', $notificationString, $aggCorpID);
                             $aggCorpName = allianceName($aggCorpID[0]);
-                            if ($aggCorpName === 'Unknown') {
+                            if ($aggCorpName === 'Unknown' || '' || ' ' || null) {
                                 $aggCorpName = corpName($aggCorpID[0]);
                             }
                             $msg = "{$aggCorpName} has joined the war against {$defCorpName}.";
@@ -465,17 +465,17 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 101: // corp joins war
                             preg_match('/(?<=defenderID: )\S+/i', $notificationString, $defCorpID);
                             $defCorpName = allianceName($defCorpID[0]);
-                            if ($defCorpName === 'Unknown') {
+                            if ($defCorpName === 'Unknown' || '' || ' ' || null) {
                                 $defCorpName = corpName($defCorpID[0]);
                             }
                             preg_match('/(?<=aggressorID: )\S+/i', $notificationString, $aggCorpID);
                             $aggCorpName = allianceName($aggCorpID[0]);
-                            if ($aggCorpName === 'Unknown') {
+                            if ($aggCorpName === 'Unknown' || '' || ' ' || null) {
                                 $aggCorpName = corpName($aggCorpID[0]);
                             }
                             preg_match('/(?<=allyID: )\S+/i', $notificationString, $thirdCorpID);
                             $thirdCorpName = allianceName($thirdCorpID[0]);
-                            if ($thirdCorpName === 'Unknown') {
+                            if ($thirdCorpName === 'Unknown' || '' || ' ' || null) {
                                 $thirdCorpName = corpName($thirdCorpID[0]);
                             }
                             $msg = "{$thirdCorpName} has joined the war involving {$defCorpName} and {$aggCorpName}.";
@@ -546,7 +546,7 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 146: // ff legality changed
                             preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
                             $corpName = allianceName($corpID[0]);
-                            if ($corpName === 'Unknown') {
+                            if ($corpName === 'Unknown' || '' || ' ' || null) {
                                 $corpName = corpName($corpID[0]);
                             }
                             $msg = "{$corpName} has changed the legality for friendly fire.";
