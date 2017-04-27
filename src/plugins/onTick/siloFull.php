@@ -92,6 +92,9 @@ class siloFull
             if ($structures->attributes()->typeID == 14343) {
                 if (isset($structures->rowset->row)) {
                     $towerRace = $this->getTowerRace($keyID, $vCode, $structures->attributes()->locationID);
+                    $towerMulti = 0;
+                    $towerFull = 20000;
+                    $cleanFull = number_format($towerFull);
                     if ($towerRace === '1') {
                         $towerMulti = 0.50;
                         $towerFull = 30000;
@@ -126,6 +129,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -161,6 +171,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -196,6 +213,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -231,6 +255,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.6;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -266,6 +297,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -301,6 +339,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -336,6 +381,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -371,6 +423,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -406,6 +465,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -441,6 +507,13 @@ class siloFull
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -476,6 +549,13 @@ class siloFull
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -511,6 +591,13 @@ class siloFull
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -546,6 +633,13 @@ class siloFull
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -581,6 +675,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -616,6 +717,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -651,6 +759,13 @@ class siloFull
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -686,6 +801,13 @@ class siloFull
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -721,6 +843,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -756,6 +885,13 @@ class siloFull
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
@@ -791,6 +927,13 @@ class siloFull
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
+                                    //double check tower race
+                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                        $towerFull = 30000;
+                                    }
+                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                        $towerFull = 40000;
+                                    }
                                     $cleanNumber = number_format($gooCurrent);
                                     $msg = "**{$typeName} Silo Nearing Capacity**\n";
                                     if ($gooCurrent === $towerFull && $lastAmount === $gooCurrent) {
