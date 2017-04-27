@@ -339,7 +339,7 @@ function fixRole($discordID, $role)
 //eveDb interaction
 function getTypeID($typeName)
 {
-    return dbQueryRow('SELECT * FROM invTypes WHERE `typeName` = :typeName', array(':typeName' => $typeName), 'eve');
+    return dbQueryRow('SELECT * FROM invTypes WHERE lower(`typeName`) = :typeName', array(':typeName' => $typeName), 'eve');
 }
 
 function getTypeName($typeID)
@@ -349,7 +349,7 @@ function getTypeName($typeID)
 
 function getSystemID($solarSystemName)
 {
-    return dbQueryRow('SELECT * FROM mapSolarSystems WHERE `solarSystemName` = :solarSystemName', array(':solarSystemName' => $solarSystemName), 'eve');
+    return dbQueryRow('SELECT * FROM mapSolarSystems WHERE lower(`solarSystemName`) = :solarSystemName', array(':solarSystemName' => $solarSystemName), 'eve');
 }
 
 function getSystemName($systemID)
@@ -359,7 +359,7 @@ function getSystemName($systemID)
 
 function getRegionID($regionName)
 {
-    return dbQueryRow('SELECT * FROM mapRegions WHERE `regionName` = :regionName', array(':regionName' => $regionName), 'eve');
+    return dbQueryRow('SELECT * FROM mapRegions WHERE lower(`regionName`) = :regionName', array(':regionName' => $regionName), 'eve');
 }
 
 function getRegionName($regionID)
