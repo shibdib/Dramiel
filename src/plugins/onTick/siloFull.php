@@ -91,7 +91,8 @@ class siloFull
             //Check silos
             if ($structures->attributes()->typeID == 14343) {
                 if (isset($structures->rowset->row)) {
-                    $towerRace = $this->getTowerRace($keyID, $vCode, $structures->attributes()->locationID);
+                    $locationID = $structures->attributes()->locationID;
+                    $towerRace = $this->getTowerRace($keyID, $vCode, $locationID);
                     $towerMulti = 0;
                     $towerFull = 20000;
                     $cleanFull = number_format($towerFull);
@@ -978,15 +979,18 @@ class siloFull
         $url = "https://api.eveonline.com/corp/StarbaseList.xml.aspx?keyID={$keyID}&vCode={$vCode}";
         $xml = makeApiRequest($url);
         foreach ($xml->result->rowset->row as $tower) {
-            if ($tower->attributes()->locationID == $systemID) {
-                if ($tower->attributes()->typeID == 12235 || 20059 || 20060 || 27539 || 27607 || 27610 || 27532 || 27591 || 27594 || 27530 || 27589 || 27592) {
+            $typeID = (int)$tower->attributes()->typeID;
+            $locationID = (int)$tower->attributes()->locationID;
+            if ($locationID === (int)$systemID) {
+                if ($typeID === 12235 || $typeID === 20059 || $typeID === 20060 || $typeID === 27539 || $typeID === 27607 || $typeID === 27610 || $typeID === 27532 || $typeID === 27591 || $typeID === 27594 || $typeID === 27530 || $typeID === 27589 || $typeID === 27592) {
                     return '1';
                 }
-                if ($tower->attributes()->typeID == 12236 || 20063 || 20064 || 27538 || 27603 || 27606 || 27536 || 27601 || 27604) {
+                if ($typeID === 12236 || $typeID === 20063 || $typeID === 20064 || $typeID === 27538 || $typeID === 27603 || $typeID === 27606 || $typeID === 27536 || $typeID === 27601 || $typeID === 27604) {
                     return '2';
                 }
             }
-            return '3';
+            continue;
         }
+        return '3';
     }
 }
