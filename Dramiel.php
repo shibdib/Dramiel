@@ -295,6 +295,8 @@ $discord->on(
                 if ($welcomePlugin === 'true') {
                     $welcomeMessage = dbQueryField("SELECT value FROM config WHERE variable = 'welcomeMessageMessage'", 'value', array(), 'config');
                     $member->user->sendMessage($welcomeMessage, false);
+                    $name = $member->user->username;
+                    $logger->addInfo("welcomeMessage: $name has connected to the server, sending a welcome message.");
                 }
             }
         );
