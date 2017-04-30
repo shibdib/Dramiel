@@ -104,7 +104,7 @@ class phpbbNotifications
                     $users = $matches[1];
                     // $users should now contain array: ['SantaClaus', 'Jesus']
                     foreach ($users as $user) {
-                        $user = strtolower($user);
+                        $user = strtolower(str_replace("_", " ", $user));
                         foreach ($guild->members as $member) {
                             $nickName = strtolower($member->nick);
                             $userName = strtolower($member->user->username);
