@@ -286,6 +286,18 @@ $discord->on(
                 }
             }
         );
+
+        //Welcome message
+        $discord->on(
+            Event::GUILD_MEMBER_ADD,
+            function($member) use ($logger, $config) {
+                $welcomePlugin = dbQueryField("SELECT value FROM config WHERE variable = 'welcomeMessage'", 'value', array(), 'config');
+                if ($welcomePlugin === 'true') {
+                    $welcomeMessage = dbQueryField("SELECT value FROM config WHERE variable = 'welcomeMessageMessage'", 'value', array(), 'config');
+                    $member->user->sendMessage($welcomeMessage, false);
+                }
+            }
+        );
     }
 );
 $discord->on(
