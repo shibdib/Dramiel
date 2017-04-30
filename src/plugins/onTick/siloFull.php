@@ -131,10 +131,10 @@ class siloFull
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -173,10 +173,10 @@ class siloFull
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -215,10 +215,10 @@ class siloFull
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -257,10 +257,10 @@ class siloFull
                                     $gooVolume = 0.6;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -299,10 +299,10 @@ class siloFull
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -341,10 +341,10 @@ class siloFull
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -383,10 +383,10 @@ class siloFull
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -425,10 +425,10 @@ class siloFull
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -467,10 +467,10 @@ class siloFull
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -509,10 +509,10 @@ class siloFull
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -551,10 +551,10 @@ class siloFull
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -593,10 +593,10 @@ class siloFull
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -635,10 +635,10 @@ class siloFull
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -677,10 +677,10 @@ class siloFull
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -719,10 +719,10 @@ class siloFull
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -761,10 +761,10 @@ class siloFull
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -803,10 +803,10 @@ class siloFull
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -845,10 +845,10 @@ class siloFull
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -887,10 +887,10 @@ class siloFull
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -929,10 +929,10 @@ class siloFull
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
                                     //double check tower race
-                                    if ($towerFull === 20000 && $gooCurrent > 20000) {
+                                    if ((int)$towerFull === 20000 && (int)$gooCurrent > 20000) {
                                         $towerFull = 30000;
                                     }
-                                    if ($towerFull === 20000 || 30000 && $gooCurrent > 30000) {
+                                    if ((int)$towerFull === 20000 || 30000 && (int)$gooCurrent > 30000) {
                                         $towerFull = 40000;
                                     }
                                     $cleanNumber = number_format($gooCurrent);
@@ -982,7 +982,7 @@ class siloFull
             $typeID = (int)$tower->attributes()->typeID;
             $locationID = (int)$tower->attributes()->locationID;
             if ($locationID === (int)$systemID) {
-                if ($typeID === 12235 || $typeID === 20059 || $typeID === 20060 || $typeID === 27539 || $typeID === 27607 || $typeID === 27610 || $typeID === 27532 || $typeID === 27591 || $typeID === 27594 || $typeID === 27530 || $typeID === 27589 || $typeID === 27592) {
+                if ($typeID === 12235 || $typeID === 20059 || $typeID === 20060 || $typeID === 27532 || $typeID === 27591 || $typeID === 27594 || $typeID === 27530 || $typeID === 27589 || $typeID === 27592 || $typeID === 27780 || $typeID === 27782 || $typeID === 27784 || $typeID === 27786 || $typeID === 27788 || $typeID === 27790) {
                     return '1';
                 }
                 if ($typeID === 12236 || $typeID === 20063 || $typeID === 20064 || $typeID === 27538 || $typeID === 27603 || $typeID === 27606 || $typeID === 27536 || $typeID === 27601 || $typeID === 27604) {
