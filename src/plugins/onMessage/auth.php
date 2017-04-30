@@ -250,7 +250,8 @@ class auth
                     $guild->members->save($member);
                     $msg = ":white_check_mark: **Success:** {$eveName} has been successfully authed.";
                     $this->logger->addInfo("auth: {$eveName} authed");
-                    $member->user->sendMessage($msg, false);
+                    //$member->user->sendMessage($msg, false);
+                    $this->message->reply($msg);
                     //Add ticker if set and change name if nameEnforce is on
                     if (isset($setTicker) || isset($nameEnforce)) {
                         if (isset($setTicker) && isset($nameEnforce)) {
