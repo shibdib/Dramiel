@@ -166,10 +166,12 @@ class auth
                             foreach ($roles as $role) {
                                 if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $member->addRole($role);
+                                    $guild->members->save($member);
                                     $group = 'corp/ally';
                                 }
                                 if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $member->addRole($role);
+                                    $guild->members->save($member);
                                     $group = 'corp/ally';
                                 }
                             }
@@ -181,6 +183,7 @@ class auth
                             foreach ($roles as $role) {
                                 if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $member->addRole($role);
+                                    $guild->members->save($member);
                                     $group = 'corp';
                                 }
                             }
@@ -191,6 +194,7 @@ class auth
                             foreach ($roles as $role) {
                                 if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $member->addRole($role);
+                                    $guild->members->save($member);
                                     $group = 'ally';
                                 }
                             }
@@ -205,21 +209,25 @@ class auth
                     foreach ($roles as $role) {
                         if ((@(int) $allianceContacts['standing'] === 5 || @(int) $corpContacts['standing'] === 5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus5Role']) {
                             $member->addRole($role);
+                            $guild->members->save($member);
                             $group = 'blue';
                             break;
                         }
                         if ((@(int) $allianceContacts['standing'] === 10 || @(int) $corpContacts['standing'] === 10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus10Role']) {
                             $member->addRole($role);
+                            $guild->members->save($member);
                             $group = 'blue';
                             break;
                         }
                         if ((@(int) $allianceContacts['standing'] === -5 || @(int) $corpContacts['standing'] === -5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus5Role']) {
                             $member->addRole($role);
+                            $guild->members->save($member);
                             $group = 'red';
                             break;
                         }
                         if ((@(int) $allianceContacts['standing'] === -10 || @(int) $corpContacts['standing'] === -10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus10Role']) {
                             $member->addRole($role);
+                            $guild->members->save($member);
                             $group = 'red';
                             break;
                         }
@@ -228,6 +236,7 @@ class auth
                         foreach ($roles as $role) {
                             if ((string) $role->name === (string) $this->config['plugins']['auth']['standings']['neutralRole']) {
                                 $member->addRole($role);
+                                $guild->members->save($member);
                                 $group = 'neut';
                                 break;
                             }
@@ -241,7 +250,7 @@ class auth
                     $guild->members->save($member);
                     $msg = ":white_check_mark: **Success:** {$eveName} has been successfully authed.";
                     $this->logger->addInfo("auth: {$eveName} authed");
-                    $this->message->reply($msg);
+                    $member->user->sendMessage($msg, false);
                     //Add ticker if set and change name if nameEnforce is on
                     if (isset($setTicker) || isset($nameEnforce)) {
                         if (isset($setTicker) && isset($nameEnforce)) {
