@@ -26,9 +26,9 @@
 use discord\discord;
 
 /**
- * Class phpbbNotifications
+ * Class phpbbNotification
  */
-class phpbbNotifications
+class phpbbNotification
 {
     public $config;
     public $db;
@@ -48,11 +48,11 @@ class phpbbNotifications
         $this->discord = $discord;
         $this->logger = $logger;
         $this->guild = $config['bot']['guild'];
-        $this->url = $config['plugins']['phpbbNotifications']['url'];
-        $lastCheck = getPermCache('phpbbNotifications');
+        $this->url = $config['plugins']['phpbbNotification']['url'];
+        $lastCheck = getPermCache('phpbbNotification');
         if ($lastCheck === NULL) {
             // Schedule it for right now if first run
-            setPermCache('phpbbNotifications', time() - 5);
+            setPermCache('phpbbNotification', time() - 5);
         }
     }
 
@@ -61,14 +61,14 @@ class phpbbNotifications
      */
     public function tick()
     {
-        $lastCheck = getPermCache('phpbbNotifications');
+        $lastCheck = getPermCache('phpbbNotification');
         $url = $this->url;
 
         if ($lastCheck <= time()) {
-            $this->logger->addInfo('phpbbNotifications: Checking the forum for new mentions..');
+            $this->logger->addInfo('phpbbNotification: Checking the forum for new mentions..');
             $this->getPhpbb($url);
             setPermCache('rssLastChecked', time() + 900);
-            $this->logger->addInfo('phpbbNotifications: All new posts checked..');
+            $this->logger->addInfo('phpbbNotification: All new posts checked..');
         }
     }
 
