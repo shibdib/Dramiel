@@ -80,6 +80,10 @@ $config['plugins'] = array(
         'message' => dbQueryField("SELECT value FROM config WHERE variable = 'welcomeMessageMessage'", 'value', array(), 'config')
     ),
     //uses the provided api's to post evemails to a channel
+    'phpbbNotification' => array(
+        'url' => dbQueryField("SELECT value FROM config WHERE variable = 'phpbbNotificationUrl'", 'value', array(), 'config')
+    ),
+    //uses the provided api's to post evemails to a channel
     'evemails' => array(
         'fromIDs' => $mailIDs, // fill in with corp/alliance id's you want info from (have to be accessible with the api)
         'channelID' => dbQueryField("SELECT value FROM config WHERE variable = 'eveMailsChannelID'", 'value', array(), 'config') // what channel id like these to post too
