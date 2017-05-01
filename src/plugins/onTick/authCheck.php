@@ -323,7 +323,7 @@ class authCheck
             if (null === $result) {
                 $userCount++;
                 foreach ($roles as $role) {
-                    if ($id !== $botID && !in_array($role->name, $this->exempt, true) && $role->name !== '' || ' ' || null) {
+                    if ($id !== $botID && !in_array($role->name, $this->exempt, true) && !empty($role->name) && !is_null($role->name)) {
                         $member->removeRole($role);
                         $guild->members->save($member);
                         // Add users name to array
