@@ -64,14 +64,6 @@ function renameQueue($discord, $logger)
                 $member = $guild->members->get('id', $queuedRename['discordID']);
                 $member->setNickname($queuedRename['nick']);
                 $guild->members->save($member);
-                $nickName = $member->nick;
-                $success = null;
-                if ($nickName === $queuedRename['nick']){
-                    $logger->addInfo("QueueProcessing - New name set for $nickName");
-                    clearQueuedRename($id);
-                    $success = true;
-                }
-                if(is_null($success)){$logger->addInfo("QueueProcessing - Name change failed for $nickName, re-queued.");}
             }else{
                 $x = 99;
             }
