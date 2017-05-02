@@ -59,11 +59,37 @@ function renameQueue($discord, $logger)
                 if (null === $queuedRename['guild'] || null === $queuedRename['discordID']) {
                     clearQueuedRename($id);
                 }
-                $logger->addInfo("QueueProcessing - Completing queued rename #{$id}");
                 $guild = $discord->guilds->get('id', $queuedRename['guild']);
                 $member = $guild->members->get('id', $queuedRename['discordID']);
                 $member->setNickname($queuedRename['nick']);
                 $guild->members->save($member);
+                $nickName = $member->nick;
+                $success = null;
+                if ($nickName === $queuedRename['nick']){
+                    $success = true;
+                }
+                if(is_null($success))
+                {
+                    $y = 0;
+                    while ($y < 3 && is_null($success)) {
+                        $guild = $discord->guilds->get('id', $queuedRename['guild']);
+                        $member = $guild->members->get('id', $queuedRename['discordID']);
+                        $member->setNickname($queuedRename['nick']);
+                        $guild->members->save($member);
+                        if ($nickName === $queuedRename['nick']){
+                            $success = true;
+                        }
+                        $y++;
+                    }
+                    //purge queue if fails 4 times
+                    if ($y > 3 && is_null($success)) {
+                        clearQueuedRename($id);
+                    }
+                }
+                if(!is_null($success)){
+                    $logger->addInfo("QueueProcessing - New name set for $nickName");
+                    clearQueuedRename($id);
+                }
             }else{
                 $x = 99;
             }
@@ -87,6 +113,7 @@ function authQueue($discord, $logger)
                 //Check if queued item is corrupt and delete it if it is
                 if (null === $queuedAuth['roleID'] || null === $queuedAuth['discordID']) {
                     clearQueuedAuth($id);
+                    continue;
                 }
                 $guild = $discord->guilds->get('id', $queuedAuth['guildID']);
                 $member = $guild->members->get('id', $queuedAuth['discordID']);
@@ -95,7 +122,6 @@ function authQueue($discord, $logger)
                 $member->addRole($role);
                 $guild->members->save($member);
                 $eveName = $queuedAuth['eveName'];
-                $logger->addInfo("QueueProcessing - Processing queued auth #$id - $eveName");
                 $roles = $member->roles;
                 $success = null;
                 foreach ($roles as $role) {
@@ -107,7 +133,32 @@ function authQueue($discord, $logger)
                         break;
                     }
                 }
-                if(is_null($success)){$logger->addInfo("QueueProcessing - Role assignment failed for $eveName, re-queued.");}
+                if(is_null($success))
+                {
+                    $y = 0;
+                    while ($y < 3 && is_null($success)) {
+                        $guild = $discord->guilds->get('id', $queuedAuth['guildID']);
+                        $member = $guild->members->get('id', $queuedAuth['discordID']);
+                        $role = $guild->roles->get('id', $queuedAuth['roleID']);
+                        $member->addRole($role);
+                        $guild->members->save($member);
+                        $roles = $member->roles;
+                        foreach ($roles as $role) {
+                            if ((string)$role->id === (string)$queuedAuth['roleID']) {
+                                $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
+                                insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
+                                clearQueuedAuth($id);
+                                $success = true;
+                                break;
+                            }
+                        }
+                        $y++;
+                    }
+                    //purge queue if fails 4 times
+                    if ($y > 3 && is_null($success)) {
+                        clearQueuedAuth($id);
+                    }
+                }
             }else{
                 $x = 99;
             }
