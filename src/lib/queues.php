@@ -35,6 +35,8 @@ function messageQueue($discord, $logger)
                 $logger->addInfo("QueueProcessing - Completing queued item #{$id}");
                 $channel->sendMessage($queuedMessage['message'], false, null);
                 clearQueuedMessages($id);
+            }else{
+                $x = 99;
             }
             $x++;
         }
@@ -70,6 +72,8 @@ function renameQueue($discord, $logger)
                     $success = true;
                 }
                 if(is_null($success)){$logger->addInfo("QueueProcessing - Name change failed for $nickName, re-queued.");}
+            }else{
+                $x = 99;
             }
             $x++;
         }
@@ -112,6 +116,8 @@ function authQueue($discord, $logger)
                     }
                 }
                 if(is_null($success)){$logger->addInfo("QueueProcessing - Role assignment failed for $eveName, re-queued.");}
+            }else{
+                $x = 99;
             }
             $x++;
         }
