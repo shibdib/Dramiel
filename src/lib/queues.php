@@ -57,11 +57,19 @@ function renameQueue($discord, $logger)
                 if (null === $queuedRename['guild'] || null === $queuedRename['discordID']) {
                     clearQueuedRename($id);
                 }
+                $logger->addInfo("QueueProcessing - Completing queued rename #{$id}");
                 $guild = $discord->guilds->get('id', $queuedRename['guild']);
                 $member = $guild->members->get('id', $queuedRename['discordID']);
                 $member->setNickname($queuedRename['nick']);
-                $logger->addInfo("QueueProcessing - Completing queued rename #{$id}");
-                clearQueuedRename($id);
+                $guild->members->save($member);
+                $nickName = $member->nick;
+                $success = null;
+                if ($nickName === $queuedRename['nick']){
+                    $logger->addInfo("QueueProcessing - New name set for $nickName");
+                    clearQueuedRename($id);
+                    $success = true;
+                }
+                if(is_null($success)){$logger->addInfo("QueueProcessing - Name change failed for $nickName, re-queued.");}
             }
             $x++;
         }
@@ -90,9 +98,20 @@ function authQueue($discord, $logger)
                 dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => (string)$queuedAuth['discordID']), 'auth');
                 $member->addRole($role);
                 $guild->members->save($member);
-                $logger->addInfo("QueueProcessing - Completing queued auth #$id");
-                insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
-                clearQueuedAuth($id);
+                $eveName = $queuedAuth['eveName'];
+                $logger->addInfo("QueueProcessing - Processing queued auth #$id - $eveName");
+                $roles = $member->roles;
+                $success = null;
+                foreach ($roles as $role) {
+                    if ((string)$role->id === (string)$queuedAuth['roleID']) {
+                        $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
+                        insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
+                        clearQueuedAuth($id);
+                        $success = true;
+                        break;
+                    }
+                }
+                if(is_null($success)){$logger->addInfo("QueueProcessing - Role assignment failed for $eveName, re-queued.");}
             }
             $x++;
         }
