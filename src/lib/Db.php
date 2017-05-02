@@ -287,6 +287,27 @@ function getContacts($contactID)
 }
 
 //AUTH
+function queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID)
+{
+    dbExecute('REPLACE INTO authQueue (`discordID`, `charID`, `eveName`, `pendingID`, `roleID`, `groupName`, `guildID`) VALUES (:discordID,:charID,:eveName,:pendingID,:roleID,:groupName,:guildID)', array(':discordID' => $discordID, ':charID' => $charID, ':eveName' => $eveName, ':pendingID' => $pendingID, ':roleID' => $roleID, ':groupName' => $groupName, ':guildID' => $guildID));
+}
+
+function getQueuedAuth($id)
+{
+    return dbQueryRow('SELECT * FROM authQueue WHERE `id` = :id', array(':id' => $id));
+}
+
+function getOldestQueuedAuth()
+{
+    return dbQueryRow('SELECT MIN(id) from authQueue');
+}
+
+function clearQueuedAuth($id)
+{
+    dbQueryRow('DELETE from authQueue where id = :id', array(':id' => $id));
+    return null;
+}
+
 function getAuthUsers()
 {
     $active = 'yes';

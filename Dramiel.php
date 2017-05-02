@@ -180,68 +180,11 @@ $discord->on(
             }
         });
 
-        // Message queue
-        $discord->loop->addPeriodicTimer(7, function() use ($discord, $logger) {
-            $x = 0;
-            while ($x < 3) {
-                $id = getOldestMessage();
-                $id = $id['MIN(id)'];
-                if (null === $id) {
-                    $id = 1;
-                }
-                $queuedMessage = getQueuedMessage($id);
-                if (null !== $queuedMessage) {
-                    //Check if queued item is corrupt and delete it if it is
-                    if (null === $queuedMessage['guild'] || null === $queuedMessage['channel'] || null === $queuedMessage['message']) {
-                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
-                        clearQueuedMessages($id);
-                        continue;
-                    }
-                    $guild = $discord->guilds->get('id', $queuedMessage['guild']);
-                    //Check if guild is bad
-                    if (null === $guild) {
-                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Guild provided is incorrect, removing it from the queue");
-                        clearQueuedMessages($id);
-                        continue;
-                    }
-                    $channel = $guild->channels->get('id', (int) $queuedMessage['channel']);
-                    //Check if channel is bad
-                    if (null === $channel) {
-                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
-                        clearQueuedMessages($id);
-                        continue;
-                    }
-                    $logger->addInfo("QueueProcessing - Completing queued item #{$id}");
-                    $channel->sendMessage($queuedMessage['message'], false, null);
-                    clearQueuedMessages($id);
-                }
-                $x++;
-            }
-        });
-
-        // Rename queue
+        // Run Queues
         $discord->loop->addPeriodicTimer(10, function() use ($discord, $logger) {
-            $x = 0;
-            while ($x < 4) {
-                $id = getOldestRename();
-                $id = $id['MIN(id)'];
-                if (null === $id) {
-                    $id = 1;
-                    $x = 4;
-                }
-                $queuedRename = getQueuedRename($id);
-                if (null !== $queuedRename) {
-                    //Check if queued item is corrupt and delete it if it is
-                    if (null === $queuedRename['guild'] || null === $queuedRename['discordID']) {
-                        clearQueuedRename($id);
-                    }
-                    $guild = $discord->guilds->get('id', $queuedRename['guild']);
-                    $member = $guild->members->get('id', $queuedRename['discordID']);
-                    $member->setNickname($queuedRename['nick']);
-                    clearQueuedRename($id);
-                }
-                $x++;
-            }
+            messageQueue($discord, $logger);
+            renameQueue($discord, $logger);
+            authQueue($discord, $logger);
         });
 
         // Mem cleanup every 30 minutes

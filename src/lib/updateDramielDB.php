@@ -26,7 +26,7 @@
 
 function updateDramielDB($logger)
 {
-    $tables = array('storage', 'messageQueue', 'renameQueue', 'corpCache', 'contactList');
+    $tables = array('storage', 'messageQueue', 'renameQueue', 'corpCache', 'contactList', 'authQueue');
 
     $tableCreateCode = array(
         'storage' => '
@@ -72,6 +72,19 @@ function updateDramielDB($logger)
                 `contactID` VARCHAR(255) NOT NULL UNIQUE,
                 `contactName` VARCHAR(255) NOT NULL,
                 `standing` VARCHAR(255) NOT NULL
+            );
+            COMMIT;',
+        'authQueue' => '
+            BEGIN;
+            CREATE TABLE IF NOT EXISTS `authQueue` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                `discordID` VARCHAR(255) NOT NULL UNIQUE,
+                `charID` VARCHAR(255) NOT NULL,
+                `eveName` VARCHAR(255) NOT NULL,
+                `pendingID` VARCHAR(255) NOT NULL,
+                `roleID` VARCHAR(255) NOT NULL,
+                `groupName` VARCHAR(255) NOT NULL,
+                `guildID` VARCHAR(255) NOT NULL
             );
             COMMIT;',
     );
