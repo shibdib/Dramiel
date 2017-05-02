@@ -91,7 +91,7 @@ function authQueue($discord, $logger)
                 $member->addRole($role);
                 $guild->members->save($member);
                 $logger->addInfo("QueueProcessing - Completing queued auth #$id");
-                insertNewUser($queuedAuth['userID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['group']);
+                insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
                 clearQueuedAuth($id);
             }
             $x++;
