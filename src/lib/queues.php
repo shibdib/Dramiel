@@ -58,6 +58,12 @@ function renameQueue($discord, $discordWeb, $logger)
             //Check if queued item is corrupt and delete it if it is
             if (null === $queuedRename['guild'] || null === $queuedRename['discordID']) {
                 clearQueuedRename($id);
+                continue;
+            }
+            //make sure nick is short enough
+            if (strlen($queuedRename['nick']) > 31) {
+                clearQueuedRename($id);
+                continue;
             }
             $guildID = $queuedRename['guild'];
             $userID = $queuedRename['discordID'];
@@ -86,11 +92,13 @@ function renameQueue($discord, $discordWeb, $logger)
                 //purge queue if fails 4 times
                 if ($y > 3 && is_null($success)) {
                     clearQueuedRename($id);
+                    continue;
                 }
             }
             if(!is_null($success)){
                 $logger->addInfo("QueueProcessing - New name set for $nickName");
                 clearQueuedRename($id);
+                continue;
             }
         }else{
             $x = 99;
