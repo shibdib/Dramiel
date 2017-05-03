@@ -9,7 +9,6 @@
     "dg/twitter-php": "*",
     "team-reflex/discord-php": "*",
     "monolog/monolog": "*",
-    "ratchet/pawl": "*",
-    "restcord/restcord": "*"
+    "ratchet/pawl": "*"
   }
 }

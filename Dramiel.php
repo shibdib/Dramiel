@@ -32,7 +32,6 @@ use Discord\Discord;
 use Discord\Parts\User\Game;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\WebSocket;
-use RestCord\DiscordClient;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -81,9 +80,6 @@ authDB($logger);
 
 // Init Discord
 $discord = new Discord(['token' => $primary['bot']['token']]);
-
-//Init websocket
-$discordWeb = new DiscordClient(['token' => $primary['bot']['token']]); // Token is required
 
 // Load tick plugins
 $pluginDirs = array('src/plugins/onTick/*.php');
@@ -148,7 +144,7 @@ dbPrune();
 
 $discord->on(
     'ready',
-    function($discord) use ($logger, $config, $primary, $plugins, $pluginsT, $discordWeb) {
+    function($discord) use ($logger, $config, $primary, $plugins, $pluginsT) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -185,10 +181,10 @@ $discord->on(
         });
 
         // Run Queues
-        $discord->loop->addPeriodicTimer(10, function() use ($discord, $discordWeb, $logger) {
+        $discord->loop->addPeriodicTimer(10, function() use ($discord, $logger) {
             messageQueue($discord, $logger);
-            renameQueue($discord, $discordWeb, $logger);
-            authQueue($discord, $discordWeb, $logger);
+            renameQueue($discord, $logger);
+            authQueue($discord, $logger);
         });
 
         // Mem cleanup every 30 minutes
