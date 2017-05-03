@@ -66,6 +66,8 @@ function renameQueue($discord, $logger)
                 $nickName = $member->nick;
                 $success = null;
                 if ($nickName === $queuedRename['nick']){
+                    $member->setNickname($queuedRename['nick']);
+                    $guild->members->save($member);
                     $success = true;
                 }
                 if(is_null($success))
@@ -126,6 +128,8 @@ function authQueue($discord, $logger)
                 $success = null;
                 foreach ($roles as $role) {
                     if ((string)$role->id === (string)$queuedAuth['roleID']) {
+                        $member->addRole($role);
+                        $guild->members->save($member);
                         $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
                         insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
                         clearQueuedAuth($id);
@@ -145,6 +149,8 @@ function authQueue($discord, $logger)
                         $roles = $member->roles;
                         foreach ($roles as $role) {
                             if ((string)$role->id === (string)$queuedAuth['roleID']) {
+                                $member->addRole($role);
+                                $guild->members->save($member);
                                 $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
                                 insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
                                 clearQueuedAuth($id);
