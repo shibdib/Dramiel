@@ -33,7 +33,10 @@ function messageQueue($discord, $logger)
                 continue;
             }
             $logger->addInfo("QueueProcessing - Completing queued item #{$id}");
-            $channel->sendMessage($queuedMessage['message'], false, null);
+            $message = $channel->sendMessage($queuedMessage['message'], false, null);
+            while ($message === FALSE){
+                $message = $channel->sendMessage($queuedMessage['message'], false, null);
+            }
             clearQueuedMessages($id);
         } else {
             $x = 99;
@@ -62,36 +65,14 @@ function renameQueue($discord, $logger)
             }
             $guild = $discord->guilds->get('id', $queuedRename['guild']);
             $member = $guild->members->get('id', $queuedRename['discordID']);
-            $member->setNickname($queuedRename['nick']);
+            $setNick = $member->setNickname($queuedRename['nick']);
+            while ($setNick === FALSE){
+                $setNick = $member->setNickname($queuedRename['nick']);
+            }
             $guild->members->save($member);
             $nickName = $member->nick;
-            $success = null;
-            if ($nickName === $queuedRename['nick']) {
-                $member->setNickname($queuedRename['nick']);
-                $guild->members->save($member);
-                $success = true;
-            }
-            if (is_null($success)) {
-                $y = 0;
-                while ($y < 3 && is_null($success)) {
-                    $guild = $discord->guilds->get('id', $queuedRename['guild']);
-                    $member = $guild->members->get('id', $queuedRename['discordID']);
-                    $member->setNickname($queuedRename['nick']);
-                    $guild->members->save($member);
-                    if ($nickName === $queuedRename['nick']) {
-                        $success = true;
-                    }
-                    $y++;
-                }
-                //purge queue if fails 4 times
-                if ($y > 3 && is_null($success)) {
-                    clearQueuedRename($id);
-                }
-            }
-            if (!is_null($success)) {
-                $logger->addInfo("QueueProcessing - New name set for $nickName");
-                clearQueuedRename($id);
-            }
+            $logger->addInfo("QueueProcessing - New name set for $nickName");
+            clearQueuedRename($id);
         } else {
             $x = 99;
         }
@@ -121,49 +102,14 @@ function authQueue($discord, $logger)
             $member = $guild->members->get('id', $queuedAuth['discordID']);
             $role = $guild->roles->get('id', $queuedAuth['roleID']);
             dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => (string)$queuedAuth['discordID']), 'auth');
-            $member->addRole($role);
+            $auth = $member->addRole($role);
+            while ($auth === FALSE){
+                $auth = $member->addRole($role);
+            }
             $guild->members->save($member);
             $eveName = $queuedAuth['eveName'];
-            $roles = $member->roles;
-            $success = null;
-            foreach ($roles as $role) {
-                if ((string)$role->id === (string)$queuedAuth['roleID']) {
-                    $member->addRole($role);
-                    $guild->members->save($member);
-                    $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
-                    insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
-                    clearQueuedAuth($id);
-                    $success = true;
-                    break;
-                }
-            }
-            if (is_null($success)) {
-                $y = 0;
-                while ($y < 3 && is_null($success)) {
-                    $guild = $discord->guilds->get('id', $queuedAuth['guildID']);
-                    $member = $guild->members->get('id', $queuedAuth['discordID']);
-                    $role = $guild->roles->get('id', $queuedAuth['roleID']);
-                    $member->addRole($role);
-                    $guild->members->save($member);
-                    $roles = $member->roles;
-                    foreach ($roles as $role) {
-                        if ((string)$role->id === (string)$queuedAuth['roleID']) {
-                            $member->addRole($role);
-                            $guild->members->save($member);
-                            $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
-                            insertNewUser($queuedAuth['discordID'], $queuedAuth['charID'], $queuedAuth['eveName'], $queuedAuth['pendingID'], $queuedAuth['groupName']);
-                            clearQueuedAuth($id);
-                            $success = true;
-                            break;
-                        }
-                    }
-                    $y++;
-                }
-                //purge queue if fails 4 times
-                if ($y > 3 && is_null($success)) {
-                    clearQueuedAuth($id);
-                }
-            }
+            $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
+            clearQueuedAuth($id);
         } else {
             $x = 99;
         }
