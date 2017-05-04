@@ -369,6 +369,7 @@ class authCheck
                 $discordID = $rows['discordID'];
                 $member = $guild->members->get('id', $discordID);
                 $eveName = $rows['eveName'];
+
                 //Check if member has roles
                 if (null === @$member->roles) {
                     continue;
@@ -379,16 +380,16 @@ class authCheck
                 $member = $guild->members->get('id', $discordID);
                 $nickName = $member->nick;
                 $userName = $member->user->username;
+
                 //If nick isn't set than make it username
                 if ($nickName === '' || null === $nickName) {
                     $nickName = $userName;
                 }
 
-                //Check for bad tickers
-                if (strpos($nickName, '[U]') !== false) {
-                    $nickName = str_replace('[U]', '', $nickName);
-                    queueRename($discordID, $nickName, $this->guildID);
-                    continue;
+                //Replace ticker if there's duplicate
+                preg_match_all("/\[[^\]]*\]/", $nickName, $matches);
+                if (!is_null($matches[1])){
+                    $nickName = preg_replace('/\[[^\]]*\]/', '', $nickName);
                 }
 
                 //corp ticker

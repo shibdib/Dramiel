@@ -182,9 +182,18 @@ $discord->on(
 
         // Run Queues
         $discord->loop->addPeriodicTimer(10, function() use ($discord, $logger) {
-            messageQueue($discord, $logger);
-            renameQueue($discord, $logger);
-            authQueue($discord, $logger);
+            $messageCount = countMessageQueue();
+            $renameCount = countRenameQueue();
+            $authCount = countAuthQueue();
+            if ((int)$messageCount > 0){
+                messageQueue($discord, $logger);
+            }
+            if ((int)$renameCount > 0){
+                renameQueue($discord, $logger);
+            }
+            if ((int)$authCount > 0){
+                authQueue($discord, $logger);
+            }
         });
 
         // Mem cleanup every 30 minutes

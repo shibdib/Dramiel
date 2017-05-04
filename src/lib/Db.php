@@ -244,6 +244,20 @@ function clearAllMessageQueue()
     return null;
 }
 
+//count queues
+function countAuthQueue()
+{
+    return dbQueryRow('SELECT Count(id) AS NumberOfAuth FROM authQueue');
+}
+function countRenameQueue()
+{
+    return dbQueryRow('SELECT Count(id) AS NumberOfRename FROM renameQueue');
+}
+function countMessageQueue()
+{
+    return dbQueryRow('SELECT Count(id) AS NumberOfMessage FROM messageQueue');
+}
+
 //CORP INFO
 /**
  * @param $corpID
