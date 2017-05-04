@@ -66,13 +66,18 @@ function renameQueue($discord, $logger)
             $guild = $discord->guilds->get('id', $queuedRename['guild']);
             $member = $guild->members->get('id', $queuedRename['discordID']);
             $setNick = $member->setNickname($queuedRename['nick']);
-            while ($setNick === FALSE){
+            $y = 0;
+            while ($setNick === FALSE && $y < 2){
+                sleep(3);
                 $setNick = $member->setNickname($queuedRename['nick']);
+                $y++;
             }
-            $guild->members->save($member);
-            $nickName = $member->nick;
-            $logger->addInfo("QueueProcessing - New name set for $nickName");
-            clearQueuedRename($id);
+            if ($setNick = TRUE) {
+                $guild->members->save($member);
+                $nickName = $member->nick;
+                $logger->addInfo("QueueProcessing - New name set for $nickName");
+                clearQueuedRename($id);
+            }
         } else {
             $x = 99;
         }
@@ -103,13 +108,18 @@ function authQueue($discord, $logger)
             $role = $guild->roles->get('id', $queuedAuth['roleID']);
             dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => (string)$queuedAuth['discordID']), 'auth');
             $auth = $member->addRole($role);
-            while ($auth === FALSE){
+            $y = 0;
+            while ($auth === FALSE && $y < 2){
+                sleep(3);
                 $auth = $member->addRole($role);
+                $y++;
             }
-            $guild->members->save($member);
-            $eveName = $queuedAuth['eveName'];
-            $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
-            clearQueuedAuth($id);
+            if ($auth = TRUE) {
+                $guild->members->save($member);
+                $eveName = $queuedAuth['eveName'];
+                $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
+                clearQueuedAuth($id);
+            }
         } else {
             $x = 99;
         }
