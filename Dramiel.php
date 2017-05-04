@@ -239,7 +239,7 @@ $discord->on(
             }
         );
 
-        //Welcome message
+       /* //Welcome message
         $discord->on(
             Event::GUILD_MEMBER_ADD,
             function($member) use ($logger, $config) {
@@ -251,7 +251,7 @@ $discord->on(
                     $logger->addInfo("welcomeMessage: $name has connected to the server, sending a welcome message.");
                 }
             }
-        );
+        );*/
     }
 );
 $discord->on(
