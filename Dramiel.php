@@ -180,16 +180,22 @@ $discord->on(
             }
         });
 
-        // Run Queues
+        // Run Message Queue
         $discord->loop->addPeriodicTimer(10, function() use ($discord, $logger) {
             $messageCount = countMessageQueue();
-            $renameCount = countRenameQueue();
-            $authCount = countAuthQueue();
             if ((int)$messageCount > 0){
                 messageQueue($discord, $logger);
+                sleep(1);
             }
+        });
+
+        // Run Other Queues
+        $discord->loop->addPeriodicTimer(60, function() use ($discord, $logger) {
+            $renameCount = countRenameQueue();
+            $authCount = countAuthQueue();
             if ((int)$renameCount > 0){
                 renameQueue($discord, $logger);
+                sleep(2);
             }
             if ((int)$authCount > 0){
                 authQueue($discord, $logger);

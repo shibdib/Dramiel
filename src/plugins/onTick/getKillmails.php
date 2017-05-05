@@ -73,7 +73,7 @@ class getKillmails
                 }
                 $this->logger->addInfo('Killmails: Checking for new killmails.');
                 $this->getKM();
-                setPermCache('killmailCheck', time() + 60);
+                setPermCache('killmailCheck', time() + 180);
                 $this->logger->addInfo('Killmails: Killmail check complete.');
             }
         }
