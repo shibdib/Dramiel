@@ -107,17 +107,17 @@ function authQueue($discord, $logger)
             $member = $guild->members->get('id', $queuedAuth['discordID']);
             $role = $guild->roles->get('id', $queuedAuth['roleID']);
             dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => (string)$queuedAuth['discordID']), 'auth');
-            $auth = $member->addRole($role);
-            $y = 0;
-            while ($auth === FALSE && $y < 2){
-                sleep(3);
-                $auth = $member->addRole($role);
-                $y++;
-            }
-            if ($auth = TRUE) {
-                $guild->members->save($member);
-                $eveName = $queuedAuth['eveName'];
-                $logger->addInfo("QueueProcessing - Role added successfully for $eveName");
+            if ($member->addRole($role)) {
+                $guild->members->save($member)->then(function () use ($queuedAuth, $id, $logger)
+                {
+                    $eveName = $queuedAuth['eveName'];
+                    $logger->addInfo("QueueProcessing - Role added successfully for {$eveName}");
+                    clearQueuedAuth($id);
+                }, function ($e)
+                {
+                    print_r($e->getMessage());
+                });
+            } else {
                 clearQueuedAuth($id);
             }
         } else {
