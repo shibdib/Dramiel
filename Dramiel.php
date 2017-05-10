@@ -48,7 +48,10 @@ gc_enable();
 $startTime = time();
 
 // check log file and rotate if necessary
-if (filesize('log/dramielLog.log') > 500000) {
+if (filesize('log/dramielLog.log') > 100000) {
+    if (is_file('log/dramielLogOld.log')){
+        rename('log/dramielLogOld.log', 'log/dramielLogOld2.log');
+    }
     rename('log/dramielLog.log', 'log/dramielLogOld.log');
 }
 
@@ -207,6 +210,16 @@ $discord->on(
             $logger->addInfo('Memory in use: ' . memory_get_usage() / 1024 / 1024 . 'MB');
             gc_collect_cycles(); // Collect garbage
             $logger->addInfo('Memory in use after garbage collection: ' . memory_get_usage() / 1024 / 1024 . 'MB');
+
+            // check log file and rotate if necessary
+            if (filesize('log/dramielLog.log') > 100000) {
+                if (is_file('log/dramielLogOld.log')){
+                    rename('log/dramielLogOld.log', 'log/dramielLogOld2.log');
+                }
+                rename('log/dramielLog.log', 'log/dramielLogOld.log');
+                touch('log/dramielLog.log');
+
+            }
         });
 
         $discord->on(
