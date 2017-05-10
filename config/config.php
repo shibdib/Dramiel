@@ -31,7 +31,8 @@ $config['bot'] = array(
     'guild' => dbQueryField("SELECT value FROM config WHERE variable = 'guild'", 'value', array(), 'config'), // guildID
     'adminRoles' => $adminRoles, //enter the roles that you'd like to have access to admin commands
     'restrictedChannels' => $restrictedChannels, //bot will not respond in these channels
-    'silentMode' => dbQueryField("SELECT value FROM config WHERE variable = 'silentMode'", 'value', array(), 'config')//set this to true if you want to disable all the chat commands
+    'silentMode' => dbQueryField("SELECT value FROM config WHERE variable = 'silentMode'", 'value', array(), 'config'),//set this to true if you want to disable all the chat commands
+    'webBot' => dbQueryField("SELECT value FROM config WHERE variable = 'webBot'", 'value', array(), 'host')//set this to true if you want to disable all the chat commands
 );
 
 $config['eve'] = array(

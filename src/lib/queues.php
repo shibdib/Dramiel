@@ -46,7 +46,7 @@ function messageQueue($discord, $logger)
 }
 
 // Rename queue
-function renameQueue($discord, $logger)
+function renameQueue($discordWeb, $logger)
 {
     $x = 0;
     while ($x < 4) {
@@ -63,21 +63,12 @@ function renameQueue($discord, $logger)
                 clearQueuedRename($id);
                 continue;
             }
-            $guild = $discord->guilds->get('id', $queuedRename['guild']);
-            $member = $guild->members->get('id', $queuedRename['discordID']);
-            $setNick = $member->setNickname($queuedRename['nick']);
-            $y = 0;
-            while ($setNick === FALSE && $y < 2){
-                sleep(3);
-                $setNick = $member->setNickname($queuedRename['nick']);
-                $y++;
-            }
-            if ($setNick = TRUE) {
-                $guild->members->save($member);
-                $nickName = $member->nick;
-                $logger->addInfo("QueueProcessing - New name set for $nickName");
-                clearQueuedRename($id);
-            }
+            $guildID = $queuedRename['guild'];
+            $userID = $queuedRename['discordID'];
+            $nick = $queuedRename['nick'];
+            $logger->addInfo("QueueProcessing- $userID has been renamed");
+            $discordWeb->guild->modifyGuildMember(['guild.id' => (int)$guildID, 'user.id' => (int)$userID, 'nick' => (string)$nick]);
+            clearQueuedRename($id);
         } else {
             $x = 99;
         }
@@ -86,7 +77,7 @@ function renameQueue($discord, $logger)
 }
 
 // Auth queue
-function authQueue($discord, $logger)
+function authQueue($discordWeb, $logger)
 {
     $x = 0;
     while ($x < 4) {
@@ -103,23 +94,13 @@ function authQueue($discord, $logger)
                 clearQueuedAuth($id);
                 continue;
             }
-            $guild = $discord->guilds->get('id', $queuedAuth['guildID']);
-            $member = $guild->members->get('id', $queuedAuth['discordID']);
-            $role = $guild->roles->get('id', $queuedAuth['roleID']);
             dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => (string)$queuedAuth['discordID']), 'auth');
-            if ($member->addRole($role)) {
-                $guild->members->save($member)->then(function () use ($queuedAuth, $id, $logger)
-                {
-                    $eveName = $queuedAuth['eveName'];
-                    $logger->addInfo("QueueProcessing - Role added successfully for {$eveName}");
-                    clearQueuedAuth($id);
-                }, function ($e)
-                {
-                    print_r($e->getMessage());
-                });
-            } else {
-                clearQueuedAuth($id);
-            }
+            $guildID = $queuedAuth['guildID'];
+            $userID = $queuedAuth['discordID'];
+            $roleID = $queuedAuth['roleID'];
+            $logger->addInfo("QueueProcessing- $userID has had roles added");
+            $discordWeb->guild->addGuildMemberRole(['guild.id' => (int)$guildID, 'user.id' => (int)$userID, 'role.id' => (int)$roleID]);
+            clearQueuedAuth($id);
         } else {
             $x = 99;
         }

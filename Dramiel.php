@@ -34,6 +34,7 @@ use Discord\WebSockets\Event;
 use Discord\WebSockets\WebSocket;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use RestCord\DiscordClient;
 
 // More memory allowance
 ini_set('memory_limit', '1024M');
@@ -83,6 +84,7 @@ authDB($logger);
 
 // Init Discord
 $discord = new Discord(['token' => $primary['bot']['token']]);
+$discordWeb = new DiscordClient(['token' => $config['bot']['webBot']]);
 
 // Load tick plugins
 $pluginDirs = array('src/plugins/onTick/*.php');
@@ -147,7 +149,7 @@ dbPrune();
 
 $discord->on(
     'ready',
-    function($discord) use ($logger, $config, $primary, $plugins, $pluginsT) {
+    function($discord) use ($logger, $config, $primary, $plugins, $pluginsT, $discordWeb) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -156,7 +158,13 @@ $discord->on(
         // We will echo to the console that the WebSocket is ready.
         $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
 
-        //Clear queue if it's super backed up
+        //Check if web bot has been invited
+        $guild = $this->discord->guilds->get('id', $config['bot']['guild']);
+        $webBot = @$guild->members->get('id', 311988269414088704);
+        if (is_null($webBot->joined_at)) {
+            $logger->error('DRAMIEL_WEB not found in server, please invite it and give it bot/admin roles (This is a new requirement). https://discordapp.com/oauth2/authorize?&client_id=311988269414088704&scope=bot');
+            die();
+        }
 
 
         //Set Initial Game
@@ -193,15 +201,14 @@ $discord->on(
         });
 
         // Run Other Queues
-        $discord->loop->addPeriodicTimer(60, function() use ($discord, $logger) {
+        $discord->loop->addPeriodicTimer(15, function() use ($discord, $discordWeb, $logger) {
             $renameCount = countRenameQueue();
             $authCount = countAuthQueue();
             if ((int)$renameCount > 0){
-                renameQueue($discord, $logger);
-                sleep(2);
+                renameQueue($discordWeb, $logger);
             }
             if ((int)$authCount > 0){
-                authQueue($discord, $logger);
+                authQueue($discordWeb, $logger);
             }
         });
 

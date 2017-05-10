@@ -41,6 +41,8 @@ function openDB($db = null)
         $db = __DIR__ . '/../../../config/botConfig.sqlite';
     } elseif ($db === 'eve') {
         $db = __DIR__ . '/../../database/eveData.db';
+    } elseif ($db === 'host') {
+        $db = '/home/bob/host.db';
     } else {
         $db = __DIR__ . '/../../database/dramiel.sqlite';
     }
