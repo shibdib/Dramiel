@@ -158,14 +158,6 @@ $discord->on(
         // We will echo to the console that the WebSocket is ready.
         $logger->addInfo('Discord WebSocket is ready!' . PHP_EOL);
 
-        //Check if web bot has been invited
-        $guild = $this->discord->guilds->get('id', $config['bot']['guild']);
-        $webBot = @$guild->members->get('id', 311988269414088704);
-        if (strlen($webBot->joined_at) < 5) {
-            $logger->error('DRAMIEL_WEB not found in server, please invite it and give it bot/admin roles (This is a new requirement). https://discordapp.com/oauth2/authorize?&client_id=311988269414088704&scope=bot');
-            $logger->addInfo('DRAMIEL_WEB not found in server, please invite it and give it bot/admin roles (This is a new requirement). https://discordapp.com/oauth2/authorize?&client_id=311988269414088704&scope=bot');
-        }
-
 
         //Set Initial Game
         $gameTitle = @$config['bot']['game'];
