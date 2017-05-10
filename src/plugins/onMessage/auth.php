@@ -175,7 +175,6 @@ class auth
                                 }
                                 $groupName = 'corp/alliance';
                             }
-                            break;
                         }
                     } else {
                         //Check if corpID matches
@@ -187,7 +186,6 @@ class auth
                                     queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                             }
-                            break;
                         }
                         //Check if allianceID matches
                         if ((int) $allianceID === (int) $authGroup['allianceID'] && (int) $authGroup['allianceID'] !== 0) {
@@ -198,7 +196,6 @@ class auth
                                     queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                             }
-                            break;
                         }
                     }
                 }
@@ -211,25 +208,21 @@ class auth
                             $groupName = 'plus5';
                             $roleID = $role->id;
                             queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
-                            break;
                         }
                         if ((@(int) $allianceContacts['standing'] === 10 || @(int) $corpContacts['standing'] === 10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus10Role']) {
                             $groupName = 'plus10';
                             $roleID = $role->id;
                             queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
-                            break;
                         }
                         if ((@(int) $allianceContacts['standing'] === -5 || @(int) $corpContacts['standing'] === -5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus5Role']) {
                             $groupName = 'minus5';
                             $roleID = $role->id;
                             queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
-                            break;
                         }
                         if ((@(int) $allianceContacts['standing'] === -10 || @(int) $corpContacts['standing'] === -10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus10Role']) {
                             $groupName = 'minus10';
                             $roleID = $role->id;
                             queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
-                            break;
                         }
                     }
                     if ($roleID === null) {
@@ -237,7 +230,7 @@ class auth
                             if ((string) $role->name === (string) $this->config['plugins']['auth']['standings']['neutralRole']) {
                                 $groupName = 'neut';
                                 $roleID = $role->id;
-                                break;
+                                queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                             }
                         }
                     }
