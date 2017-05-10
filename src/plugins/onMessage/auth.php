@@ -167,9 +167,11 @@ class auth
                             foreach ($roles as $role) {
                                 if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $roleID = $role->id;
+                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                                 if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $roleID = $role->id;
+                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                                 $groupName = 'corp/alliance';
                             }
@@ -182,6 +184,7 @@ class auth
                                 if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $groupName = 'corp';
                                     $roleID = $role->id;
+                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                             }
                             break;
@@ -192,6 +195,7 @@ class auth
                                 if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $groupName = 'alliance';
                                     $roleID = $role->id;
+                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                             }
                             break;
@@ -206,21 +210,25 @@ class auth
                         if ((@(int) $allianceContacts['standing'] === 5 || @(int) $corpContacts['standing'] === 5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus5Role']) {
                             $groupName = 'plus5';
                             $roleID = $role->id;
+                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                             break;
                         }
                         if ((@(int) $allianceContacts['standing'] === 10 || @(int) $corpContacts['standing'] === 10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus10Role']) {
                             $groupName = 'plus10';
                             $roleID = $role->id;
+                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                             break;
                         }
                         if ((@(int) $allianceContacts['standing'] === -5 || @(int) $corpContacts['standing'] === -5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus5Role']) {
                             $groupName = 'minus5';
                             $roleID = $role->id;
+                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                             break;
                         }
                         if ((@(int) $allianceContacts['standing'] === -10 || @(int) $corpContacts['standing'] === -10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus10Role']) {
                             $groupName = 'minus10';
                             $roleID = $role->id;
+                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                             break;
                         }
                     }
@@ -235,7 +243,6 @@ class auth
                     }
                 }
                 if (null !== $roleID) {
-                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                     $msg = ":white_check_mark: **Success:** {$eveName} has been successfully authed, you will receive your roles shortly.";
                     $this->logger->addInfo("auth: {$eveName} authed");
                     //$member->user->sendMessage($msg, false);
