@@ -192,18 +192,6 @@ $discord->on(
             }
         });
 
-        // Run Other Queues
-        $discord->loop->addPeriodicTimer(15, function() use ($discord, $discordWeb, $logger) {
-            $renameCount = countRenameQueue();
-            $authCount = countAuthQueue();
-            if ((int)$renameCount > 0){
-                renameQueue($discordWeb, $logger);
-            }
-            if ((int)$authCount > 0){
-                authQueue($discordWeb, $logger);
-            }
-        });
-
         // Mem cleanup every 30 minutes
         $discord->loop->addPeriodicTimer(1800, function() use ($logger) {
             $logger->addInfo('Memory in use: ' . memory_get_usage() / 1024 / 1024 . 'MB');
