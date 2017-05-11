@@ -390,7 +390,7 @@ class authCheck
 
                 //Replace ticker if there's duplicate
                 preg_match_all("/\[[^\]]*\]/", $nickName, $matches);
-                if (!is_null($matches[1])){
+                if (!is_null(@$matches[0])){
                     $nickName = preg_replace('/\[[^\]]*\]/', '', $nickName);
                 }
 

@@ -84,7 +84,7 @@ authDB($logger);
 
 // Init Discord
 $discord = new Discord(['token' => $primary['bot']['token']]);
-$discordWeb = new DiscordClient(['token' => $config['bot']['webBot']]);
+$discordWeb = new DiscordClient(['token' => $config['bot']['webBot']], ['logger' => 'PSR\Log\NullLogger']);
 
 // Load tick plugins
 $pluginDirs = array('src/plugins/onTick/*.php');
