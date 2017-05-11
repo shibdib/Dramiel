@@ -306,6 +306,7 @@ function getContacts($contactID)
 function queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID)
 {
     dbExecute('REPLACE INTO authQueue (`discordID`, `charID`, `eveName`, `pendingID`, `roleID`, `groupName`, `guildID`) VALUES (:discordID,:charID,:eveName,:pendingID,:roleID,:groupName,:guildID)', array(':discordID' => $discordID, ':charID' => $charID, ':eveName' => $eveName, ':pendingID' => $pendingID, ':roleID' => $roleID, ':groupName' => $groupName, ':guildID' => $guildID));
+    dbExecute('DELETE from pendingUsers WHERE `id` = :id', array(':id' => $pendingID), $pendingID);
 }
 
 function getQueuedAuth($id)
