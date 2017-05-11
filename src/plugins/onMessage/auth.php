@@ -148,12 +148,12 @@ class auth
                 $memberRoles = @$member->roles;
 
                 //remove roles to prevent auth issues
-                foreach (@$memberRoles as $role) {
+                /*foreach (@$memberRoles as $role) {
                     if (!in_array($role->name, $this->exempt, true)) {
                         $member->removeRole($role);
                         $guild->members->save($member);
                     }
-                }
+                }*/
 
                 $eveName = characterName($charID);
                 if (null === $eveName) {
