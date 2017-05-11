@@ -126,7 +126,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -143,7 +143,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -168,7 +168,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -185,7 +185,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -210,7 +210,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -227,7 +227,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -252,7 +252,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.6;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -269,7 +269,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -294,7 +294,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -311,7 +311,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -336,7 +336,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -353,7 +353,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -378,7 +378,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -395,7 +395,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -420,7 +420,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -437,7 +437,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -462,7 +462,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.8;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -479,7 +479,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -504,7 +504,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -521,7 +521,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -546,7 +546,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -563,7 +563,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -588,7 +588,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -605,7 +605,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -630,7 +630,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -647,7 +647,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -672,7 +672,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -689,7 +689,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -714,7 +714,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -731,7 +731,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -756,7 +756,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -773,7 +773,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -798,7 +798,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -815,7 +815,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -840,7 +840,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -857,7 +857,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -882,7 +882,7 @@ class siloFull
                                     //Check if silo has been checked before
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 0.4;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -899,7 +899,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
@@ -924,7 +924,7 @@ class siloFull
                                     //Check if silo has been checked before, and if it's an input silo ignore
                                     if (!isset($lastAmount) || $gooDifference < 0) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     $gooVolume = 1;
                                     $gooCurrent = $gooAmount * $gooVolume;
@@ -941,7 +941,7 @@ class siloFull
                                         $msg = "**{$typeName} Silo Full**\n";
                                     } elseif ($gooCurrent === $towerFull && $lastAmount !== $gooCurrent) {
                                         setPermCache("silo{$siloID}Amount", $gooAmount);
-                                        continue 2;
+                                        continue 3;
                                     }
                                     setPermCache("silo{$siloID}Amount", $gooAmount);
                                     $msg .= "**System: **{$systemName}\n";
