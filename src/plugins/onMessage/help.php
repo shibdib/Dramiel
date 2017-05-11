@@ -56,7 +56,7 @@ class help
      * @param $message
      * @return null
      */
-    public function onMessage($msgData, $message)
+    public function onMessage($msgData, $message, $discordWeb)
     {
         $channelID = (int) $msgData['message']['channelID'];
 

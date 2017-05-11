@@ -55,7 +55,7 @@ class getLog
      * @param $message
      * @return null
      */
-    public function onMessage($msgData, $message)
+    public function onMessage($msgData, $message, $discordWeb)
     {
         $this->message = $message;
 

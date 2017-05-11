@@ -223,7 +223,7 @@ $discord->on(
 
         $discord->on(
             Event::MESSAGE_CREATE,
-            function($message) use ($logger, $config, $primary, $plugins) {
+            function($message) use ($logger, $config, $primary, $plugins, $discordWeb) {
 
                 $msgData = array(
                     'message' => array(
@@ -247,7 +247,7 @@ $discord->on(
                     if ($message->content[0] == $config['bot']['trigger']) {
                         foreach ($plugins as $plugin) {
                             try {
-                                $plugin->onMessage($msgData, $message);
+                                $plugin->onMessage($msgData, $message, $discordWeb);
                             } catch (Exception $e) {
                                 $logger->addError('Error: ' . $e->getMessage());
                             }

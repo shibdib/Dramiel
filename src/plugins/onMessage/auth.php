@@ -68,9 +68,10 @@ class auth
     /**
      * @param $msgData
      * @param $message
+     * @param $discordWeb
      * @return null
      */
-    public function onMessage($msgData, $message)
+    public function onMessage($msgData, $message, $discordWeb)
     {
         $channelID = (int) $msgData['message']['channelID'];
 
@@ -167,12 +168,11 @@ class auth
                             foreach ($roles as $role) {
                                 if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $roleID = $role->id;
-                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
-                                    sleep(1);
+                                    addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                                 }
                                 if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $roleID = $role->id;
-                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                                    addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                                 }
                                 $groupName = 'corp/alliance';
                             }
@@ -185,7 +185,7 @@ class auth
                                 if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $groupName = 'corp';
                                     $roleID = $role->id;
-                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                                    addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                                 }
                             }
                             break;
@@ -196,7 +196,7 @@ class auth
                                 if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $groupName = 'alliance';
                                     $roleID = $role->id;
-                                    queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                                    addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                                 }
                             }
                             break;
@@ -211,22 +211,22 @@ class auth
                         if ((@(int) $allianceContacts['standing'] === 5 || @(int) $corpContacts['standing'] === 5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus5Role']) {
                             $groupName = 'plus5';
                             $roleID = $role->id;
-                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                            addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                         }
                         if ((@(int) $allianceContacts['standing'] === 10 || @(int) $corpContacts['standing'] === 10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus10Role']) {
                             $groupName = 'plus10';
                             $roleID = $role->id;
-                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                            addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                         }
                         if ((@(int) $allianceContacts['standing'] === -5 || @(int) $corpContacts['standing'] === -5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus5Role']) {
                             $groupName = 'minus5';
                             $roleID = $role->id;
-                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                            addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                         }
                         if ((@(int) $allianceContacts['standing'] === -10 || @(int) $corpContacts['standing'] === -10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus10Role']) {
                             $groupName = 'minus10';
                             $roleID = $role->id;
-                            queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                            addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                         }
                     }
                     if ($roleID === null) {
@@ -234,15 +234,15 @@ class auth
                             if ((string) $role->name === (string) $this->config['plugins']['auth']['standings']['neutralRole']) {
                                 $groupName = 'neut';
                                 $roleID = $role->id;
-                                queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                                addRole($discordWeb, $guildID, $eveName, $discordID, $roleID, $this->logger);
                             }
                         }
                     }
                 }
                 if (null !== $roleID) {
-                    $msg = ":white_check_mark: **Success:** {$eveName} has been successfully authed, you will receive your roles shortly.";
+                    insertNewUser($discordID, $charID, $eveName, $pendingID, $groupName);
+                    $msg = ":white_check_mark: **Success:** {$eveName} has been successfully authed.";
                     $this->logger->addInfo("auth: {$eveName} authed");
-                    //$member->user->sendMessage($msg, false);
                     $this->message->reply($msg);
                     //Add ticker if set and change name if nameEnforce is on
                     $nick = null;
@@ -256,7 +256,7 @@ class auth
                         }
                     }
                     if (null !== $nick) {
-                        queueRename($discordID, $nick, $this->guild);
+                        renameUser($discordWeb, $guildID, $eveName, $discordID, $nick, $this->logger);
                     }
                     return null;
                 }
