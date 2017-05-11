@@ -113,11 +113,7 @@ class price
 
             // If there is a single result, we'll get data now!
             if ($single) {
-                $typeID = $single['typeID'];
-
-                if (null === $typeID) {
-                    $typeID = $single;
-                }
+                $typeID = $single;
 
                 if ($systemName === 'pc') {
                     $solarSystemID = 'global';
