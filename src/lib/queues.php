@@ -65,8 +65,9 @@ function renameQueue($discordWeb, $logger)
             }
             $guildID = $queuedRename['guild'];
             $userID = $queuedRename['discordID'];
+            $eveName = $queuedRename['eveName'];
             $nick = $queuedRename['nick'];
-            $logger->addInfo("QueueProcessing- $userID has been renamed");
+            $logger->addInfo("QueueProcessing- $eveName has been renamed");
             $discordWeb->guild->modifyGuildMember(['guild.id' => (int)$guildID, 'user.id' => (int)$userID, 'nick' => (string)$nick]);
             clearQueuedRename($id);
         } else {
@@ -96,9 +97,10 @@ function authQueue($discordWeb, $logger)
             }
             dbExecute('DELETE from authUsers WHERE `discordID` = :discordID', array(':discordID' => (string)$queuedAuth['discordID']), 'auth');
             $guildID = $queuedAuth['guildID'];
+            $eveName = $queuedAuth['eveName'];
             $userID = $queuedAuth['discordID'];
             $roleID = $queuedAuth['roleID'];
-            $logger->addInfo("QueueProcessing- $userID has had roles added");
+            $logger->addInfo("QueueProcessing- $eveName has had roles added");
             $discordWeb->guild->addGuildMemberRole(['guild.id' => (int)$guildID, 'user.id' => (int)$userID, 'role.id' => (int)$roleID]);
             clearQueuedAuth($id);
         } else {

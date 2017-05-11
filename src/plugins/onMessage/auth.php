@@ -168,6 +168,7 @@ class auth
                                 if ((string) $role->name === (string) $authGroup['corpMemberRole']) {
                                     $roleID = $role->id;
                                     queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
+                                    sleep(1);
                                 }
                                 if ((string) $role->name === (string) $authGroup['allyMemberRole']) {
                                     $roleID = $role->id;
@@ -175,6 +176,7 @@ class auth
                                 }
                                 $groupName = 'corp/alliance';
                             }
+                            break;
                         }
                     } else {
                         //Check if corpID matches
@@ -186,6 +188,7 @@ class auth
                                     queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                             }
+                            break;
                         }
                         //Check if allianceID matches
                         if ((int) $allianceID === (int) $authGroup['allianceID'] && (int) $authGroup['allianceID'] !== 0) {
@@ -196,6 +199,7 @@ class auth
                                     queueAuth($discordID, $charID, $eveName, $pendingID, $roleID, $groupName, $guildID);
                                 }
                             }
+                            break;
                         }
                     }
                 }
