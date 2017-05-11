@@ -53,12 +53,14 @@ class authCheck
      * @param $config
      * @param $discord
      * @param $logger
+     * @param $discordWeb
      */
-    public function init($config, $primary, $discord, $logger)
+    public function init($config, $primary, $discord, $discordWeb, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;
         $this->logger = $logger;
+        $this->discordWeb = $discordWeb;
         $this->guildID = $config['bot']['guild'];
         $this->exempt = $config['plugins']['auth']['exempt'];
         $this->corpTickers = $config['plugins']['auth']['corpTickers'];
@@ -416,7 +418,7 @@ class authCheck
                             continue;
                         }
                         if ($nick !== $nickName) {
-                            queueRename($discordID, $nick, $this->guildID);
+                            renameUser($this->discordWeb, $this->guildID, $eveName, $discordID, $nick, $this->logger);
                         }
                         continue;
                     }
@@ -441,7 +443,7 @@ class authCheck
                             continue;
                         }
                         if ($nick !== $nickName) {
-                            queueRename($discordID, $nick, $this->guildID);
+                            renameUser($this->discordWeb, $this->guildID, $eveName, $discordID, $nick, $this->logger);
                             addCorpInfo($character['corporation_id'], $corpTicker, $corpName);
                         }
                         continue;
@@ -450,7 +452,7 @@ class authCheck
                 }
                 $nick = "{$eveName}";
                 if ($nick !== $nickName) {
-                    queueRename($discordID, $nick, $this->guildID);
+                    renameUser($this->discordWeb, $this->guildID, $eveName, $discordID, $nick, $this->logger);
                 }
                 continue;
             }

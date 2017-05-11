@@ -46,7 +46,7 @@ class twitterOutput
      * @param $discord
      * @param $logger
      */
-    public function init($config, $primary, $discord, $logger)
+    public function init($config, $primary, $discord, $discordWeb, $logger)
     {
         return null;
         $this->config = $config;

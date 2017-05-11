@@ -50,7 +50,7 @@ class notifications
      * @param $discord
      * @param $logger
      */
-    public function init($config, $primary, $discord, $logger)
+    public function init($config, $primary, $discord, $discordWeb, $logger)
     {
         $this->config = $config;
         $this->discord = $discord;

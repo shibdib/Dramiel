@@ -101,15 +101,15 @@ foreach ($pluginDirs as $dir) {
         require_once $plugin;
         $fileName = str_replace('.php', '', basename($plugin));
         $p = new $fileName();
-        $p->init($config, $primary, $discord, $logger);
+        $p->init($config, $primary, $discord, $discordWeb, $logger);
         $pluginsT[] = $p;
     }
 }
 // Number of plugins loaded
 $logger->info('Loaded: ' . count($pluginsT) . ' background plugins');
 
-if ($config['bot']['silentMode'] == 'false' || !isset($config['bot']['silentMode'])) {
 // Load chat plugins
+if ($config['bot']['silentMode'] == 'false' || !isset($config['bot']['silentMode'])) {
     $pluginDirs = array('src/plugins/onMessage/*.php', 'src/plugins/admin/*.php');
     $adminPlugins = array('setNickname', 'getLog', 'setGame', 'setAvatar');
     $logger->addInfo('Loading in chat plugins');
