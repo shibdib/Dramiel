@@ -264,6 +264,15 @@ class notifications
                         case 21: // member left corp
                             $msg = 'skip';
                             break;
+                        case 22: // ceo resign
+                            preg_match('/(?<=newCeoID: )\S+/i', $notificationString, $newCeoID);
+                            preg_match('/(?<=oldCeoID: )\S+/i', $notificationString, $oldCeoID);
+                            preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
+                            $newCeoName = characterName($newCeoID);
+                            $oldCeoName = characterName($oldCeoID);
+                            $corpName = corpName($corpID);
+                            $msg = "$oldCeoName has resigned as CEO for $corpName, $newCeoName has been appointed as the new CEO.";
+                            break;
                         case 25: // corp vote
                             $msg = 'skip';
                             break;
