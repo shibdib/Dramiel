@@ -417,6 +417,7 @@ class authCheck
                         } elseif (strpos($nickName, $corpTicker) !== false) {
                             continue;
                         }
+                        $nick = preg_replace('/\s+/', ' ', $nick);
                         if ($nick !== $nickName) {
                             renameUser($this->discordWeb, $this->guildID, $eveName, $discordID, $nick, $this->logger);
                         }
