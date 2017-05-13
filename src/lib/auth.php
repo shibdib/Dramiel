@@ -10,6 +10,7 @@ function addRole($discordWeb, $guildID, $eveName, $userID, $roleID, $logger)
 // Rename
 function renameUser($discordWeb, $guildID, $eveName, $userID, $nick, $logger)
 {
-    $logger->addInfo("QueueProcessing- $eveName has had roles added");
+    $nick = preg_replace('/\s+/', ' ', $nick);
+    $logger->addInfo("QueueProcessing- $eveName has been renamed to $nick");
     $discordWeb->guild->modifyGuildMember(['guild.id' => (int)$guildID, 'user.id' => (int)$userID, 'nick' => (string)$nick]);
 }
