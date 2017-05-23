@@ -89,11 +89,6 @@ class price
             $itemName = $data['messageString'];
             $single = getTypeID($itemName);
 
-            // Quick lookups
-            if (isset($quickLookUps[$itemName])) {
-                $single = $quickLookUps[$itemName];
-            }
-
             // Check if the channel is restricted
             if (in_array($channelID, $this->excludeChannel, true)) {
                 return $this->message->reply('**Price Check not allowed in this channel**');
