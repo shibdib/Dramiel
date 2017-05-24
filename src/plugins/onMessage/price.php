@@ -81,18 +81,6 @@ class price
         // Bind a few things to vars for the plugins
         $message = $msgData['message']['message'];
 
-        // Quick Lookups
-        $quickLookUps = array(
-            'plex' => array(
-                'typeID' => 29668,
-                'typeName' => "30 Day Pilot's License Extension (PLEX)"
-            ),
-            '30 day' => array(
-                'typeID' => 29668,
-                'typeName' => "30 Day Pilot's License Extension (PLEX)"
-            )
-        );
-
         $data = command(strtolower($message), $this->information()['trigger'], $this->config['bot']['trigger']);
 
         if (isset($data['trigger'])) {
@@ -100,11 +88,6 @@ class price
             $systemName = $data['trigger'];
             $itemName = $data['messageString'];
             $single = getTypeID($itemName);
-
-            // Quick lookups
-            if (isset($quickLookUps[$itemName])) {
-                $single = $quickLookUps[$itemName];
-            }
 
             // Check if the channel is restricted
             if (in_array($channelID, $this->excludeChannel, true)) {
