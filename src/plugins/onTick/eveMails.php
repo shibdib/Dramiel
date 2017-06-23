@@ -160,7 +160,8 @@ class evemails
                 $messageSplit = str_split($content, 1850);
 
                 // Stitch the mail together
-                $msg = "**Mail By: **{$sentBy}\n";
+                $msg = "**------------------------------------**\n";
+                $msg .= "**Mail By: **{$sentBy}\n";
                 $msg .= "**Sent Date: **{$sentDate}\n";
                 $msg .= "**Title: ** {$title}\n";
                 $msg .= "**Content: **\n";
