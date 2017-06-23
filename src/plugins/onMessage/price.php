@@ -85,11 +85,11 @@ class price
         // Quick Lookups
         $quickLookUps = array(
             'plex' => array(
-                'typeID' => 29668,
+                'typeID' => 44992,
                 'typeName' => "30 Day Pilot's License Extension (PLEX)"
             ),
             '30 day' => array(
-                'typeID' => 29668,
+                'typeID' => 44992,
                 'typeName' => "30 Day Pilot's License Extension (PLEX)"
             )
         );
