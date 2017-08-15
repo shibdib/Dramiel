@@ -3,9 +3,6 @@
 
 EVE Discord Bot
 
-
-http://dram.shibdib.info/ I'll host your bot for you!!
-
 https://isk-starter.com/campaigns/58469d73876c510010eb88d8/ Any little bit is appreciated
 
 https://discord.gg/wD7n6pr For the official Dramiel discord server.
