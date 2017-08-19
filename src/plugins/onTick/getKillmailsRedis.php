@@ -86,7 +86,7 @@ class getKillmailsRedis
             $i++;
 
             //Check if mail is null
-            if (null === $kill['killID']) {
+            if (!$kill || !array_key_exists('killID', $kill)) {
                 break;
             }
 
@@ -129,7 +129,7 @@ class getKillmailsRedis
                     $killID = $kmGroup['startMail'];
                 }
 
-                //Check if id's are in the kill
+                //setup variables
                 $corpLoss = false;
                 $allianceLoss = false;
                 $corpKill = false;
@@ -137,11 +137,13 @@ class getKillmailsRedis
                 $attackerCorpArray = array();
                 $attackerAllianceArray = array();
 
+                //Populate arrays with corp and alliance ids of attackers
                 foreach ($kill['killmail']['attackers'] as $attacker) {
                     $attackerCorpArray[] = (int) @$attacker['corporation']['id'];
                     $attackerAllianceArray[] = (int) @$attacker['alliance']['id'];
                 }
 
+                //check if it was corp or alliance kill or lossmail
                 if ((int) @$kill['killmail']['victim']['corporation']['id'] === $kmGroup['corpID'] && (int) $kmGroup['corpID'] !== 0) {
                     $corpLoss = true;
                 } elseif ((int) @$kill['killmail']['victim']['alliance']['id'] === $kmGroup['allianceID'] && (int) $kmGroup['allianceID'] !== 0) {
@@ -151,18 +153,21 @@ class getKillmailsRedis
                 } elseif (in_array((int) $kmGroup['allianceID'], $attackerAllianceArray) && (int) $kmGroup['allianceID'] !== 0) {
                     $allianceKill = true;
                 } else {
-                    break;
+                	//if it wasn't any of these continue in case there is another group to process
+                    continue;
                 }
 
-                //Check if it's a lossmail and lossmails are turned off
+                //Check if it's a lossmail and continue to next group if lossmails are turned off
                 if (($corpLoss === true || $allianceLoss === true) && $kmGroup['lossMails'] === 'false') {
-                    break;
+                    continue;
                 }
 
-                //if big kill isn't set, disable it
+                //if big kill isn't set, disable it (unless someone explodes with a lot of plex..)
                 if (null === $kmGroup['bigKill']) {
                     $kmGroup['bigKill'] = 99999999999999999999999999;
                 }
+                
+                //get the kill values
                 $killID = $kill['killmail']['killID'];
                 $channelID = $kmGroup['channel'];
                 $systemName = $kill['killmail']['solarSystem']['name'];
@@ -187,10 +192,10 @@ class getKillmailsRedis
                 $totalValue = number_format($kill['zkb']['totalValue']);
                 // Check if it's a structure
                 if ($victimName !== '') {
-                    if ($rawValue >= $kmGroup['bigKill']) {
+                    if ($kmGroup['bigKill'] != null && $rawValue >= $kmGroup['bigKill']) {
                         $channelID = $kmGroup['bigKillChannel'];
                         $msg = "@here \n :warning:***Expensive Killmail***:warning: \n **{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
-                    } elseif ($rawValue <= $kmGroup['bigKill']) {
+                    } elseif ($kmGroup['bigKill'] == null || $rawValue <= $kmGroup['bigKill']) {
                         $msg = "**{$killTime}**\n\n**{$shipName}** worth **{$totalValue} ISK** flown by **{$victimName}** of (***{$victimCorpName}|{$victimAllianceName}***) killed in {$systemName}\nhttps://zkillboard.com/kill/{$killID}/";
                     }
                 } elseif ($victimName === '') {
@@ -203,6 +208,7 @@ class getKillmailsRedis
                 queueMessage($msg, $channelID, $this->guild);
                 $this->logger->addInfo("Killmails: Mail {$killID} queued.");
                 setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
+                //don't process the same kill twice
                 break;
             }
         }

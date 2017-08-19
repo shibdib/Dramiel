@@ -28,7 +28,7 @@ use Monolog\Logger;
 
 /**
  * @param $url
- * @return SimpleXMLElement|null|string
+ * @return SimpleXMLElement|null
  */
 function makeApiRequest($url)
 {
@@ -64,7 +64,7 @@ function makeApiRequest($url)
 function serverStatus()
 {
     $logger = new Logger('eveApi');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     try {
         // Initialize a new request for this URL
         $ch = curl_init('https://api.eveonline.com/server/ServerStatus.xml.aspx');
@@ -101,7 +101,7 @@ function serverStatus()
 function characterName($characterID)
 {
     $character = characterDetails($characterID);
-    $name = (string)$character['name'];
+    $name = (string) $character['name'];
     if (null === $name || '' === $name) { // Make sure it's always set.
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$characterID}";
         $xml = makeApiRequest($url);
@@ -117,11 +117,16 @@ function characterName($characterID)
  * @return mixed
  */
 ////Character name to ID
+/**
+ * @param string $characterName
+ *
+ * @return string
+ */
 function characterID($characterName)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
-    $characterName = urlencode($characterName);
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
+    $characterName = rawurlencode(urldecode($characterName));
 
     try {
         // Initialize a new request for this URL
@@ -138,7 +143,7 @@ function characterID($characterName)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $id = (int)$data['character'][0];
+        $id = (int) $data['character'][0];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -160,7 +165,7 @@ function characterID($characterName)
 function characterDetails($characterID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -194,7 +199,7 @@ function characterDetails($characterID)
 function systemName($systemID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -211,7 +216,7 @@ function systemName($systemID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string)$data['solar_system_name'];
+        $name = (string) $data['name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -226,19 +231,18 @@ function systemName($systemID)
 }
 
 /**
- * @param string $corpName
+ * @param string $systemID
  * @return mixed
- */
-////Corp name to ID
-function corpID($corpName)
+ * Return system information
+*/
+function systemDetails($systemID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
-    $corpName = urlencode($corpName);
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
-        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?search={$corpName}&categories=corporation&language=en-us&strict=true&datasource=tranquility");
+        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/systems/{$systemID}/");
         // Set the options for this request
         curl_setopt_array($ch, array(
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
@@ -251,7 +255,79 @@ function corpID($corpName)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $id = (int)$data['corporation'][0];
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
+    }
+
+    return $data;
+}
+
+/**
+ * @param string $regionID
+ * @return mixed
+ * Return region information
+*/
+function regionDetails($regionID)
+{
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
+
+    try {
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/universe/regions/{$regionID}/");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
+
+    } catch (Exception $e) {
+        $logger->error('EVE ESI Error: ' . $e->getMessage());
+        return null;
+    }
+
+    return $data;
+}
+
+/**
+ * @param string $corpName
+ * @return mixed
+ */
+////Corp name to ID
+/**
+ * @param string $corpName
+ */
+function corpID($corpName)
+{
+    $logger = new Logger('eveESI');
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
+    $corpName = urlencode($corpName);
+
+    try {
+        // Initialize a new request for this URL
+        $ch = curl_init("https://esi.tech.ccp.is/latest/search/?categories=corporation&datasource=tranquility&language=en-us&search={$corpName}&strict=true");
+        // Set the options for this request
+        curl_setopt_array($ch, array(
+            CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
+            CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
+        ));
+        // Fetch the data from the URL
+        $data = curl_exec($ch);
+        // Close the connection
+        curl_close($ch);
+        $data = json_decode($data, TRUE);
+        $id = (int) $data['corporation'][0];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -274,7 +350,7 @@ function corpID($corpName)
 function corpName($corpID)
 {
     $corporation = corpDetails($corpID);
-    $name = (string)$corporation['corporation_name'];
+    $name = (string) $corporation['corporation_name'];
     if (null === $name || '' === $name) { // Make sure it's always set.
         $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?ids={$corpID}";
         $xml = makeApiRequest($url);
@@ -294,7 +370,7 @@ function corpName($corpID)
 function corpDetails($corpID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -328,7 +404,7 @@ function corpDetails($corpID)
 function allianceName($allianceID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -345,7 +421,7 @@ function allianceName($allianceID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string)$data['alliance_name'];
+        $name = (string) $data['alliance_name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -367,7 +443,7 @@ function allianceName($allianceID)
 function systemID($systemName)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     $systemName = urlencode($systemName);
 
     try {
@@ -385,7 +461,7 @@ function systemID($systemName)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $id = (int)$data['solarsystem'][0];
+        $id = (int) $data['solarsystem'][0];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -407,7 +483,7 @@ function systemID($systemName)
 function apiTypeName($typeID)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
 
     try {
         // Initialize a new request for this URL
@@ -424,7 +500,7 @@ function apiTypeName($typeID)
         // Close the connection
         curl_close($ch);
         $data = json_decode($data, TRUE);
-        $name = (string)$data['type_name'];
+        $name = (string) $data['name'];
 
     } catch (Exception $e) {
         $logger->error('EVE ESI Error: ' . $e->getMessage());
@@ -446,7 +522,7 @@ function apiTypeName($typeID)
 function apiTypeID($typeName)
 {
     $logger = new Logger('eveESI');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '../../log/libraryError.log', Logger::DEBUG));
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
     $typeName = urlencode($typeName);
     try {
         // Initialize a new request for this URL
@@ -468,7 +544,7 @@ function apiTypeID($typeName)
         $logger->error('Fuzzwork Error: ' . $e->getMessage());
         return null;
     }
-    $id = (int)$data['typeID'];
+    $id = (int) $data['typeID'];
 
     if (null === $id) { // Make sure it's always set.
         $id = 'Unknown';
@@ -478,6 +554,9 @@ function apiTypeID($typeName)
 }
 
 ////Char/Object ID to name via CCP
+/**
+ * @param string $moonID
+ */
 function apiMoonName($moonID)
 {
     $url = "https://api.eveonline.com/eve/CharacterName.xml.aspx?IDs={$moonID}";

@@ -87,17 +87,11 @@ class auth
         $userID = $msgData['message']['fromID'];
         $userName = $msgData['message']['from'];
         $message = $msgData['message']['message'];
-        $channelInfo = $this->message->channel;
-        $guildID = $channelInfo[@guild_id];
+        $guildID = $this->guild;
+        $guild = $this->discord->guilds->get('id', $guildID);
         $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
         if (isset($data['trigger'])) {
-            if (isset($this->config['bot']['primary'])) {
-                if ($guildID != $this->config['bot']['primary']) {
-                    $this->message->reply('**Failure:** The auth code your attempting to use is for another discord server');
-                    return null;
-                }
 
-            }
             // If config is outdated
             if (null === $this->authGroups) {
                 $this->message->reply('**Failure:** Please update the bots config to the latest version.');
@@ -145,8 +139,12 @@ class auth
                 }
                 $role = null;
 
-                $roles = @$this->message->channel->guild->roles;
-                $member = @$this->message->channel->guild->members->get('id', $userID);
+                $roles = @$guild->roles;
+                $member = @$guild->members->get('id', $userID);
+                if (null === $member) {
+                    $this->message->reply("**Failure:** You're not a member of the correct guild.");
+                    return null;
+                }
                 $eveName = characterName($charID);
                 if (null === $eveName) {
                     $this->message->reply('**Failure:** Unable to auth at this time, ESI is down. Please try again later.');
@@ -196,39 +194,42 @@ class auth
                     $allianceContacts = getContacts($allianceID);
                     $corpContacts = getContacts($corpID);
                     foreach ($roles as $role) {
-                        if ((@(int)$allianceContacts['standings'] === 5 || @(int)$corpContacts['standings'] === 5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus5Role']) {
+                        if ((@(int) $allianceContacts['standing'] === 5 || @(int) $corpContacts['standing'] === 5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus5Role']) {
                             $member->addRole($role);
                             $role = 'blue';
                             break;
                         }
-                        if ((@(int)$allianceContacts['standings'] === 10 || @(int)$corpContacts['standings'] === 10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['plus10Role']) {
+                        if ((@(int) $allianceContacts['standing'] === 10 || @(int) $corpContacts['standing'] === 10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['plus10Role']) {
                             $member->addRole($role);
                             $role = 'blue';
                             break;
                         }
-                        if ((@(int)$allianceContacts['standings'] === 0 || @(int)$corpContacts['standings'] === 0 || (@(int)$allianceContacts['standings'] && @(int)$corpContacts['standings'] === null || '')) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['neutralRole']) {
-                            $member->addRole($role);
-                            $role = 'neut';
-                            break;
-                        }
-                        if ((@(int)$allianceContacts['standings'] === -5 || @(int)$corpContacts['standings'] === -5) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus5Role']) {
+                        if ((@(int) $allianceContacts['standing'] === -5 || @(int) $corpContacts['standing'] === -5) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus5Role']) {
                             $member->addRole($role);
                             $role = 'red';
                             break;
                         }
-                        if ((@(int)$allianceContacts['standings'] === -10 || @(int)$corpContacts['standings'] === -10) && (string)$role->name === (string)$this->config['plugins']['auth']['standings']['minus10Role']) {
+                        if ((@(int) $allianceContacts['standing'] === -10 || @(int) $corpContacts['standing'] === -10) && (string) $role->name === (string) $this->config['plugins']['auth']['standings']['minus10Role']) {
                             $member->addRole($role);
                             $role = 'red';
                             break;
                         }
                     }
+                    if ($role === null) {
+                        foreach ($roles as $role) {
+                            if ((string) $role->name === (string) $this->config['plugins']['auth']['standings']['neutralRole']) {
+                                $member->addRole($role);
+                                $role = 'neut';
+                                break;
+                            }
+                        }
+                    }
                 }
                 if (null !== $role) {
-                    $guild = $this->discord->guilds->get('id', $guildID);
                     $guild->members->save($member);
                     insertUser($this->db, $this->dbUser, $this->dbPass, $this->dbName, $userID, $charID, $eveName, $role);
                     disableReg($this->db, $this->dbUser, $this->dbPass, $this->dbName, $code);
-                    $msg = ":white_check_mark: **Success:** {$userName} has been successfully authed.";
+                    $msg = ":white_check_mark: **Success:** {$eveName} has been successfully authed.";
                     $this->logger->addInfo("auth: {$eveName} authed");
                     $this->message->reply($msg);
                     //Add ticker if set and change name if nameEnforce is on

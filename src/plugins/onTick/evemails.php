@@ -82,7 +82,7 @@ class evemails
     {
         // What was the servers last reported state
         $lastStatus = getPermCache('serverState');
-        if ($lastStatus == 'online') {
+        if ($lastStatus === 'online') {
             foreach ($this->apiKey as $apiKey) {
                 //Check if api is set
                 if ($apiKey['keyID'] === '' || $apiKey['vCode'] === '' || $apiKey['characterID'] === null) {
@@ -159,7 +159,8 @@ class evemails
                 $messageSplit = str_split($content, 1850);
 
                 // Stitch the mail together
-                $msg = "**Mail By: **{$sentBy}\n";
+                $msg = "**------------------------------------**\n";
+                $msg .= "**Mail By: **{$sentBy}\n";
                 $msg .= "**Sent Date: **{$sentDate}\n";
                 $msg .= "**Title: ** {$title}\n";
                 $msg .= "**Content: **\n";

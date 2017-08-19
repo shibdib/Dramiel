@@ -99,8 +99,12 @@ class charInfo
                 return $this->message->reply('**Error:** ESI is down. Try again later.');
             }
             $corporationDetails = corpDetails($corporationID);
-            $allianceID = $corporationDetails['alliance_id'];
-            $allianceName = allianceName($allianceID);
+            $allianceID = @$corporationDetails['alliance_id'];
+            if (null !== $allianceID) {
+                $allianceName = allianceName($allianceID);
+            } else {
+                $allianceName = '';
+            }
             $characterName = $characterDetails['name'];
             $dateOfBirth = $characterDetails['birthday'];
 
@@ -115,14 +119,21 @@ class charInfo
                 return $this->message->reply('**Error:** ZKill is down. Try again later.');
             }
             foreach ($xml->result->rowset->row as $kill) {
-                $lastSeenSystemID = $kill->attributes()->solarSystemID;
-                $lastSeenSystem = systemName($lastSeenSystemID);
-                $lastSeenDate = $kill->attributes()->killTime;
+                $lastSeenSystemID = @$kill->attributes()->solarSystemID;
+                $lastSeenDate = @$kill->attributes()->killTime;
+                if (null === $lastSeenSystemID || null === $lastSeenDate) {
+                    $lastSeenSystem = 'No activity reported.';
+                    $lastSeenDate = 'No activity reported.';
+                } else {
+                    $lastSeenSystem = getSystemName($lastSeenSystemID);
+                }
             }
             foreach ($xml->result->rowset->row->rowset->row as $attacker) {
                 if ($attacker->attributes()->characterID == $characterID) {
                     $lastSeenShipID = $attacker->attributes()->shipTypeID;
-                    $lastSeenShip = apiTypeName($lastSeenShipID);
+                    $lastSeenShip = getTypeName($lastSeenShipID);
+                } else {
+                    $lastSeenShip = 'No activity reported.';
                 }
             }
             $url = "https://zkillboard.com/character/{$characterID}/";

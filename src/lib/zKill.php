@@ -22,3 +22,48 @@ function zKillRedis()
     }
     return $data['package'];
 }
+
+function getStartMail($kmGroup)
+{
+    if ($kmGroup['allianceID'] === '0' && $kmGroup['lossMails'] === 'true' && $kmGroup['corpID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/corporationID/{$kmGroup['corpID']}/limit/1/";
+    }
+    if ($kmGroup['allianceID'] === '0' && $kmGroup['lossMails'] === 'false' && $kmGroup['corpID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/kills/corporationID/{$kmGroup['corpID']}/limit/1/";
+    }
+    if ($kmGroup['allianceID'] !== '0' && $kmGroup['lossMails'] === 'true' && $kmGroup['allianceID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/allianceID/{$kmGroup['allianceID']}/limit/1/";
+    }
+    if ($kmGroup['allianceID'] !== '0' && $kmGroup['lossMails'] === 'false' && $kmGroup['allianceID'] !== '0') {
+        $url = "https://zkillboard.com/api/no-attackers/no-items/kills/allianceID/{$kmGroup['allianceID']}/limit/1/";
+    }
+
+    if (!isset($url)) { // Make sure it's always set.
+        return null;
+    }
+
+    $kill = json_decode(downloadData($url), true);
+    if (null !== $kill) {
+        foreach ($kill as $mail) {
+            $killID = $mail['killID'];
+            setPermCache("{$kmGroup['name']}newestKillmailID", $killID);
+        }
+    }
+}
+
+function getStartBigMail()
+{
+    $url = 'https://zkillboard.com/api/kills/orderDirection/desc/iskValue/10000000000/';
+
+    if (!isset($url)) { // Make sure it's always set.
+        return null;
+    }
+
+    $kill = json_decode(downloadData($url), true);
+    if (null !== $kill) {
+        foreach ($kill as $mail) {
+            $killID = $mail['killID'];
+            setPermCache('bigKillNewestKillmailID', $killID);
+        }
+    }
+}

@@ -158,7 +158,8 @@ class notifications
                 $sentDate = $notification['sentDate'];
                 $channelID = $this->toDiscordChannel;
                 if ($notificationID > $this->newestNotificationID) {
-                    $notificationString = explode("\n", $this->getNotificationText($keyID, $vCode, $characterID, $notificationID));
+                    $notificationString = $this->getNotificationText($keyID, $vCode, $characterID, $notificationID);
+                    $notificationArray = explode("\n", $this->getNotificationText($keyID, $vCode, $characterID, $notificationID));
                     switch ($typeID) {
                         case 1: // Old
                             $msg = 'skip';
@@ -173,60 +174,52 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 5: // War Declared
-                            $result = preg_split('/againstID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $defAllianceID = $result_split[1];
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            $defAllianceName = allianceName($defAllianceID[0]);
+                            if ($defAllianceName === '' || ' ' || null) {
+                                $defAllianceName = corpName($defAllianceID[0]);
                             }
-                            $defAllianceName = allianceName($defAllianceID);
-                            if ($defAllianceName === 'Unknown') {
-                                $defAllianceName = corpName($defAllianceID);
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            $aggAllianceName = allianceName($aggAllianceID[0]);
+                            if ($aggAllianceName === '' || ' ' || null) {
+                                $aggAllianceName = corpName($aggAllianceID[0]);
                             }
-                            $result = preg_split('/declaredByID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $aggAllianceID = $result_split[1];
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = '@everyone | War declared. Fighting begins in roughly 24 hours.';
+                            } else {
+                                $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
                             }
-                            $aggAllianceName = allianceName($aggAllianceID);
-                            if ($aggAllianceName === 'Unknown') {
-                                $aggAllianceName = corpName($aggAllianceID);
-                            }
-                            $msg = "@everyone | War declared by {$aggAllianceName} against {$defAllianceName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 6: // Corp joins war (Not enough info in api to say who the 3rd party is)
-                            $defAllianceID = trim(explode(': ', $notificationString[0])[1]);
-                            $aggAllianceID = trim(explode(': ', $notificationString[2])[1]);
+                            $defAllianceID = trim(explode(': ', $notificationArray[0])[1]);
+                            $aggAllianceID = trim(explode(': ', $notificationArray[2])[1]);
                             $defAllianceName = allianceName($defAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID);
                             $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been joined by a third party. This new group may begin fighting in roughly 24 hours.";
                             break;
                         case 7: // War Declared corp
-                            $defCorpID = trim(explode(': ', $notificationString[0])[1]);
-                            $aggCorpID = trim(explode(': ', $notificationString[2])[1]);
+                            $defCorpID = trim(explode(': ', $notificationArray[0])[1]);
+                            $aggCorpID = trim(explode(': ', $notificationArray[2])[1]);
                             $defCorpName = corpName($defCorpID);
                             $aggCorpName = corpName($aggCorpID);
                             $msg = "@everyone | War declared by {$aggCorpName} against {$defCorpName}. Fighting begins in roughly 24 hours.";
                             break;
                         case 8: // Alliance war invalidated by CONCORD
-                            $result = preg_split('/againstID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $defAllianceID = $result_split[1];
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            $defAllianceName = allianceName($defAllianceID[0]);
+                            if ($defAllianceName === 'Unknown' || '' || ' ' || null) {
+                                $defAllianceName = corpName($defAllianceID[0]);
                             }
-                            $defAllianceName = allianceName($defAllianceID);
-                            if ($defAllianceName === 'Unknown') {
-                                $defAllianceName = corpName($defAllianceID);
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            $aggAllianceName = allianceName($aggAllianceID[0]);
+                            if ($aggAllianceName === 'Unknown' || '' || ' ' || null) {
+                                $aggAllianceName = corpName($aggAllianceID[0]);
                             }
-                            $result = preg_split('/declaredByID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $aggAllianceID = $result_split[1];
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = 'The war has been invalidated. Fighting ends in roughly 24 hours.';
+                            } else {
+                                $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
                             }
-                            $aggAllianceName = allianceName($aggAllianceID);
-                            if ($aggAllianceName === 'Unknown') {
-                                $aggAllianceName = corpName($aggAllianceID);
-                            }
-                            $msg = "The war between {$aggAllianceName} and {$defAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
                             break;
                         case 9: // Pilot bill
                             $msg = 'skip';
@@ -256,10 +249,10 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 19: // corp tax changed
-                            $corpID = trim(explode(': ', $notificationString[0])[1]);
+                            $corpID = trim(explode(': ', $notificationArray[0])[1]);
                             $corpName = corpName($corpID);
-                            $oldTax = trim(explode(': ', $notificationString[2])[1]);
-                            $newTax = trim(explode(': ', $notificationString[1])[1]);
+                            $oldTax = trim(explode(': ', $notificationArray[2])[1]);
+                            $newTax = trim(explode(': ', $notificationArray[1])[1]);
                             $msg = "{$corpName} tax changed from {$oldTax}% to {$newTax}%";
                             if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -271,8 +264,72 @@ class notifications
                         case 21: // member left corp
                             $msg = 'skip';
                             break;
+                        case 22: // ceo resign
+                            preg_match('/(?<=newCeoID: )\S+/i', $notificationString, $newCeoID);
+                            preg_match('/(?<=oldCeoID: )\S+/i', $notificationString, $oldCeoID);
+                            preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
+                            $newCeoName = characterName($newCeoID);
+                            $oldCeoName = characterName($oldCeoID);
+                            $corpName = corpName($corpID);
+                            $msg = "$oldCeoName has resigned as CEO for $corpName, $newCeoName has been appointed as the new CEO.";
+                            break;
+                        case 25: // corp vote
+                            $msg = 'skip';
+                            break;
+                        case 27: // Corp declares war
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            $defAllianceName = allianceName($defAllianceID[0]);
+                            if ($defAllianceName === '' || ' ' || null) {
+                                $defAllianceName = corpName($defAllianceID[0]);
+                            }
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            $aggAllianceName = allianceName($aggAllianceID[0]);
+                            if ($aggAllianceName === '' || ' ' || null) {
+                                $aggAllianceName = corpName($aggAllianceID[0]);
+                            }
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = '@everyone | War declared. Fighting begins in roughly 24 hours.';
+                            } else {
+                                $msg = "**{$aggAllianceName}** has declared war on **{$defAllianceName}**.
+Within 24 hours fighting can legally occur between those involved. If war is due to a corporation at war joining or leaving an alliance, then the war starts immediately instead.";
+                            }
+                            break;
+                        case 29: // War Surrender
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defCorpID);
+                            $defCorpName = allianceName($defCorpID[0]);
+                            if ($defCorpName === '' || ' ' || null) {
+                                $defCorpName = corpName($defCorpID[0]);
+                            }
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggCorpID);
+                            $aggCorpName = allianceName($aggCorpID[0]);
+                            if ($aggCorpName === '' || ' ' || null) {
+                                $aggCorpName = corpName($aggCorpID[0]);
+                            }
+                            if ($aggCorpName === null || '' || $defCorpName === null || '') {
+                                $msg = 'A war has ended. Fighting ends in roughly 24 hours.';
+                            } else {
+                                $msg = "The war between **{$aggCorpName}** and **{$defCorpName}** has ended. Fighting ends in roughly 24 hours.";
+                            }
+                            break;
+                        case 30: // Corp retracts war
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
+                            $defAllianceName = allianceName($defAllianceID[0]);
+                            if ($defAllianceName === '' || ' ' || null) {
+                                $defAllianceName = corpName($defAllianceID[0]);
+                            }
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
+                            $aggAllianceName = allianceName($aggAllianceID[0]);
+                            if ($aggAllianceName === '' || ' ' || null) {
+                                $aggAllianceName = corpName($aggAllianceID[0]);
+                            }
+                            if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
+                                $msg = '@everyone | War has been retracted.  Fighting ends in roughly 24 hours.';
+                            } else {
+                                $msg = "The war between **{$aggAllianceName}** and **{$defAllianceName}** is coming to an end. **{$aggAllianceName}** has retracted the war against **{$defAllianceName}**. The war will be declared as being over after approximately 24 hours.";
+                            }
+                            break;
                         case 31: // Alliance war invalidated by CONCORD
-                            $aggAllianceID = trim(explode(': ', $notificationString[2])[1]);
+                            $aggAllianceID = trim(explode(': ', $notificationArray[2])[1]);
                             $aggAllianceName = allianceName($aggAllianceID);
                             $msg = "War with {$aggAllianceName} has been invalidated. Fighting ends in roughly 24 hours.";
                             break;
@@ -282,17 +339,20 @@ class notifications
                         case 35: // Insurance payment
                             $msg = 'skip';
                             break;
+                        case 36: // Insurance 
+                            $msg = 'skip';
+                            break;
                         case 41: // System lost
-                            $solarSystemID = trim(explode(': ', $notificationString[2])[1]);
-                            $systemName = systemName($solarSystemID);
-                            $allianceID = trim(explode(': ', $notificationString[0])[1]);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $allianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $allianceName = allianceName($allianceID);
                             $msg = "{$allianceName} has lost control of **{$systemName}**";
                             break;
                         case 43: // System captured
-                            $solarSystemID = trim(explode(': ', $notificationString[2])[1]);
-                            $systemName = systemName($solarSystemID);
-                            $allianceID = trim(explode(': ', $notificationString[0])[1]);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $allianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $allianceName = allianceName($allianceID);
                             $msg = "{$allianceName} now controls **{$systemName}**";
                             break;
@@ -324,32 +384,32 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 75: // POS / POS Module under attack
-                            $aggAllianceID = trim(explode(': ', $notificationString[0])[1]);
+                            $aggAllianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $aggAllianceName = allianceName($aggAllianceID);
-                            $aggCorpID = trim(explode(': ', $notificationString[1])[1]);
+                            $aggCorpID = trim(explode(': ', $notificationArray[1])[1]);
                             $aggCorpName = corpName($aggCorpID);
-                            $aggID = trim(explode(': ', $notificationString[2])[1]);
+                            $aggID = trim(explode(': ', $notificationArray[2])[1]);
                             $aggCharacterName = characterName($aggID);
-                            $moonID = trim(explode(': ', $notificationString[5])[1]);
+                            $moonID = trim(explode(': ', $notificationArray[5])[1]);
                             $moonName = apiMoonName($moonID);
-                            $solarSystemID = trim(explode(': ', $notificationString[7])[1]);
-                            $typeID = trim(explode(': ', $notificationString[8])[1]);
-                            $typeName = apiTypeName($typeID);
-                            $systemName = systemName($solarSystemID);
+                            $typeID = trim(explode(': ', $notificationArray[8])[1]);
+                            $typeName = getTypeName($typeID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "**{$typeName}** under attack in **{$systemName} - {$moonName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}).";
                             if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
                             }
                             break;
                         case 76: // Tower resource alert
-                            $moonID = trim(explode(': ', $notificationString[2])[1]);
+                            $moonID = trim(explode(': ', $notificationArray[2])[1]);
                             $moonName = apiMoonName($moonID);
-                            $solarSystemID = trim(explode(': ', $notificationString[3])[1]);
-                            $systemName = systemName($solarSystemID);
-                            $blocksRemaining = trim(explode(': ', $notificationString[6])[1]);
-                            $typeID = trim(explode(': ', $notificationString[7])[1]);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $blocksRemaining = trim(explode(': ', $notificationArray[6])[1]);
+                            $typeID = trim(explode(': ', $notificationArray[7])[1]);
                             $channelID = $this->fuelChannel;
-                            $typeName = apiTypeName($typeID);
+                            $typeName = getTypeName($typeID);
                             $msg = "POS in {$systemName} - {$moonName} needs fuel. Only {$blocksRemaining} {$typeName}'s remaining.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -357,17 +417,17 @@ class notifications
 
                             break;
                         case 88: // IHUB is being attacked
-                            $aggAllianceID = trim(explode(': ', $notificationString[0])[1]);
+                            $aggAllianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $aggAllianceName = allianceName($aggAllianceID);
-                            $aggCorpID = trim(explode(': ', $notificationString[0])[1]);
+                            $aggCorpID = trim(explode(': ', $notificationArray[0])[1]);
                             $aggCorpName = corpName($aggCorpID);
-                            $aggID = trim(explode(': ', $notificationString[1])[1]);
+                            $aggID = trim(explode(': ', $notificationArray[1])[1]);
                             $aggCharacterName = characterName($aggID);
-                            $armorValue = trim(explode(': ', $notificationString[3])[1]);
-                            $hullValue = trim(explode(': ', $notificationString[4])[1]);
-                            $shieldValue = trim(explode(': ', $notificationString[5])[1]);
-                            $solarSystemID = trim(explode(': ', $notificationString[6])[1]);
-                            $systemName = systemName($solarSystemID);
+                            $armorValue = trim(explode(': ', $notificationArray[3])[1]);
+                            $hullValue = trim(explode(': ', $notificationArray[4])[1]);
+                            $shieldValue = trim(explode(': ', $notificationArray[5])[1]);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "IHUB under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Status: Hull: {$hullValue}, Armor: {$armorValue}, Shield: {$shieldValue}";
                             break;
                         case 89: // Sov level?
@@ -377,15 +437,15 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 93: // Customs office is being attacked
-                            $aggAllianceID = trim(explode(': ', $notificationString[0])[1]);
+                            $aggAllianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $aggAllianceName = allianceName($aggAllianceID);
-                            $aggCorpID = trim(explode(': ', $notificationString[0])[1]);
+                            $aggCorpID = trim(explode(': ', $notificationArray[0])[1]);
                             $aggCorpName = corpName($aggCorpID);
-                            $aggID = trim(explode(': ', $notificationString[2])[1]);
+                            $aggID = trim(explode(': ', $notificationArray[2])[1]);
                             $aggCharacterName = characterName($aggID);
-                            $shieldValue = trim(explode(': ', $notificationString[5])[1]);
-                            $solarSystemID = trim(explode(': ', $notificationString[6])[1]);
-                            $systemName = systemName($solarSystemID);
+                            $shieldValue = trim(explode(': ', $notificationArray[5])[1]);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Customs Office under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Shield Status: {$shieldValue}";
                             if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -398,39 +458,33 @@ class notifications
                             $msg = 'skip';
                             break;
                         case 100: // Aggressor corp joins war
-                            $aggCorpID = trim(explode(': ', $notificationString[0])[1]);
-                            $defCorpID = trim(explode(': ', $notificationString[1])[1]);
-                            $aggCorpName = corpName($aggCorpID);
-                            $defCorpName = corpName($defCorpID);
+                            preg_match('/(?<=defenderID: )\S+/i', $notificationString, $defCorpID);
+                            $defCorpName = allianceName($defCorpID[0]);
+                            if ($defCorpName === 'Unknown' || '' || ' ' || null) {
+                                $defCorpName = corpName($defCorpID[0]);
+                            }
+                            preg_match('/(?<=aggressorID: )\S+/i', $notificationString, $aggCorpID);
+                            $aggCorpName = allianceName($aggCorpID[0]);
+                            if ($aggCorpName === 'Unknown' || '' || ' ' || null) {
+                                $aggCorpName = corpName($aggCorpID[0]);
+                            }
                             $msg = "{$aggCorpName} has joined the war against {$defCorpName}.";
                             break;
                         case 101: // corp joins war
-                            $result = preg_split('/defenderID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $defCorpID = $result_split[1];
+                            preg_match('/(?<=defenderID: )\S+/i', $notificationString, $defCorpID);
+                            $defCorpName = allianceName($defCorpID[0]);
+                            if ($defCorpName === 'Unknown' || '' || ' ' || null) {
+                                $defCorpName = corpName($defCorpID[0]);
                             }
-                            $defCorpName = allianceName($defCorpID);
-                            if ($defCorpName === 'Unknown') {
-                                $defCorpName = corpName($defCorpID);
+                            preg_match('/(?<=aggressorID: )\S+/i', $notificationString, $aggCorpID);
+                            $aggCorpName = allianceName($aggCorpID[0]);
+                            if ($aggCorpName === 'Unknown' || '' || ' ' || null) {
+                                $aggCorpName = corpName($aggCorpID[0]);
                             }
-                            $result = preg_split('/aggressorID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $aggCorpID = $result_split[1];
-                            }
-                            $aggCorpName = allianceName($aggCorpID);
-                            if ($aggCorpName === 'Unknown') {
-                                $aggCorpName = corpName($aggCorpID);
-                            }
-                            $result = preg_split('/allyID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $thirdCorpID = $result_split[1];
-                            }
-                            $thirdCorpName = allianceName($thirdCorpID);
-                            if ($thirdCorpName === 'Unknown') {
-                                $thirdCorpName = corpName($thirdCorpID);
+                            preg_match('/(?<=allyID: )\S+/i', $notificationString, $thirdCorpID);
+                            $thirdCorpName = allianceName($thirdCorpID[0]);
+                            if ($thirdCorpName === 'Unknown' || '' || ' ' || null) {
+                                $thirdCorpName = corpName($thirdCorpID[0]);
                             }
                             $msg = "{$thirdCorpName} has joined the war involving {$defCorpName} and {$aggCorpName}.";
                             break;
@@ -470,6 +524,9 @@ class notifications
                         case 120: // Kill right
                             $msg = 'skip';
                             break;
+                        case 123: // Surrender (Need XML)
+                            $msg = 'skip';
+                            break;
                         case 128: // Corp App
                             $msg = 'skip';
                             break;
@@ -494,103 +551,116 @@ class notifications
                         case 141: // Kill report
                             $msg = 'skip';
                             break;
+                        case 146: // ff legality changed
+                            preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
+                            $corpName = allianceName($corpID[0]);
+                            if ($corpName === 'Unknown' || '' || ' ' || null) {
+                                $corpName = corpName($corpID[0]);
+                            }
+                            $msg = "{$corpName} has changed the legality for friendly fire.";
+                            break;
                         case 147: // Entosis has started
-                            $solarSystemID = trim(explode(': ', $notificationString[0])[1]);
-                            $systemName = systemName($solarSystemID);
-                            $typeID = trim(explode(': ', $notificationString[1])[1]);
-                            $typeName = apiTypeName($typeID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $typeID = trim(explode(': ', $notificationArray[1])[1]);
+                            $typeName = getTypeName($typeID);
                             $msg = "Entosis has started in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 148: // Entosis enabled a module ??????
-                            $solarSystemID = trim(explode(': ', $notificationString[0])[1]);
-                            $systemName = systemName($solarSystemID);
-                            $typeID = trim(explode(': ', $notificationString[1])[1]);
-                            $typeName = apiTypeName($typeID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $typeID = trim(explode(': ', $notificationArray[1])[1]);
+                            $typeName = getTypeName($typeID);
                             $msg = "Entosis has enabled a module in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 149: // Entosis disabled a module
-                            $solarSystemID = trim(explode(': ', $notificationString[0])[1]);
-                            $systemName = systemName($solarSystemID);
-                            $typeID = trim(explode(': ', $notificationString[1])[1]);
-                            $typeName = apiTypeName($typeID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $typeID = trim(explode(': ', $notificationArray[1])[1]);
+                            $typeName = getTypeName($typeID);
                             $msg = "Entosis has disabled a module in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 152: // Sov bill
                             $msg = 'skip';
                             break;
                         case 160: // Entosis successful
-                            $solarSystemID = trim(explode(': ', $notificationString[2])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Hostile entosis successful. A structure in **{$systemName}** has entered reinforced mode.";
                             break;
                         case 161: //  Command Nodes Decloaking
-                            $solarSystemID = trim(explode(': ', $notificationString[2])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Command nodes decloaking for **{$systemName}**";
                             break;
                         case 162: //  TCU Destroyed
-                            $solarSystemID = trim(explode(': ', $notificationString[0])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Entosis successful, TCU in **{$systemName}** has been destroyed.";
                             break;
                         case 163: //  Outpost freeport
-                            $solarSystemID = trim(explode(': ', $notificationString[1])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Station in **{$systemName}** has now entered freeport mode.";
                             break;
                         case 165: //  System became Capital
-                            $solarSystemID = trim(explode(': ', $notificationString[1])[1]);
-                            $systemName = systemName($solarSystemID);
-                            $allianceID = trim(explode(': ', $notificationString[0])[1]);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $allianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $allianceName = allianceName($allianceID);
                             $msg = "**{$systemName}** is now the capital for {$allianceName}.";
                             break;
                         case 167: //  Initiate Self-destruct on TCU
-                            $solarSystemID = trim(explode(': ', $notificationString[3])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "TCU in **{$systemName}** has initiated a self destruct sequence.";
                             break;
                         case 169: //  TCU Self-Destructed
-                            $solarSystemID = trim(explode(': ', $notificationString[0])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "TCU in **{$systemName}** has self destructed.";
                             break;
+                        case 181: // citadel low on fuel
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
+                            $msg = "Citadel in **{$systemName}** is low on fuel.";
+                            if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
+                                $msg = 'skip';
+                            }
+                            break;
                         case 182: //  Citadel being anchored
-                            $corpName = trim(explode(': ', $notificationString[1])[1]);
-                            $solarSystemID = trim(explode(': ', $notificationString[2])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=ownerCorpName: )[^\r\n]+/i', $notificationString, $corpName);
+                            $corpName = $corpName[0];
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel owned by **{$corpName}** is being anchored in **{$systemName}**.";
                             break;
                         case 184: //  Citadel under attack
-                            $aggID = trim(explode(': ', $notificationString[7])[1]);
+                            $aggID = trim(explode(': ', $notificationArray[7])[1]);
                             $aggCharacterName = characterName($aggID);
-                            $solarSystemID = trim(explode(': ', $notificationString[15])[1]);
-                            $aggAllianceID = trim(explode(': ', $notificationString[0])[1]);
+                            $aggAllianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $aggAllianceName = allianceName($aggAllianceID);
-                            $aggCorpID = trim(explode('- ', $notificationString[11])[1]);
+                            $aggCorpID = trim(explode('- ', $notificationArray[11])[1]);
                             $aggCorpName = corpName($aggCorpID);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "@everyone | Citadel under attack in **{$systemName}** by **{$aggCharacterName}** ({$aggCorpName} / {$aggAllianceName}).";
                             break;
                         case 185: //  Citadel online
-                            $solarSystemID = trim(explode(': ', $notificationString[0])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel now online in **{$systemName}**.";
                             break;
                         case 188: //  Citadel destroyed
-                            $corpID = trim(explode('- ', $notificationString[3])[1]);
+                            $corpID = trim(explode('- ', $notificationArray[3])[1]);
                             $corpName = corpName($corpID);
-                            $solarSystemID = trim(explode(': ', $notificationString[5])[1]);
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
                             break;
                         case 198: // citadel out of fuel
-                            $result = preg_split('/solarsystemID:/', $notificationString);
-                            if (count($result) > 1) {
-                                $result_split = explode(' ', $result[1]);
-                                $solarSystemID = $result_split[1];
-                            }
-                            $systemName = systemName($solarSystemID);
+                            preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel in **{$systemName}** has run out of fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -606,7 +676,7 @@ class notifications
                             $msg = 'skip';
                             break;
                         default: // Unknown typeID
-                            $string = implode(' ', $notificationString);
+                            $string = implode(' ', $notificationArray);
                             $msg = "typeID {$typeID} is an unmapped notification, please create a Github issue with this entire message and please include what the in-game notification is. {$string}";
                             break;
                     }

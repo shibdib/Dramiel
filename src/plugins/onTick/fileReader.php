@@ -67,7 +67,7 @@ class fileReader
                 $ping = '';
                 foreach ($data as $row) {
                     $row = str_replace('^@', '', $row);
-                    if ($row == '' || $row == ' ') {
+                    if ($row === '' || $row === ' ') {
                         continue;
                     }
 
@@ -77,7 +77,7 @@ class fileReader
                 // Remove |  from the line or whatever else is at the last two characters in the string
                 $message = trim(substr($ping, 0, -2));
                 foreach ($this->channelConfig as $chanName => $chanConfig) {
-                    if ($chanConfig['searchString'] == false) { // If no match was found, and searchString is false, just use that
+                    if (!array_key_exists('searchString', $chanConfig)) {// If no match was found, and searchString is false, just use that
                         $message = $chanConfig['textStringPrepend'] . " \n " . $message . '  ' . $chanConfig['textStringAppend'];
                         $channelID = $chanConfig['channelID'];
                     } elseif (stristr($message, $chanConfig['searchString'])) {
@@ -93,10 +93,10 @@ class fileReader
                 if (strstr($begin, '#')) {
                     $message = 'skip';
                 }
-                if ($channelID == '' || $channelID == null) {
+                if ($channelID === '' || $channelID === null) {
                     $message = 'skip';
                 }
-                if ($message != 'skip') {
+                if ($message !== 'skip') {
                     $this->logger->addInfo("fileReader: Ping sent to front of queue for {$channelID}");
                     priorityQueueMessage($message, $channelID, $this->guild);
                 }

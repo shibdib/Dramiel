@@ -92,20 +92,20 @@ class fleetUpOperations
             $startTime = $operation['StartString'];
             preg_match_all('!\d+!', $operation['Start'], $epochStart);
             $startTimeUnix = substr($epochStart[0][0], 0, -3);
-            $desto = $operation['Location'];
+            $destination = $operation['Location'];
             $formUp = $operation['LocationInfo'];
             $info = $operation['Details'];
             $id = $operation['Id'];
             $link = "https://fleet-up.com/Operation#{$id}";
             $timeDifference = $startTimeUnix - $eveTime;
-            if ($currentID != $id) {
+            if ($currentID !== $id) {
                 if ($timeDifference < 900 && $timeDifference > 1) {
                     $msg = "@everyone
 **Upcoming Operation** 
 Title - {$name} 
 Form Up Time - {$startTime} 
 Form Up System - {$formUp} 
-Target System - {$desto} 
+Target System - {$destination} 
 Details - {$info} 
 
 Link - {$link}";

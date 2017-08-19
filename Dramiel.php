@@ -54,6 +54,13 @@ $logger->addInfo('Logger Initiated');
 
 GLOBAL $logger;
 
+//Check we are not running on a 32bit platform
+if(PHP_INT_SIZE == 4)
+{
+	$logger->error('32bit PHP found, if you are running a 64bit OS please install 64bit PHP');
+	die();
+}
+
 // Require the config
 if (file_exists('config/config.php')) {
     /** @noinspection PhpIncludeInspection */
@@ -139,7 +146,7 @@ dbPrune();
 
 $discord->on(
     'ready',
-    function($discord) use ($logger, $config, $plugins, $pluginsT, $discord) {
+    function($discord) use ($logger, $config, $plugins, $pluginsT) {
         // In here we can access any of the WebSocket events.
         //
         // There is a list of event constants that you can
@@ -190,16 +197,24 @@ $discord->on(
                     if (null === $queuedMessage['guild'] || null === $queuedMessage['channel'] || null === $queuedMessage['message']) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Queued item is badly formed, removing it from the queue");
                         clearQueuedMessages($id);
+                        continue;
                     }
                     $guild = $discord->guilds->get('id', $queuedMessage['guild']);
-                    $channel = $guild->channels->get('id', $queuedMessage['channel']);
+                    //Check if guild is bad
+                    if (null === $guild) {
+                        $logger->addInfo("QueueProcessing Error- Item #{$id} : Guild provided is incorrect, removing it from the queue");
+                        clearQueuedMessages($id);
+                        continue;
+                    }
+                    $channel = $guild->channels->get('id', (int)$queuedMessage['channel']);
                     //Check if channel is bad
-                    if (null === $channel || null === $guild) {
+                    if (null === $channel) {
                         $logger->addInfo("QueueProcessing Error- Item #{$id} : Channel provided is incorrect, removing it from the queue");
                         clearQueuedMessages($id);
+                        continue;
                     }
                     $logger->addInfo("QueueProcessing - Completing queued item #{$id}");
-                    $channel->sendMessage($queuedMessage['message'], false);
+                    $channel->sendMessage($queuedMessage['message'], false, null);
                     clearQueuedMessages($id);
                 }
                 $x++;

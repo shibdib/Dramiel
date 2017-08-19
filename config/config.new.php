@@ -76,23 +76,25 @@ $config['enabledPlugins'] = array( // remove the slashes for the plugins you wan
     'auth', //sso based auth system
     'authCheck', // checks if users have left corp or alliance
     'charInfo', // eve character info using eve-kill
+    'sysInfo', // eve system information
     'corpInfo', // eve corp info
     'eveStatus', // tq status message command
-    //"periodicStatusCheck", // ....YOU MUST SET A CHANNEL IN THE NOTIFICATIONS SECTION NEAR THE BOTTOM OF THIS FILE.... Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
+    //'periodicStatusCheck', // ....YOU MUST SET A CHANNEL IN THE NOTIFICATIONS SECTION NEAR THE BOTTOM OF THIS FILE.... Bot routinely checks if TQ status changes (reports server downtimes to the notifications channel)
     'help', // bot help program, will list active addons
     'price', // price check tool, works for all items and ships. Can either !pc <itemname> for general, or !<systemname> <item> for more specific
     'time', // global clock with eve time
-    //"evemails", // evemail updater, will post corp and alliance mails to a channel.
-    //"fileReader", // Read advanced plugin config section of the wiki
-    //"notifications", // eve notifications to a channel, good for warning users of an attack
-    //"twitterOutput", // twitter input to stay up to date on eve happenings
+    //'motd', // shows the MOTD of a listed channel.
+    //'evemails', // evemail updater, will post corp and alliance mails to a channel.
+    //'fileReader', // Read advanced plugin config section of the wiki
+    //'notifications', // eve notifications to a channel, good for warning users of an attack
+    //'twitterOutput', // twitter input to stay up to date on eve happenings
     'getKillmails', // show corp killmails in a chat channel
     //'getKillmailsRedis', // beta redisQ based killmail pulling USE AT OWN RISK (DO NOT USE WITH getKillmails also active)
-    //"siphons", // report possible siphons, see wiki for more info
-    //"siloFull", // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
-    //"fleetUpOperations", // integrate with fleet up and post any new operations and then ping them when they get close
-    //"fleetUpOps", //show upcoming fleet up operations with a message command
-    //"rssReader", //Post news to rss feeds
+    //'siphons', // report possible siphons, see wiki for more info
+    //'siloFull', // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
+    //'fleetUpOperations', // integrate with fleet up and post any new operations and then ping them when they get close
+    //'fleetUpOps', //show upcoming fleet up operations with a message command
+    //'rssReader', //Post news to rss feeds
 );
 
 
@@ -127,6 +129,13 @@ $config['plugins'] = array(
                 'channelID' => 0
             )
         ),
+    ),
+    //Pull MOTD of channel
+        'motd' => array(
+        'keyID' => '', //char api keyID (Must have channel on api and mod rights on the char)
+        'vCode' => '', //char api vCode
+        'characterID' =>'', //ID Of the character with mod rights to the channel, can get this from zkill, look up your char and its /character/#### is your char ID
+        'channelname' => '', //name of channel you are requesting, must be IDENTICAL
     ),
     // what channel for eve notifications/also the channel for tq status alerts
     'notifications' => array(
@@ -164,7 +173,7 @@ $config['plugins'] = array(
         ),
         'standings' => array(
             'enabled' => 'false', //set to true if you want to allow people to auth based off of corp/alliance standings
-            'apiKey' => 'user1', //enter the KEYID for whatever above api you'd like to base standings off of
+            'apiKey' => 'KEYID', //enter the KEYID for whatever above api you'd like to base standings off of
             'plus10Role' => '',
             'plus5Role' => '',
             'neutralRole' => '',
@@ -188,6 +197,7 @@ $config['plugins'] = array(
                 'lossMails' => 'true', //set as true to post both kills and losses, false to post only kills.
                 'startMail' => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
                 'minimumValue' => 0, //Put the minimum isk value for killmails here (Do not put any commas just numbers)
+                'minimumlossValue' => 0, //Put the minimum isk loss value for killmails here (Do not put any commas just numbers)
                 'bigKill' => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
                 'bigKillChannel' => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
             ),
@@ -199,6 +209,7 @@ $config['plugins'] = array(
                 'lossMails' => 'true', //set as true to post both kills and losses, false to post only kills.
                 'startMail' => 1, //Put the zkill killID of your latest killmail. Otherwise it will pull from the beginning of time.
                 'minimumValue' => 0, //Put the minimum isk value for killmails here (Do not put any commas just numbers)
+                'minimumlossValue' => 0, //Put the minimum isk loss value for killmails here (Do not put any commas just numbers)
                 'bigKill' => null, //Set an isk amount you'd like to consider a high value kill, will alert the channel if any kills/losses hit this amount. (Leave as null if you don't want this feature)
                 'bigKillChannel' => 0, //what channel does the bot post big kills into (must be set, if ud like to use one channel just put the same u put above here)
             ),
@@ -237,7 +248,6 @@ $config['plugins'] = array(
         'channelID' => 0, //silo alerts post to this channel
         'keyID' => '', //corp api keyID (Must have assets)
         'vCode' => '', //corp api vCode
-        'towerRace' => 0, //The race of your moon goo towers (to determine silo bonus.) Amarr/Amarr Faction Variants = 1, Gal/Gal Faction Variants = 2, Everyone else = 0
     ),
     //Fleet up linking will share operations to a specific channel and then reping them when it gets within 30 minutes of form up
     'fleetUp' => array(
