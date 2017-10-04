@@ -48,34 +48,12 @@ class sysInfo
 				$messageString = dbQueryField('SELECT name FROM usersSeen WHERE id = :id', 'name', array(':id' => $messageString));
 			}
 			$cleanString = urlencode($messageString);
-			$sysID = urlencode(systemID($cleanString));
+			$sysID = urlencode(getSystemID($cleanString));
 
 			//Check if we get a system back, otherwise check for partials
 			if(empty($sysID))
 			{
-				$search = "http://tools.pandemic-legion.pl/api/search/{$cleanString}";
-				$search = json_decode(file_get_contents($search));
-				$tot = 0;
-				$res = array();
-				foreach ($search as $s){
-					if ($s->type == "system"){
-						$tot++;
-						$res[] = $s->name;
-					}
-				}
-				if ($tot == 0){
-					return $this->message->reply('**Error:** no data available');
-				}
-				if ($tot == 1){
-					$sysID = urlencode(systemID($res[0]));
-					if(empty($sysID)){
-						return $this->message->reply('**Error:** no data available');
-					}
-				}
-				if ($tot > 1){
-					$res = implode(", ",$res);
-					return $this->message->reply("**Error:** Did you mean one of these? {$res}");
-				}			
+                return $this->message->reply('**Error:** no data available');
 			}
 
 			$systemDetails = systemDetails($sysID);
@@ -88,8 +66,7 @@ class sysInfo
 			$json = json_decode(file_get_contents($url));
 
 			$regionID = $json->info->regionID;
-			$regionDetails = regionDetails($regionID);
-			$regionName = $regionDetails['name'];
+			$regionName = getRegionName($regionID);
 
 			$thisMonth = (string)date('Ym');
             $lastMonth = (string)date('Ym', strtotime('first day of previous month'));

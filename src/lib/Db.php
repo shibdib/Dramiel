@@ -27,14 +27,19 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 /**
+ * @param null $db
  * @return null|PDO
  * @internal param null|string $db
  */
-function openDB()
+function openDB($db = null)
 {
     $logger = new Logger('Db');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/../../log/libraryError.log', Logger::DEBUG));
-    $db = __DIR__ . '/../../database/dramiel.sqlite';
+    if ($db === null) {
+        $db = __DIR__ . '/../../database/dramiel.sqlite';
+    } elseif ($db === 'eve'){
+        $db = __DIR__ . '/../../database/eveData.db';
+    }
 
     $dsn = "sqlite:$db";
     try {
@@ -57,12 +62,13 @@ function openDB()
  * @param string $query
  * @param string $field
  * @param array $params
+ * @param null $db
  * @return string
  * @internal param string $db
  */
-function dbQueryField($query, $field, array $params = array())
+function dbQueryField($query, $field, array $params = array(), $db = null)
 {
-    $pdo = openDB();
+    $pdo = openDB($db);
     if ($pdo == NULL) {
         return null;
     }
@@ -84,12 +90,13 @@ function dbQueryField($query, $field, array $params = array())
 /**
  * @param string $query
  * @param array $params
+ * @param null $db
  * @return null|void
  * @internal param string $db
  */
-function dbQueryRow($query, array $params = array())
+function dbQueryRow($query, array $params = array(), $db = null)
 {
-    $pdo = openDB();
+    $pdo = openDB($db);
     if ($pdo == NULL) {
         return null;
     }
@@ -109,12 +116,13 @@ function dbQueryRow($query, array $params = array())
 /**
  * @param string $query
  * @param array $params
+ * @param null $db
  * @return array|void
  * @internal param string $db
  */
-function dbQuery($query, array $params = array())
+function dbQuery($query, array $params = array(), $db = null)
 {
-    $pdo = openDB();
+    $pdo = openDB($db);
     if ($pdo === NULL) {
         return null;
     }
@@ -131,11 +139,12 @@ function dbQuery($query, array $params = array())
 /**
  * @param string $query
  * @param array $params
+ * @param null $db
  * @internal param string $db
  */
-function dbExecute($query, array $params = array())
+function dbExecute($query, array $params = array(), $db = null)
 {
-    $pdo = openDB();
+    $pdo = openDB($db);
     if ($pdo === NULL) {
         return;
     }
@@ -228,6 +237,8 @@ function clearAllMessageQueue()
 
 //CORP INFO
 /**
+ * @param $corpID
+ * @param $corpTicker
  * @param string $corpName
  */
 function addCorpInfo($corpID, $corpTicker, $corpName)
@@ -264,4 +275,41 @@ function addContactInfo($contactID, $contactName, $standing)
 function getContacts($contactID)
 {
     return dbQueryRow('SELECT * FROM contactList WHERE `contactID` = :contactID', array(':contactID' => $contactID));
+}
+
+//eveDb interaction
+function getTypeID($typeName)
+{
+    $query = dbQueryRow('SELECT * FROM invTypes WHERE lower(`typeName`) = :typeName', array(':typeName' => $typeName), 'eve');
+    return $query['typeID'];
+}
+
+function getTypeName($typeID)
+{
+    $query = dbQueryRow('SELECT * FROM invTypes WHERE `typeID` = :typeID', array(':typeID' => $typeID), 'eve');
+    return $query['typeName'];
+}
+
+function getSystemID($solarSystemName)
+{
+    $query = dbQueryRow('SELECT * FROM mapSolarSystems WHERE lower(`solarSystemName`) = :solarSystemName', array(':solarSystemName' => $solarSystemName), 'eve');
+    return $query['solarSystemID'];
+}
+
+function getSystemName($systemID)
+{
+    $query = dbQueryRow('SELECT * FROM mapSolarSystems WHERE `solarSystemID` = :systemID', array(':systemID' => $systemID), 'eve');
+    return $query['solarSystemName'];
+}
+
+function getRegionID($regionName)
+{
+    $query = dbQueryRow('SELECT * FROM mapRegions WHERE lower(`regionName`) = :regionName', array(':regionName' => $regionName), 'eve');
+    return $query['regionName'];
+}
+
+function getRegionName($regionID)
+{
+    $query = dbQueryRow('SELECT * FROM mapRegions WHERE `regionID` = :regionID', array(':regionID' => $regionID), 'eve');
+    return $query['regionName'];
 }

@@ -176,12 +176,12 @@ class notifications
                         case 5: // War Declared
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === '') {
+                            if ($defAllianceName === '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === '') {
+                            if ($aggAllianceName === '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -207,12 +207,12 @@ class notifications
                         case 8: // Alliance war invalidated by CONCORD
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === 'Unknown') {
+                            if ($defAllianceName === 'Unknown' || '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === 'Unknown') {
+                            if ($aggAllianceName === 'Unknown' || '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -264,15 +264,27 @@ class notifications
                         case 21: // member left corp
                             $msg = 'skip';
                             break;
+                        case 22: // ceo resign
+                            preg_match('/(?<=newCeoID: )\S+/i', $notificationString, $newCeoID);
+                            preg_match('/(?<=oldCeoID: )\S+/i', $notificationString, $oldCeoID);
+                            preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
+                            $newCeoName = characterName($newCeoID);
+                            $oldCeoName = characterName($oldCeoID);
+                            $corpName = corpName($corpID);
+                            $msg = "$oldCeoName has resigned as CEO for $corpName, $newCeoName has been appointed as the new CEO.";
+                            break;
+                        case 25: // corp vote
+                            $msg = 'skip';
+                            break;
                         case 27: // Corp declares war
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === '') {
+                            if ($defAllianceName === '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === '') {
+                            if ($aggAllianceName === '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -282,15 +294,32 @@ class notifications
 Within 24 hours fighting can legally occur between those involved. If war is due to a corporation at war joining or leaving an alliance, then the war starts immediately instead.";
                             }
                             break;
+                        case 29: // War Surrender
+                            preg_match('/(?<=againstID: )\S+/i', $notificationString, $defCorpID);
+                            $defCorpName = allianceName($defCorpID[0]);
+                            if ($defCorpName === '' || ' ' || null) {
+                                $defCorpName = corpName($defCorpID[0]);
+                            }
+                            preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggCorpID);
+                            $aggCorpName = allianceName($aggCorpID[0]);
+                            if ($aggCorpName === '' || ' ' || null) {
+                                $aggCorpName = corpName($aggCorpID[0]);
+                            }
+                            if ($aggCorpName === null || '' || $defCorpName === null || '') {
+                                $msg = 'A war has ended. Fighting ends in roughly 24 hours.';
+                            } else {
+                                $msg = "The war between **{$aggCorpName}** and **{$defCorpName}** has ended. Fighting ends in roughly 24 hours.";
+                            }
+                            break;
                         case 30: // Corp retracts war
                             preg_match('/(?<=againstID: )\S+/i', $notificationString, $defAllianceID);
                             $defAllianceName = allianceName($defAllianceID[0]);
-                            if ($defAllianceName === '') {
+                            if ($defAllianceName === '' || ' ' || null) {
                                 $defAllianceName = corpName($defAllianceID[0]);
                             }
                             preg_match('/(?<=declaredByID: )\S+/i', $notificationString, $aggAllianceID);
                             $aggAllianceName = allianceName($aggAllianceID[0]);
-                            if ($aggAllianceName === '') {
+                            if ($aggAllianceName === '' || ' ' || null) {
                                 $aggAllianceName = corpName($aggAllianceID[0]);
                             }
                             if ($aggAllianceName === null || '' || $defAllianceName === null || '') {
@@ -315,14 +344,14 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             break;
                         case 41: // System lost
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $allianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $allianceName = allianceName($allianceID);
                             $msg = "{$allianceName} has lost control of **{$systemName}**";
                             break;
                         case 43: // System captured
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $allianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $allianceName = allianceName($allianceID);
                             $msg = "{$allianceName} now controls **{$systemName}**";
@@ -364,9 +393,9 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             $moonID = trim(explode(': ', $notificationArray[5])[1]);
                             $moonName = apiMoonName($moonID);
                             $typeID = trim(explode(': ', $notificationArray[8])[1]);
-                            $typeName = apiTypeName($typeID);
+                            $typeName = getTypeName($typeID);
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "**{$typeName}** under attack in **{$systemName} - {$moonName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}).";
                             if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -376,11 +405,11 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             $moonID = trim(explode(': ', $notificationArray[2])[1]);
                             $moonName = apiMoonName($moonID);
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $blocksRemaining = trim(explode(': ', $notificationArray[6])[1]);
                             $typeID = trim(explode(': ', $notificationArray[7])[1]);
                             $channelID = $this->fuelChannel;
-                            $typeName = apiTypeName($typeID);
+                            $typeName = getTypeName($typeID);
                             $msg = "POS in {$systemName} - {$moonName} needs fuel. Only {$blocksRemaining} {$typeName}'s remaining.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -398,7 +427,7 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             $hullValue = trim(explode(': ', $notificationArray[4])[1]);
                             $shieldValue = trim(explode(': ', $notificationArray[5])[1]);
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "IHUB under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Status: Hull: {$hullValue}, Armor: {$armorValue}, Shield: {$shieldValue}";
                             break;
                         case 89: // Sov level?
@@ -416,7 +445,7 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             $aggCharacterName = characterName($aggID);
                             $shieldValue = trim(explode(': ', $notificationArray[5])[1]);
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Customs Office under attack in **{$systemName}** by {$aggCharacterName} ({$aggCorpName} / {$aggAllianceName}). Shield Status: {$shieldValue}";
                             if ($this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -431,12 +460,12 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 100: // Aggressor corp joins war
                             preg_match('/(?<=defenderID: )\S+/i', $notificationString, $defCorpID);
                             $defCorpName = allianceName($defCorpID[0]);
-                            if ($defCorpName === 'Unknown') {
+                            if ($defCorpName === 'Unknown' || '' || ' ' || null) {
                                 $defCorpName = corpName($defCorpID[0]);
                             }
                             preg_match('/(?<=aggressorID: )\S+/i', $notificationString, $aggCorpID);
                             $aggCorpName = allianceName($aggCorpID[0]);
-                            if ($aggCorpName === 'Unknown') {
+                            if ($aggCorpName === 'Unknown' || '' || ' ' || null) {
                                 $aggCorpName = corpName($aggCorpID[0]);
                             }
                             $msg = "{$aggCorpName} has joined the war against {$defCorpName}.";
@@ -444,17 +473,17 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 101: // corp joins war
                             preg_match('/(?<=defenderID: )\S+/i', $notificationString, $defCorpID);
                             $defCorpName = allianceName($defCorpID[0]);
-                            if ($defCorpName === 'Unknown') {
+                            if ($defCorpName === 'Unknown' || '' || ' ' || null) {
                                 $defCorpName = corpName($defCorpID[0]);
                             }
                             preg_match('/(?<=aggressorID: )\S+/i', $notificationString, $aggCorpID);
                             $aggCorpName = allianceName($aggCorpID[0]);
-                            if ($aggCorpName === 'Unknown') {
+                            if ($aggCorpName === 'Unknown' || '' || ' ' || null) {
                                 $aggCorpName = corpName($aggCorpID[0]);
                             }
                             preg_match('/(?<=allyID: )\S+/i', $notificationString, $thirdCorpID);
                             $thirdCorpName = allianceName($thirdCorpID[0]);
-                            if ($thirdCorpName === 'Unknown') {
+                            if ($thirdCorpName === 'Unknown' || '' || ' ' || null) {
                                 $thirdCorpName = corpName($thirdCorpID[0]);
                             }
                             $msg = "{$thirdCorpName} has joined the war involving {$defCorpName} and {$aggCorpName}.";
@@ -495,6 +524,9 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 120: // Kill right
                             $msg = 'skip';
                             break;
+                        case 123: // Surrender (Need XML)
+                            $msg = 'skip';
+                            break;
                         case 128: // Corp App
                             $msg = 'skip';
                             break;
@@ -519,25 +551,33 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                         case 141: // Kill report
                             $msg = 'skip';
                             break;
+                        case 146: // ff legality changed
+                            preg_match('/(?<=corpID: )\S+/i', $notificationString, $corpID);
+                            $corpName = allianceName($corpID[0]);
+                            if ($corpName === 'Unknown' || '' || ' ' || null) {
+                                $corpName = corpName($corpID[0]);
+                            }
+                            $msg = "{$corpName} has changed the legality for friendly fire.";
+                            break;
                         case 147: // Entosis has started
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $typeID = trim(explode(': ', $notificationArray[1])[1]);
-                            $typeName = apiTypeName($typeID);
+                            $typeName = getTypeName($typeID);
                             $msg = "Entosis has started in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 148: // Entosis enabled a module ??????
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $typeID = trim(explode(': ', $notificationArray[1])[1]);
-                            $typeName = apiTypeName($typeID);
+                            $typeName = getTypeName($typeID);
                             $msg = "Entosis has enabled a module in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 149: // Entosis disabled a module
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $typeID = trim(explode(': ', $notificationArray[1])[1]);
-                            $typeName = apiTypeName($typeID);
+                            $typeName = getTypeName($typeID);
                             $msg = "Entosis has disabled a module in **{$systemName}** on **{$typeName}** (Date: **{$sentDate}**)";
                             break;
                         case 152: // Sov bill
@@ -545,44 +585,44 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             break;
                         case 160: // Entosis successful
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Hostile entosis successful. A structure in **{$systemName}** has entered reinforced mode.";
                             break;
                         case 161: //  Command Nodes Decloaking
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Command nodes decloaking for **{$systemName}**";
                             break;
                         case 162: //  TCU Destroyed
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Entosis successful, TCU in **{$systemName}** has been destroyed.";
                             break;
                         case 163: //  Outpost freeport
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Station in **{$systemName}** has now entered freeport mode.";
                             break;
                         case 165: //  System became Capital
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $allianceID = trim(explode(': ', $notificationArray[0])[1]);
                             $allianceName = allianceName($allianceID);
                             $msg = "**{$systemName}** is now the capital for {$allianceName}.";
                             break;
                         case 167: //  Initiate Self-destruct on TCU
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "TCU in **{$systemName}** has initiated a self destruct sequence.";
                             break;
                         case 169: //  TCU Self-Destructed
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "TCU in **{$systemName}** has self destructed.";
                             break;
                         case 181: // citadel low on fuel
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel in **{$systemName}** is low on fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';
@@ -592,7 +632,7 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             preg_match('/(?<=ownerCorpName: )[^\r\n]+/i', $notificationString, $corpName);
                             $corpName = $corpName[0];
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel owned by **{$corpName}** is being anchored in **{$systemName}**.";
                             break;
                         case 184: //  Citadel under attack
@@ -603,24 +643,24 @@ Within 24 hours fighting can legally occur between those involved. If war is due
                             $aggCorpID = trim(explode('- ', $notificationArray[11])[1]);
                             $aggCorpName = corpName($aggCorpID);
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "@everyone | Citadel under attack in **{$systemName}** by **{$aggCharacterName}** ({$aggCorpName} / {$aggAllianceName}).";
                             break;
                         case 185: //  Citadel online
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel now online in **{$systemName}**.";
                             break;
                         case 188: //  Citadel destroyed
                             $corpID = trim(explode('- ', $notificationArray[3])[1]);
                             $corpName = corpName($corpID);
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel owned by **{$corpName}** in **{$systemName}** has been destroyed.";
                             break;
                         case 198: // citadel out of fuel
                             preg_match('/(?<=solarsystemID: )\S+/i', $notificationString, $solarSystemID);
-                            $systemName = systemName($solarSystemID[0]);
+                            $systemName = getSystemName($solarSystemID[0]);
                             $msg = "Citadel in **{$systemName}** has run out of fuel.";
                             if ($this->fuelSkip === 'true' || $this->allianceOnly === 'true') {
                                 $msg = 'skip';

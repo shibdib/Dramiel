@@ -125,13 +125,13 @@ class charInfo
                     $lastSeenSystem = 'No activity reported.';
                     $lastSeenDate = 'No activity reported.';
                 } else {
-                    $lastSeenSystem = systemName($lastSeenSystemID);
+                    $lastSeenSystem = getSystemName($lastSeenSystemID);
                 }
             }
             foreach ($xml->result->rowset->row->rowset->row as $attacker) {
                 if ($attacker->attributes()->characterID == $characterID) {
                     $lastSeenShipID = $attacker->attributes()->shipTypeID;
-                    $lastSeenShip = apiTypeName($lastSeenShipID);
+                    $lastSeenShip = getTypeName($lastSeenShipID);
                 } else {
                     $lastSeenShip = 'No activity reported.';
                 }

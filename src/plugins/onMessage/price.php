@@ -81,30 +81,13 @@ class price
         // Bind a few things to vars for the plugins
         $message = $msgData['message']['message'];
 
-        // Quick Lookups
-        $quickLookUps = array(
-            'plex' => array(
-                'typeID' => 29668,
-                'typeName' => "30 Day Pilot's License Extension (PLEX)"
-            ),
-            '30 day' => array(
-                'typeID' => 29668,
-                'typeName' => "30 Day Pilot's License Extension (PLEX)"
-            )
-        );
-
         $data = command(strtolower($message), $this->information()['trigger'], $this->config['bot']['trigger']);
 
         if (isset($data['trigger'])) {
 
             $systemName = $data['trigger'];
             $itemName = $data['messageString'];
-            $single = apiTypeID($itemName);
-
-            // Quick lookups
-            if (isset($quickLookUps[$itemName])) {
-                $single = $quickLookUps[$itemName];
-            }
+            $single = getTypeID($itemName);
 
             // Check if the channel is restricted
             if (in_array($channelID, $this->excludeChannel, true)) {
@@ -118,7 +101,7 @@ class price
                 if ($systemName === 'pc') {
                     $solarSystemID = 'global';
                 } else {
-                    $solarSystemID = systemID($systemName);
+                    $solarSystemID = getSystemID($systemName);
                 }
 
                 // Get pricing data

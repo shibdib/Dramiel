@@ -279,7 +279,7 @@ class authCheck
         if (!is_null($member->roles)) {
             if (!isset($this->dbusers[$member->id])) {
                 foreach ($member->roles as $role) {
-                    if (!in_array($role->name, $this->exempt, true)) {
+                    if (!in_array($role->name, $this->exempt, true) && !empty($role->name) && !is_null($role->name)) {
                         $roleRemoved = true;
                         $member->removeRole($role);
                         $guild->members->save($member);
