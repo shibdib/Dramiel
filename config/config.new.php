@@ -89,7 +89,6 @@ $config['enabledPlugins'] = array( // remove the slashes for the plugins you wan
     //'notifications', // eve notifications to a channel, good for warning users of an attack
     //'twitterOutput', // twitter input to stay up to date on eve happenings
     'getKillmails', // show corp killmails in a chat channel
-    //'getKillmailsRedis', // beta redisQ based killmail pulling USE AT OWN RISK (DO NOT USE WITH getKillmails also active)
     //'siphons', // report possible siphons, see wiki for more info
     //'siloFull', // report any silos nearing max capacity. Currently only works for silo bonus (amarr) towers
     //'fleetUpOperations', // integrate with fleet up and post any new operations and then ping them when they get close
