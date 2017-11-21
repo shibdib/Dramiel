@@ -1,6 +1,9 @@
 # Dramiel
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/shibdib/Dramiel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/shibdib/Dramiel/?branch=master)
 
+# NEWS
+Unfortunately the Library this was built on is now depreceated with no new PHP library available. A new bot will be made and can be followed here https://github.com/shibdib/Firetail continue to use the discord below to discuss.
+
 EVE Discord Bot
 
 https://isk-starter.com/campaigns/58469d73876c510010eb88d8/ Any little bit is appreciated
